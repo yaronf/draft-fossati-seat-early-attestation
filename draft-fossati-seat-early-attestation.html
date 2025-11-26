@@ -1127,9 +1127,15 @@ These extensions have been designed to allow the peers to use any attestation te
       </h2>
 <p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <p id="section-note.1-2">
+        The latest revision of this draft can be found at <span><a href="https://yaronf.github.io/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html">https://yaronf.github.io/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html</a></span>.
         Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-fossati-seat-early-attestation/">https://datatracker.ietf.org/doc/draft-fossati-seat-early-attestation/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
-<p id="section-note.1-3">Source for this draft and an issue tracker can be found at
-        <span><a href="https://github.com/yaronf/draft-tls-attestation">https://github.com/yaronf/draft-tls-attestation</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        SEAT Working Group mailing list (<span><a href="mailto:seat@ietf.org">mailto:seat@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/seat/">https://mailarchive.ietf.org/arch/browse/seat/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/seat/">https://www.ietf.org/mailman/listinfo/seat/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-4">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/yaronf/draft-fossati-seat-early-attestation">https://github.com/yaronf/draft-fossati-seat-early-attestation</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1202,7 +1208,7 @@ These extensions have been designed to allow the peers to use any attestation te
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-use-of-remote-attestation-c" class="internal xref">Use of Remote Attestation Credentials in the TLS Handshake</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-use-of-attestation-in-the-t" class="internal xref">Use of Attestation in the TLS Handshake</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-handshake-overview" class="internal xref">Handshake Overview</a></p>
@@ -1233,84 +1239,89 @@ These extensions have been designed to allow the peers to use any attestation te
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-evidence-extensions-backgro" class="internal xref">Evidence Extensions (Background Check Model)</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-negotiating-this-protocol" class="internal xref">Negotiating This Protocol</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-evidence-extensions-backgro" class="internal xref">Evidence Extensions (Background Check Model)</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-attestation-results-extensi" class="internal xref">Attestation Results Extensions (Passport Model)</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-attestation-results-extensi" class="internal xref">Attestation Results Extensions (Passport Model)</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-tls-client-and-server-hands" class="internal xref">TLS Client and Server Handshake Behavior</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-background-check-model" class="internal xref">Background Check Model</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.1">
+                    <p id="section-toc.1-1.8.2.1.2.1.1"><a href="#section-8.1.1" class="auto internal xref">8.1.1</a>.  <a href="#name-client-hello" class="internal xref">Client Hello</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.2">
+                    <p id="section-toc.1-1.8.2.1.2.2.1"><a href="#section-8.1.2" class="auto internal xref">8.1.2</a>.  <a href="#name-server-hello" class="internal xref">Server Hello</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-passport-model" class="internal xref">Passport Model</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2.2.1">
+                    <p id="section-toc.1-1.8.2.2.2.1.1"><a href="#section-8.2.1" class="auto internal xref">8.2.1</a>.  <a href="#name-client-hello-2" class="internal xref">Client Hello</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2.2.2">
+                    <p id="section-toc.1-1.8.2.2.2.2.1"><a href="#section-8.2.2" class="auto internal xref">8.2.2</a>.  <a href="#name-server-hello-2" class="internal xref">Server Hello</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-tls-client-and-server-hands" class="internal xref">TLS Client and Server Handshake Behavior</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-background-check-model" class="internal xref">Background Check Model</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.1">
-                    <p id="section-toc.1-1.9.2.1.2.1.1"><a href="#section-9.1.1" class="auto internal xref">9.1.1</a>.  <a href="#name-client-hello" class="internal xref">Client Hello</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.2">
-                    <p id="section-toc.1-1.9.2.1.2.2.1"><a href="#section-9.1.2" class="auto internal xref">9.1.2</a>.  <a href="#name-server-hello" class="internal xref">Server Hello</a></p>
-</li>
-                </ul>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-passport-model" class="internal xref">Passport Model</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.1">
-                    <p id="section-toc.1-1.9.2.2.2.1.1"><a href="#section-9.2.1" class="auto internal xref">9.2.1</a>.  <a href="#name-client-hello-2" class="internal xref">Client Hello</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.2">
-                    <p id="section-toc.1-1.9.2.2.2.2.1"><a href="#section-9.2.2" class="auto internal xref">9.2.2</a>.  <a href="#name-server-hello-2" class="internal xref">Server Hello</a></p>
-</li>
-                </ul>
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-security-guarantees" class="internal xref">Security Guarantees</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
-                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-security-guarantees" class="internal xref">Security Guarantees</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-tls-extensions" class="internal xref">TLS Extensions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-tls-alerts" class="internal xref">TLS Alerts</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
+                <p id="section-toc.1-1.11.2.3.1"><a href="#section-11.3" class="auto internal xref">11.3</a>.  <a href="#name-tls-certificate-types" class="internal xref">TLS Certificate Types</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
-</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-tls-extensions" class="internal xref">TLS Extensions</a></p>
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-tls-alerts" class="internal xref">TLS Alerts</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
-                <p id="section-toc.1-1.12.2.3.1"><a href="#section-12.3" class="auto internal xref">12.3</a>.  <a href="#name-tls-certificate-types" class="internal xref">TLS Certificate Types</a></p>
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
-                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
-</li>
-            </ul>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1321,19 +1332,17 @@ These extensions have been designed to allow the peers to use any attestation te
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Attestation <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> is the process by which an entity produces Evidence about itself that another party can use to evaluate the trustworthiness of that entity.
+<p id="section-1-1">Attestation <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
 This document describes a series of protocol extensions to the TLS 1.3 handshake that enables the binding of the TLS authentication key to a remote attestation session.
-As a result, a peer can use "attestation credentials", consisting of compound platform Evidence and key attestation, to authenticate itself to its peer during the setup of the TLS channel.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) <span>[<a href="#I-D.ietf-teep-architecture" class="cite xref">I-D.ietf-teep-architecture</a>]</span>, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Given the variety of deployed and emerging attestation technologies (e.g., <span>[<a href="#TPM1.2" class="cite xref">TPM1.2</a>]</span>, <span>[<a href="#TPM2.0" class="cite xref">TPM2.0</a>]</span>, <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>) these extensions have been explicitly designed to be agnostic of the attestation formats.
 This is achieved by reusing the generic encapsulation defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span> for transporting Evidence and Attestation Result payloads in the TLS Attestation handshake message.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This specification provides both one-way (server-only) and mutual (client and server) authentication using attestation credentials, and allows the attestation topologies at each peer to be independent of each other.
+<p id="section-1-3">This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in Sections <a href="https://rfc-editor.org/rfc/rfc9334#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc9334#section-5.1" class="relref">5.1</a> of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
-This is detailed in <a href="#evidence-extensions" class="auto internal xref">Section 7</a> and <a href="#attestation-results-extensions" class="auto internal xref">Section 8</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">The design combines normal X.509 certificate authentication with platform attestation. If attestation-only authentication is desired, implementations <span class="bcp14">SHOULD</span> use self-signed X.509 certificates.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">This document does not mandate any particular attestation technology.
-Companion documents are expected to define specific attestation mechanisms.<a href="#section-1-5" class="pilcrow">¶</a></p>
+This is detailed in <a href="#evidence-extensions" class="auto internal xref">Section 7.1</a> and <a href="#attestation-results-extensions" class="auto internal xref">Section 7.2</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document does not mandate any particular attestation technology.
+Companion documents are expected to define specific attestation mechanisms.<a href="#section-1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-terminology">
@@ -1364,13 +1373,10 @@ protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the
 </dd>
       <dd class="break"></dd>
 </dl>
-<p id="section-2-4">The term "remote attestation credentials", or "attestation credentials", is used
-to refer to both attestation Evidence and Attestation Results, when no
-distinction needs to be made between them.<a href="#section-2-4" class="pilcrow">¶</a></p>
-<p id="section-2-5">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+<p id="section-2-4">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
-appear in all capitals, as shown here.<a href="#section-2-5" class="pilcrow">¶</a></p>
+appear in all capitals, as shown here.<a href="#section-2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="overview">
@@ -1391,7 +1397,7 @@ in the CMW (Conceptual Message Wrapper) <span>[<a href="#I-D.ietf-rats-msg-wrap"
         </h3>
 <p id="section-3.1-1">The protocol combines platform attestation with X.509 certificate authentication.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">Attestation when used alone is vulnerable to identity spoofing attacks, in particular when zero-day attacks exist for a class of hardware. (TODO: reference). Therefore it needs to be combined with traditional authentication, which in the case of TLS takes the form of CA-signed certificates.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">We RECOMMEND that regular applications use the combined mode, which provides the full security guarantees of an authenticated TLS handshake (for the peer/peers being authenticated) as
+<p id="section-3.1-3">We RECOMMEND that regular applications use authentication and attestation in tandem, to gain the full security guarantees of an authenticated TLS handshake (for the peer/peers being authenticated) as
 well as guarantees of platform integrity.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">If attestation-only authentication is desired (e.g., for specialized use cases including initial
 provisioning of the TLS stack), implementations <span class="bcp14">SHOULD</span> use self-signed X.509 certificates. In these cases, additional security controls <span class="bcp14">SHOULD</span> be provided,
@@ -1407,8 +1413,8 @@ such as hardware-enforced time limitations, or use of platform-level APIs in the
       </h2>
 <p id="section-4-1">As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
-remote attestation credentials and nonces to be exchanged. The nonces are used
-for guaranteeing freshness of the exchanged Evidence when the background check
+attestation Evidence or Attestation Results to be exchanged. TLS nonces are used
+to guarantee freshness of the exchanged Evidence when the background check
 model is in use. Nonces are not used in the passport model, because the expectation
 of freshness is more relaxed and is only governed by the lifetime of the signed
 Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
@@ -1443,7 +1449,7 @@ implementation, the TLS stack is located outside the TEE, but any private keys
 both options, only the TIK's identity and its public component are ever
 passed between the Client or Server TLS stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
-their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 10.1</a> for more details.<a href="#section-4-7" class="pilcrow">¶</a></p>
+their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 9.1</a> for more details.<a href="#section-4-7" class="pilcrow">¶</a></p>
 <div id="attestation-message-section">
 <section id="section-4.1">
         <h3 id="name-attestation-handshake-messa">
@@ -1506,10 +1512,10 @@ and provides freshness guarantees through the nonces.<a href="#section-4.1-7" cl
 </div>
 </section>
 </div>
-<div id="use-of-remote-attestation-credentials-in-the-tls-handshake">
+<div id="use-of-attestation-in-the-tls-handshake">
 <section id="section-5">
-      <h2 id="name-use-of-remote-attestation-c">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-use-of-remote-attestation-c" class="section-name selfRef">Use of Remote Attestation Credentials in the TLS Handshake</a>
+      <h2 id="name-use-of-attestation-in-the-t">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-use-of-attestation-in-the-t" class="section-name selfRef">Use of Attestation in the TLS Handshake</a>
       </h2>
 <p id="section-5-1">For both the passport model (described in section 5.1 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) and
 background check model (described in Section 5.2 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) the following
@@ -1785,17 +1791,28 @@ state, or security policy requirements.<a href="#section-6.2-3" class="pilcrow">
 </div>
 </section>
 </div>
-<div id="evidence-extensions">
+<div id="negotiating-protocol">
 <section id="section-7">
-      <h2 id="name-evidence-extensions-backgro">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-evidence-extensions-backgro" class="section-name selfRef">Evidence Extensions (Background Check Model)</a>
+      <h2 id="name-negotiating-this-protocol">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-negotiating-this-protocol" class="section-name selfRef">Negotiating This Protocol</a>
       </h2>
-<p id="section-7-1">The EvidenceType structure contains an indicator for the type of Evidence
+<p id="section-7-1">This section defines the TLS extensions used to negotiate the use of attestation
+in the TLS handshake. Two models are supported: the Background Check model, where
+Evidence is exchanged and verified during the handshake, and the Passport model,
+where pre-verified Attestation Results are presented. The extensions defined
+here allow peers to indicate their support for attestation and negotiate which
+attestation format and verifier to use.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<div id="evidence-extensions">
+<section id="section-7.1">
+        <h3 id="name-evidence-extensions-backgro">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-evidence-extensions-backgro" class="section-name selfRef">Evidence Extensions (Background Check Model)</a>
+        </h3>
+<p id="section-7.1-1">The EvidenceType structure contains an indicator for the type of Evidence
 expected in the <code>Attestation</code> handshake message. The Evidence contained in
-the CMW payload is sent in the <code>Attestation</code> handshake message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>).<a href="#section-7-1" class="pilcrow">¶</a></p>
+the CMW payload is sent in the <code>Attestation</code> handshake message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>).<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <span id="name-tls-extension-structure-for"></span><div id="_figure-extension-evidence">
 <figure id="figure-6">
-        <div class="alignLeft art-text artwork" id="section-7-2.1">
+          <div class="alignLeft art-text artwork" id="section-7.1-2.1">
 <pre>
     enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
     enum { ATTESTATION(0), CERT_ATTESTATION(1) } credentialKind;
@@ -1836,20 +1853,20 @@ the CMW payload is sent in the <code>Attestation</code> handshake message (see <
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-tls-extension-structure-for" class="selfRef">TLS Extension Structure for Evidence.</a>
-        </figcaption></figure>
+          </figcaption></figure>
 </div>
-<p id="section-7-3">Values for media_type are defined in <span>[<a href="#iana-media-types" class="cite xref">iana-media-types</a>]</span>.
-Values for content_format are defined in <span>[<a href="#iana-content-formats" class="cite xref">iana-content-formats</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Values for media_type are defined in <span>[<a href="#iana-media-types" class="cite xref">iana-media-types</a>]</span>.
+Values for content_format are defined in <span>[<a href="#iana-content-formats" class="cite xref">iana-content-formats</a>]</span>.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="attestation-results-extensions">
-<section id="section-8">
-      <h2 id="name-attestation-results-extensi">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-attestation-results-extensi" class="section-name selfRef">Attestation Results Extensions (Passport Model)</a>
-      </h2>
+<section id="section-7.2">
+        <h3 id="name-attestation-results-extensi">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-attestation-results-extensi" class="section-name selfRef">Attestation Results Extensions (Passport Model)</a>
+        </h3>
 <span id="name-tls-extension-structure-for-"></span><div id="_figure-extension-results">
 <figure id="figure-7">
-        <div class="alignLeft art-text artwork" id="section-8-1.1">
+          <div class="alignLeft art-text artwork" id="section-7.2-1.1">
 <pre>
     struct {
         opaque verifier_identity&lt;0..2^16-1&gt;;
@@ -1880,24 +1897,26 @@ Values for content_format are defined in <span>[<a href="#iana-content-formats" 
 </div>
 <figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
 <a href="#name-tls-extension-structure-for-" class="selfRef">TLS Extension Structure for Attestation Results.</a>
-        </figcaption></figure>
+          </figcaption></figure>
 </div>
-<p id="section-8-2">In the Passport model, Attestation Results are sent in an <code>Attestation</code> handshake
+<p id="section-7.2-2">In the Passport model, Attestation Results are sent in an <code>Attestation</code> handshake
 message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>) containing a CMW structure. The CMW
-structure is defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
+structure is defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="behavior">
-<section id="section-9">
+<section id="section-8">
       <h2 id="name-tls-client-and-server-hands">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-tls-client-and-server-hands" class="section-name selfRef">TLS Client and Server Handshake Behavior</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-tls-client-and-server-hands" class="section-name selfRef">TLS Client and Server Handshake Behavior</a>
       </h2>
-<p id="section-9-1">The high-level message exchange in <a href="#_figure-overview" class="auto internal xref">Figure 8</a> shows the
+<p id="section-8-1">The high-level message exchange in <a href="#_figure-overview" class="auto internal xref">Figure 8</a> shows the
 evidence_proposal, evidence_request, results_proposal, and results_request
-extensions added to the ClientHello and the EncryptedExtensions messages.<a href="#section-9-1" class="pilcrow">¶</a></p>
+extensions added to the ClientHello and the EncryptedExtensions messages.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <span id="name-attestation-message-overvie"></span><div id="_figure-overview">
 <figure id="figure-8">
-        <div class="alignLeft art-text artwork" id="section-9-2.1">
+        <div class="alignLeft art-text artwork" id="section-8-2.1">
 <pre>
        Client                                           Server
 
@@ -1938,70 +1957,70 @@ Auth | {Attestation*}
         </figcaption></figure>
 </div>
 <div id="background-check-model">
-<section id="section-9.1">
+<section id="section-8.1">
         <h3 id="name-background-check-model">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-background-check-model" class="section-name selfRef">Background Check Model</a>
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-background-check-model" class="section-name selfRef">Background Check Model</a>
         </h3>
 <div id="client-hello">
-<section id="section-9.1.1">
+<section id="section-8.1.1">
           <h4 id="name-client-hello">
-<a href="#section-9.1.1" class="section-number selfRef">9.1.1. </a><a href="#name-client-hello" class="section-name selfRef">Client Hello</a>
+<a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-client-hello" class="section-name selfRef">Client Hello</a>
           </h4>
-<p id="section-9.1.1-1">To indicate the support for passing Evidence in TLS following the
+<p id="section-8.1.1-1">To indicate the support for passing Evidence in TLS following the
 background check model, clients include the evidence_proposal
-and/or the evidence_request extensions in the ClientHello.<a href="#section-9.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-2">The evidence_proposal extension in the ClientHello message indicates
+and/or the evidence_request extensions in the ClientHello.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.1-2">The evidence_proposal extension in the ClientHello message indicates
 the Evidence types the client is able to provide to the server,
-when requested using a CertificateRequest message.<a href="#section-9.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-3">The evidence_request extension in the ClientHello message indicates
+when requested using a CertificateRequest message.<a href="#section-8.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1.1-3">The evidence_request extension in the ClientHello message indicates
 the Evidence types the client challenges the server to
-provide in a subsequent Certificate payload.<a href="#section-9.1.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-4">The evidence_proposal and evidence_request extensions sent in
+provide in a subsequent Certificate payload.<a href="#section-8.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1.1-4">The evidence_proposal and evidence_request extensions sent in
 the ClientHello each carry a list of supported Evidence types,
 sorted by preference.  When the client supports only one Evidence
-type, it is a list containing a single element.<a href="#section-9.1.1-4" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-5">The client <span class="bcp14">MUST</span> omit Evidence types from the evidence_proposal
+type, it is a list containing a single element.<a href="#section-8.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1.1-5">The client <span class="bcp14">MUST</span> omit Evidence types from the evidence_proposal
 extension in the ClientHello if it cannot respond to a request
 from the server to present a proposed Evidence type, or if
 the client is not configured to use the proposed Evidence type
 with the given server.  If the client has no Evidence types
 to send in the ClientHello it <span class="bcp14">MUST</span> omit the evidence_proposal
-extension in the ClientHello.<a href="#section-9.1.1-5" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-6">The client <span class="bcp14">MUST</span> omit Evidence types from the evidence_request
+extension in the ClientHello.<a href="#section-8.1.1-5" class="pilcrow">¶</a></p>
+<p id="section-8.1.1-6">The client <span class="bcp14">MUST</span> omit Evidence types from the evidence_request
 extension in the ClientHello if it is not able to pass the
 indicated verification type to a verifier.  If the client does
 not act as a relying party with regards to Evidence processing
 (as defined in the RATS architecture) then the client <span class="bcp14">MUST</span>
-omit the evidence_request extension from the ClientHello.<a href="#section-9.1.1-6" class="pilcrow">¶</a></p>
+omit the evidence_request extension from the ClientHello.<a href="#section-8.1.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-hello">
-<section id="section-9.1.2">
+<section id="section-8.1.2">
           <h4 id="name-server-hello">
-<a href="#section-9.1.2" class="section-number selfRef">9.1.2. </a><a href="#name-server-hello" class="section-name selfRef">Server Hello</a>
+<a href="#section-8.1.2" class="section-number selfRef">8.1.2. </a><a href="#name-server-hello" class="section-name selfRef">Server Hello</a>
           </h4>
-<p id="section-9.1.2-1">If the server receives a ClientHello that contains the
+<p id="section-8.1.2-1">If the server receives a ClientHello that contains the
 evidence_proposal extension and/or the evidence_request
-extension, then three outcomes are possible:<a href="#section-9.1.2-1" class="pilcrow">¶</a></p>
+extension, then three outcomes are possible:<a href="#section-8.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9.1.2-2.1">
-              <p id="section-9.1.2-2.1.1">The server does not support the extensions defined in this
+<li class="normal" id="section-8.1.2-2.1">
+              <p id="section-8.1.2-2.1.1">The server does not support the extensions defined in this
 document.  In this case, the server returns the EncryptedExtensions
-without the extensions defined in this document.<a href="#section-9.1.2-2.1.1" class="pilcrow">¶</a></p>
+without the extensions defined in this document.<a href="#section-8.1.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.1.2-2.2">
-              <p id="section-9.1.2-2.2.1">The server supports the extensions defined in this document, but
+            <li class="normal" id="section-8.1.2-2.2">
+              <p id="section-8.1.2-2.2.1">The server supports the extensions defined in this document, but
 it does not have any Evidence type in common with the client.
 Then, the server terminates the session with a fatal alert of
-type "unsupported_evidence".<a href="#section-9.1.2-2.2.1" class="pilcrow">¶</a></p>
+type "unsupported_evidence".<a href="#section-8.1.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.1.2-2.3">
-              <p id="section-9.1.2-2.3.1">The server supports the extensions defined in this document and
+            <li class="normal" id="section-8.1.2-2.3">
+              <p id="section-8.1.2-2.3.1">The server supports the extensions defined in this document and
 has at least one Evidence type in common with the client.  In
-this case, the processing rules described below are followed.<a href="#section-9.1.2-2.3.1" class="pilcrow">¶</a></p>
+this case, the processing rules described below are followed.<a href="#section-8.1.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-9.1.2-3">The evidence_proposal extension in the ClientHello indicates
+<p id="section-8.1.2-3">The evidence_proposal extension in the ClientHello indicates
 the Evidence types the client is able to provide to the server,
 when challenged using a CertificateRequest message.  If the
 server wants to request Evidence from the client, it <span class="bcp14">MUST</span> include the
@@ -2016,13 +2035,13 @@ the client's TLS identity public key (TIK-C).
 The value conveyed in the evidence_proposal extension by the server <span class="bcp14">MUST</span> be
 selected from one of the values provided in the evidence_proposal extension
 sent in the ClientHello.  The server <span class="bcp14">MUST</span> also send a CertificateRequest
-message.<a href="#section-9.1.2-3" class="pilcrow">¶</a></p>
-<p id="section-9.1.2-4">If the server does not send a CertificateRequest message or none
+message.<a href="#section-8.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-4">If the server does not send a CertificateRequest message or none
 of the Evidence types supported by the client (as indicated in the
 evidence_proposal extension in the ClientHello) match the
 server-supported Evidence types, then the evidence_proposal
-extension in the ServerHello <span class="bcp14">MUST</span> be omitted.<a href="#section-9.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-9.1.2-5">The evidence_request extension in the ClientHello indicates what
+extension in the ServerHello <span class="bcp14">MUST</span> be omitted.<a href="#section-8.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-5">The evidence_request extension in the ClientHello indicates what
 types of Evidence the client can challenge the server to return
 in an <code>Attestation</code> handshake message. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
@@ -2034,76 +2053,76 @@ ServerHello extension) in the TEE's signature, along with
 the server's TLS identity public key (TIK-S).
 The Evidence type in the evidence_request extension <span class="bcp14">MUST</span> contain
 a single value selected from the evidence_request extension in
-the ClientHello.<a href="#section-9.1.2-5" class="pilcrow">¶</a></p>
+the ClientHello.<a href="#section-8.1.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="passport-model">
-<section id="section-9.2">
+<section id="section-8.2">
         <h3 id="name-passport-model">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-passport-model" class="section-name selfRef">Passport Model</a>
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-passport-model" class="section-name selfRef">Passport Model</a>
         </h3>
-<p id="section-9.2-1">The <code>results_proposal</code> and <code>results_request</code> extensions are used to negotiate
+<p id="section-8.2-1">The <code>results_proposal</code> and <code>results_request</code> extensions are used to negotiate
 the protocol defined in this document, and in particular the verifier identities supported by each peer. These
-extensions are included in the ClientHello and ServerHello messages.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+extensions are included in the ClientHello and ServerHello messages.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <div id="client-hello-1">
-<section id="section-9.2.1">
+<section id="section-8.2.1">
           <h4 id="name-client-hello-2">
-<a href="#section-9.2.1" class="section-number selfRef">9.2.1. </a><a href="#name-client-hello-2" class="section-name selfRef">Client Hello</a>
+<a href="#section-8.2.1" class="section-number selfRef">8.2.1. </a><a href="#name-client-hello-2" class="section-name selfRef">Client Hello</a>
           </h4>
-<p id="section-9.2.1-1">To indicate the support for passing Attestation Results in TLS following the
+<p id="section-8.2.1-1">To indicate the support for passing Attestation Results in TLS following the
 passport model, clients include the results_proposal and/or the results_request
-extensions in the ClientHello message.<a href="#section-9.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-2">The results_proposal extension in the ClientHello message indicates the verifier
+extensions in the ClientHello message.<a href="#section-8.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.2.1-2">The results_proposal extension in the ClientHello message indicates the verifier
 identities from which the client can relay Attestation Results, when requested using a
 CertificateRequest message. The client sends the Attestation Results in an
-<code>Attestation</code> handshake message after the <code>Certificate</code> message.<a href="#section-9.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-3">The results_request extension in the ClientHello message indicates the verifier
+<code>Attestation</code> handshake message after the <code>Certificate</code> message.<a href="#section-8.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.2.1-3">The results_request extension in the ClientHello message indicates the verifier
 identities from which the client expects the server to provide Attestation
-Results in an <code>Attestation</code> handshake message sent after the EncryptedExtensions.<a href="#section-9.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-4">The results_proposal and results_request extensions sent in the ClientHello each
+Results in an <code>Attestation</code> handshake message sent after the EncryptedExtensions.<a href="#section-8.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.2.1-4">The results_proposal and results_request extensions sent in the ClientHello each
 carry a list of supported verifier identities, sorted by preference.  When the
-client supports only one verifier, it is a list containing a single element.<a href="#section-9.2.1-4" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-5">The client <span class="bcp14">MUST</span> omit verifier identities from the results_proposal extension in
+client supports only one verifier, it is a list containing a single element.<a href="#section-8.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.2.1-5">The client <span class="bcp14">MUST</span> omit verifier identities from the results_proposal extension in
 the ClientHello if it cannot respond to a request from the server to present
 Attestation Results from a proposed verifier, or if the client is not configured
 to relay the Results from the proposed verifier with the given server. If the
 client has no verifier identities to send in the ClientHello it <span class="bcp14">MUST</span> omit the
-results_proposal extension in the ClientHello.<a href="#section-9.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-6">The client <span class="bcp14">MUST</span> omit verifier identities from the results_request extension in
+results_proposal extension in the ClientHello.<a href="#section-8.2.1-5" class="pilcrow">¶</a></p>
+<p id="section-8.2.1-6">The client <span class="bcp14">MUST</span> omit verifier identities from the results_request extension in
 the ClientHello if it is not configured to trust Attestation Results issued by
 said verifiers. If the client does not act as a relying party with regards to
 the processing of Attestation Results (as defined in the RATS architecture) then
-the client <span class="bcp14">MUST</span> omit the results_request extension from the ClientHello.<a href="#section-9.2.1-6" class="pilcrow">¶</a></p>
+the client <span class="bcp14">MUST</span> omit the results_request extension from the ClientHello.<a href="#section-8.2.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-hello-1">
-<section id="section-9.2.2">
+<section id="section-8.2.2">
           <h4 id="name-server-hello-2">
-<a href="#section-9.2.2" class="section-number selfRef">9.2.2. </a><a href="#name-server-hello-2" class="section-name selfRef">Server Hello</a>
+<a href="#section-8.2.2" class="section-number selfRef">8.2.2. </a><a href="#name-server-hello-2" class="section-name selfRef">Server Hello</a>
           </h4>
-<p id="section-9.2.2-1">If the server receives a ClientHello that contains the results_proposal
+<p id="section-8.2.2-1">If the server receives a ClientHello that contains the results_proposal
 extension and/or the results_request extension, then three outcomes are
-possible:<a href="#section-9.2.2-1" class="pilcrow">¶</a></p>
+possible:<a href="#section-8.2.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9.2.2-2.1">
-              <p id="section-9.2.2-2.1.1">The server does not support the extensions defined in this document.  In this
+<li class="normal" id="section-8.2.2-2.1">
+              <p id="section-8.2.2-2.1.1">The server does not support the extensions defined in this document.  In this
 case, the server returns the EncryptedExtensions without the extensions
-defined in this document.<a href="#section-9.2.2-2.1.1" class="pilcrow">¶</a></p>
+defined in this document.<a href="#section-8.2.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.2.2-2.2">
-              <p id="section-9.2.2-2.2.1">The server supports the extensions defined in this document, but it does not
+            <li class="normal" id="section-8.2.2-2.2">
+              <p id="section-8.2.2-2.2.1">The server supports the extensions defined in this document, but it does not
 have any trusted verifiers in common with the client. Then, the server
-terminates the session with a fatal alert of type "unsupported_verifiers".<a href="#section-9.2.2-2.2.1" class="pilcrow">¶</a></p>
+terminates the session with a fatal alert of type "unsupported_verifiers".<a href="#section-8.2.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.2.2-2.3">
-              <p id="section-9.2.2-2.3.1">The server supports the extensions defined in this document and has at least
+            <li class="normal" id="section-8.2.2-2.3">
+              <p id="section-8.2.2-2.3.1">The server supports the extensions defined in this document and has at least
 one trusted verifier in common with the client.  In this case, the processing
-rules described below are followed.<a href="#section-9.2.2-2.3.1" class="pilcrow">¶</a></p>
+rules described below are followed.<a href="#section-8.2.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-9.2.2-3">The results_proposal extension in the ClientHello indicates the verifier
+<p id="section-8.2.2-3">The results_proposal extension in the ClientHello indicates the verifier
 identities from which the client is able to provide Attestation Results to the
 server, when challenged using a CertificateRequest message.  If the server
 wants to request Attestation Results from the client, it <span class="bcp14">MUST</span> include the
@@ -2113,18 +2132,18 @@ requested to provide Attestation Results from in an <code>Attestation</code> han
 message sent after the <code>Certificate</code> message.  The value conveyed in the
 results_proposal extension by the server <span class="bcp14">MUST</span> be selected from one of the
 values provided in the results_proposal extension sent in the ClientHello.
-The server <span class="bcp14">MUST</span> also send a CertificateRequest message.<a href="#section-9.2.2-3" class="pilcrow">¶</a></p>
-<p id="section-9.2.2-4">If the server does not send a CertificateRequest message or none of the
+The server <span class="bcp14">MUST</span> also send a CertificateRequest message.<a href="#section-8.2.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2.2-4">If the server does not send a CertificateRequest message or none of the
 verifier identities proposed by the client (as indicated in the results_proposal
 extension in the ClientHello) match the server-trusted verifiers, then the
-results_proposal extension in the ServerHello <span class="bcp14">MUST</span> be omitted.<a href="#section-9.2.2-4" class="pilcrow">¶</a></p>
-<p id="section-9.2.2-5">The results_request extension in the ClientHello indicates what verifiers the
+results_proposal extension in the ServerHello <span class="bcp14">MUST</span> be omitted.<a href="#section-8.2.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.2.2-5">The results_request extension in the ClientHello indicates what verifiers the
 client trusts as issuers of Attestation Results for the server. With the
 results_request extension in the EncryptedExtensions, the server indicates the
 identity of the verifier who issued the Attestation Results carried in the
 <code>Attestation</code> handshake message sent after the EncryptedExtensions by the
 server. The verifier identity in the results_request extension <span class="bcp14">MUST</span> contain a
-single value selected from the results_request extension in the ClientHello.<a href="#section-9.2.2-5" class="pilcrow">¶</a></p>
+single value selected from the results_request extension in the ClientHello.<a href="#section-8.2.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2132,144 +2151,144 @@ single value selected from the results_request extension in the ClientHello.<a h
 </section>
 </div>
 <div id="sec-cons">
-<section id="section-10">
+<section id="section-9">
       <h2 id="name-security-considerations">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-10-1">TBD.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-9-1">TBD.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <div id="sec-guarantees">
-<section id="section-10.1">
+<section id="section-9.1">
         <h3 id="name-security-guarantees">
-<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-security-guarantees" class="section-name selfRef">Security Guarantees</a>
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-security-guarantees" class="section-name selfRef">Security Guarantees</a>
         </h3>
-<p id="section-10.1-1">We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
-and the overall security level depends on their existence and quality of assurance:<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-9.1-1">We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
+and the overall security level depends on their existence and quality of assurance:<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-10.1-2.1">
-            <p id="section-10.1-2.1.1">The Identity Key is generated by the TEE.<a href="#section-10.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-9.1-2.1">
+            <p id="section-9.1-2.1.1">The Identity Key is generated by the TEE.<a href="#section-9.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-10.1-2.2">
-            <p id="section-10.1-2.2.1">The Identity Key is never exported or leaked outside the TEE.<a href="#section-10.1-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-9.1-2.2">
+            <p id="section-9.1-2.2.1">The Identity Key is never exported or leaked outside the TEE.<a href="#section-9.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-10.1-2.3">
-            <p id="section-10.1-2.3.1">The TLS protocol, whether implemented by the TEE or outside the TEE, is implemented correctly and (for example) does not leak any session key material.<a href="#section-10.1-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-9.1-2.3">
+            <p id="section-9.1-2.3.1">The TLS protocol, whether implemented by the TEE or outside the TEE, is implemented correctly and (for example) does not leak any session key material.<a href="#section-9.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-10.1-3">These properties may be explicitly promised ("attested") by the platform, or they can be assured in other ways such as by providing source code, reproducible builds, formal verification etc. The exact mechanisms are out of scope of this document.<a href="#section-10.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-3">These properties may be explicitly promised ("attested") by the platform, or they can be assured in other ways such as by providing source code, reproducible builds, formal verification etc. The exact mechanisms are out of scope of this document.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="priv-cons">
-<section id="section-11">
+<section id="section-10">
       <h2 id="name-privacy-considerations">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
       </h2>
-<p id="section-11-1">In this section, we are assuming that the Attester is a TLS client, representing an individual person.
-We are concerned about the potential leakage of privacy sensitive information about that person, such as the correlation of different connections initiated by them.<a href="#section-11-1" class="pilcrow">¶</a></p>
-<p id="section-11-2">In background-check mode, the Verifier not only has access to detailed information about the Attester's TCB through Evidence, but it also knows the exact time and the party with whom the secure channel establishment is attempted (i.e., the RP).
+<p id="section-10-1">In this section, we are assuming that the Attester is a TLS client, representing an individual person.
+We are concerned about the potential leakage of privacy sensitive information about that person, such as the correlation of different connections initiated by them.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-2">In background-check mode, the Verifier not only has access to detailed information about the Attester's TCB through Evidence, but it also knows the exact time and the party with whom the secure channel establishment is attempted (i.e., the RP).
 The privacy implications are similar to online OCSP <span>[<a href="#RFC6960" class="cite xref">RFC6960</a>]</span>.
 While the RP may trust the Verifier not to disclose any information it receives, the same cannot be assumed for the Attester, which generally has no prior relationship with the Verifier.
-Some ways to address this include:<a href="#section-11-2" class="pilcrow">¶</a></p>
+Some ways to address this include:<a href="#section-10-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-11-3.1">
-          <p id="section-11-3.1.1">Client-side redaction of privacy-sensitive evidence claims,<a href="#section-11-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-10-3.1">
+          <p id="section-10-3.1.1">Client-side redaction of privacy-sensitive evidence claims,<a href="#section-10-3.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-11-3.2">
-          <p id="section-11-3.2.1">Using selective disclosure (e.g., SD-JWT <span>[<a href="#I-D.ietf-oauth-selective-disclosure-jwt" class="cite xref">I-D.ietf-oauth-selective-disclosure-jwt</a>]</span> with EAT <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>),<a href="#section-11-3.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-3.2">
+          <p id="section-10-3.2.1">Using selective disclosure (e.g., SD-JWT <span>[<a href="#I-D.ietf-oauth-selective-disclosure-jwt" class="cite xref">I-D.ietf-oauth-selective-disclosure-jwt</a>]</span> with EAT <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>),<a href="#section-10-3.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-11-3.3">
-          <p id="section-11-3.3.1">Co-locating the Verifier role with the RP,<a href="#section-11-3.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-3.3">
+          <p id="section-10-3.3.1">Co-locating the Verifier role with the RP,<a href="#section-10-3.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-11-3.4">
-          <p id="section-11-3.4.1">Utilizing privacy-preserving attestation schemes (e.g., DAA <span>[<a href="#I-D.ietf-rats-daa" class="cite xref">I-D.ietf-rats-daa</a>]</span>), or<a href="#section-11-3.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-3.4">
+          <p id="section-10-3.4.1">Utilizing privacy-preserving attestation schemes (e.g., DAA <span>[<a href="#I-D.ietf-rats-daa" class="cite xref">I-D.ietf-rats-daa</a>]</span>), or<a href="#section-10-3.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-11-3.5">
-          <p id="section-11-3.5.1">Utilizing Attesters manufactured with group identities (e.g., <span>[<a href="#FIDO-REQS" class="cite xref">FIDO-REQS</a>]</span>).<a href="#section-11-3.5.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-3.5">
+          <p id="section-10-3.5.1">Utilizing Attesters manufactured with group identities (e.g., <span>[<a href="#FIDO-REQS" class="cite xref">FIDO-REQS</a>]</span>).<a href="#section-10-3.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-11-4">The latter two also have the property of hiding the peer's identity from the RP.<a href="#section-11-4" class="pilcrow">¶</a></p>
-<p id="section-11-5">Note that the equivalent of OCSP "stapling" involves using a passport topology where the Verifier's involvement is unrelated to the TLS session.<a href="#section-11-5" class="pilcrow">¶</a></p>
-<p id="section-11-6">Due to the inherent asymmetry of the TLS protocol, if the Attester acts as the TLS server, a malicious TLS client could potentially retrieve sensitive information from attestation Evidence without the client's trustworthiness first being established by the server.<a href="#section-11-6" class="pilcrow">¶</a></p>
+<p id="section-10-4">The latter two also have the property of hiding the peer's identity from the RP.<a href="#section-10-4" class="pilcrow">¶</a></p>
+<p id="section-10-5">Note that the equivalent of OCSP "stapling" involves using a passport topology where the Verifier's involvement is unrelated to the TLS session.<a href="#section-10-5" class="pilcrow">¶</a></p>
+<p id="section-10-6">Due to the inherent asymmetry of the TLS protocol, if the Attester acts as the TLS server, a malicious TLS client could potentially retrieve sensitive information from attestation Evidence without the client's trustworthiness first being established by the server.<a href="#section-10-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-12">
+<section id="section-11">
       <h2 id="name-iana-considerations">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
 <div id="tls-extensions">
-<section id="section-12.1">
+<section id="section-11.1">
         <h3 id="name-tls-extensions">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-tls-extensions" class="section-name selfRef">TLS Extensions</a>
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-tls-extensions" class="section-name selfRef">TLS Extensions</a>
         </h3>
-<p id="section-12.1-1">IANA is asked to allocate four new TLS extensions, evidence_request,
+<p id="section-11.1-1">IANA is asked to allocate four new TLS extensions, evidence_request,
 evidence_proposal, results_request, results_proposal, from the "TLS
 ExtensionType Values" subregistry of the "Transport Layer Security (TLS)
 Extensions" registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</a>]</span>.  These extensions are used in the
 ClientHello and the EncryptedExtensions messages. The values carried in these
-extensions are taken from TBD.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+extensions are taken from TBD.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="tls-alerts">
-<section id="section-12.2">
+<section id="section-11.2">
         <h3 id="name-tls-alerts">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-tls-alerts" class="section-name selfRef">TLS Alerts</a>
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-tls-alerts" class="section-name selfRef">TLS Alerts</a>
         </h3>
-<p id="section-12.2-1">IANA is requested to allocate a value in the "TLS Alerts"
+<p id="section-11.2-1">IANA is requested to allocate a value in the "TLS Alerts"
 subregistry of the "Transport Layer Security (TLS) Parameters" registry
-<span>[<a href="#TLS-Param-Registry" class="cite xref">TLS-Param-Registry</a>]</span> and populate it with the following entries:<a href="#section-12.2-1" class="pilcrow">¶</a></p>
+<span>[<a href="#TLS-Param-Registry" class="cite xref">TLS-Param-Registry</a>]</span> and populate it with the following entries:<a href="#section-11.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-2.1">
-            <p id="section-12.2-2.1.1">Value: TBD1<a href="#section-12.2-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-11.2-2.1">
+            <p id="section-11.2-2.1.1">Value: TBD1<a href="#section-11.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.2">
-            <p id="section-12.2-2.2.1">Description: unsupported_evidence<a href="#section-12.2-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.2">
+            <p id="section-11.2-2.2.1">Description: unsupported_evidence<a href="#section-11.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.3">
-            <p id="section-12.2-2.3.1">DTLS-OK: Y<a href="#section-12.2-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.3">
+            <p id="section-11.2-2.3.1">DTLS-OK: Y<a href="#section-11.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.4">
-            <p id="section-12.2-2.4.1">Reference: [This document]<a href="#section-12.2-2.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.4">
+            <p id="section-11.2-2.4.1">Reference: [This document]<a href="#section-11.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.5">
-            <p id="section-12.2-2.5.1">Comment:<a href="#section-12.2-2.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.5">
+            <p id="section-11.2-2.5.1">Comment:<a href="#section-11.2-2.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.6">
-            <p id="section-12.2-2.6.1">Value: TBD2<a href="#section-12.2-2.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.6">
+            <p id="section-11.2-2.6.1">Value: TBD2<a href="#section-11.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.7">
-            <p id="section-12.2-2.7.1">Description: unsupported_verifiers<a href="#section-12.2-2.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.7">
+            <p id="section-11.2-2.7.1">Description: unsupported_verifiers<a href="#section-11.2-2.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.8">
-            <p id="section-12.2-2.8.1">DTLS-OK: Y<a href="#section-12.2-2.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.8">
+            <p id="section-11.2-2.8.1">DTLS-OK: Y<a href="#section-11.2-2.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.9">
-            <p id="section-12.2-2.9.1">Reference: [This document]<a href="#section-12.2-2.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.9">
+            <p id="section-11.2-2.9.1">Reference: [This document]<a href="#section-11.2-2.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-2.10">
-            <p id="section-12.2-2.10.1">Comment:<a href="#section-12.2-2.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.2-2.10">
+            <p id="section-11.2-2.10.1">Comment:<a href="#section-11.2-2.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="tls-certificate-types">
-<section id="section-12.3">
+<section id="section-11.3">
         <h3 id="name-tls-certificate-types">
-<a href="#section-12.3" class="section-number selfRef">12.3. </a><a href="#name-tls-certificate-types" class="section-name selfRef">TLS Certificate Types</a>
+<a href="#section-11.3" class="section-number selfRef">11.3. </a><a href="#name-tls-certificate-types" class="section-name selfRef">TLS Certificate Types</a>
         </h3>
-<p id="section-12.3-1">IANA is requested to allocate a new value in the "TLS Certificate Types"
+<p id="section-11.3-1">IANA is requested to allocate a new value in the "TLS Certificate Types"
 subregistry of the "Transport Layer Security (TLS) Extensions"
-registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</a>]</span>, as follows:<a href="#section-12.3-1" class="pilcrow">¶</a></p>
+registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</a>]</span>, as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.3-2.1">
-            <p id="section-12.3-2.1.1">Value: TBD2<a href="#section-12.3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-11.3-2.1">
+            <p id="section-11.3-2.1.1">Value: TBD2<a href="#section-11.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.3-2.2">
-            <p id="section-12.3-2.2.1">Description: Attestation<a href="#section-12.3-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.3-2.2">
+            <p id="section-11.3-2.2.1">Description: Attestation<a href="#section-11.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.3-2.3">
-            <p id="section-12.3-2.3.1">Reference: [This document]<a href="#section-12.3-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-11.3-2.3">
+            <p id="section-11.3-2.3.1">Reference: [This document]<a href="#section-11.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2277,14 +2296,14 @@ registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-13">
+<section id="section-12">
       <h2 id="name-references">
-<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-13.1">
+<section id="section-12.1">
         <h3 id="name-normative-references">
-<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-rats-msg-wrap">[I-D.ietf-rats-msg-wrap]</dt>
@@ -2311,9 +2330,9 @@ registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-13.2">
+<section id="section-12.2">
         <h3 id="name-informative-references">
-<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="DICE-Layering">[DICE-Layering]</dt>
@@ -2327,6 +2346,10 @@ registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</
 <dt id="I-D.acme-device-attest">[I-D.acme-device-attest]</dt>
         <dd>
 <span class="refAuthor">Weeks, B.</span>, <span class="refAuthor">Ganesh, G.</span>, and <span class="refAuthor">S. Rajala</span>, <span class="refTitle">"Automated Certificate Management Environment (ACME) Device Attestation Extension"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-acme-device-attest-07</span>, <time datetime="2025-10-03" class="refDate">3 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-acme-device-attest-07">https://datatracker.ietf.org/doc/html/draft-acme-device-attest-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.fossati-tls-attestation">[I-D.fossati-tls-attestation]</dt>
+        <dd>
+<span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Howard, P.</span>, <span class="refAuthor">Mihalcea, I.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Niemi, A.</span>, and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Using Attestation in Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-fossati-tls-attestation-09</span>, <time datetime="2025-04-30" class="refDate">30 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-09">https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-oauth-selective-disclosure-jwt">[I-D.ietf-oauth-selective-disclosure-jwt]</dt>
         <dd>
@@ -2396,7 +2419,7 @@ registry <span>[<a href="#TLS-Ext-Registry" class="cite xref">TLS-Ext-Registry</
 <a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-draft-fossati-seat-early-at" class="section-name selfRef">draft-fossati-seat-early-attestation-00</a>
         </h3>
 <p id="appendix-A.1-1">Initial version of draft-fossati-seat-early-attestation.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
-<p id="appendix-A.1-2">This version represents a major architectural change from draft-fossati-tls-attestation.
+<p id="appendix-A.1-2">This version represents a major architectural change from <span>[<a href="#I-D.fossati-tls-attestation" class="cite xref">I-D.fossati-tls-attestation</a>]</span>.
 The key changes include:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A.1-3.1">

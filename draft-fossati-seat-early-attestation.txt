@@ -44,12 +44,19 @@ About This Document
 
    This note is to be removed before publishing as an RFC.
 
-   Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-fossati-seat-early-
-   attestation/.
+   The latest revision of this draft can be found at
+   https://yaronf.github.io/draft-fossati-seat-early-attestation/draft-
+   fossati-seat-early-attestation.html.  Status information for this
+   document may be found at https://datatracker.ietf.org/doc/draft-
+   fossati-seat-early-attestation/.
+
+   Discussion of this document takes place on the SEAT Working Group
+   mailing list (mailto:seat@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/seat/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/seat/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/yaronf/draft-tls-attestation.
+   https://github.com/yaronf/draft-fossati-seat-early-attestation.
 
 Status of This Memo
 
@@ -90,7 +97,7 @@ Table of Contents
      3.1.  Authentication vs. Attestation
    4.  Attestation Extensions
      4.1.  Attestation Handshake Message
-   5.  Use of Remote Attestation Credentials in the TLS Handshake
+   5.  Use of Attestation in the TLS Handshake
      5.1.  Handshake Overview
      5.2.  TLS Client Authenticating Using Evidence
      5.3.  TLS Server Authenticating Using Evidence
@@ -99,25 +106,26 @@ Table of Contents
    6.  After The Initial Handshake
      6.1.  Session Resumption
      6.2.  Reattestation and Extended Key Update
-   7.  Evidence Extensions (Background Check Model)
-   8.  Attestation Results Extensions (Passport Model)
-   9.  TLS Client and Server Handshake Behavior
-     9.1.  Background Check Model
-       9.1.1.  Client Hello
-       9.1.2.  Server Hello
-     9.2.  Passport Model
-       9.2.1.  Client Hello
-       9.2.2.  Server Hello
-   10. Security Considerations
-     10.1.  Security Guarantees
-   11. Privacy Considerations
-   12. IANA Considerations
-     12.1.  TLS Extensions
-     12.2.  TLS Alerts
-     12.3.  TLS Certificate Types
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   7.  Negotiating This Protocol
+     7.1.  Evidence Extensions (Background Check Model)
+     7.2.  Attestation Results Extensions (Passport Model)
+   8.  TLS Client and Server Handshake Behavior
+     8.1.  Background Check Model
+       8.1.1.  Client Hello
+       8.1.2.  Server Hello
+     8.2.  Passport Model
+       8.2.1.  Client Hello
+       8.2.2.  Server Hello
+   9.  Security Considerations
+     9.1.  Security Guarantees
+   10. Privacy Considerations
+   11. IANA Considerations
+     11.1.  TLS Extensions
+     11.2.  TLS Alerts
+     11.3.  TLS Certificate Types
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Appendix A.  Document History
      A.1.  draft-fossati-seat-early-attestation-00
    Authors' Addresses
@@ -125,20 +133,17 @@ Table of Contents
 1.  Introduction
 
    Attestation [RFC9334] is the process by which an entity produces
-   Evidence about itself that another party can use to evaluate the
+   evidence about itself that another party can use to evaluate the
    trustworthiness of that entity.  This document describes a series of
    protocol extensions to the TLS 1.3 handshake that enables the binding
-   of the TLS authentication key to a remote attestation session.  As a
-   result, a peer can use "attestation credentials", consisting of
-   compound platform Evidence and key attestation, to authenticate
-   itself to its peer during the setup of the TLS channel.  This enables
-   an attester, such as a confidential workload running in a Trusted
-   Execution Environment (TEE) [I-D.ietf-teep-architecture], or an IoT
-   device that is trying to authenticate itself to a network access
-   point, to present a more comprehensive set of security metrics to its
-   peer.  This, in turn, allows for the implementation of authorization
-   policies at the relying parties that are based on stronger security
-   signals.
+   of the TLS authentication key to a remote attestation session.  This
+   enables an attester, such as a confidential workload running in a
+   Trusted Execution Environment (TEE) [I-D.ietf-teep-architecture], or
+   an IoT device that is trying to authenticate itself to a network
+   access point, to present a more comprehensive set of security metrics
+   to its peer.  This, in turn, allows for the implementation of
+   authorization policies at the relying parties that are based on
+   stronger security signals.
 
    Given the variety of deployed and emerging attestation technologies
    (e.g., [TPM1.2], [TPM2.0], [I-D.ietf-rats-eat]) these extensions have
@@ -148,15 +153,12 @@ Table of Contents
    Result payloads in the TLS Attestation handshake message.
 
    This specification provides both one-way (server-only) and mutual
-   (client and server) authentication using attestation credentials, and
-   allows the attestation topologies at each peer to be independent of
-   each other.  The proposed design supports both background-check and
-   passport topologies, as described in Sections 5.2 and 5.1 of
-   [RFC9334].  This is detailed in Section 7 and Section 8.
-
-   The design combines normal X.509 certificate authentication with
-   platform attestation.  If attestation-only authentication is desired,
-   implementations SHOULD use self-signed X.509 certificates.
+   (client and server) authentication using traditional TLS
+   authentication combined with attestation, and allows the attestation
+   topologies at each peer to be independent of each other.  The
+   proposed design supports both background-check and passport
+   topologies, as described in Sections 5.2 and 5.1 of [RFC9334].  This
+   is detailed in Section 7.1 and Section 7.2.
 
    This document does not mandate any particular attestation technology.
    Companion documents are expected to define specific attestation
@@ -183,11 +185,6 @@ Table of Contents
       An identifier for TIK-C or respectively, TIK-S.  This may be a
       fingerprint (cryptographic hash) of the public key, but other
       implementations are possible.
-
-   The term "remote attestation credentials", or "attestation
-   credentials", is used to refer to both attestation Evidence and
-   Attestation Results, when no distinction needs to be made between
-   them.
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -222,10 +219,10 @@ Table of Contents
    traditional authentication, which in the case of TLS takes the form
    of CA-signed certificates.
 
-   We RECOMMEND that regular applications use the combined mode, which
-   provides the full security guarantees of an authenticated TLS
-   handshake (for the peer/peers being authenticated) as well as
-   guarantees of platform integrity.
+   We RECOMMEND that regular applications use authentication and
+   attestation in tandem, to gain the full security guarantees of an
+   authenticated TLS handshake (for the peer/peers being authenticated)
+   as well as guarantees of platform integrity.
 
    If attestation-only authentication is desired (e.g., for specialized
    use cases including initial provisioning of the TLS stack),
@@ -238,8 +235,8 @@ Table of Contents
 
    As typical with new features in TLS, the client indicates support for
    the new extension in the ClientHello message.  The newly introduced
-   extensions allow remote attestation credentials and nonces to be
-   exchanged.  The nonces are used for guaranteeing freshness of the
+   extensions allow attestation Evidence or Attestation Results to be
+   exchanged.  TLS nonces are used to guarantee freshness of the
    exchanged Evidence when the background check model is in use.  Nonces
    are not used in the passport model, because the expectation of
    freshness is more relaxed and is only governed by the lifetime of the
@@ -285,7 +282,7 @@ Table of Contents
    the TIK's identity and its public component are ever passed between
    the Client or Server TLS stack and its Attestation Service.  While
    the two types of implementations offer identical functionality, their
-   security properties often differ, see Section 10.1 for more details.
+   security properties often differ, see Section 9.1 for more details.
 
 4.1.  Attestation Handshake Message
 
@@ -339,7 +336,7 @@ Table of Contents
    This binding ensures that the attested key is the one used in the TLS
    handshake and provides freshness guarantees through the nonces.
 
-5.  Use of Remote Attestation Credentials in the TLS Handshake
+5.  Use of Attestation in the TLS Handshake
 
    For both the passport model (described in section 5.1 of [RFC9334])
    and background check model (described in Section 5.2 of [RFC9334])
@@ -572,7 +569,17 @@ Auth | {CertificateVerify}
    based on factors such as elapsed time since the last attestation,
    changes in platform state, or security policy requirements.
 
-7.  Evidence Extensions (Background Check Model)
+7.  Negotiating This Protocol
+
+   This section defines the TLS extensions used to negotiate the use of
+   attestation in the TLS handshake.  Two models are supported: the
+   Background Check model, where Evidence is exchanged and verified
+   during the handshake, and the Passport model, where pre-verified
+   Attestation Results are presented.  The extensions defined here allow
+   peers to indicate their support for attestation and negotiate which
+   attestation format and verifier to use.
+
+7.1.  Evidence Extensions (Background Check Model)
 
    The EvidenceType structure contains an indicator for the type of
    Evidence expected in the Attestation handshake message.  The Evidence
@@ -620,7 +627,7 @@ Auth | {CertificateVerify}
    Values for media_type are defined in [iana-media-types].  Values for
    content_format are defined in [iana-content-formats].
 
-8.  Attestation Results Extensions (Passport Model)
+7.2.  Attestation Results Extensions (Passport Model)
 
        struct {
            opaque verifier_identity<0..2^16-1>;
@@ -654,7 +661,7 @@ Auth | {CertificateVerify}
    handshake message (see Section 4.1) containing a CMW structure.  The
    CMW structure is defined in [I-D.ietf-rats-msg-wrap].
 
-9.  TLS Client and Server Handshake Behavior
+8.  TLS Client and Server Handshake Behavior
 
    The high-level message exchange in Figure 8 shows the
    evidence_proposal, evidence_request, results_proposal, and
@@ -696,9 +703,9 @@ Auth | {Attestation*}
 
                Figure 8: Attestation Message Overview.
 
-9.1.  Background Check Model
+8.1.  Background Check Model
 
-9.1.1.  Client Hello
+8.1.1.  Client Hello
 
    To indicate the support for passing Evidence in TLS following the
    background check model, clients include the evidence_proposal and/or
@@ -732,7 +739,7 @@ Auth | {Attestation*}
    RATS architecture) then the client MUST omit the evidence_request
    extension from the ClientHello.
 
-9.1.2.  Server Hello
+8.1.2.  Server Hello
 
    If the server receives a ClientHello that contains the
    evidence_proposal extension and/or the evidence_request extension,
@@ -788,14 +795,14 @@ Auth | {Attestation*}
    contain a single value selected from the evidence_request extension
    in the ClientHello.
 
-9.2.  Passport Model
+8.2.  Passport Model
 
    The results_proposal and results_request extensions are used to
    negotiate the protocol defined in this document, and in particular
    the verifier identities supported by each peer.  These extensions are
    included in the ClientHello and ServerHello messages.
 
-9.2.1.  Client Hello
+8.2.1.  Client Hello
 
    To indicate the support for passing Attestation Results in TLS
    following the passport model, clients include the results_proposal
@@ -832,7 +839,7 @@ Auth | {Attestation*}
    Results (as defined in the RATS architecture) then the client MUST
    omit the results_request extension from the ClientHello.
 
-9.2.2.  Server Hello
+8.2.2.  Server Hello
 
    If the server receives a ClientHello that contains the
    results_proposal extension and/or the results_request extension, then
@@ -882,11 +889,11 @@ Auth | {Attestation*}
    MUST contain a single value selected from the results_request
    extension in the ClientHello.
 
-10.  Security Considerations
+9.  Security Considerations
 
    TBD.
 
-10.1.  Security Guarantees
+9.1.  Security Guarantees
 
    We note that as a pure cryptographic protocol, attested TLS as-is
    only guarantees that the Identity Key is known by the TEE.  A number
@@ -907,7 +914,7 @@ Auth | {Attestation*}
    source code, reproducible builds, formal verification etc.  The exact
    mechanisms are out of scope of this document.
 
-11.  Privacy Considerations
+10.  Privacy Considerations
 
    In this section, we are assuming that the Attester is a TLS client,
    representing an individual person.  We are concerned about the
@@ -949,9 +956,9 @@ Auth | {Attestation*}
    retrieve sensitive information from attestation Evidence without the
    client's trustworthiness first being established by the server.
 
-12.  IANA Considerations
+11.  IANA Considerations
 
-12.1.  TLS Extensions
+11.1.  TLS Extensions
 
    IANA is asked to allocate four new TLS extensions, evidence_request,
    evidence_proposal, results_request, results_proposal, from the "TLS
@@ -960,7 +967,7 @@ Auth | {Attestation*}
    used in the ClientHello and the EncryptedExtensions messages.  The
    values carried in these extensions are taken from TBD.
 
-12.2.  TLS Alerts
+11.2.  TLS Alerts
 
    IANA is requested to allocate a value in the "TLS Alerts" subregistry
    of the "Transport Layer Security (TLS) Parameters" registry
@@ -986,7 +993,7 @@ Auth | {Attestation*}
 
    *  Comment:
 
-12.3.  TLS Certificate Types
+11.3.  TLS Certificate Types
 
    IANA is requested to allocate a new value in the "TLS Certificate
    Types" subregistry of the "Transport Layer Security (TLS) Extensions"
@@ -998,9 +1005,9 @@ Auth | {Attestation*}
 
    *  Reference: [This document]
 
-13.  References
+12.  References
 
-13.1.  Normative References
+12.1.  Normative References
 
    [I-D.ietf-rats-msg-wrap]
               Birkholz, H., Smith, N., Fossati, T., Tschofenig, H., and
@@ -1030,7 +1037,7 @@ Auth | {Attestation*}
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/rfc/rfc8446>.
 
-13.2.  Informative References
+12.2.  Informative References
 
    [DICE-Layering]
               Trusted Computing Group, "DICE Layering Architecture
@@ -1050,6 +1057,15 @@ Auth | {Attestation*}
               draft-acme-device-attest-07, 3 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-acme-device-
               attest-07>.
+
+   [I-D.fossati-tls-attestation]
+              Tschofenig, H., Sheffer, Y., Howard, P., Mihalcea, I.,
+              Deshpande, Y., Niemi, A., and T. Fossati, "Using
+              Attestation in Transport Layer Security (TLS) and Datagram
+              Transport Layer Security (DTLS)", Work in Progress,
+              Internet-Draft, draft-fossati-tls-attestation-09, 30 April
+              2025, <https://datatracker.ietf.org/doc/html/draft-
+              fossati-tls-attestation-09>.
 
    [I-D.ietf-oauth-selective-disclosure-jwt]
               Fett, D., Yasuda, K., and B. Campbell, "Selective
@@ -1131,8 +1147,8 @@ A.1.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
-   This version represents a major architectural change from draft-
-   fossati-tls-attestation.  The key changes include:
+   This version represents a major architectural change from
+   [I-D.fossati-tls-attestation].  The key changes include:
 
    *  Removed certificate extension mechanism for conveying attestation
       Evidence
