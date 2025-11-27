@@ -5,7 +5,7 @@
 TLS                                                        H. Tschofenig
 Internet-Draft                                                          
 Intended status: Standards Track                              Y. Sheffer
-Expires: 30 May 2026                                              Intuit
+Expires: 31 May 2026                                              Intuit
                                                                P. Howard
                                                              I. Mihalcea
                                                             Y. Deshpande
@@ -14,7 +14,7 @@ Expires: 30 May 2026                                              Intuit
                                                                   Huawei
                                                               T. Fossati
                                                                   Linaro
-                                                        26 November 2025
+                                                        27 November 2025
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 May 2026.
+   This Internet-Draft will expire on 31 May 2026.
 
 Copyright Notice
 
@@ -95,6 +95,7 @@ Table of Contents
    2.  Conventions and Terminology
    3.  Overview
      3.1.  Authentication vs. Attestation
+     3.2.  Integration into the TLS Handshake
    4.  Attestation Extensions
      4.1.  Attestation Handshake Message
    5.  Use of Attestation in the TLS Handshake
@@ -103,6 +104,7 @@ Table of Contents
      5.3.  TLS Server Authenticating Using Evidence
      5.4.  TLS Client Authenticating Using Attestation Results
      5.5.  TLS Server Authenticating Using Attestation Results
+     5.6.  Cryptographic Operations
    6.  After The Initial Handshake
      6.1.  Session Resumption
      6.2.  Reattestation and Extended Key Update
@@ -122,7 +124,7 @@ Table of Contents
    11. IANA Considerations
      11.1.  TLS Extensions
      11.2.  TLS Alerts
-     11.3.  TLS Certificate Types
+     11.3.  TLS Handshake Message Types
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -230,6 +232,35 @@ Table of Contents
    cases, additional security controls SHOULD be provided, such as
    hardware-enforced time limitations, or use of platform-level APIs in
    the case of cloud infrastructure.
+
+3.2.  Integration into the TLS Handshake
+
+   The lightweight integration of attestation into the TLS handshake is
+   designed to have minimal impact on the existing TLS security
+   properties.  The changes consist of:
+
+   *  Negotiation extensions: New TLS extensions are added to
+      ClientHello and EncryptedExtensions messages to negotiate the use
+      of attestation and indicate supported attestation formats and
+      verifiers.
+
+   *  Independent handshake message: A new Attestation handshake message
+      is introduced that carries attestation Evidence or Attestation
+      Results.  This message is completely independent of the standard
+      TLS handshake flow and does not interfere with existing handshake
+      messages or their processing.
+
+   *  Independent key derivation: Key derivation for attestation (to be
+      defined) will be independent of the regular TLS key schedule.
+      This ensures that attestation processing does not affect the
+      standard TLS key derivation and security properties.
+
+   This minimal integration approach provides intuitive reasoning why
+   TLS security is not adversely affected by the addition of
+   attestation.  The attestation components operate independently and do
+   not modify the core TLS handshake protocol or key derivation
+   mechanisms.  However, formal validation of these security properties
+   is still needed.
 
 4.  Attestation Extensions
 
@@ -358,11 +389,10 @@ Table of Contents
 5.1.  Handshake Overview
 
    The handshake defined here is analogous to certificate-based
-   authentication in a regular TLS handshake.  We use the TLS Identity
-   Key (TIK) which is identical to the certificate's private key.  This
-   key is attested, with attestation being carried in a new Attestation
-   handshake message (see Section 4.1).  Following that, the peer being
-   attested proves possession of the private key using the
+   authentication in a regular TLS handshake.  The TLS Identity Key
+   (TIK) is attested by the TEE, with attestation being carried in a new
+   Attestation handshake message (see Section 4.1).  Following that, the
+   peer being attested proves possession of the private key using the
    CertificateVerify message, which remains unchanged from baseline TLS.
 
    The protocol combines attestation with X.509 certificate
@@ -528,6 +558,62 @@ Auth | {CertificateVerify}
 
   Figure 5: TLS Server Providing Attestation Results to TLS Client.
 
+5.6.  Cryptographic Operations
+
+   This section defines the key derivation for attestation, which
+   operates independently from the regular TLS key schedule as described
+   in Section 7.1 of [RFC8446].
+
+   The attestation key derivation uses HKDF Section 7.1 of [RFC8446] to
+   derive attestation-specific secrets from the TLS master secret.  Two
+   attestation master secrets are derived: one for the client
+   (c_attestation_master) and one for the server (s_attestation_master).
+
+   The key derivation follows this structure:
+
+   0
+   |
+   v
+(EC)DHE -> HKDF-Extract = Handshake Secret
+   |
+   v
+Derive-Secret(., "derived secret", "")
+   |
+   v
+0 -> HKDF-Extract = Master Secret
+   |
+   +-> Derive-Secret(., "c attestation master", ClientHello...ServerHello)
+   |                     = c_attestation_master
+   |
+   +-> Derive-Secret(., "s attestation master", ClientHello...ServerHello)
+   |                     = s_attestation_master
+
+                 Figure 6: Attestation Key Schedule.
+
+   The attestation master secrets (c_attestation_master and
+   s_attestation_master) are derived from the TLS master secret using
+   Derive-Secret as defined in Section 7.1 of [RFC8446], with the labels
+   "c attestation master" and "s attestation master" respectively, and
+   the handshake transcript up to and including ServerHello as the
+   context.
+
+   The client's attestation secret (c_attestation_secret) that will be
+   signed by the TEE is derived by applying HKDF-Expand-Label to
+   c_attestation_master with the label "attestation" and the client's
+   TLS public key as the context:
+
+c_attestation_secret = HKDF-Expand-Label(c_attestation_master, "attestation",
+                                         TLS_Client_Public_Key, Hash.length)
+
+   Similarly, the server's attestation secret (s_attestation_secret) is
+   derived from s_attestation_master:
+
+s_attestation_secret = HKDF-Expand-Label(s_attestation_master, "attestation",
+                                         TLS_Server_Public_Key, Hash.length)
+
+   This ensures that each attestation secret is bound to the specific
+   TLS public key being attested.
+
 6.  After The Initial Handshake
 
 6.1.  Session Resumption
@@ -622,7 +708,7 @@ Auth | {CertificateVerify}
            }
        } evidenceProposalTypeExtension;
 
-              Figure 6: TLS Extension Structure for Evidence.
+              Figure 7: TLS Extension Structure for Evidence.
 
    Values for media_type are defined in [iana-media-types].  Values for
    content_format are defined in [iana-content-formats].
@@ -655,7 +741,7 @@ Auth | {CertificateVerify}
            }
        } resultsProposalTypeExtension;
 
-         Figure 7: TLS Extension Structure for Attestation Results.
+         Figure 8: TLS Extension Structure for Attestation Results.
 
    In the Passport model, Attestation Results are sent in an Attestation
    handshake message (see Section 4.1) containing a CMW structure.  The
@@ -663,7 +749,7 @@ Auth | {CertificateVerify}
 
 8.  TLS Client and Server Handshake Behavior
 
-   The high-level message exchange in Figure 8 shows the
+   The high-level message exchange in Figure 9 shows the
    evidence_proposal, evidence_request, results_proposal, and
    results_request extensions added to the ClientHello and the
    EncryptedExtensions messages.
@@ -701,7 +787,7 @@ Auth | {Attestation*}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 
-               Figure 8: Attestation Message Overview.
+               Figure 9: Attestation Message Overview.
 
 8.1.  Background Check Model
 
@@ -993,17 +1079,22 @@ Auth | {Attestation*}
 
    *  Comment:
 
-11.3.  TLS Certificate Types
+11.3.  TLS Handshake Message Types
 
-   IANA is requested to allocate a new value in the "TLS Certificate
-   Types" subregistry of the "Transport Layer Security (TLS) Extensions"
-   registry [TLS-Ext-Registry], as follows:
+   IANA is requested to allocate a new value in the "TLS HandshakeType"
+   registry of the "Transport Layer Security (TLS) Parameters" registry
+   [TLS-Param-Registry], as follows:
 
-   *  Value: TBD2
+   *  Value: TBD
 
-   *  Description: Attestation
+   *  Description: attestation
+
+   *  DTLS-OK: Y
 
    *  Reference: [This document]
+
+   *  Comment: Used to carry attestation Evidence or Attestation Results
+      in the TLS handshake
 
 12.  References
 
