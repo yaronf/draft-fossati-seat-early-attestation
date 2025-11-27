@@ -1452,7 +1452,7 @@ still needed.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-4-1">As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
 attestation Evidence or Attestation Results to be exchanged. Freshness of the
-exchanged Evidence is guaranteed through secret derivation from the TLS master
+exchanged Evidence is guaranteed through secret derivation from the TLS main
 secret and message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>) when the background check
 model is in use. In the passport model, freshness expectations are more relaxed
 and are governed by the lifetime of the signed Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
@@ -1465,7 +1465,7 @@ Attestation Results encoded according to <span>[<a href="#I-D.ietf-rats-msg-wrap
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
 over the Evidence or AttestationResults within the CMW <span class="bcp14">MUST</span> include a secret derived
-from the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+from the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 and the attester's TLS identity public key, as specified in <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The relying party can obtain and appraise the remote Attestation Results either
 directly from the Attestation message (in the passport model), or by relaying
@@ -1503,7 +1503,7 @@ Wrapper) payload as defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="c
           <div class="alignLeft art-text artwork" id="section-4.1-3.1">
 <pre>
     enum {
-        /* other handshake message types defined in RFC 8446 */
+        /* other handshake message types defined in draft-ietf-tls-rfc8446bis */
         attestation(TBD),
         (255)
     } HandshakeType;
@@ -1536,7 +1536,7 @@ to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW <span class="bcp14">MUST</span> include:<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-6.1">
-            <p id="section-4.1-6.1.1">A secret derived from the TLS master secret and the message transcript, up to ServerHello,
+            <p id="section-4.1-6.1.1">A secret derived from the TLS main secret and the message transcript, up to ServerHello,
 ensuring freshness of the attestation.<a href="#section-4.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-6.2">
@@ -1785,11 +1785,11 @@ Auth | {CertificateVerify}
 <a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-cryptographic-operations" class="section-name selfRef">Cryptographic Operations</a>
         </h3>
 <p id="section-5.6-1">This section defines the key derivation for attestation, which operates independently
-from the regular TLS key schedule as described in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
-<p id="section-5.6-2">The attestation key derivation uses HKDF <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> to derive
-attestation-specific secrets from the TLS master secret. Two attestation master
-secrets are derived: one for the client (<code>c_attestation_master</code>) and one for the
-server (<code>s_attestation_master</code>).<a href="#section-5.6-2" class="pilcrow">¶</a></p>
+from the regular TLS key schedule as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<p id="section-5.6-2">The attestation key derivation uses HKDF <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> to derive
+attestation-specific secrets from the TLS main secret. Two attestation main
+secrets are derived: one for the client (<code>c_attestation_main</code>) and one for the
+server (<code>s_attestation_main</code>).<a href="#section-5.6-2" class="pilcrow">¶</a></p>
 <p id="section-5.6-3">The key derivation follows this structure:<a href="#section-5.6-3" class="pilcrow">¶</a></p>
 <span id="name-attestation-key-schedule"></span><div id="_figure-attestation-key-schedule">
 <figure id="figure-6">
@@ -1804,38 +1804,40 @@ server (<code>s_attestation_master</code>).<a href="#section-5.6-2" class="pilcr
 Derive-Secret(., "derived secret", "")
    |
    v
-0 -&gt; HKDF-Extract = Master Secret
+0 -&gt; HKDF-Extract = Main Secret
    |
    +-&gt; Derive-Secret(., "c attestation master", ClientHello...ServerHello)
-   |                     = c_attestation_master
+   |                     = c_attestation_main
    |
    +-&gt; Derive-Secret(., "s attestation master", ClientHello...ServerHello)
-   |                     = s_attestation_master
+   |                     = s_attestation_main
 </pre>
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-attestation-key-schedule" class="selfRef">Attestation Key Schedule.</a>
           </figcaption></figure>
 </div>
-<p id="section-5.6-5">The attestation master secrets (<code>c_attestation_master</code> and <code>s_attestation_master</code>)
-are derived from the TLS master secret using Derive-Secret as defined in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>, with the labels "c attestation master" and
+<p id="section-5.6-5">The attestation main secrets (<code>c_attestation_main</code> and <code>s_attestation_main</code>)
+are derived from the TLS main secret using Derive-Secret as defined in
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, with the labels "c attestation master" and
 "s attestation master" respectively, and the handshake transcript up to and
-including ServerHello as the context.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
+including ServerHello as the context. Note that the labels use "master" for
+compatibility with the TLS key schedule, even though the values are referred
+to as "main" secrets.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
 <p id="section-5.6-6">The client's attestation secret (<code>c_attestation_secret</code>) that will be signed by
-the TEE is derived by applying HKDF-Expand-Label to <code>c_attestation_master</code> with
+the TEE is derived by applying HKDF-Expand-Label to <code>c_attestation_main</code> with
 the label "attestation" and the client's TLS public key as the context:<a href="#section-5.6-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-7">
 <pre>
-c_attestation_secret = HKDF-Expand-Label(c_attestation_master, "attestation",
+c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
                                          TLS_Client_Public_Key, Hash.length)
 </pre><a href="#section-5.6-7" class="pilcrow">¶</a>
 </div>
 <p id="section-5.6-8">Similarly, the server's attestation secret (<code>s_attestation_secret</code>) is derived
-from <code>s_attestation_master</code>:<a href="#section-5.6-8" class="pilcrow">¶</a></p>
+from <code>s_attestation_main</code>:<a href="#section-5.6-8" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-9">
 <pre>
-s_attestation_secret = HKDF-Expand-Label(s_attestation_master, "attestation",
+s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
                                          TLS_Server_Public_Key, Hash.length)
 </pre><a href="#section-5.6-9" class="pilcrow">¶</a>
 </div>
@@ -1858,7 +1860,7 @@ described in {{reattestation}}. </span><a href="#section-5.6-11" class="pilcrow"
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-session-resumption" class="section-name selfRef">Session Resumption</a>
         </h3>
 <p id="section-6.1-1">TLS 1.3 supports session resumption using Pre-Shared Keys (PSK) as defined in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6" class="relref">Section 4.6</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>. When using attestation, session resumption works
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>. When using attestation, session resumption works
 normally when reattestation is not required.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">If reattestation is required according to local policy (e.g., based on timing
 since the last attestation or changes in attestation state), session resumption
@@ -2132,7 +2134,7 @@ evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 <code>Attestation</code> handshake message sent after the <code>Certificate</code> message.
 The Evidence contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
-the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with the client's TLS identity public key (TIK-C).
 The value conveyed in the evidence_proposal extension by the server <span class="bcp14">MUST</span> be
 selected from one of the values provided in the evidence_proposal extension
@@ -2150,7 +2152,7 @@ extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the <code>Attestation</code> handshake message sent
 after the EncryptedExtensions by the server. The Evidence
 contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
-the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with
 the server's TLS identity public key (TIK-S).
 The Evidence type in the evidence_request extension <span class="bcp14">MUST</span> contain
@@ -2422,17 +2424,17 @@ as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Tüxen, M.</span>, <span class="refAuthor">Reddy.K, T.</span>, <span class="refAuthor">Fries, S.</span>, and <span class="refAuthor">Y. Rosomakho</span>, <span class="refTitle">"Extended Key Update for Transport Layer Security (TLS) 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-extended-key-update-07</span>, <time datetime="2025-11-01" class="refDate">1 November 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-tls-rfc8446bis">[I-D.ietf-tls-rfc8446bis]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-14</span>, <time datetime="2025-09-13" class="refDate">13 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-        <dd>
-<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8446">[RFC8446]</dt>
       <dd>
-<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a>&gt;</span>. </dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
