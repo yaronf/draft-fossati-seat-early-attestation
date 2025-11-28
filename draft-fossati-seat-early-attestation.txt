@@ -5,7 +5,7 @@
 TLS                                                        H. Tschofenig
 Internet-Draft                                                          
 Intended status: Standards Track                              Y. Sheffer
-Expires: 31 May 2026                                              Intuit
+Expires: 1 June 2026                                              Intuit
                                                                P. Howard
                                                              I. Mihalcea
                                                             Y. Deshpande
@@ -14,7 +14,7 @@ Expires: 31 May 2026                                              Intuit
                                                                   Huawei
                                                               T. Fossati
                                                                   Linaro
-                                                        27 November 2025
+                                                        28 November 2025
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 May 2026.
+   This Internet-Draft will expire on 1 June 2026.
 
 Copyright Notice
 
@@ -664,6 +664,10 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_master, "attestation",
    TEE's signature of the Evidence or AttestationResults within the CMW,
    as specified in Section 4.1.
 
+   Reattestation uses the Attestation formats that were negotiated
+   during the initial handshake, there is no re-negotiation at this
+   stage.
+
    The decision to initiate reattestation is per local policy and may be
    based on factors such as elapsed time since the last attestation,
    changes in platform state, or security policy requirements.
@@ -686,10 +690,8 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_master, "attestation",
    message (see Section 4.1).
 
        enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
-       enum { ATTESTATION(0), CERT_ATTESTATION(1) } credentialKind;
 
        struct {
-           credentialKind credential_kind;
            typeEncoding type_encoding;
            select (EvidenceType.type_encoding) {
                case CONTENT_FORMAT:

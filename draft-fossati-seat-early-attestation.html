@@ -1060,7 +1060,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tschofenig, et al.</td>
-<td class="center">Expires 31 May 2026</td>
+<td class="center">Expires 1 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1073,12 +1073,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-27" class="published">27 November 2025</time>
+<time datetime="2025-11-28" class="published">28 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-31">31 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-01">1 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1156,7 +1156,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1895,9 +1895,11 @@ attestation Evidence or Attestation Results. A secret value is derived
 (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>) from the
 EKU handshake messages and included in the TEE's signature of the Evidence or
 AttestationResults within the CMW, as specified in <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.2-3">The decision to initiate reattestation is per local policy and may be based on
+<p id="section-6.2-3">Reattestation uses the Attestation formats that were negotiated during the initial handshake,
+there is no re-negotiation at this stage.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+<p id="section-6.2-4">The decision to initiate reattestation is per local policy and may be based on
 factors such as elapsed time since the last attestation, changes in platform
-state, or security policy requirements.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+state, or security policy requirements.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1926,10 +1928,8 @@ the CMW payload is sent in the <code>Attestation</code> handshake message (see <
           <div class="alignLeft art-text artwork" id="section-7.1-2.1">
 <pre>
     enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
-    enum { ATTESTATION(0), CERT_ATTESTATION(1) } credentialKind;
 
     struct {
-        credentialKind credential_kind;
         typeEncoding type_encoding;
         select (EvidenceType.type_encoding) {
             case CONTENT_FORMAT:
