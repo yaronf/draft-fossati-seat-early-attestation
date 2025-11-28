@@ -1346,7 +1346,7 @@ This document describes a series of protocol extensions to the TLS 1.3 handshake
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) <span>[<a href="#I-D.ietf-teep-architecture" class="cite xref">I-D.ietf-teep-architecture</a>]</span>, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Given the variety of deployed and emerging attestation technologies (e.g., <span>[<a href="#TPM1.2" class="cite xref">TPM1.2</a>]</span>, <span>[<a href="#TPM2.0" class="cite xref">TPM2.0</a>]</span>, <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>) these extensions have been explicitly designed to be agnostic to the attestation formats.
-This is achieved by reusing the generic encapsulation defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span> for transporting Evidence and Attestation Result payloads in the TLS Attestation handshake message.<a href="#section-1-2" class="pilcrow">¶</a></p>
+This is achieved by reusing the generic encapsulation defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span> for transporting Evidence and Attestation Results payloads in the TLS Attestation handshake message.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in Sections <a href="https://rfc-editor.org/rfc/rfc9334#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc9334#section-5.1" class="relref">5.1</a> of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
 This is detailed in <a href="#evidence-extensions" class="auto internal xref">Section 7.1</a> and <a href="#attestation-results-extensions" class="auto internal xref">Section 7.2</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
@@ -1455,9 +1455,9 @@ still needed.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-4-1">As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
 attestation Evidence or Attestation Results to be exchanged. Freshness of the
-exchanged Evidence is guaranteed through secret derivation from the TLS master
-secret and message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>) when the background check
-model is in use. In the passport model, freshness expectations are more relaxed
+exchanged Evidence is guaranteed through secret derivation from the TLS main
+secret and message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>) when the Background Check
+Model is in use. In the Passport Model, freshness expectations are more relaxed
 and are governed by the lifetime of the signed Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">When either the Evidence or the Attestation Results extension is successfully
 negotiated, attestation Evidence or Attestation Results are conveyed in an
@@ -1468,14 +1468,14 @@ Attestation Results encoded according to <span>[<a href="#I-D.ietf-rats-msg-wrap
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
 over the Evidence or AttestationResults within the CMW <span class="bcp14">MUST</span> include a secret derived
-from the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+from the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 and the attester's TLS identity public key, as specified in <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The relying party can obtain and appraise the remote Attestation Results either
-directly from the Attestation message (in the passport model), or by relaying
+directly from the Attestation message (in the Passport Model), or by relaying
 the Evidence from the Attestation message to the Verifier and receiving the
 Attestation Results. Subsequently, the attested key is used to verify the
 CertificateVerify message, which remains unchanged from baseline TLS.<a href="#section-4-4" class="pilcrow">¶</a></p>
-<p id="section-4-5">When using the passport model, the remote Attestation Results obtained by the
+<p id="section-4-5">When using the Passport Model, the remote Attestation Results obtained by the
 attester from its trusted Verifiers can be cached and used for any number of
 subsequent TLS handshakes, as long as the freshness policy requirements are
 satisfied.<a href="#section-4-5" class="pilcrow">¶</a></p>
@@ -1506,7 +1506,7 @@ Wrapper) payload as defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="c
           <div class="alignLeft art-text artwork" id="section-4.1-3.1">
 <pre>
     enum {
-        /* other handshake message types defined in RFC 8446 */
+        /* other handshake message types defined in {{I-D.ietf-tls-rfc8446bis}} */
         attestation(TBD),
         (255)
     } HandshakeType;
@@ -1533,13 +1533,13 @@ Wrapper) payload as defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="c
 <p id="section-4.1-4">The <code>cmw_payload</code> field contains a CMW structure as defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.
 Both JSON and CBOR serializations are allowed in CMW, with the emitter choosing
 which serialization to use.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.1-5">The CMW payload <span class="bcp14">MUST</span> contain attestation Evidence (in background check model)
-or Attestation Results (in passport model) that binds the TLS Identity Key (TIK)
+<p id="section-4.1-5">The CMW payload <span class="bcp14">MUST</span> contain attestation Evidence (in Background Check Model)
+or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW <span class="bcp14">MUST</span> include:<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-6.1">
-            <p id="section-4.1-6.1.1">A secret derived from the TLS master secret and the message transcript, up to ServerHello,
+            <p id="section-4.1-6.1.1">A secret derived from the TLS main secret and the message transcript, up to ServerHello,
 ensuring freshness of the attestation.<a href="#section-4.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-6.2">
@@ -1558,8 +1558,8 @@ and provides freshness guarantees through secret derivation. See <a href="#crypt
       <h2 id="name-use-of-attestation-in-the-t">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-use-of-attestation-in-the-t" class="section-name selfRef">Use of Attestation in the TLS Handshake</a>
       </h2>
-<p id="section-5-1">For both the passport model (described in section 5.1 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) and
-background check model (described in Section 5.2 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) the following
+<p id="section-5-1">For both the Passport Model (described in section 5.1 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) and
+Background Check Model (described in Section 5.2 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) the following
 modes of operation are allowed when used with TLS, namely:<a href="#section-5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-2.1">
@@ -1574,8 +1574,8 @@ modes of operation are allowed when used with TLS, namely:<a href="#section-5-1"
       </ul>
 <p id="section-5-3">We will show the message exchanges of the first two cases in sub-sections below.
 Mutual authentication via attestation combines these two (non-interfering)
-flows, including cases where one of the peers uses the passport model for its
-attestation, and the other uses the background check model.<a href="#section-5-3" class="pilcrow">¶</a></p>
+flows, including cases where one of the peers uses the Passport Model for its
+attestation, and the other uses the Background Check Model.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div id="handshake-overview">
 <section id="section-5.1">
         <h3 id="name-handshake-overview">
@@ -1788,11 +1788,11 @@ Auth | {CertificateVerify}
 <a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-cryptographic-operations" class="section-name selfRef">Cryptographic Operations</a>
         </h3>
 <p id="section-5.6-1">This section defines the key derivation for attestation, which operates independently
-from the regular TLS key schedule as described in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
-<p id="section-5.6-2">The attestation key derivation uses HKDF <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> to derive
-attestation-specific secrets from the TLS master secret. Two attestation master
-secrets are derived: one for the client (<code>c_attestation_master</code>) and one for the
-server (<code>s_attestation_master</code>).<a href="#section-5.6-2" class="pilcrow">¶</a></p>
+from the regular TLS key schedule as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<p id="section-5.6-2">The attestation key derivation uses HKDF <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> to derive
+attestation-specific secrets from the TLS main secret. Two attestation main
+secrets are derived: one for the client (<code>c_attestation_main</code>) and one for the
+server (<code>s_attestation_main</code>).<a href="#section-5.6-2" class="pilcrow">¶</a></p>
 <p id="section-5.6-3">The key derivation follows this structure:<a href="#section-5.6-3" class="pilcrow">¶</a></p>
 <span id="name-attestation-key-schedule"></span><div id="_figure-attestation-key-schedule">
 <figure id="figure-6">
@@ -1810,35 +1810,35 @@ Derive-Secret(., "derived secret", "")
 0 -&gt; HKDF-Extract = Master Secret
    |
    +-&gt; Derive-Secret(., "c attestation master", ClientHello...ServerHello)
-   |                     = c_attestation_master
+   |                     = c_attestation_main
    |
    +-&gt; Derive-Secret(., "s attestation master", ClientHello...ServerHello)
-   |                     = s_attestation_master
+   |                     = s_attestation_main
 </pre>
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-attestation-key-schedule" class="selfRef">Attestation Key Schedule.</a>
           </figcaption></figure>
 </div>
-<p id="section-5.6-5">The attestation master secrets (<code>c_attestation_master</code> and <code>s_attestation_master</code>)
-are derived from the TLS master secret using Derive-Secret as defined in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>, with the labels "c attestation master" and
+<p id="section-5.6-5">The attestation main secrets (<code>c_attestation_main</code> and <code>s_attestation_main</code>)
+are derived from the TLS main secret using Derive-Secret as defined in
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, with the labels "c attestation master" and
 "s attestation master" respectively, and the handshake transcript up to and
 including ServerHello as the context.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
 <p id="section-5.6-6">The client's attestation secret (<code>c_attestation_secret</code>) that will be signed by
-the TEE is derived by applying HKDF-Expand-Label to <code>c_attestation_master</code> with
+the TEE is derived by applying HKDF-Expand-Label to <code>c_attestation_main</code> with
 the label "attestation" and the client's TLS public key as the context:<a href="#section-5.6-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-7">
 <pre>
-c_attestation_secret = HKDF-Expand-Label(c_attestation_master, "attestation",
+c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
                                          TLS_Client_Public_Key, Hash.length)
 </pre><a href="#section-5.6-7" class="pilcrow">¶</a>
 </div>
 <p id="section-5.6-8">Similarly, the server's attestation secret (<code>s_attestation_secret</code>) is derived
-from <code>s_attestation_master</code>:<a href="#section-5.6-8" class="pilcrow">¶</a></p>
+from <code>s_attestation_main</code>:<a href="#section-5.6-8" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-9">
 <pre>
-s_attestation_secret = HKDF-Expand-Label(s_attestation_master, "attestation",
+s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
                                          TLS_Server_Public_Key, Hash.length)
 </pre><a href="#section-5.6-9" class="pilcrow">¶</a>
 </div>
@@ -1863,7 +1863,7 @@ session resumption, reattestation and the interaction between them.<a href="#sec
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-session-resumption" class="section-name selfRef">Session Resumption</a>
         </h3>
 <p id="section-6.1-1">TLS 1.3 supports session resumption using Pre-Shared Keys (PSK) as defined in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6" class="relref">Section 4.6</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>. When using attestation, session resumption works
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>. When using attestation, session resumption works
 normally when reattestation is not required.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">If client reattestation is required according to local policy (e.g., based on timing
 since the last attestation or changes in attestation state), session resumption
@@ -1910,8 +1910,8 @@ state, or security policy requirements.<a href="#section-6.2-4" class="pilcrow">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-negotiating-this-protocol" class="section-name selfRef">Negotiating This Protocol</a>
       </h2>
 <p id="section-7-1">This section defines the TLS extensions used to negotiate the use of attestation
-in the TLS handshake. Two models are supported: the Background Check model, where
-Evidence is exchanged and verified during the handshake, and the Passport model,
+in the TLS handshake. Two models are supported: the Background Check Model, where
+Evidence is exchanged and verified during the handshake, and the Passport Model,
 where pre-verified Attestation Results are presented. The extensions defined
 here allow peers to indicate their support for attestation and negotiate which
 attestation format and Verifier to use.<a href="#section-7-1" class="pilcrow">¶</a></p>
@@ -2008,7 +2008,7 @@ Values for content_format are defined in <span>[<a href="#iana-content-formats" 
 <a href="#name-tls-extension-structure-for-" class="selfRef">TLS Extension Structure for Attestation Results.</a>
           </figcaption></figure>
 </div>
-<p id="section-7.2-2">In the Passport model, Attestation Results are sent in an <code>Attestation</code> handshake
+<p id="section-7.2-2">In the Passport Model, Attestation Results are sent in an <code>Attestation</code> handshake
 message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>) containing a CMW structure. The CMW
 structure is defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 </section>
@@ -2076,11 +2076,10 @@ Auth | {Attestation*}
 <a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-client-hello" class="section-name selfRef">Client Hello</a>
           </h4>
 <p id="section-8.1.1-1">To indicate the support for passing Evidence in TLS following the
-background check model, clients include the evidence_proposal
+Background Check Model, clients include the evidence_proposal
 and/or the evidence_request extensions in the ClientHello.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1.1-2">The evidence_proposal extension in the ClientHello message indicates
-the Evidence types the client is able to provide to the server,
-when requested using a CertificateRequest message.<a href="#section-8.1.1-2" class="pilcrow">¶</a></p>
+the Evidence types the client is able to provide to the server.<a href="#section-8.1.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.1.1-3">The evidence_request extension in the ClientHello message indicates
 the Evidence types the client challenges the server to
 provide in an <code>Attestation</code> handshake message.<a href="#section-8.1.1-3" class="pilcrow">¶</a></p>
@@ -2130,21 +2129,19 @@ this case, the processing rules described below are followed.<a href="#section-8
 </li>
           </ul>
 <p id="section-8.1.2-3">The evidence_proposal extension in the ClientHello indicates
-the Evidence types the client is able to provide to the server,
-when challenged using a CertificateRequest message.  If the
+the Evidence types the client is able to provide to the server.  If the
 server wants to request Evidence from the client, it <span class="bcp14">MUST</span> include the
 evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 <code>Attestation</code> handshake message sent after the <code>Certificate</code> message.
 The Evidence contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
-the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with the client's TLS identity public key (TIK-C).
 The value conveyed in the evidence_proposal extension by the server <span class="bcp14">MUST</span> be
 selected from one of the values provided in the evidence_proposal extension
-sent in the ClientHello.  The server <span class="bcp14">MUST</span> also send a CertificateRequest
-message.<a href="#section-8.1.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.1.2-4">If the server does not send a CertificateRequest message or none
+sent in the ClientHello.<a href="#section-8.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-4">If none
 of the Evidence types supported by the client (as indicated in the
 evidence_proposal extension in the ClientHello) match the
 server-supported Evidence types, then the evidence_proposal
@@ -2156,7 +2153,7 @@ extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the <code>Attestation</code> handshake message sent
 after the EncryptedExtensions by the server. The Evidence
 contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
-the TLS master secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
+the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with
 the server's TLS identity public key (TIK-S).
 The Evidence type in the evidence_request extension <span class="bcp14">MUST</span> contain
@@ -2180,11 +2177,10 @@ extensions are included in the ClientHello and ServerHello messages.<a href="#se
 <a href="#section-8.2.1" class="section-number selfRef">8.2.1. </a><a href="#name-client-hello-2" class="section-name selfRef">Client Hello</a>
           </h4>
 <p id="section-8.2.1-1">To indicate the support for passing Attestation Results in TLS following the
-passport model, clients include the results_proposal and/or the results_request
+Passport Model, clients include the results_proposal and/or the results_request
 extensions in the ClientHello message.<a href="#section-8.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.2.1-2">The results_proposal extension in the ClientHello message indicates the Verifier
-identities from which the client can relay Attestation Results, when requested using a
-CertificateRequest message. The client sends the Attestation Results in an
+identities from which the client can relay Attestation Results. The client sends the Attestation Results in an
 <code>Attestation</code> handshake message after the <code>Certificate</code> message.<a href="#section-8.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.2.1-3">The results_request extension in the ClientHello message indicates the Verifier
 identities from which the client expects the server to provide Attestation
@@ -2232,20 +2228,19 @@ rules described below are followed.<a href="#section-8.2.2-2.3.1" class="pilcrow
           </ul>
 <p id="section-8.2.2-3">The results_proposal extension in the ClientHello indicates the Verifier
 identities from which the client is able to provide Attestation Results to the
-server, when challenged using a CertificateRequest message.  If the server
+server.  If the server
 wants to request Attestation Results from the client, it <span class="bcp14">MUST</span> include the
 results_proposal extension in the EncryptedExtensions. This results_proposal
 extension in the EncryptedExtensions then indicates what Verifier the client is
 requested to provide Attestation Results from in an <code>Attestation</code> handshake
 message sent after the <code>Certificate</code> message.  The value conveyed in the
 results_proposal extension by the server <span class="bcp14">MUST</span> be selected from one of the
-values provided in the results_proposal extension sent in the ClientHello.
-The server <span class="bcp14">MUST</span> also send a CertificateRequest message.<a href="#section-8.2.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.2.2-4">If the server does not send a CertificateRequest message or none of the
+values provided in the results_proposal extension sent in the ClientHello.<a href="#section-8.2.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2.2-4">If none of the
 Verifier identities proposed by the client (as indicated in the results_proposal
 extension in the ClientHello) match the server-trusted Verifiers, then the
 results_proposal extension in the ServerHello <span class="bcp14">MUST</span> be omitted.<a href="#section-8.2.2-4" class="pilcrow">¶</a></p>
-<p id="section-8.2.2-5">The results_request extension in the ClientHello indicates what verifiers the
+<p id="section-8.2.2-5">The results_request extension in the ClientHello indicates what Verifiers the
 client trusts as issuers of Attestation Results for the server. With the
 results_request extension in the EncryptedExtensions, the server indicates the
 identity of the Verifier who issued the Attestation Results carried in the
@@ -2438,17 +2433,17 @@ as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Tüxen, M.</span>, <span class="refAuthor">Reddy.K, T.</span>, <span class="refAuthor">Fries, S.</span>, and <span class="refAuthor">Y. Rosomakho</span>, <span class="refTitle">"Extended Key Update for Transport Layer Security (TLS) 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-extended-key-update-07</span>, <time datetime="2025-11-01" class="refDate">1 November 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-tls-rfc8446bis">[I-D.ietf-tls-rfc8446bis]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-14</span>, <time datetime="2025-09-13" class="refDate">13 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-        <dd>
-<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8446">[RFC8446]</dt>
       <dd>
-<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a>&gt;</span>. </dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
