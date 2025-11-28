@@ -6,7 +6,6 @@ TLS                                                        H. Tschofenig
 Internet-Draft                                                          
 Intended status: Standards Track                              Y. Sheffer
 Expires: 1 June 2026                                              Intuit
-                                                               P. Howard
                                                              I. Mihalcea
                                                             Y. Deshpande
                                                              Arm Limited
@@ -1299,11 +1298,6 @@ Authors' Addresses
    Yaron Sheffer
    Intuit
    Email: yaronf.ietf@gmail.com
-
-
-   Paul Howard
-   Arm Limited
-   Email: Paul.Howard@arm.com
 
 
    Ionut Mihalcea
