@@ -5,7 +5,7 @@
 TLS                                                        H. Tschofenig
 Internet-Draft                                                          
 Intended status: Standards Track                              Y. Sheffer
-Expires: 1 June 2026                                              Intuit
+Expires: 2 June 2026                                              Intuit
                                                              I. Mihalcea
                                                             Y. Deshpande
                                                              Arm Limited
@@ -13,7 +13,7 @@ Expires: 1 June 2026                                              Intuit
                                                                   Huawei
                                                               T. Fossati
                                                                   Linaro
-                                                        28 November 2025
+                                                        29 November 2025
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -72,7 +72,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 June 2026.
+   This Internet-Draft will expire on 2 June 2026.
 
 Copyright Notice
 
@@ -104,6 +104,7 @@ Table of Contents
      5.4.  TLS Client Authenticating Using Attestation Results
      5.5.  TLS Server Authenticating Using Attestation Results
      5.6.  Cryptographic Operations
+     5.7.  The TLS Stack's Interface to the TEE
    6.  After The Initial Handshake
      6.1.  Session Resumption
      6.2.  Reattestation and Extended Key Update
@@ -161,6 +162,22 @@ Table of Contents
    proposed design supports both background-check and passport
    topologies, as described in Sections 5.2 and 5.1 of [RFC9334].  This
    is detailed in Section 7.1 and Section 7.2.
+
+   The protocol we propose is implemented completely at the TLS level,
+   resulting in several related advantages:
+
+   *  Implementation is within a single system component.
+
+   *  Security does not depend on application-level code, which tends to
+      be less secure than widely shared infrastructure components.
+
+   *  It is easier to reason about the application's security, since
+      both peers' identity and security posture are known when the
+      handshake completes and the TLS connection is established.
+
+   *  Application code does not need to change.  At most, some
+      configuration is needed similar to the current use of a
+      certificate trust stores.
 
    This document does not mandate any particular attestation technology.
    Companion documents are expected to define specific attestation
@@ -604,13 +621,13 @@ Derive-Secret(., "derived secret", "")
    c_attestation_main with the label "attestation" and the client's TLS
    public key as the context:
 
-c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
+c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "Early Attestation",
                                          TLS_Client_Public_Key, Hash.length)
 
    Similarly, the server's attestation secret (s_attestation_secret) is
    derived from s_attestation_main:
 
-s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
+s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation",
                                          TLS_Server_Public_Key, Hash.length)
 
    This ensures that each attestation secret is bound to the specific
@@ -619,6 +636,27 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
 
    // TODO: Define key derivation for Extended Key Update
    // (reattestation) as described in {{reattestation}}.
+
+5.7.  The TLS Stack's Interface to the TEE
+
+   When the TEE signs the Evidence or Attestation Results, it also binds
+   them to the TLS Identity public key and the TLS session.  TEE
+   implementations differ, and some only allow a single nonce to be
+   added to the signature with no associated checks.  Therefore we adopt
+   a defense-in-depth approach:
+
+   *  TEE wrapper libraries and TLS stacks SHOULD NOT allow direct
+      access to the Evidence/AR generation API without checking the
+      nonce.  At the very least, the nonce SHOULD be the result of HKDF
+      with an allowlist of labels.
+
+   *  The RP SHOULD NOT base its trust decision only on the identity of
+      the issuer of the Evidence's (or AR's) trust root.  It SHOULD also
+      ensure that the software layer above it is endorsed.
+
+   *  The TEE itself, when possible, SHOULD generate the nonce by
+      running HKDF with an allowlisted label and if it holds the TIK,
+      SHOULD validate the pubic key.
 
 6.  After The Initial Handshake
 

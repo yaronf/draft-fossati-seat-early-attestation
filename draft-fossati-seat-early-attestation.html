@@ -1059,7 +1059,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tschofenig, et al.</td>
-<td class="center">Expires 1 June 2026</td>
+<td class="center">Expires 2 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1072,12 +1072,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-28" class="published">28 November 2025</time>
+<time datetime="2025-11-29" class="published">29 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-01">1 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-02">2 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1151,7 +1151,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1225,6 +1225,9 @@ These extensions have been designed to allow the peers to use any attestation te
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
                 <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-cryptographic-operations" class="internal xref">Cryptographic Operations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-the-tls-stacks-interface-to" class="internal xref">The TLS Stack's Interface to the TEE</a></p>
 </li>
             </ul>
 </li>
@@ -1345,8 +1348,24 @@ This is achieved by reusing the generic encapsulation defined in <span>[<a href=
 <p id="section-1-3">This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in Sections <a href="https://rfc-editor.org/rfc/rfc9334#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc9334#section-5.1" class="relref">5.1</a> of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
 This is detailed in <a href="#evidence-extensions" class="auto internal xref">Section 7.1</a> and <a href="#attestation-results-extensions" class="auto internal xref">Section 7.2</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">This document does not mandate any particular attestation technology.
-Companion documents are expected to define specific attestation mechanisms.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-4">The protocol we propose is implemented completely at the TLS level, resulting in several related advantages:<a href="#section-1-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-5.1">
+          <p id="section-1-5.1.1">Implementation is within a single system component.<a href="#section-1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-5.2">
+          <p id="section-1-5.2.1">Security does not depend on application-level code, which tends to be less secure than widely shared infrastructure components.<a href="#section-1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-5.3">
+          <p id="section-1-5.3.1">It is easier to reason about the application's security, since both peers' identity and security posture are known when the handshake completes
+and the TLS connection is established.<a href="#section-1-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-5.4">
+          <p id="section-1-5.4.1">Application code does not need to change. At most, some configuration is needed similar to the current use of a certificate trust stores.<a href="#section-1-5.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-1-6">This document does not mandate any particular attestation technology.
+Companion documents are expected to define specific attestation mechanisms.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-terminology">
@@ -1825,7 +1844,7 @@ the TEE is derived by applying HKDF-Expand-Label to <code>c_attestation_main</co
 the label "attestation" and the client's TLS public key as the context:<a href="#section-5.6-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-7">
 <pre>
-c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
+c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "Early Attestation",
                                          TLS_Client_Public_Key, Hash.length)
 </pre><a href="#section-5.6-7" class="pilcrow">¶</a>
 </div>
@@ -1833,7 +1852,7 @@ c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
 from <code>s_attestation_main</code>:<a href="#section-5.6-8" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.6-9">
 <pre>
-s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
+s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation",
                                          TLS_Server_Public_Key, Hash.length)
 </pre><a href="#section-5.6-9" class="pilcrow">¶</a>
 </div>
@@ -1841,6 +1860,30 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
 key being attested.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
 <p id="section-5.6-11"><span class="cref"> TODO: Define key derivation for Extended Key Update (reattestation) as
 described in {{reattestation}}. </span><a href="#section-5.6-11" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="the-tls-stacks-interface-to-the-tee">
+<section id="section-5.7">
+        <h3 id="name-the-tls-stacks-interface-to">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-the-tls-stacks-interface-to" class="section-name selfRef">The TLS Stack's Interface to the TEE</a>
+        </h3>
+<p id="section-5.7-1">When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
+session. TEE implementations differ, and some only allow a single nonce to be added to the signature with no associated checks.
+Therefore we adopt a defense-in-depth approach:<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.7-2.1">
+            <p id="section-5.7-2.1.1">TEE wrapper libraries and TLS stacks <span class="bcp14">SHOULD NOT</span> allow direct access to the Evidence/AR generation API without checking the
+nonce. At the very least, the nonce <span class="bcp14">SHOULD</span> be the result of HKDF with an allowlist of labels.<a href="#section-5.7-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.7-2.2">
+            <p id="section-5.7-2.2.1">The RP <span class="bcp14">SHOULD NOT</span> base its trust decision only on the identity of the issuer of the Evidence's (or AR's) trust root. It <span class="bcp14">SHOULD</span> also
+ensure that the software layer above it is endorsed.<a href="#section-5.7-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.7-2.3">
+            <p id="section-5.7-2.3.1">The TEE itself, when possible, <span class="bcp14">SHOULD</span> generate the nonce by running HKDF with an allowlisted label and if it holds the TIK, <span class="bcp14">SHOULD</span>
+validate the pubic key.<a href="#section-5.7-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
