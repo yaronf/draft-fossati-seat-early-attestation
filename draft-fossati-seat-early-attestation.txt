@@ -171,13 +171,13 @@ Table of Contents
    *  Security does not depend on application-level code, which tends to
       be less secure than widely shared infrastructure components.
 
-   *  It is easier to reason about the application's security, since
-      both peers' identity and security posture are known when the
+   *  It is easier to reason about the application's security, since the
+      peers' identities and security postures are known as soon as the
       handshake completes and the TLS connection is established.
 
    *  Application code does not need to change.  At most, some
-      configuration is needed similar to the current use of a
-      certificate trust stores.
+      configuration is needed, similar to the current use of certificate
+      trust stores.
 
    This document does not mandate any particular attestation technology.
    Companion documents are expected to define specific attestation
@@ -720,6 +720,11 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation"
    Attestation Results are presented.  The extensions defined here allow
    peers to indicate their support for attestation and negotiate which
    attestation format and Verifier to use.
+
+
+   // Can we simplify this structure: remove the dual request/proposal,
+   // and unify the evidence+AR to a single negotiation extension.  But
+   // also express Passport mode with and without freshness.
 
 7.1.  Evidence Extensions (Background Check Model)
 

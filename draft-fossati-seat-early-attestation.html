@@ -1357,11 +1357,11 @@ This is detailed in <a href="#evidence-extensions" class="auto internal xref">Se
           <p id="section-1-5.2.1">Security does not depend on application-level code, which tends to be less secure than widely shared infrastructure components.<a href="#section-1-5.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-5.3">
-          <p id="section-1-5.3.1">It is easier to reason about the application's security, since both peers' identity and security posture are known when the handshake completes
+          <p id="section-1-5.3.1">It is easier to reason about the application's security, since the peers' identities and security postures are known as soon as the handshake completes
 and the TLS connection is established.<a href="#section-1-5.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-5.4">
-          <p id="section-1-5.4.1">Application code does not need to change. At most, some configuration is needed similar to the current use of a certificate trust stores.<a href="#section-1-5.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-5.4.1">Application code does not need to change. At most, some configuration is needed, similar to the current use of certificate trust stores.<a href="#section-1-5.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-6">This document does not mandate any particular attestation technology.
@@ -1953,6 +1953,8 @@ Evidence is exchanged and verified during the handshake, and the Passport Model,
 where pre-verified Attestation Results are presented. The extensions defined
 here allow peers to indicate their support for attestation and negotiate which
 attestation format and Verifier to use.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2"><span class="cref">Can we simplify this structure: remove the dual request/proposal, and unify the evidence+AR to a single
+negotiation extension. But also express Passport mode with and without freshness.</span><a href="#section-7-2" class="pilcrow">¶</a></p>
 <div id="evidence-extensions">
 <section id="section-7.1">
         <h3 id="name-evidence-extensions-backgro">
