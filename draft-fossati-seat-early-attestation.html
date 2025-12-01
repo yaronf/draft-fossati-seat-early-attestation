@@ -5,11 +5,9 @@
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
 <title>Using Attestation in Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)</title>
-<meta content="Hannes Tschofenig" name="author">
 <meta content="Yaron Sheffer" name="author">
 <meta content="Ionut Mihalcea" name="author">
 <meta content="Yogesh Deshpande" name="author">
-<meta content="Arto Niemi" name="author">
 <meta content="Thomas Fossati" name="author">
 <meta content="
        The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
@@ -1055,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Attestation in TLS/DTLS</td>
-<td class="right">November 2025</td>
+<td class="right">December 2025</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Tschofenig, et al.</td>
-<td class="center">Expires 2 June 2026</td>
+<td class="left">Sheffer, et al.</td>
+<td class="center">Expires 4 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1072,17 +1070,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-29" class="published">29 November 2025</time>
+<time datetime="2025-12-01" class="published">1 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-02">2 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-04">4 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
-<div class="author">
-      <div class="author-name">H. Tschofenig</div>
-</div>
 <div class="author">
       <div class="author-name">Y. Sheffer</div>
 <div class="org">Intuit</div>
@@ -1094,10 +1089,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div class="author">
       <div class="author-name">Y. Deshpande</div>
 <div class="org">Arm Limited</div>
-</div>
-<div class="author">
-      <div class="author-name">A. Niemi</div>
-<div class="org">Huawei</div>
 </div>
 <div class="author">
       <div class="author-name">T. Fossati</div>
@@ -1151,7 +1142,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1309,26 +1300,29 @@ These extensions have been designed to allow the peers to use any attestation te
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
+                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -2454,15 +2448,23 @@ as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 </div>
 </section>
 </div>
-<div id="sec-combined-references">
+<div id="acknowledgements">
 <section id="section-12">
+      <h2 id="name-acknowledgements">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<p id="section-12-1">We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their contributions to earlier versions of this document.<a href="#section-12-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-13">
       <h2 id="name-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-12.1">
+<section id="section-13.1">
         <h3 id="name-normative-references">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-rats-msg-wrap">[I-D.ietf-rats-msg-wrap]</dt>
@@ -2489,9 +2491,9 @@ as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-12.2">
+<section id="section-13.2">
         <h3 id="name-informative-references">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="DICE-Layering">[DICE-Layering]</dt>
@@ -2500,7 +2502,7 @@ as follows:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="FIDO-REQS">[FIDO-REQS]</dt>
         <dd>
-<span class="refTitle">"FIDO Authenticator Security Requirements"</span>, <time datetime="2021-11" class="refDate">November 2021</time>, <span>&lt;<a href="https://fidoalliance.org/specs/fido-security-requirements/">https://fidoalliance.org/specs/fido-security-requirements/</a>&gt;</span>. </dd>
+<span class="refAuthor">Peirani, B.</span> and <span class="refAuthor">J. Verrept</span>, <span class="refTitle">"FIDO Authenticator Security Requirements"</span>, <time datetime="2021-11" class="refDate">November 2021</time>, <span>&lt;<a href="https://fidoalliance.org/specs/fido-security-requirements/">https://fidoalliance.org/specs/fido-security-requirements/</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.acme-device-attest">[I-D.acme-device-attest]</dt>
         <dd>
@@ -2625,13 +2627,6 @@ The key changes include:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Hannes Tschofenig</span></div>
-<div class="email">
-<span>Email:</span>
-<a href="mailto:hannes.tschofenig@gmx.net" class="email">hannes.tschofenig@gmx.net</a>
-</div>
-</address>
-<address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Yaron Sheffer</span></div>
 <div dir="auto" class="left"><span class="org">Intuit</span></div>
 <div class="email">
@@ -2653,14 +2648,6 @@ The key changes include:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:Yogesh.Deshpande@arm.com" class="email">Yogesh.Deshpande@arm.com</a>
-</div>
-</address>
-<address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Arto Niemi</span></div>
-<div dir="auto" class="left"><span class="org">Huawei</span></div>
-<div class="email">
-<span>Email:</span>
-<a href="mailto:arto.niemi@huawei.com" class="email">arto.niemi@huawei.com</a>
 </div>
 </address>
 <address class="vcard">
