@@ -1057,7 +1057,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 4 June 2026</td>
+<td class="center">Expires 5 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-01" class="published">1 December 2025</time>
+<time datetime="2025-12-02" class="published">2 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-04">4 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-05">5 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1142,7 +1142,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1590,7 +1590,7 @@ attestation, and the other uses the Background Check Model.<a href="#section-5-3
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-handshake-overview" class="section-name selfRef">Handshake Overview</a>
         </h3>
 <p id="section-5.1-1">The handshake defined here is analogous to certificate-based authentication in a regular TLS handshake.
-The TLS Identity Key (TIK) is attested by the TEE, with attestation being carried in a new Attestation handshake message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>). Following that, the peer being attested proves possession of the private key using the CertificateVerify message, which remains unchanged from baseline TLS.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+The peer being attested first proves possession of the private key using the CertificateVerify message, which remains unchanged from baseline TLS. Following that, the TLS Identity Key (TIK) is attested by the TEE, with attestation being carried in a new Attestation handshake message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">The protocol combines attestation with X.509 certificate authentication. If attestation-only authentication is desired, implementations <span class="bcp14">SHOULD</span> use self-signed X.509 certificates.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.1-3">The attestation Evidence or Attestation Results are conveyed in an <code>Attestation</code>
 handshake message (see <a href="#attestation-message-section" class="auto internal xref">Section 4.1</a>), which carries a CMW
@@ -1609,7 +1609,7 @@ which incorporates randomness from both client and server, and this value is fed
 of the Evidence.
 The
 client sends the Evidence in an <code>Attestation</code> handshake message after the
-<code>Certificate</code> message. The TLS server, when receiving the Evidence, will have
+<code>CertificateVerify</code> message. The TLS server, when receiving the Evidence, will have
 to contact the Verifier (which is not shown in the diagram).<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">An example of this flow can be found in device onboarding where the
 client initiates the communication with cloud infrastructure to
@@ -1634,13 +1634,13 @@ Exch | + evidence_proposal
                                           + evidence_proposal  |  Params
                                          {CertificateRequest}  v
                                                {Certificate}  ^
-                                         {Attestation}        |
-                                         {CertificateVerify}  | Auth
+                                         {CertificateVerify}  |
+                                         {Attestation}        | Auth
                                                    {Finished}  v
                                &lt;--------  [Application Data*]
      ^ {Certificate}
-Auth | {Attestation}
-     | {CertificateVerify}
+Auth | {CertificateVerify}
+     | {Attestation}
      v {Finished}              --------&gt;
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
@@ -1659,7 +1659,7 @@ Auth | {Attestation}
 <p id="section-5.3-1">In this use case the TLS client challenges the TLS server to present Evidence.
 The TLS server acts as an attester while the TLS client is the relying party.
 The server sends the Evidence in an <code>Attestation</code> handshake message after the
-<code>EncryptedExtensions</code> message. The TLS client, when receiving the Evidence,
+<code>CertificateVerify</code> message. The TLS client, when receiving the Evidence,
 will have to contact the Verifier (which is not shown in the diagram).<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <p id="section-5.3-2">An example of this flow can be found in confidential computing where
 a compute workload is only submitted to the server infrastructure
@@ -1681,14 +1681,15 @@ Exch | + evidence_request
                                                                v
                                         {EncryptedExtensions}  ^  Server
                                           + evidence_request   |  Params
-                                         {Attestation}         |
                                          {CertificateRequest}  v
                                                {Certificate}  ^
-                                         {CertificateVerify}  | Auth
+                                         {CertificateVerify}  |
+                                         {Attestation}         | Auth
                                                    {Finished}  v
                                &lt;--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
+     | {Attestation}
      v {Finished}              --------&gt;
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
@@ -1709,7 +1710,7 @@ to the TLS server. The TLS client is the attester and the TLS server acts as
 a relying party. Prior to delivering its Certificate message, the client must
 contact the Verifier (not shown in the diagram) to receive the Attestation
 Results that it will use as credentials. The client sends the Attestation
-Results in an <code>Attestation</code> handshake message after the <code>Certificate</code> message.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+Results in an <code>Attestation</code> handshake message after the <code>CertificateVerify</code> message.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <span id="name-tls-client-providing-result"></span><div id="_figure-passport-model1">
 <figure id="figure-4">
           <div class="alignLeft art-text artwork" id="section-5.4-2.1">
@@ -1728,13 +1729,13 @@ Exch | + results_proposal
                                            + results_proposal  |  Params
                                          {CertificateRequest}  v
                                                {Certificate}  ^
-                                         {Attestation}         |
-                                         {CertificateVerify}  | Auth
+                                         {CertificateVerify}   |
+                                         {Attestation}         | Auth
                                                    {Finished}  v
                                &lt;--------  [Application Data*]
      ^ {Certificate}
-Auth | {Attestation}
-     | {CertificateVerify}
+Auth | {CertificateVerify}
+     | {Attestation}
      v {Finished}              --------&gt;
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
@@ -1755,7 +1756,7 @@ Results from the TLS server. Prior to delivering its Certificate message, the
 server must contact the Verifier (not shown in the diagram) to receive the
 Attestation Results that it will use as credentials. The server sends the
 Attestation Results in an <code>Attestation</code> handshake message after the
-<code>EncryptedExtensions</code> message.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
+<code>CertificateVerify</code> message.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
 <span id="name-tls-server-providing-attest"></span><div id="_figure-passport-model2">
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-5.5-2.1">
@@ -1772,14 +1773,15 @@ Exch | + results_request
                                                                v
                                         {EncryptedExtensions}  ^  Server
                                            + results_request   |  Params
-                                         {Attestation}         |
                                          {CertificateRequest}  v
                                                {Certificate}  ^
-                                         {CertificateVerify}  | Auth
+                                         {CertificateVerify}   |
+                                         {Attestation}         | Auth
                                                    {Finished}  v
                                &lt;--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
+     | {Attestation}
      v {Finished}              --------&gt;
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
@@ -2080,17 +2082,16 @@ Exch | + key_share*
                                          + evidence_proposal*  |
                                           + evidence_request*  |
                                           + results_proposal*  |
-                                           + results_request*  |
-                                         {Attestation*}        |  Params
+                                           + results_request*  |  Params
                                         {CertificateRequest*}  v
                                                {Certificate*}  ^
-                                         {Attestation*}        |
-                                         {CertificateVerify*}  | Auth
+                                         {CertificateVerify*}  |
+                                         {Attestation*}        | Auth
                                                    {Finished}  v
                                &lt;--------  [Application Data*]
      ^ {Certificate*}
-Auth | {Attestation*}
-     | {CertificateVerify*}
+Auth | {CertificateVerify*}
+     | {Attestation*}
      v {Finished}              --------&gt;
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
@@ -2168,7 +2169,7 @@ server wants to request Evidence from the client, it <span class="bcp14">MUST</s
 evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
-<code>Attestation</code> handshake message sent after the <code>Certificate</code> message.
+<code>Attestation</code> handshake message sent after the <code>CertificateVerify</code> message.
 The Evidence contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
 the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with the client's TLS identity public key (TIK-C).
@@ -2185,7 +2186,7 @@ types of Evidence the client can challenge the server to return
 in an <code>Attestation</code> handshake message. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the <code>Attestation</code> handshake message sent
-after the EncryptedExtensions by the server. The Evidence
+after the CertificateVerify by the server. The Evidence
 contained in the CMW payload <span class="bcp14">MUST</span> include a secret derived from
 the TLS main secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>)
 in the TEE's signature, along with
@@ -2215,10 +2216,10 @@ Passport Model, clients include the results_proposal and/or the results_request
 extensions in the ClientHello message.<a href="#section-8.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.2.1-2">The results_proposal extension in the ClientHello message indicates the Verifier
 identities from which the client can relay Attestation Results. The client sends the Attestation Results in an
-<code>Attestation</code> handshake message after the <code>Certificate</code> message.<a href="#section-8.2.1-2" class="pilcrow">¶</a></p>
+<code>Attestation</code> handshake message after the <code>CertificateVerify</code> message.<a href="#section-8.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.2.1-3">The results_request extension in the ClientHello message indicates the Verifier
 identities from which the client expects the server to provide Attestation
-Results in an <code>Attestation</code> handshake message sent after the EncryptedExtensions.<a href="#section-8.2.1-3" class="pilcrow">¶</a></p>
+Results in an <code>Attestation</code> handshake message sent after the CertificateVerify.<a href="#section-8.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.2.1-4">The results_proposal and results_request extensions sent in the ClientHello each
 carry a list of supported Verifier identities, sorted by preference.  When the
 client supports only one Verifier, it is a list containing a single element.<a href="#section-8.2.1-4" class="pilcrow">¶</a></p>
@@ -2267,7 +2268,7 @@ wants to request Attestation Results from the client, it <span class="bcp14">MUS
 results_proposal extension in the EncryptedExtensions. This results_proposal
 extension in the EncryptedExtensions then indicates what Verifier the client is
 requested to provide Attestation Results from in an <code>Attestation</code> handshake
-message sent after the <code>Certificate</code> message.  The value conveyed in the
+message sent after the <code>CertificateVerify</code> message.  The value conveyed in the
 results_proposal extension by the server <span class="bcp14">MUST</span> be selected from one of the
 values provided in the results_proposal extension sent in the ClientHello.<a href="#section-8.2.2-3" class="pilcrow">¶</a></p>
 <p id="section-8.2.2-4">If none of the
@@ -2278,7 +2279,7 @@ results_proposal extension in the ServerHello <span class="bcp14">MUST</span> be
 client trusts as issuers of Attestation Results for the server. With the
 results_request extension in the EncryptedExtensions, the server indicates the
 identity of the Verifier who issued the Attestation Results carried in the
-<code>Attestation</code> handshake message sent after the EncryptedExtensions by the
+<code>Attestation</code> handshake message sent after the CertificateVerify by the
 server. The Verifier identity in the results_request extension <span class="bcp14">MUST</span> contain a
 single value selected from the results_request extension in the ClientHello.<a href="#section-8.2.2-5" class="pilcrow">¶</a></p>
 </section>
@@ -2590,10 +2591,10 @@ The key changes include:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
             <p id="appendix-A.1-3.2.1">Introduced new <code>Attestation</code> handshake message for carrying CMW (Conceptual Message Wrapper) payload<a href="#appendix-A.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-3.3">
-            <p id="appendix-A.1-3.3.1"><code>Attestation</code> message sent after EncryptedExtensions when server is attester<a href="#appendix-A.1-3.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-3.3.1"><code>Attestation</code> message sent after CertificateVerify when server is attester<a href="#appendix-A.1-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-3.4">
-            <p id="appendix-A.1-3.4.1"><code>Attestation</code> message sent after Certificate message when client is attester<a href="#appendix-A.1-3.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-3.4.1"><code>Attestation</code> message sent after CertificateVerify message when client is attester<a href="#appendix-A.1-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-3.5">
             <p id="appendix-A.1-3.5.1">Removed attestation-only mode (implementations <span class="bcp14">SHOULD</span> use self-signed X.509 certificates instead)<a href="#appendix-A.1-3.5.1" class="pilcrow">¶</a></p>
