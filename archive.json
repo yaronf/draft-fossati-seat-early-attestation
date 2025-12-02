@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-30T01:40:32.305261+00:00",
+  "timestamp": "2025-12-02T01:24:25.905022+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -49,6 +49,52 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
-  "pulls": []
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOQdsaoc7bWsSl",
+      "title": "Revise author list, add acks",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/1",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-01T09:47:55Z",
+      "updatedAt": "2025-12-01T09:47:55Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 2,
+      "id": "PR_kwDOQdsaoc62XyUA",
+      "title": "Move Hannes Tschofenig and Arto Niemi to Acknowledgements section",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/2",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "- Remove Hannes Tschofenig and Arto Niemi from authors list\r\n- Add Acknowledgements section after IANA Considerations\r\n- Thank Paul Howard, Arto Niemi, and Hannes Tschofenig for contributions to earlier versions\r\n- Fix FIDO-REQS reference: change 'authors:' to 'author:' for consistency\r\n\r\nAddress #1 ",
+      "createdAt": "2025-12-01T15:11:29Z",
+      "updatedAt": "2025-12-01T15:12:15Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "eac3236a4ab58b9b2ff072d96a6924d3dfc66ca2",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "authors",
+      "headRefOid": "c4447d2b37e9734c94499a46599fa5445ea28b8b",
+      "closedAt": "2025-12-01T15:12:15Z",
+      "mergedAt": "2025-12-01T15:12:15Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "f762dfc8dafc5ca3e87b23214ea35540b22509be"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
