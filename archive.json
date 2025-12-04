@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-02T01:24:25.905022+00:00",
+  "timestamp": "2025-12-04T01:24:55.630374+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -55,14 +55,221 @@
       "id": "I_kwDOQdsaoc7bWsSl",
       "title": "Revise author list, add acks",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-12-01T09:47:55Z",
-      "updatedAt": "2025-12-01T09:47:55Z",
+      "updatedAt": "2025-12-02T19:43:19Z",
+      "closedAt": "2025-12-02T19:43:19Z",
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Fixed by #2.",
+          "createdAt": "2025-12-02T19:43:19Z",
+          "updatedAt": "2025-12-02T19:43:19Z"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOQdsaoc7bqy5J",
+      "title": "Clarify trusted_verifier format and encoding",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/3",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "What exactly is the trusted_verifier? What is the format/encoding?",
+      "createdAt": "2025-12-02T11:39:24Z",
+      "updatedAt": "2025-12-02T20:34:32Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Per the EAT document this would be an `iss` claim, so DNS name or maybe URI.",
+          "createdAt": "2025-12-02T20:34:32Z",
+          "updatedAt": "2025-12-02T20:34:32Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOQdsaoc7bqzD4",
+      "title": "Clarify public key encoding for nonce hashing",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/4",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "When hashing the pubkey into the nonce, do we use raw bytes or DER?",
+      "createdAt": "2025-12-02T11:39:32Z",
+      "updatedAt": "2025-12-02T19:32:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "One option is to send the DER-encoded `subjectPublicKeyInfo` as-is.\n\nSPKI or even using the full end-entity certificate as-is might be easier to specify and to implement at the TLS level, but would move the complexity over to the TEE - not a great idea.",
+          "createdAt": "2025-12-02T19:32:11Z",
+          "updatedAt": "2025-12-02T19:32:11Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOQdsaoc7bqzyH",
+      "title": "Clarify interaction with unauthenticated clients",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/5",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "What do we say about unauthenticated attestation, specifically of the client?",
+      "createdAt": "2025-12-02T11:40:22Z",
+      "updatedAt": "2025-12-02T11:40:22Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOQdsaoc7bq0D6",
+      "title": "DTLS applicability and CMW size considerations",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/6",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "DTLS - does everything apply as-is? Specifically, do we need to worry about the CMW's size?",
+      "createdAt": "2025-12-02T11:40:39Z",
+      "updatedAt": "2025-12-02T11:40:39Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOQdsaoc7bq0Nz",
+      "title": "Discuss PSK, HRR, and 0RTT",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/7",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Discuss PSK and HRR, maybe 0RTT.",
+      "createdAt": "2025-12-02T11:40:52Z",
+      "updatedAt": "2025-12-02T11:40:52Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOQdsaoc7bq0my",
+      "title": "Review error handling and alert naming",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/8",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Error handling: \"unsupported evidence\" is the only alert. Is it good for failing verification as well? Maybe rename to \"Evidence rejected\"?",
+      "createdAt": "2025-12-02T11:41:17Z",
+      "updatedAt": "2025-12-02T11:41:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOQdsaoc7bq00V",
+      "title": "Make location of Attestation message less rigid",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/9",
+      "state": "CLOSED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Make location of the new message less rigid: after Certificate and before Finished.",
+      "createdAt": "2025-12-02T11:41:27Z",
+      "updatedAt": "2025-12-02T22:19:24Z",
+      "closedAt": "2025-12-02T22:19:24Z",
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Actually, TLS is *very* rigid about message order. Let's move it from \"after Cert\" to \"after CertVerify\" (and before Finished).",
+          "createdAt": "2025-12-02T20:44:38Z",
+          "updatedAt": "2025-12-02T20:44:38Z"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOQdsaoc7b42ML",
+      "title": "Expand discussion of Extended Key Update",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/11",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "* Where do we add the Attestation messages.\n* The EKU draft does NOT allow for additional messages in the key schedule, so we probably have to rewrite it to add requestor_attestation, responder_attestation.",
+      "createdAt": "2025-12-03T08:41:01Z",
+      "updatedAt": "2025-12-03T14:13:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "body": "EKU draft allows additional messages. ",
+          "createdAt": "2025-12-03T13:33:54Z",
+          "updatedAt": "2025-12-03T13:33:54Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "You're probably right. But in plain TLS, the key schedule is defined to cover ALL messages between Client Hello and X, including new ones that are not defined by the standard. In EKU, the key schedule covers exactly the first two EKU messages.",
+          "createdAt": "2025-12-03T14:13:49Z",
+          "updatedAt": "2025-12-03T14:13:49Z"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "I_kwDOQdsaoc7b9EY8",
+      "title": "Authentication with self-signed certificates",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/12",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "It is not clear to me how the peers will mutually authenticate self-signed certificates, it needs more discussion. ",
+      "createdAt": "2025-12-03T13:20:05Z",
+      "updatedAt": "2025-12-03T13:20:05Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 13,
+      "id": "I_kwDOQdsaoc7b_L2d",
+      "title": "validation of attestation secret",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/13",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "attestation_secret is binding the public key but it needs to be validated by peer otherwise it is of no use. ",
+      "createdAt": "2025-12-03T15:43:09Z",
+      "updatedAt": "2025-12-03T15:43:09Z",
       "closedAt": null,
       "comments": []
     }
@@ -92,6 +299,34 @@
       "mergedBy": "yaronf",
       "mergeCommit": {
         "oid": "f762dfc8dafc5ca3e87b23214ea35540b22509be"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOQdsaoc62s-TV",
+      "title": "Move Attestation message to after CertificateVerify (issue #9)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/10",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "- Update all client-side attestation references: move from after Certificate to after CertificateVerify\r\n- Update all server-side attestation references: move from after EncryptedExtensions to after CertificateVerify\r\n- Update all message flow diagrams to show correct order: Certificate -> CertificateVerify -> Attestation -> Finished\r\n- Fix Handshake Overview section to reflect correct message order\r\n- Update document history note\r\n\r\nCloses #9.",
+      "createdAt": "2025-12-02T22:18:43Z",
+      "updatedAt": "2025-12-02T22:19:42Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "f762dfc8dafc5ca3e87b23214ea35540b22509be",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-9",
+      "headRefOid": "06bd92835bf2ac7cab366e9578015d75e100e371",
+      "closedAt": "2025-12-02T22:19:23Z",
+      "mergedAt": "2025-12-02T22:19:23Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "48384af3c5d2b572e5927f6b35d8d8b48462e990"
       },
       "comments": [],
       "reviews": []
