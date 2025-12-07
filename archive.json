@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-04T01:24:55.630374+00:00",
+  "timestamp": "2025-12-07T01:40:56.566704+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -222,7 +222,7 @@
       "labels": [],
       "body": "* Where do we add the Attestation messages.\n* The EKU draft does NOT allow for additional messages in the key schedule, so we probably have to rewrite it to add requestor_attestation, responder_attestation.",
       "createdAt": "2025-12-03T08:41:01Z",
-      "updatedAt": "2025-12-03T14:13:49Z",
+      "updatedAt": "2025-12-05T10:25:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -238,6 +238,13 @@
           "body": "You're probably right. But in plain TLS, the key schedule is defined to cover ALL messages between Client Hello and X, including new ones that are not defined by the standard. In EKU, the key schedule covers exactly the first two EKU messages.",
           "createdAt": "2025-12-03T14:13:49Z",
           "updatedAt": "2025-12-03T14:13:49Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "The second pair of messages does NOT serve the same purpose as Finished, they basically ensure that they're tied to the right EKU, under DTLS message loss conditions. But it's still good to include the Attestation messages in the hash for the same reason: to ensure they are not dropped.",
+          "createdAt": "2025-12-05T10:25:26Z",
+          "updatedAt": "2025-12-05T10:25:26Z"
         }
       ]
     },
@@ -253,9 +260,17 @@
       "labels": [],
       "body": "It is not clear to me how the peers will mutually authenticate self-signed certificates, it needs more discussion. ",
       "createdAt": "2025-12-03T13:20:05Z",
-      "updatedAt": "2025-12-03T13:20:05Z",
+      "updatedAt": "2025-12-04T12:36:08Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "The reason we mention self-signed certs in Sec. 3.1 is that some people might want to use this protocol *before* the TLS cert is provisioned, and as part of its provisioning. I agree that this might confuse readers more than it helps them.",
+          "createdAt": "2025-12-04T12:36:08Z",
+          "updatedAt": "2025-12-04T12:36:08Z"
+        }
+      ]
     },
     {
       "number": 13,
@@ -269,9 +284,41 @@
       "labels": [],
       "body": "attestation_secret is binding the public key but it needs to be validated by peer otherwise it is of no use. ",
       "createdAt": "2025-12-03T15:43:09Z",
-      "updatedAt": "2025-12-03T15:43:09Z",
+      "updatedAt": "2025-12-04T12:27:07Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Is this sufficiently addressed in [Sec. 5.7](https://www.sheffer.org/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html#name-the-tls-stacks-interface-to)?",
+          "createdAt": "2025-12-04T12:27:07Z",
+          "updatedAt": "2025-12-04T12:27:07Z"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOQdsaoc7cHkXW",
+      "title": "Evidence Does Not Prevent Attestation of Non-TEE-Resident Identity Keys (TIK)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/14",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "It assumes that the TLS Identity Key (TIK) private key is generated and held inside the TEE. However, the protocol as specified does not prevent a platform from attesting a public key whose private key is actually external to the TEE.",
+      "createdAt": "2025-12-04T05:21:20Z",
+      "updatedAt": "2025-12-04T12:33:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "It's a discussion we can have. My personal opinion is that we don't want to constrain the implementation too much. Others might disagree.\n\nTo me this is similar to the way we trust the TLS stack not to leak its session keys. Eventually we trust the software/system, but we can increase the level of trust by using open source, formally validated software etc.",
+          "createdAt": "2025-12-04T12:33:31Z",
+          "updatedAt": "2025-12-04T12:33:31Z"
+        }
+      ]
     }
   ],
   "pulls": [
