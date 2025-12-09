@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-07T01:40:56.566704+00:00",
+  "timestamp": "2025-12-09T01:24:52.714893+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -377,6 +377,171 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOQdsaoc63mfgi",
+      "title": "Add Appendix ",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/15",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-08T06:51:35Z",
+      "updatedAt": "2025-12-08T19:12:39Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "48384af3c5d2b572e5927f6b35d8d8b48462e990",
+      "headRepository": "tireddy2/draft-fossati-seat-early-attestation",
+      "headRefName": "main",
+      "headRefOid": "c0e2a1da4925a1e9ae00d08681564feeba065c19",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Tp2Jl",
+          "commit": {
+            "abbreviatedOid": "894d02e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-12-08T09:15:00Z",
+          "updatedAt": "2025-12-08T11:09:20Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "There's a back separator already, a few lines earlier. Please try to build the doc locally and hopefully it'll fail :-)",
+              "createdAt": "2025-12-08T09:15:00Z",
+              "updatedAt": "2025-12-08T11:09:20Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "PAKE: add a ref to the draft.",
+              "createdAt": "2025-12-08T09:56:46Z",
+              "updatedAt": "2025-12-08T11:09:20Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "Not quite: when we send Att is message flight 2 and 3, it is protected from a passive attacker by the DH exchange but still vulnerable to an active attacker. In that, Att is similar to the Certificate message.",
+              "createdAt": "2025-12-08T09:58:49Z",
+              "updatedAt": "2025-12-08T11:09:20Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "ref to Section 4.2.6 of RFC 8446.",
+              "createdAt": "2025-12-08T11:07:33Z",
+              "updatedAt": "2025-12-08T11:09:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Tt-70",
+          "commit": {
+            "abbreviatedOid": "894d02e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-08T13:17:01Z",
+          "updatedAt": "2025-12-08T13:17:01Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Thanks, fixed. ",
+              "createdAt": "2025-12-08T13:17:01Z",
+              "updatedAt": "2025-12-08T13:17:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Tt_Yg",
+          "commit": {
+            "abbreviatedOid": "894d02e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-08T13:17:15Z",
+          "updatedAt": "2025-12-08T13:17:15Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Added reference. ",
+              "createdAt": "2025-12-08T13:17:15Z",
+              "updatedAt": "2025-12-08T13:17:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7TuAYm",
+          "commit": {
+            "abbreviatedOid": "894d02e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-08T13:17:58Z",
+          "updatedAt": "2025-12-08T13:17:58Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "Added",
+              "createdAt": "2025-12-08T13:17:58Z",
+              "updatedAt": "2025-12-08T13:17:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7TuFUS",
+          "commit": {
+            "abbreviatedOid": "894d02e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-08T13:21:39Z",
+          "updatedAt": "2025-12-08T13:21:40Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "I missed it, removed the paragraph. ",
+              "createdAt": "2025-12-08T13:21:39Z",
+              "updatedAt": "2025-12-08T13:21:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7T0Lay",
+          "commit": {
+            "abbreviatedOid": "c0e2a1d"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-08T19:12:38Z",
+          "updatedAt": "2025-12-08T19:12:39Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "No, the reference is https://datatracker.ietf.org/doc/draft-ietf-tls-pake/ (it's a very new draft but I agree it's relevant).",
+              "createdAt": "2025-12-08T19:12:39Z",
+              "updatedAt": "2025-12-08T19:12:39Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
