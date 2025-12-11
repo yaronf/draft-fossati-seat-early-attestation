@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-09T01:24:52.714893+00:00",
+  "timestamp": "2025-12-11T01:27:30.405929+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -383,25 +383,35 @@
       "id": "PR_kwDOQdsaoc63mfgi",
       "title": "Add Appendix ",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/15",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-12-08T06:51:35Z",
-      "updatedAt": "2025-12-08T19:12:39Z",
+      "updatedAt": "2025-12-09T12:42:33Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "48384af3c5d2b572e5927f6b35d8d8b48462e990",
       "headRepository": "tireddy2/draft-fossati-seat-early-attestation",
       "headRefName": "main",
-      "headRefOid": "c0e2a1da4925a1e9ae00d08681564feeba065c19",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "34183b0c45ff2fab944c28061f3e55c95b114685",
+      "closedAt": "2025-12-09T12:42:33Z",
+      "mergedAt": "2025-12-09T12:42:33Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "3d9f4b0e0634067d1b4bf0d53fbc5d90d45217c8"
+      },
+      "comments": [
+        {
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Build fails (trailing spaces).\r\n\r\nFixed. ",
+          "createdAt": "2025-12-09T10:31:24Z",
+          "updatedAt": "2025-12-09T10:31:24Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOQdsaoc7Tp2Jl",
@@ -447,7 +457,7 @@
             "abbreviatedOid": "894d02e"
           },
           "author": "tireddy2",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-12-08T13:17:01Z",
@@ -467,7 +477,7 @@
             "abbreviatedOid": "894d02e"
           },
           "author": "tireddy2",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-12-08T13:17:15Z",
@@ -487,7 +497,7 @@
             "abbreviatedOid": "894d02e"
           },
           "author": "tireddy2",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-12-08T13:17:58Z",
@@ -507,7 +517,7 @@
             "abbreviatedOid": "894d02e"
           },
           "author": "tireddy2",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-12-08T13:21:39Z",
@@ -538,6 +548,271 @@
               "body": "No, the reference is https://datatracker.ietf.org/doc/draft-ietf-tls-pake/ (it's a very new draft but I agree it's relevant).",
               "createdAt": "2025-12-08T19:12:39Z",
               "updatedAt": "2025-12-08T19:12:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7T6-NB",
+          "commit": {
+            "abbreviatedOid": "c0e2a1d"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-09T04:55:20Z",
+          "updatedAt": "2025-12-09T04:55:21Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Fixed. ",
+              "createdAt": "2025-12-09T04:55:20Z",
+              "updatedAt": "2025-12-09T04:55:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7T_NvM",
+          "commit": {
+            "abbreviatedOid": "3b52d83"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "Build fails (trailing spaces).",
+          "createdAt": "2025-12-09T10:14:47Z",
+          "updatedAt": "2025-12-09T10:14:47Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UBtMm",
+          "commit": {
+            "abbreviatedOid": "34183b0"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-09T12:42:24Z",
+          "updatedAt": "2025-12-09T12:42:24Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOQdsaoc636rOW",
+      "title": "Update to re-attestation",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/16",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-09T13:18:55Z",
+      "updatedAt": "2025-12-10T14:59:00Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "3d9f4b0e0634067d1b4bf0d53fbc5d90d45217c8",
+      "headRepository": "tireddy2/draft-fossati-seat-early-attestation",
+      "headRefName": "main",
+      "headRefOid": "7fb1ed6f13e66c4ca1924c1276ecca7c5f2e2d8f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7UJXGj",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-12-09T19:03:31Z",
+          "updatedAt": "2025-12-09T19:17:44Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "Let's be consistent: Reattestation (one word).",
+              "createdAt": "2025-12-09T19:03:31Z",
+              "updatedAt": "2025-12-09T19:17:44Z"
+            },
+            {
+              "originalPosition": 73,
+              "body": "```suggestion\nReattestation is always associated with the completion of an Extended Key Update (EKU) exchange\n{{!I-D.ietf-tls-extended-key-update}}. Extended Key Update injects fresh key-exchange input into\nthe key schedule and produces a\n```",
+              "createdAt": "2025-12-09T19:09:14Z",
+              "updatedAt": "2025-12-09T19:17:44Z"
+            },
+            {
+              "originalPosition": 108,
+              "body": "```suggestion\n2. sends a new `Attestation` handshake message containing the updated CMW payload. The `Attestation` message MUST be sent immediately before the attesting peer's `EKU(new_key_update)` message.\n```",
+              "createdAt": "2025-12-09T19:15:36Z",
+              "updatedAt": "2025-12-09T19:17:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UO5Ry",
+          "commit": {
+            "abbreviatedOid": "24e8ac9"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T04:39:58Z",
+          "updatedAt": "2025-12-10T04:39:58Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "```suggestion\r\n## ReAttestation {#reattestation}\r\n```",
+              "createdAt": "2025-12-10T04:39:58Z",
+              "updatedAt": "2025-12-10T04:39:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UO65u",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T04:44:19Z",
+          "updatedAt": "2025-12-10T04:44:20Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "Fixed in all the places. ",
+              "createdAt": "2025-12-10T04:44:19Z",
+              "updatedAt": "2025-12-10T04:44:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UPC7N",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T05:00:33Z",
+          "updatedAt": "2025-12-10T05:00:34Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "No, please see sections 5 and 6 in the extended key update draft, In case of TCP, after the initiator sends `EKU(new_key_update)` the send keys are updated. In case of UDP, after the initiator receives the responder\u2019s `EKU(new_key_update)`, the initiator will update its send key and epoch value.\r\n\r\nI can add the following line:\r\nThe `Attestation` message MUST be sent immediately after the attesting peer's send key is updated.",
+              "createdAt": "2025-12-10T05:00:34Z",
+              "updatedAt": "2025-12-10T05:00:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UWAyP",
+          "commit": {
+            "abbreviatedOid": "24e8ac9"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T13:25:37Z",
+          "updatedAt": "2025-12-10T13:25:37Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "Let's not use mixed cases please. Reattestation.",
+              "createdAt": "2025-12-10T13:25:37Z",
+              "updatedAt": "2025-12-10T13:25:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UWEHm",
+          "commit": {
+            "abbreviatedOid": "24e8ac9"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T13:29:14Z",
+          "updatedAt": "2025-12-10T13:29:14Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "Fixed. ",
+              "createdAt": "2025-12-10T13:29:14Z",
+              "updatedAt": "2025-12-10T13:29:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UWOWI",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T13:39:06Z",
+          "updatedAt": "2025-12-10T13:42:17Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "I think from a state machine POV it's easier to have Att before `EKU(new_key_update)`. It's also less confusing because you're still using the old traffic secrets to encrypt it (as we discussed, we cannot guarantee confidentiality against an active attacker anyway). Also, main_N+1 is already available at this point so I don't see why we couldn't have ATT *before* the EKU message. \n\nLastly, including it before EKU(new_key_update) makes it simpler to include a hash of Att in EKU(new_key_update) itself - which is important for reliability, not for security. Think DTLS where the Att message gets dropped.",
+              "createdAt": "2025-12-10T13:39:06Z",
+              "updatedAt": "2025-12-10T13:42:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UXKlr",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T14:30:29Z",
+          "updatedAt": "2025-12-10T14:30:29Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "In our case, we need to send the Attestation message after EKU completes and after the \u201cUse of Post-Handshake Authentication and Exported Authenticators with Extended Key Update\u201d step in order to address the MITM attack described in https://github.com/tlswg/tls-key-update/pull/89, EKU by itself does not guarantee that both peers enter the same new key schedule; the authenticated transition is what detects any active interference.\r\n\r\nBecause attestation relies on Main Secret N+1, we only send it once that transition has been authenticated. I will reference that section directly in the draft to make the ordering clearer.",
+              "createdAt": "2025-12-10T14:30:29Z",
+              "updatedAt": "2025-12-10T14:30:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UXvYO",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-10T14:59:00Z",
+          "updatedAt": "2025-12-10T14:59:00Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "The value Main Secret N+1 already exists after the first message exchange so it can be used at that point. I agree both peers only advance the key schedule after message 3 and 4. I do agree that just like with the regular Finished, we should say that both peers should only update their view of the peer's attestation state after they receive and validate messages 3+4.\r\n\r\nAnd again, I think including Att in EKU(NKU) is important for the reliability of the protocol.",
+              "createdAt": "2025-12-10T14:59:00Z",
+              "updatedAt": "2025-12-10T14:59:00Z"
             }
           ]
         }
