@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-11T01:27:30.405929+00:00",
+  "timestamp": "2025-12-14T01:41:16.521510+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -611,13 +611,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-09T13:18:55Z",
-      "updatedAt": "2025-12-10T14:59:00Z",
+      "updatedAt": "2025-12-13T13:17:25Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "3d9f4b0e0634067d1b4bf0d53fbc5d90d45217c8",
       "headRepository": "tireddy2/draft-fossati-seat-early-attestation",
       "headRefName": "main",
-      "headRefOid": "7fb1ed6f13e66c4ca1924c1276ecca7c5f2e2d8f",
+      "headRefOid": "8c68fdef0c369ef666dcb84436885c8554277ff5",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -813,6 +813,456 @@
               "body": "The value Main Secret N+1 already exists after the first message exchange so it can be used at that point. I agree both peers only advance the key schedule after message 3 and 4. I do agree that just like with the regular Finished, we should say that both peers should only update their view of the peer's attestation state after they receive and validate messages 3+4.\r\n\r\nAnd again, I think including Att in EKU(NKU) is important for the reliability of the protocol.",
               "createdAt": "2025-12-10T14:59:00Z",
               "updatedAt": "2025-12-10T14:59:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Uhy_B",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T04:54:40Z",
+          "updatedAt": "2025-12-11T04:54:40Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "NKU is defined purely as an acknowledgment that the traffic keys have been updated. It is intentionally not extensible, and overloading it with additional semantics would break that design goal. Because of that, I don\u2019t think NKU is the right place to carry Attestation.\r\n\r\nSince attestation messages use the standard DTLS handshake re-transmission mechanism, reliability problem is already solved by the protocol. \r\n\r\nThe sequencing I am proposing is:\r\n\r\n1) Run EKU.\r\n2) Perform the authenticated-transition step to ensure no MiTM.\r\n3) Exchange attestation messages.\r\n\r\nHappy to refine the wording further, but this seems like the cleanest and least invasive design.",
+              "createdAt": "2025-12-11T04:54:40Z",
+              "updatedAt": "2025-12-11T04:54:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UlNKS",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T09:30:39Z",
+          "updatedAt": "2025-12-11T10:12:45Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "Isn't the last sentence here redundant, given the second-to-last sentence?",
+              "createdAt": "2025-12-11T09:30:39Z",
+              "updatedAt": "2025-12-11T10:12:45Z"
+            },
+            {
+              "originalPosition": 101,
+              "body": "I'm not sure I follow why the EKU part is needed if you're already deriving from `Main Secret N+1`, which includes the main source of entropy that EKU gives you.",
+              "createdAt": "2025-12-11T09:38:01Z",
+              "updatedAt": "2025-12-11T10:12:45Z"
+            },
+            {
+              "originalPosition": 69,
+              "body": "Do we need to expand on whether the opposite is also true (i.e., whenever there's an EKU => there's reattestation)?",
+              "createdAt": "2025-12-11T09:58:55Z",
+              "updatedAt": "2025-12-11T10:12:45Z"
+            },
+            {
+              "originalPosition": 108,
+              "body": "> MITM attack described in https://github.com/tlswg/tls-key-update/pull/89\r\n\r\nCan you please provide some more details about that attack? Can be somewhere out of band, or in the PR you link to, I can't follow how the attack works.",
+              "createdAt": "2025-12-11T10:11:43Z",
+              "updatedAt": "2025-12-11T10:12:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UmOf8",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T10:37:13Z",
+          "updatedAt": "2025-12-11T10:37:13Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "It is discussed in the https://github.com/tlswg/tls-key-update/pull/89, EKU provides fresh traffic secrets, but EKU alone does not authenticate that both endpoints derived the same updated keys. An attacker that temporarily compromises an endpoint may later act as an active MitM capable of interfering with the EKU exchange. Such an attacker can cause the peers to transition to divergent traffic secrets without detection, but cannot compromise the endpoint to derive secrets after the new epoch is established. To confirm that both peers transitioned to the same new key state, TLS 1.3 provides two mechanisms: Post-Handshake Certificate-Based Client Authentication and Exported Authenticators {{!RFC9261}}.",
+              "createdAt": "2025-12-11T10:37:13Z",
+              "updatedAt": "2025-12-11T10:37:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UmPa3",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T10:38:14Z",
+          "updatedAt": "2025-12-11T10:38:14Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "Yes, I will remove it. ",
+              "createdAt": "2025-12-11T10:38:14Z",
+              "updatedAt": "2025-12-11T10:38:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UmW4e",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T10:46:02Z",
+          "updatedAt": "2025-12-11T10:46:02Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "TLS peers that support EKU may or may not support the draft but TLS peers which support our draft must support EKU.",
+              "createdAt": "2025-12-11T10:46:02Z",
+              "updatedAt": "2025-12-11T10:46:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UonnW",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T13:21:34Z",
+          "updatedAt": "2025-12-11T13:21:35Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "(I really think we should meet, PR threads are not the ideal medium for this kind of discussion.)\r\n\r\n> NKU is defined purely as an acknowledgment that the traffic keys have been updated. It is intentionally not extensible, and overloading it with additional semantics would break that design goal. Because of that, I don\u2019t think NKU is the right place to carry Attestation.\r\n\r\nI'm not proposing to extend NKU, I'm proposing to say that the Attestation message should (as a separate message) immediately precede NKU. So by the time you receive NKU it is clear if you have or haven't received Att.\r\n\r\n> \r\n> Since attestation messages use the standard DTLS handshake re-transmission mechanism, reliability problem is already solved by the protocol.\r\n\r\nI'm not sure how this could work unless we define an \"ack\" message, e.g. an empty Att message.\r\n\r\n> \r\n> The sequencing I am proposing is:\r\n> \r\n> 1. Run EKU.\r\n> 2. Perform the authenticated-transition step to ensure no MiTM.\r\n> 3. Exchange attestation messages.\r\n> \r\n\r\nAnd my proposal is:\r\n1. Run first exchange of EKU.\r\n2. Run second exchange of EKU, where the client and/or the server can prepend an Attestation message to the NKU.\r\n3. Now that both are authenticated, transition the TLS state and accept attestation (e.g. dispatch a callback to the application).\r\n\r\n> Happy to refine the wording further, but this seems like the cleanest and least invasive design.\r\n\r\n",
+              "createdAt": "2025-12-11T13:21:34Z",
+              "updatedAt": "2025-12-11T13:21:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Uo5pG",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T13:37:44Z",
+          "updatedAt": "2025-12-11T13:37:44Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "Updated text as follows:\r\n\r\nReattestation is tied to the completion of an Extended Key Update (EKU) exchange {{!I-D.ietf-tls-extended-key-update}}. TLS peers that require reattestation MUST support EKU, Reattestation is always associated with the completion of an Extended Key Update (EKU) exchange since reattestation depends on the key schedule update defined in the EKU draft.",
+              "createdAt": "2025-12-11T13:37:44Z",
+              "updatedAt": "2025-12-11T13:37:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UpDZV",
+          "commit": {
+            "abbreviatedOid": "7fb1ed6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T13:47:42Z",
+          "updatedAt": "2025-12-11T13:47:42Z",
+          "comments": [
+            {
+              "originalPosition": 101,
+              "body": "In TLS, Derive-Secret is typically used with the corresponding handshake messages as its input. Using the EKU messages follows that established pattern.",
+              "createdAt": "2025-12-11T13:47:42Z",
+              "updatedAt": "2025-12-11T13:47:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UpVjv",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T14:05:14Z",
+          "updatedAt": "2025-12-11T14:05:14Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "Yes, we need a call to discuss this. \r\nDTLS already defines an implicit acknowledgement mechanism for handshake messages, so Att does not need to define its own \u201cack\u201d. DTLS ACK would suffice. \r\n\r\nNKU is designed for single purpose: acknowledgment of key schedule advancement. Allowing arbitrary handshake messages to precede it creates an interleaving of unrelated handshake flows, complicating the state machine.\r\n\r\nCan you please explain the threat with my proposal ?\r\n",
+              "createdAt": "2025-12-11T14:05:14Z",
+              "updatedAt": "2025-12-11T14:05:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7UshVO",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-11T17:05:34Z",
+          "updatedAt": "2025-12-11T17:05:34Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "Thank you Tiru, I was not aware of the DTLS mechanism and the ACK message. My remaining concern is about the state machine: suppose I'm the server and I just completed EKU with the client, and I'm expecting an Attestation message from the client. How do I know when to expect it, and when am I allowed to fail the connection if I don't receive it?\r\n\r\nThe answer to this question is clear in my proposal, because as soon as NKU is received I know that the handshake is done. That's why I think this option simplifies rather than complicates the state machine.",
+              "createdAt": "2025-12-11T17:05:34Z",
+              "updatedAt": "2025-12-11T17:05:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U4hzT",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T12:12:53Z",
+          "updatedAt": "2025-12-12T12:12:53Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "I added a new section \"DTLS considerations\", please check. \r\n\r\nI now understand the problem with the state machine, I see two alternatives:\r\n\r\na) The `Attestation` message MUST be sent immediately before the attesting peer's `EKU(new_key_update)` message. However, the receiving peer MUST NOT process Attestation until the EKU exchange and the authenticated transition step have completed. This ensures that attestation bound to Main Secret N+1 is accepted only after both peers have confirmed that they share the same `Main Secret N+1`.\r\n\r\nOR \r\n\r\na) we could introduce a new TLS handshake message (\"attestation_request\") that can be sent after EKU and the authenticated-transition step are complete. The receiving peer would then send a regular Attestation handshake message, using the freshly derived attestation secret. ",
+              "createdAt": "2025-12-12T12:12:53Z",
+              "updatedAt": "2025-12-12T12:12:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U5uN3",
+          "commit": {
+            "abbreviatedOid": "21e5038"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T13:50:40Z",
+          "updatedAt": "2025-12-12T13:50:40Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "Option A is what I was proposing, and it still is my preference. (With one minor change, the protocol allows for *both* peers to attest).\r\n\r\nOption B is more complicated IMO. What makes it complicated is that in our design, either of the peers or both can send an Attestation message, and so the new state machine should accommodate all three of these options.",
+              "createdAt": "2025-12-12T13:50:40Z",
+              "updatedAt": "2025-12-12T13:57:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U6N8W",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T14:25:26Z",
+          "updatedAt": "2025-12-12T14:25:27Z",
+          "comments": [
+            {
+              "originalPosition": 108,
+              "body": "I updated the draft to use Option A. ",
+              "createdAt": "2025-12-12T14:25:26Z",
+              "updatedAt": "2025-12-12T14:25:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U6d2Q",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-12-12T14:42:06Z",
+          "updatedAt": "2025-12-12T14:52:08Z",
+          "comments": [
+            {
+              "originalPosition": 49,
+              "body": "```suggestion\nThe Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.\n```\n\nRemoved the whole ACK discussion because I think it's not needed now.\n\n```\nAtt, NKU -->\n         <-- Att, NKU\nAck?     -->\n```\n\nThe first Att is acknowledged by the second flight. Should there be an explicit Ack for the second flight? Even if there is, it's the same as you'd have for NKU in regular EKU, and there's nothing new for Attestation.",
+              "createdAt": "2025-12-12T14:42:06Z",
+              "updatedAt": "2025-12-12T14:52:08Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "This paragraph is also redundant now.",
+              "createdAt": "2025-12-12T14:42:52Z",
+              "updatedAt": "2025-12-12T14:52:08Z"
+            },
+            {
+              "originalPosition": 86,
+              "body": "This paragraph may be true for DTLS 1.2, but my understanding of EKU in DTLS 1.3 is that it is self-contained, and the transition is completed without needing application-level mechanisms.",
+              "createdAt": "2025-12-12T14:48:01Z",
+              "updatedAt": "2025-12-12T14:52:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U6460",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T15:03:16Z",
+          "updatedAt": "2025-12-12T15:03:16Z",
+          "comments": [
+            {
+              "originalPosition": 49,
+              "body": "Yes, DTLS ACK is sent by the initiator for the NKU from the responder (see step 9 in https://datatracker.ietf.org/doc/draft-ietf-tls-extended-key-update/) ",
+              "createdAt": "2025-12-12T15:03:16Z",
+              "updatedAt": "2025-12-12T15:03:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U68LV",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T15:05:22Z",
+          "updatedAt": "2025-12-12T15:05:22Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "I don't get the comment, please elaborate. ",
+              "createdAt": "2025-12-12T15:05:22Z",
+              "updatedAt": "2025-12-12T15:05:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U7iRO",
+          "commit": {
+            "abbreviatedOid": "8c68fde"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T15:36:38Z",
+          "updatedAt": "2025-12-12T15:36:38Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "My understanding is that EKU in DTLS 1.3 *does* guarantee that both peers transition to N+1, and an attacker can at most delay this transition.\r\n\r\nYour text implies that a higher level mechanism (Exporter or post-HS client auth) must be used to ensure that, and I don't think this is the case. And if it is, it should be spelled out much better in the EKU draft.\r\n\r\nEdited: sorry, I did not realize I should be reading the Editor's Copy of EKU. Having read it now, I honestly don't know what we should do now. Does the new Sec. 11 of EKU say that EKU is not fit for use in regular applications that are not using exporters?",
+              "createdAt": "2025-12-12T15:36:38Z",
+              "updatedAt": "2025-12-12T15:47:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7U8om2",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-12T16:29:53Z",
+          "updatedAt": "2025-12-12T16:29:53Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "Reading more of the new EKU draft: under your own assumptions (new Sec. 12.1), the attack could be mitigated if NKU were to sign the hash with each peer's TLS private key.\r\n\r\nThis would be a significant (and late) change. It also wouldn't be effective if your assumption that the private key is well protected doesn't hold. But I think it's worth a discussion. Anything we can do at the TLS level is better than putting the responsibility on the application.",
+              "createdAt": "2025-12-12T16:29:53Z",
+              "updatedAt": "2025-12-12T16:29:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7VCd7x",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-13T05:18:51Z",
+          "updatedAt": "2025-12-13T05:18:51Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "Use of exporter is not mandatory, post-handshake server authentication can also address the problem. ",
+              "createdAt": "2025-12-13T05:18:51Z",
+              "updatedAt": "2025-12-13T05:18:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7VCkRl",
+          "commit": {
+            "abbreviatedOid": "8dd7868"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-13T05:50:27Z",
+          "updatedAt": "2025-12-13T05:50:27Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "Att, NKU  --> \r\n                <-- ACK for Att\r\n                <-- ACK for NKU (optional to indicate NKU response will be delayed).\r\n                <-- Att, NKU\r\nACK for Att -->\r\nACK for NKU -->\r\n\r\nIn DTLS, ACK is sent for handshake messages that is sent without any expected response.\r\n",
+              "createdAt": "2025-12-13T05:50:27Z",
+              "updatedAt": "2025-12-13T05:50:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7VDK9o",
+          "commit": {
+            "abbreviatedOid": "8c68fde"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-13T13:17:25Z",
+          "updatedAt": "2025-12-13T13:17:25Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "I think you mean post-HS *client* auth, right?\n\nAnd I think neither of them are likely to be used by most implementations. IMHO most will just set a timer to do EKU+reattestation at the TLS level every once in a while, without disturbing the application data flow.\n\nSo my concrete suggestion is to move this paragraph to be a section in the security considerations, and then we could either describe the attack and mitigations explicitly, or else just say that the security considerations of EKU (in particular, Sec. 12.1) apply here as well.",
+              "createdAt": "2025-12-13T13:17:25Z",
+              "updatedAt": "2025-12-13T13:17:26Z"
             }
           ]
         }
