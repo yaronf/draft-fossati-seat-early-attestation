@@ -56,6 +56,12 @@ author:
        organization: Linaro
        email: thomas.fossati@linaro.org
 
+ -
+       ins: T. Reddy
+       name: Tirumaleswar Reddy
+       organization: Nokia
+       email: k.tirumaleswar_reddy@nokia.com
+
 normative:
   I-D.ietf-tls-rfc8446bis: tls13
   I-D.ietf-rats-msg-wrap: cmw
@@ -210,10 +216,6 @@ Attestation when used alone is vulnerable to identity spoofing attacks, in parti
 We RECOMMEND that regular applications use authentication and attestation in tandem, to gain the full security guarantees of an authenticated TLS handshake (for the peer/peers being authenticated) as
 well as guarantees of platform integrity.
 
-If attestation-only authentication is desired (e.g., for specialized use cases including initial
-provisioning of the TLS stack), implementations SHOULD use self-signed X.509 certificates. In these cases, additional security controls SHOULD be provided,
-such as hardware-enforced time limitations, or use of platform-level APIs in the case of cloud infrastructure.
-
 ## Integration into the TLS Handshake
 
 The lightweight integration of attestation into the TLS handshake is designed to have
@@ -353,8 +355,6 @@ attestation, and the other uses the Background Check Model.
 
 The handshake defined here is analogous to certificate-based authentication in a regular TLS handshake.
 The peer being attested first proves possession of the private key using the CertificateVerify message, which remains unchanged from baseline TLS. Following that, the TLS Identity Key (TIK) is attested by the TEE, with attestation being carried in a new Attestation handshake message (see {{attestation-message-section}}).
-
-The protocol combines attestation with X.509 certificate authentication. If attestation-only authentication is desired, implementations SHOULD use self-signed X.509 certificates.
 
 The attestation Evidence or Attestation Results are conveyed in an `Attestation`
 handshake message (see {{attestation-message-section}}), which carries a CMW
@@ -577,9 +577,6 @@ s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation"
 This ensures that each attestation secret is bound to the specific TLS public
 key being attested.
 
-<cref> TODO: Define key derivation for Extended Key Update (reattestation) as
-described in {{reattestation}}. </cref>
-
 ## The TLS Stack's Interface to the TEE
 
 When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
@@ -592,6 +589,14 @@ nonce. At the very least, the nonce SHOULD be the result of HKDF with an allowli
 ensure that the software layer above it is endorsed.
 * The TEE itself, when possible, SHOULD generate the nonce by running HKDF with an allowlisted label and if it holds the TIK, SHOULD
 validate the pubic key.
+
+# DTLS Considerations
+
+The Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.
+
+In DTLS, handshake messages that do not solicit a response are acknowledged using the DTLS ACK message. Because the Attestation handshake message does not elicit a response, the receiving peer MUST send a DTLS ACK upon receipt of the Attestation message. This ACK confirms only that the message was received; it does not indicate that attestation appraisal has completed.
+
+Once the attester receives the ACK, it MUST stop retransmitting the Attestation message. The receiving peer performs attestation appraisal asynchronously and applies its authorization policy once appraisal results become available.
 
 # After The Initial Handshake {#after-handshake}
 
@@ -618,20 +623,63 @@ verification is needed to ensure the peer's platform and workload remain in a
 trustworthy state. If the client wishes to retain a long-running connection, it SHOULD
 perform reattestation {{reattestation}} periodically, as per local policy.
 
-## Reattestation and Extended Key Update {#reattestation}
+## Reattestation {#reattestation}
 
 Over time, attestation Evidence or Attestation Results may become stale and
-require refresh. This document supports reattestation using Extended Key Update
-(EKU) as defined in {{I-D.ietf-tls-extended-key-update}}.
+require refresh. Long-lived TLS connections require updated assurance that
+the peer continues to operate in a trustworthy state. This document
+therefore supports reattestation, in which either peer MAY request fresh
+Evidence at any time post-handshake. The attester MUST generate evidence
+using a freshly derived attestation_secret.
 
-Extended Key Update provides a 4-message handshake that can be used similarly
-to the initial handshake for reattestation purposes. When performing
-reattestation, both peers provide fresh entropy in the KeyShare messages, and this
-ensures freshness of the
-attestation Evidence or Attestation Results. A secret value is derived
-(see {{crypto-ops}}) from the
-EKU handshake messages and included in the TEE's signature of the Evidence or
-AttestationResults within the CMW, as specified in {{attestation-message-section}}.
+Reattestation is tied to the completion of an Extended Key Update (EKU) exchange {{!I-D.ietf-tls-extended-key-update}}. TLS peers that require reattestation MUST support EKU,
+since reattestation depends on the key schedule update defined in the EKU draft.
+The first two messages of an EKU exchange introduce fresh key-exchange input and
+make `Main Secret N+1` available to both peers.
+
+The Attestation message MUST be sent immediately before the attestor sends
+its EKU(new_key_update) message. Once `Main Secret N+1` is available
+(after the first two EKU messages), the attester derives a new
+attestation_secret from `Main Secret N+1`, using the concatenation of the
+EKU request and response messages and its TLS identity public key as context.
+
+The receiving peer, however, MUST NOT process the Attestation until the
+EKU exchange and the authenticated transition step have completed. This
+ensures that attestation bound to `Main Secret N+1` is accepted only after
+both peers have confirmed that they share the same updated key state.
+
+For a client attester:
+
+~~~
+client_attestation_secret =
+      Derive-Secret(Main Secret N+1,
+                    "reattestation",
+                    EKU(request) ||
+                    EKU(response) ||
+                    TLS_Client_Public_Key)
+~~~
+
+For a server attester:
+
+~~~
+server_attestation_secret =
+      Derive-Secret(Main Secret N+1,
+                    "reattestation",
+                    EKU(request) ||
+                    EKU(response) ||
+                    TLS_Server_Public_Key)
+~~~
+
+Including the EKU request and response messages ensures that the resulting attestation secret
+is bound to the specific EKU exchange and therefore reflects fresh key-exchange entropy
+introduced by EKU.
+
+After deriving the fresh attestation_secret, the attester:
+
+1. generates fresh Evidence using the new attestation_secret and
+2. sends a new `Attestation` handshake message containing the updated CMW payload.
+
+The TLS peer validates that the attestation payload incorporates the newly derived attestation secret.
 
 Reattestation uses the Attestation formats that were negotiated during the initial handshake,
 there is no re-negotiation at this stage.
@@ -960,6 +1008,16 @@ These properties may be explicitly promised ("attested") by the platform, or the
 the TLS main secret and message transcript. Differences between Background Check and Passport mode.
 </cref>
 
+## Security of Reattestation After EKU
+
+Reattestation relies on the assumption that both peers have derived the same
+`Main Secret N+1` during the preceding EKU exchange. EKU by itself does not
+guarantee that the peers transitioned to a consistent key state in the presence
+of an active attacker. Deployments that require stronger guarantees will have use an
+authenticated transition mechanism discussed in {{!I-D.ietf-tls-extended-key-update}}
+(e.g., post-handshake client authentication or Exported Authenticators) to
+detect key-schedule divergence before relying on reattestation results.
+
 # Privacy Considerations {#priv-cons}
 
 In this section, we are assuming that the Attester is a TLS client, representing an individual person.
@@ -1042,13 +1100,12 @@ The key changes include:
 - Introduced new `Attestation` handshake message for carrying CMW (Conceptual Message Wrapper) payload
 - `Attestation` message sent after CertificateVerify when server is attester
 - `Attestation` message sent after CertificateVerify message when client is attester
-- Removed attestation-only mode (implementations SHOULD use self-signed X.509 certificates instead)
 - Removed use cases section
 - Removed KAT (Key Attestation Token) and PAT (Platform Attestation Token) references, using CMW directly
 - Nonces (client and server) and attester's TLS identity public key are included in TEE-signed Evidence/AttestationResults within CMW
 - CertificateVerify remains unchanged from baseline TLS (no proof-of-possession needed)
 - Added session resumption discussion (resumption MUST be rejected if reattestation is required per local policy)
-- Added reattestation discussion using Extended Key Update (EKU) as defined in {{I-D.ietf-tls-extended-key-update}}
+- Added reattestation
 
 <!-- Start of Appendices -->
 
@@ -1071,10 +1128,10 @@ these cases. In contrast, a dedicated `Attestation` handshake message works
 regardless of authentication mode, making it compatible with the full TLS
 authentication spectrum.
 
-## Re-attestation Not Fully Supported
+## Reattestation Not Fully Supported
 
 TLS allows Post-Handshake client authentication {{Section 4.2.6 of I-D.ietf-tls-rfc8446bis}}
 but provides no mechanism for Post-Handshake server authentication. As a result, a design
 that embeds attestation inside the `Certificate` message would allow only the client and
 not the server to refresh its attestation. This is insufficient for deployments that
-require periodic server re-attestation.
+require periodic server reattestation.
