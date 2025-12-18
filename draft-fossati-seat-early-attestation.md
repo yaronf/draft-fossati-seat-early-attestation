@@ -233,11 +233,11 @@ minimal impact on the existing TLS security properties. The changes consist of:
 - Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the regular TLS key schedule. As a result, attestation
   processing does not affect the standard TLS key derivation and security properties.
 
-This minimal integration approach provides intuitive reasoning why TLS security is
-not adversely affected by the addition of attestation. The attestation components
-operate independently and do not modify the core TLS handshake protocol or key
-derivation mechanisms. However, formal validation of these security properties is
-still needed.
+This minimal integration approach provides an intuitive explanation of why the
+addition of attestation does not adversely affect TLS security. The attestation
+components operate independently, leaving the core TLS handshake protocol and
+key derivation mechanisms unmodified. Nevertheless, formal validation of these
+security properties is still required.
 
 # Attestation Extensions
 
