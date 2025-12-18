@@ -386,16 +386,16 @@ Exch | + evidence_proposal
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                          + evidence_proposal  |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}  |
-                                         {Attestation}        | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                          + evidence_proposal | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -427,16 +427,16 @@ Exch | + evidence_request
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                          + evidence_request   |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}  |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                          + evidence_request  | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -463,16 +463,16 @@ Exch | + results_proposal
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                           + results_proposal  |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}   |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                           + results_proposal | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -500,16 +500,16 @@ Exch | + results_request
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                           + results_request   |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}   |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                           + results_request  | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -798,19 +798,19 @@ Exch | + key_share*
      | + results_proposal*
      v + results_request*
      -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                            + pre_shared_key*  v
-                                        {EncryptedExtensions}  ^  Server
-                                         + evidence_proposal*  |
-                                          + evidence_request*  |
-                                          + results_proposal*  |
-                                           + results_request*  |  Params
-                                        {CertificateRequest*}  v
-                                               {Certificate*}  ^
-                                         {CertificateVerify*}  |
-                                         {Attestation*}        | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                            + pre_shared_key* v
+                                        {EncryptedExtensions} ^ Server
+                                         + evidence_proposal* | Params
+                                          + evidence_request* |
+                                          + results_proposal* |
+                                           + results_request* |
+                                        {CertificateRequest*} v
+                                               {Certificate*} ^
+                                         {CertificateVerify*} |
+                                               {Attestation*} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate*}
 Auth | {CertificateVerify*}
