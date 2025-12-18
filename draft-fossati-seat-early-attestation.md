@@ -526,8 +526,8 @@ from the regular TLS key schedule as described in {{Section 7.1 of I-D.ietf-tls-
 
 The attestation key derivation uses HKDF {{Section 7.1 of I-D.ietf-tls-rfc8446bis}} to derive
 attestation-specific secrets from the TLS main secret. Two attestation main
-secrets are derived: one for the client (`c_attestation_main`) and one for the
-server (`s_attestation_main`).
+secrets are derived: one for the client (`c_attest_main`) and one for the
+server (`s_attest_main`).
 
 The key derivation follows this structure:
 
@@ -543,35 +543,35 @@ Derive-Secret(., "derived secret", "")
    v
 0 -> HKDF-Extract = Master Secret
    |
-   +-> Derive-Secret(., "c attestation master", ClientHello...ServerHello)
-   |                     = c_attestation_main
+   +-> Derive-Secret(., "c attestation main", ClientHello...ServerHello)
+   |                     = c_attest_main
    |
-   +-> Derive-Secret(., "s attestation master", ClientHello...ServerHello)
-   |                     = s_attestation_main
+   +-> Derive-Secret(., "s attestation main", ClientHello...ServerHello)
+   |                     = s_attest_main
 ~~~~
 {: #figure-attestation-key-schedule title="Attestation Key Schedule."}
 
-The attestation main secrets (`c_attestation_main` and `s_attestation_main`)
+The attestation main secrets (`c_attest_main` and `s_attest_main`)
 are derived from the TLS main secret using Derive-Secret as defined in
-{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, with the labels "c attestation master" and
-"s attestation master" respectively, and the handshake transcript up to and
+{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, with the labels "c attestation main" and
+"s attestation main" respectively, and the handshake transcript up to and
 including ServerHello as the context.
 
-The client's attestation secret (`c_attestation_secret`) that will be signed by
-the TEE is derived by applying HKDF-Expand-Label to `c_attestation_main` with
+The client's attestation secret (`c_attest_secret`) that will be signed by
+the TEE is derived by applying HKDF-Expand-Label to `c_attest_main` with
 the label "attestation" and the client's TLS public key as the context:
 
 ~~~~
-c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "Early Attestation",
-                                         TLS_Client_Public_Key, Hash.length)
+c_attest_secret = HKDF-Expand-Label(c_attest_main, "Early Attestation",
+                                    TLS_Client_Public_Key, Hash.length)
 ~~~~
 
-Similarly, the server's attestation secret (`s_attestation_secret`) is derived
-from `s_attestation_main`:
+Similarly, the server's attestation secret (`s_attest_secret`) is derived
+from `s_attest_main`:
 
 ~~~~
-s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation",
-                                         TLS_Server_Public_Key, Hash.length)
+s_attest_secret = HKDF-Expand-Label(s_attest_main, "Early Attestation",
+                                    TLS_Server_Public_Key, Hash.length)
 ~~~~
 
 This ensures that each attestation secret is bound to the specific TLS public
