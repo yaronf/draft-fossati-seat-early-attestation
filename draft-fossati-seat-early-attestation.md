@@ -140,7 +140,7 @@ informative:
 The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a protocol extension to the TLS 1.3 handshake that enables the binding of the TLS authentication key to a remote attestation session.
+This document describes a series of protocol extensions to the TLS 1.3 handshake that enable the binding of the TLS authentication key to a remote attestation session.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.
 
@@ -149,7 +149,7 @@ These extensions have been designed to allow the peers to use any attestation te
 #  Introduction
 
 Attestation {{-rats-arch}} is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
-This document describes a series of protocol extensions to the TLS 1.3 handshake that enables the binding of the TLS authentication key to a remote attestation session.
+This document describes a series of protocol extensions to the TLS 1.3 handshake that enable the binding of the TLS authentication key to a remote attestation session.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) {{-teep-arch}}, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.
 
@@ -233,11 +233,11 @@ minimal impact on the existing TLS security properties. The changes consist of:
 - Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the regular TLS key schedule. As a result, attestation
   processing does not affect the standard TLS key derivation and security properties.
 
-This minimal integration approach provides intuitive reasoning why TLS security is
-not adversely affected by the addition of attestation. The attestation components
-operate independently and do not modify the core TLS handshake protocol or key
-derivation mechanisms. However, formal validation of these security properties is
-still needed.
+This minimal integration approach provides an intuitive explanation of why the
+addition of attestation does not adversely affect TLS security. The attestation
+components operate independently, leaving the core TLS handshake protocol and
+key derivation mechanisms unmodified. Nevertheless, formal validation of these
+security properties is still required.
 
 # Attestation Extensions
 
@@ -386,16 +386,16 @@ Exch | + evidence_proposal
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                          + evidence_proposal  |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}  |
-                                         {Attestation}        | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                          + evidence_proposal | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -427,16 +427,16 @@ Exch | + evidence_request
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                          + evidence_request   |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}  |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                          + evidence_request  | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -463,16 +463,16 @@ Exch | + results_proposal
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                           + results_proposal  |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}   |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                           + results_proposal | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -500,16 +500,16 @@ Exch | + results_request
      | + key_share*
      | + signature_algorithms*
      v                         -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                                               v
-                                        {EncryptedExtensions}  ^  Server
-                                           + results_request   |  Params
-                                         {CertificateRequest}  v
-                                               {Certificate}  ^
-                                         {CertificateVerify}   |
-                                         {Attestation}         | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                                              v
+                                        {EncryptedExtensions} ^ Server
+                                           + results_request  | Params
+                                         {CertificateRequest} v
+                                                {Certificate} ^
+                                          {CertificateVerify} |
+                                                {Attestation} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
@@ -526,8 +526,8 @@ from the regular TLS key schedule as described in {{Section 7.1 of I-D.ietf-tls-
 
 The attestation key derivation uses HKDF {{Section 7.1 of I-D.ietf-tls-rfc8446bis}} to derive
 attestation-specific secrets from the TLS main secret. Two attestation main
-secrets are derived: one for the client (`c_attestation_main`) and one for the
-server (`s_attestation_main`).
+secrets are derived: one for the client (`c_attest_main`) and one for the
+server (`s_attest_main`).
 
 The key derivation follows this structure:
 
@@ -543,35 +543,35 @@ Derive-Secret(., "derived secret", "")
    v
 0 -> HKDF-Extract = Master Secret
    |
-   +-> Derive-Secret(., "c attestation master", ClientHello...ServerHello)
-   |                     = c_attestation_main
+   +-> Derive-Secret(., "c attestation main", ClientHello...ServerHello)
+   |                     = c_attest_main
    |
-   +-> Derive-Secret(., "s attestation master", ClientHello...ServerHello)
-   |                     = s_attestation_main
+   +-> Derive-Secret(., "s attestation main", ClientHello...ServerHello)
+   |                     = s_attest_main
 ~~~~
 {: #figure-attestation-key-schedule title="Attestation Key Schedule."}
 
-The attestation main secrets (`c_attestation_main` and `s_attestation_main`)
+The attestation main secrets (`c_attest_main` and `s_attest_main`)
 are derived from the TLS main secret using Derive-Secret as defined in
-{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, with the labels "c attestation master" and
-"s attestation master" respectively, and the handshake transcript up to and
+{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, with the labels "c attestation main" and
+"s attestation main" respectively, and the handshake transcript up to and
 including ServerHello as the context.
 
-The client's attestation secret (`c_attestation_secret`) that will be signed by
-the TEE is derived by applying HKDF-Expand-Label to `c_attestation_main` with
+The client's attestation secret (`c_attest_secret`) that will be signed by
+the TEE is derived by applying HKDF-Expand-Label to `c_attest_main` with
 the label "attestation" and the client's TLS public key as the context:
 
 ~~~~
-c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "Early Attestation",
-                                         TLS_Client_Public_Key, Hash.length)
+c_attest_secret = HKDF-Expand-Label(c_attest_main, "Early Attestation",
+                                    TLS_Client_Public_Key, Hash.length)
 ~~~~
 
-Similarly, the server's attestation secret (`s_attestation_secret`) is derived
-from `s_attestation_main`:
+Similarly, the server's attestation secret (`s_attest_secret`) is derived
+from `s_attest_main`:
 
 ~~~~
-s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "Early Attestation",
-                                         TLS_Server_Public_Key, Hash.length)
+s_attest_secret = HKDF-Expand-Label(s_attest_main, "Early Attestation",
+                                    TLS_Server_Public_Key, Hash.length)
 ~~~~
 
 This ensures that each attestation secret is bound to the specific TLS public
@@ -798,19 +798,19 @@ Exch | + key_share*
      | + results_proposal*
      v + results_request*
      -------->
-                                                  ServerHello  ^ Key
-                                                 + key_share*  | Exch
-                                            + pre_shared_key*  v
-                                        {EncryptedExtensions}  ^  Server
-                                         + evidence_proposal*  |
-                                          + evidence_request*  |
-                                          + results_proposal*  |
-                                           + results_request*  |  Params
-                                        {CertificateRequest*}  v
-                                               {Certificate*}  ^
-                                         {CertificateVerify*}  |
-                                         {Attestation*}        | Auth
-                                                   {Finished}  v
+                                                  ServerHello ^ Key
+                                                 + key_share* | Exch
+                                            + pre_shared_key* v
+                                        {EncryptedExtensions} ^ Server
+                                         + evidence_proposal* | Params
+                                          + evidence_request* |
+                                          + results_proposal* |
+                                           + results_request* |
+                                        {CertificateRequest*} v
+                                               {Certificate*} ^
+                                         {CertificateVerify*} |
+                                               {Attestation*} | Auth
+                                                   {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate*}
 Auth | {CertificateVerify*}
