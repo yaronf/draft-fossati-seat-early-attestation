@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-16T01:27:55.268739+00:00",
+  "timestamp": "2025-12-21T01:41:36.340258+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -317,12 +317,12 @@
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/14",
       "state": "OPEN",
       "author": "tireddy2",
-      "authorAssociation": "NONE",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "It assumes that the TLS Identity Key (TIK) private key is generated and held inside the TEE. However, the protocol as specified does not prevent a platform from attesting a public key whose private key is actually external to the TEE.",
       "createdAt": "2025-12-04T05:21:20Z",
-      "updatedAt": "2025-12-04T12:33:31Z",
+      "updatedAt": "2025-12-18T21:08:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -331,8 +331,55 @@
           "body": "It's a discussion we can have. My personal opinion is that we don't want to constrain the implementation too much. Others might disagree.\n\nTo me this is similar to the way we trust the TLS stack not to leak its session keys. Eventually we trust the software/system, but we can increase the level of trust by using open source, formally validated software etc.",
           "createdAt": "2025-12-04T12:33:31Z",
           "updatedAt": "2025-12-04T12:33:31Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the attestation should always bind to either the (exported?) attestation secret, the TIK public key, or both. And the evidence MUST provide verifiable proof that links up to the code producing the attestation secret, or handling the TIK, that the software which generated the evidence is doing this stuff correctly. Otherwise you just can't trust the attestation credential.\n\nTo me this is more similar to the treatment of TIK - you need proof from the peer that the TIK is under their possession. If the TIK just signed ClientHello instead of the longer transcript required for CertificateVerify, that proof of possession is not enough.",
+          "createdAt": "2025-12-18T21:08:18Z",
+          "updatedAt": "2025-12-18T21:08:18Z"
         }
       ]
+    },
+    {
+      "number": 19,
+      "id": "I_kwDOQdsaoc7fNlLX",
+      "title": "Is attestation secret meant to be secret?",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/19",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As per title: should we explicitly state this?\n\nThe secret _could_ appear in the Evidence in plaintext, so it could be accessible to the Verifier, for example.",
+      "createdAt": "2025-12-18T21:14:08Z",
+      "updatedAt": "2025-12-20T11:28:27Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "I don't think this is a contradiction. We do trust the Verifier to some extent, so we can say this is secret and at the same time share it with the Verifier. Even if this would allow the Verifier to impersonate the Attester this is still OK, because by definition, the Verifier can allow *anybody* to impersonate the Attester.",
+          "createdAt": "2025-12-20T11:28:27Z",
+          "updatedAt": "2025-12-20T11:28:27Z"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOQdsaoc7fNoNi",
+      "title": "Potentially relevant IANA registries",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/20",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[RFC9266](https://datatracker.ietf.org/doc/html/rfc9266) lists two registries that might be relevant here too:\n\n* [Channel Binding Types](https://www.iana.org/assignments/channel-binding-types/channel-binding-types.xhtml)\n* [TLS Exporter Labels](https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#exporter-labels)",
+      "createdAt": "2025-12-18T21:18:21Z",
+      "updatedAt": "2025-12-18T21:18:21Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1314,6 +1361,180 @@
           "createdAt": "2025-12-14T11:06:06Z",
           "updatedAt": "2025-12-14T11:06:06Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "PR_kwDOQdsaoc65ozwQ",
+      "title": "a lightweight editorial pass",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/17",
+      "state": "MERGED",
+      "author": "thomas-fossati",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* align abstract and intro (s/extension/extensions/)\r\n* slight reflow of the last para of the \u201dTLS integration\u201d section\r\n* s/[cs][_ ]attestation/[cs][_ ]attest/ to fit the available columns\r\n* s/master/main/\r\n* realign the sequence diagrams",
+      "createdAt": "2025-12-18T16:57:38Z",
+      "updatedAt": "2025-12-20T11:34:36Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "4598591feb7724a752ca7a8ef079d68f9805a440",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "editpass",
+      "headRefOid": "2cb3b8b45cb578f7c39fb6dee0e875819c86f388",
+      "closedAt": "2025-12-20T11:34:36Z",
+      "mergedAt": "2025-12-20T11:34:36Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "f3740f08a7b835682012d85c7cc30d63f9a20bec"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7WYzyW",
+          "commit": {
+            "abbreviatedOid": "2cb3b8b"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-19T05:00:43Z",
+          "updatedAt": "2025-12-19T05:00:43Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Wo-Kx",
+          "commit": {
+            "abbreviatedOid": "2cb3b8b"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-20T11:34:22Z",
+          "updatedAt": "2025-12-20T11:34:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOQdsaoc65ruRu",
+      "title": "Polish wording",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/18",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-18T20:55:46Z",
+      "updatedAt": "2025-12-20T12:02:53Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "4598591feb7724a752ca7a8ef079d68f9805a440",
+      "headRepository": "ionut-arm/draft-fossati-seat-early-attestation",
+      "headRefName": "wordsmithing1",
+      "headRefOid": "5bb2e800cb7b43a71ac5d7c1547e8a328064270d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7WZnXf",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-19T06:14:27Z",
+          "updatedAt": "2025-12-19T06:14:28Z",
+          "comments": [
+            {
+              "originalPosition": 70,
+              "body": "The lie is not clear to me. What allowlisted label are you referring to ?\r\nAttestation secret can be generated by the TEE only if TLS is running inside the TEE. ",
+              "createdAt": "2025-12-19T06:14:28Z",
+              "updatedAt": "2025-12-19T06:14:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7WeSx1",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-19T11:35:28Z",
+          "updatedAt": "2025-12-19T11:35:28Z",
+          "comments": [
+            {
+              "originalPosition": 70,
+              "body": "Hmm, true, the previous lines were making references to allowlisting labels. I'll change that.\r\n\r\n> Attestation secret can be generated by the TEE only if TLS is running inside the TEE.\r\n\r\nSure, hence the \"when possible\" part.",
+              "createdAt": "2025-12-19T11:35:28Z",
+              "updatedAt": "2025-12-19T11:35:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7WoaMG",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-20T09:22:10Z",
+          "updatedAt": "2025-12-20T09:22:10Z",
+          "comments": [
+            {
+              "originalPosition": 70,
+              "body": "> Hmm, true, the previous lines were making references to allowlisting labels. I'll change that.\r\n> \r\n> > Attestation secret can be generated by the TEE only if TLS is running inside the TEE.\r\n> \r\n> Sure, hence the \"when possible\" part.\r\n\r\nWe will have to justify the reason for the exception.",
+              "createdAt": "2025-12-20T09:22:10Z",
+              "updatedAt": "2025-12-20T09:22:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Wo-gJ",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-12-20T11:39:36Z",
+          "updatedAt": "2025-12-20T12:02:53Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "The first part of the sentence talks about traditional TLS auth (before RA), and there's no client-only option.",
+              "createdAt": "2025-12-20T11:39:36Z",
+              "updatedAt": "2025-12-20T12:02:53Z"
+            },
+            {
+              "originalPosition": 79,
+              "body": "Huh? Per RFC 9334 (Sec. 8.4), Evidence and Attestation Results are distinct.",
+              "createdAt": "2025-12-20T11:59:31Z",
+              "updatedAt": "2025-12-20T12:02:53Z"
+            },
+            {
+              "originalPosition": 70,
+              "body": "The \"allowlisted label\" is the fixed string that's included in the HKDF, e.g. \"attestation\".",
+              "createdAt": "2025-12-20T12:02:26Z",
+              "updatedAt": "2025-12-20T12:02:53Z"
+            }
+          ]
         }
       ]
     }
