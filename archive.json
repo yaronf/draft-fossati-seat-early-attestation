@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-21T01:41:36.340258+00:00",
+  "timestamp": "2025-12-30T01:27:40.485129+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1431,13 +1431,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-18T20:55:46Z",
-      "updatedAt": "2025-12-20T12:02:53Z",
+      "updatedAt": "2025-12-29T10:42:46Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "4598591feb7724a752ca7a8ef079d68f9805a440",
+      "baseRefOid": "f3740f08a7b835682012d85c7cc30d63f9a20bec",
       "headRepository": "ionut-arm/draft-fossati-seat-early-attestation",
       "headRefName": "wordsmithing1",
-      "headRefOid": "5bb2e800cb7b43a71ac5d7c1547e8a328064270d",
+      "headRefOid": "c8b95da081c20c7e5075410b9fd16b6c9efdf9bf",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -1533,6 +1533,66 @@
               "body": "The \"allowlisted label\" is the fixed string that's included in the HKDF, e.g. \"attestation\".",
               "createdAt": "2025-12-20T12:02:26Z",
               "updatedAt": "2025-12-20T12:02:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7XgGlU",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-29T10:10:15Z",
+          "updatedAt": "2025-12-29T10:10:15Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Ahh, ok, I misunderstood that!",
+              "createdAt": "2025-12-29T10:10:15Z",
+              "updatedAt": "2025-12-29T10:10:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7XgHON",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-29T10:11:40Z",
+          "updatedAt": "2025-12-29T10:11:41Z",
+          "comments": [
+            {
+              "originalPosition": 79,
+              "body": "Right, but ARs are not verified, so \"pre-verified Attestation Results\" seems wrong to me, hence the expansion. Alternatively we can drop the \"pre-verified\" part?",
+              "createdAt": "2025-12-29T10:11:40Z",
+              "updatedAt": "2025-12-29T10:11:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7XgV-5",
+          "commit": {
+            "abbreviatedOid": "5bb2e80"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-29T10:42:46Z",
+          "updatedAt": "2025-12-29T10:42:46Z",
+          "comments": [
+            {
+              "originalPosition": 70,
+              "body": "Ok, tried to fix this, please check again.",
+              "createdAt": "2025-12-29T10:42:46Z",
+              "updatedAt": "2025-12-29T10:42:47Z"
             }
           ]
         }
