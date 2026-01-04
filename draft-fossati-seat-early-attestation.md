@@ -393,8 +393,7 @@ Exch | + evidence_proposal
                                           + evidence_proposal | Params
                                          {CertificateRequest} v
                                                 {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
+                                          {CertificateVerify} | Auth
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
@@ -440,7 +439,6 @@ Exch | + evidence_request
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
-     | {Attestation}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 ~~~~
@@ -470,8 +468,7 @@ Exch | + results_proposal
                                            + results_proposal | Params
                                          {CertificateRequest} v
                                                 {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
+                                          {CertificateVerify} | Auth
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
@@ -513,7 +510,6 @@ Exch | + results_request
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
-     | {Attestation}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 ~~~~
