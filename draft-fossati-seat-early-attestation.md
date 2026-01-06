@@ -573,6 +573,27 @@ s_attest_secret = HKDF-Expand-Label(s_attest_main, "Early Attestation",
 This ensures that each attestation secret is bound to the specific TLS public
 key being attested.
 
+## Binding the TIK to the TEE {#tik-binding}
+
+This specification assumes that the TIK private key corresponding to the end-entity certificate used in the TLS handshake is generated inside a TEE and never leaves it. A malicious or compromised platform could instead generate the TIK private key outside the TEE and compute the `CertificateVerify` signature using that external key. A relying party cannot detect this attack unless additional safeguards are in place.
+
+To ensure interoperability and prevent this attack, Evidence will have to include a signature computed by the TIK private key over both the attestation secret and the TIK public key (TIK_pub). The TEE will have to compute this signature internally and not accept externally supplied signatures for inclusion in Evidence.
+
+The signature uses the same signature algorithm used in the `CertificateVerify` message, ensuring that the attestation secret is cryptographically bound to the exact identity demonstrated during the TLS handshake.
+
+~~~
+Sig_TIK = Sign(TIK private key, attestation_secret || TIK_pub)
+~~~
+
+The TEE includes Sig_TIK in the CMW payload and signs the entire structure with its attestation key.
+
+Relying Parties will have to verify:
+
+1. That Sig_TIK validates under TIK_pub, proving that the TIK private key is present and usable within the TEE; and
+2. That the attestation signature validates under the TEE attestation key, proving that the TEE endorses both the TIK private key and the attested platform state.
+
+This mechanism provides an interoperable method to cryptographically bind the TIK to the attested environment and prevents attestation of a TIK private key that was held outside the TEE.
+
 ## The TLS Stack's Interface to the TEE
 
 When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
