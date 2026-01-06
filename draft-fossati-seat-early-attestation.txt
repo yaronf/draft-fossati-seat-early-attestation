@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 23 June 2026                                       Y. Deshpande
+Expires: 10 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                        20 December 2025
+                                                          6 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,11 +70,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 June 2026.
+   This Internet-Draft will expire on 10 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -449,8 +449,7 @@ Table of Contents
                                             + evidence_proposal | Params
                                            {CertificateRequest} v
                                                   {Certificate} ^
-                                            {CertificateVerify} |
-                                                  {Attestation} | Auth
+                                            {CertificateVerify} | Auth
                                                      {Finished} v
                                  <--------  [Application Data*]
        ^ {Certificate}
@@ -495,7 +494,6 @@ Table of Contents
                                  <--------  [Application Data*]
        ^ {Certificate}
   Auth | {CertificateVerify}
-       | {Attestation}
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
@@ -526,8 +524,7 @@ Table of Contents
                                              + results_proposal | Params
                                            {CertificateRequest} v
                                                   {Certificate} ^
-                                            {CertificateVerify} |
-                                                  {Attestation} | Auth
+                                            {CertificateVerify} | Auth
                                                      {Finished} v
                                  <--------  [Application Data*]
        ^ {Certificate}
@@ -567,7 +564,6 @@ Table of Contents
                                  <--------  [Application Data*]
        ^ {Certificate}
   Auth | {CertificateVerify}
-       | {Attestation}
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
