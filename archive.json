@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-30T01:27:40.485129+00:00",
+  "timestamp": "2026-01-06T01:39:03.078752+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -378,6 +378,54 @@
       "body": "[RFC9266](https://datatracker.ietf.org/doc/html/rfc9266) lists two registries that might be relevant here too:\n\n* [Channel Binding Types](https://www.iana.org/assignments/channel-binding-types/channel-binding-types.xhtml)\n* [TLS Exporter Labels](https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#exporter-labels)",
       "createdAt": "2025-12-18T21:18:21Z",
       "updatedAt": "2025-12-18T21:18:21Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 21,
+      "id": "I_kwDOQdsaoc7hRsqg",
+      "title": "Companion documents?",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/21",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "> Companion documents are expected to define specific attestation mechanisms.\n\nI think this is not realistic (or necessary) and the text can be removed.",
+      "createdAt": "2026-01-04T18:26:43Z",
+      "updatedAt": "2026-01-04T18:26:43Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 22,
+      "id": "I_kwDOQdsaoc7hRwV_",
+      "title": "Split implementation",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/22",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Sec. 4 mentions \"split implementations\" where the TLS stack is outside the TEE. The Cryptographic Operations section should describe separation of roles for such implementations, i.e. what is the TEE's exact role.",
+      "createdAt": "2026-01-04T18:45:01Z",
+      "updatedAt": "2026-01-04T18:45:01Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOQdsaoc7hRynn",
+      "title": "Message flows: Attestation messages",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/23",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The 4 sequence diagrams in Sec. 5 each have two occurrences of the Attestation message. Since we're only discussing one-way attestation, this is a mistake.",
+      "createdAt": "2026-01-04T18:56:48Z",
+      "updatedAt": "2026-01-04T18:56:48Z",
       "closedAt": null,
       "comments": []
     }
@@ -1431,13 +1479,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-18T20:55:46Z",
-      "updatedAt": "2025-12-29T10:42:46Z",
+      "updatedAt": "2026-01-05T10:45:01Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "f3740f08a7b835682012d85c7cc30d63f9a20bec",
       "headRepository": "ionut-arm/draft-fossati-seat-early-attestation",
       "headRefName": "wordsmithing1",
-      "headRefOid": "c8b95da081c20c7e5075410b9fd16b6c9efdf9bf",
+      "headRefOid": "2846c5960170dc322800d87d9aca3fe3f92db5ea",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -1595,8 +1643,67 @@
               "updatedAt": "2025-12-29T10:42:47Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7YEp4I",
+          "commit": {
+            "abbreviatedOid": "c8b95da"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-04T17:18:43Z",
+          "updatedAt": "2026-01-04T17:18:43Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "```suggestion\nwhere Attestation Results are presented. The extensions defined\n```",
+              "createdAt": "2026-01-04T17:18:43Z",
+              "updatedAt": "2026-01-04T17:18:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7YJcce",
+          "commit": {
+            "abbreviatedOid": "2846c59"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-05T10:45:01Z",
+          "updatedAt": "2026-01-05T10:45:01Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 24,
+      "id": "PR_kwDOQdsaoc67b98p",
+      "title": "Remove redundant Attestation in diagrams",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/24",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix #23.",
+      "createdAt": "2026-01-04T19:17:51Z",
+      "updatedAt": "2026-01-04T19:17:51Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "f3740f08a7b835682012d85c7cc30d63f9a20bec",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-23",
+      "headRefOid": "7b7fe29591341fb2a39b181d65d33b4dac896b81",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
