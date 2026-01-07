@@ -590,6 +590,10 @@ validate the pubic key.
 
 The Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.
 
+Note that Attestation messages typically exceed 1,500 bytes in size.
+This means that the message will be split into multiple DTLS records, increasing the latency of handshake completion.
+This is particularly the case over channels where reordering and loss are more common due to factors such as routing transients, intermittent connectivity or mobility.
+
 In DTLS, handshake messages that do not solicit a response are acknowledged using the DTLS ACK message. Because the Attestation handshake message does not elicit a response, the receiving peer MUST send a DTLS ACK upon receipt of the Attestation message. This ACK confirms only that the message was received; it does not indicate that attestation appraisal has completed.
 
 Once the attester receives the ACK, it MUST stop retransmitting the Attestation message. The receiving peer performs attestation appraisal asynchronously and applies its authorization policy once appraisal results become available.
