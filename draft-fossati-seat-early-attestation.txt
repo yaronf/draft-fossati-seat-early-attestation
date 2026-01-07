@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 10 July 2026                                       Y. Deshpande
+Expires: 11 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          6 January 2026
+                                                          7 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 July 2026.
+   This Internet-Draft will expire on 11 July 2026.
 
 Copyright Notice
 
@@ -651,6 +651,13 @@ Derive-Secret(., "derived secret", "")
    The Attestation message MUST be handled using the existing DTLS
    handshake mechanisms for fragmentation, ordering, and retransmission
    to ensure reliable delivery.
+
+   Note that Attestation messages typically exceed 1,500 bytes in size.
+   This means that the message will be split into multiple DTLS records,
+   increasing the latency of handshake completion.  This is particularly
+   the case over channels where reordering and loss are more common due
+   to factors such as routing transients, intermittent connectivity or
+   mobility.
 
    In DTLS, handshake messages that do not solicit a response are
    acknowledged using the DTLS ACK message.  Because the Attestation
