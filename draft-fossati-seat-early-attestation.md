@@ -537,7 +537,7 @@ The key derivation follows this structure:
             Derive-Secret(., "attestation derived", "")
                 |
                 v
-       0 --> HKDF-Extract = Main Secret
+      0 ---> HKDF-Extract = Main Secret
                 |
                 +-----> Derive-Secret(., "c attestation main",
                 |                     ClientHello...ServerHello)
