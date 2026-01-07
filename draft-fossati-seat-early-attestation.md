@@ -527,23 +527,25 @@ server (`s_attest_main`).
 
 The key derivation follows this structure:
 
-~~~~
-   0
-   |
-   v
-(EC)DHE -> HKDF-Extract = Handshake Secret
-   |
-   v
-Derive-Secret(., "derived secret", "")
-   |
-   v
-0 -> HKDF-Extract = Master Secret
-   |
-   +-> Derive-Secret(., "c attestation main", ClientHello...ServerHello)
-   |                     = c_attest_main
-   |
-   +-> Derive-Secret(., "s attestation main", ClientHello...ServerHello)
-   |                     = s_attest_main
+~~~~ aasvg
+                0
+                |
+                v
+(EC)DHE ---> HKDF-Extract = Handshake Secret
+                |
+                v
+            Derive-Secret(., "attestation derived", "")
+                |
+                v
+       0 --> HKDF-Extract = Main Secret
+                |
+                +-----> Derive-Secret(., "c attestation main",
+                |                     ClientHello...ServerHello)
+                |              = c_attest_main
+                |
+                +-----> Derive-Secret(., "s attestation main",
+                                      ClientHello...ServerHello)
+                               = s_attest_main
 ~~~~
 {: #figure-attestation-key-schedule title="Attestation Key Schedule."}
 
