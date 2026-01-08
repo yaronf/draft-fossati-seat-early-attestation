@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 11 July 2026                                       Y. Deshpande
+Expires: 12 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          7 January 2026
+                                                          8 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 July 2026.
+   This Internet-Draft will expire on 12 July 2026.
 
 Copyright Notice
 
@@ -622,11 +622,11 @@ Derive-Secret(., "derived secret", "")
  s_attest_secret = HKDF-Expand-Label(s_attest_main, "Early Attestation",
                                      TLS_Server_Public_Key, Hash.length)
 
-   The attestation secret is derived independently by both the attester
-   and the peer.  The attester incorporates this attestation secret into
+   The attestation binder is derived independently by both the attester
+   and the peer.  The attester incorporates this attestation binder into
    the Evidence.  Upon receipt of the Attestation handshake message, the
-   peer will have to derive the expected attestation secret using the
-   same inputs and verify that the computed attestation secret matches
+   peer will have to derive the expected attestation binder using the
+   same inputs and verify that the computed attestation binder matches
    the one in the evidence.  If this verification fails, the peer will
    treat the attestation as invalid.  This verification ensures that the
    Evidence is bound to the specific TLS session and TLS public key
