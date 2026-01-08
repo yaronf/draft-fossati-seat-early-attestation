@@ -120,7 +120,7 @@ Table of Contents
    10. Security Considerations
      10.1.  Security Guarantees
      10.2.  Freshness Guarantees
-     10.3.  Security of Reattestation After EKU
+     10.3.  Security of Reattestation After Extended Key Update
    11. Privacy Considerations
    12. IANA Considerations
      12.1.  TLS Extensions
@@ -184,8 +184,6 @@ Table of Contents
       trust stores.
 
    This document does not mandate any particular attestation technology.
-   Companion documents are expected to define specific attestation
-   mechanisms.
 
 2.  Conventions and Terminology
 
@@ -1127,7 +1125,7 @@ Derive-Secret(., "derived secret", "")
    // from the TLS main secret and message transcript.  Differences
    // between Background Check and Passport mode.
 
-10.3.  Security of Reattestation After EKU
+10.3.  Security of Reattestation After Extended Key Update
 
    Reattestation relies on the assumption that both peers have derived
    the same Main Secret N+1 during the preceding EKU exchange.  EKU by

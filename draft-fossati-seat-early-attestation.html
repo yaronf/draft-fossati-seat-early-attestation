@@ -1289,7 +1289,7 @@ These extensions have been designed to allow the peers to use any attestation te
                 <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-freshness-guarantees" class="internal xref">Freshness Guarantees</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
-                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-security-of-reattestation-a" class="internal xref">Security of Reattestation After EKU</a></p>
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-security-of-reattestation-a" class="internal xref">Security of Reattestation After Extended Key Update</a></p>
 </li>
             </ul>
 </li>
@@ -1380,8 +1380,7 @@ and the TLS connection is established.<a href="#section-1-5.3.1" class="pilcrow"
           <p id="section-1-5.4.1">Application code does not need to change. At most, some configuration is needed, similar to the current use of certificate trust stores.<a href="#section-1-5.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-6">This document does not mandate any particular attestation technology.
-Companion documents are expected to define specific attestation mechanisms.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-6">This document does not mandate any particular attestation technology.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-terminology">
@@ -2404,10 +2403,10 @@ the TLS main secret and message transcript. Differences between Background Check
 </span><a href="#section-10.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="security-of-reattestation-after-eku">
+<div id="security-of-reattestation-after-extended-key-update">
 <section id="section-10.3">
         <h3 id="name-security-of-reattestation-a">
-<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-security-of-reattestation-a" class="section-name selfRef">Security of Reattestation After EKU</a>
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-security-of-reattestation-a" class="section-name selfRef">Security of Reattestation After Extended Key Update</a>
         </h3>
 <p id="section-10.3-1">Reattestation relies on the assumption that both peers have derived the same
 <code>Main Secret N+1</code> during the preceding EKU exchange. EKU by itself does not
