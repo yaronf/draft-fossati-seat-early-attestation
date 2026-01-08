@@ -686,7 +686,7 @@ After deriving the fresh attestation_secret, the attester:
 1. generates fresh Evidence using the new attestation_secret and
 2. sends a new `Attestation` handshake message containing the updated CMW payload.
 
-The TLS peer validates the attestation by deriving and verifying the attestation secret as specified in {{crypto-ops}}.
+The TLS peer validates the attestation by deriving and verifying the attestation binder as specified in {{crypto-ops}}.
 
 Reattestation uses the Attestation formats that were negotiated during the initial handshake,
 there is no re-negotiation at this stage.
