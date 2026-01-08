@@ -573,8 +573,15 @@ s_attest_binder = HKDF-Expand-Label(s_attest_main, "Early Attestation",
                                     TLS_Server_Public_Key, Hash.length)
 ~~~~
 
-This ensures that each attestation binder is bound to the specific TLS public
-key being attested.
+
+The attestation binder is derived independently by both the attester and the
+peer. The attester incorporates this attestation binder into the Evidence.
+Upon receipt of the Attestation handshake message, the peer will have to derive
+the expected attestation binder using the same inputs and verify that the
+computed attestation binder matches the one in the Evidence. If this verification
+fails, the peer will treat the attestation as invalid. This verification ensures
+that the Evidence is bound to the specific TLS session and TLS public key being
+attested.
 
 ## The TLS Stack's Interface to the TEE
 
@@ -682,7 +689,7 @@ After deriving the fresh attestation_binder, the attester:
 1. generates fresh Evidence using the new attestation_binder and
 2. sends a new `Attestation` handshake message containing the updated CMW payload.
 
-The TLS peer validates that the attestation payload incorporates the newly derived attestation binder.
+The TLS peer validates the attestation by deriving and verifying the attestation binder as specified in {{crypto-ops}}.
 
 Reattestation uses the Attestation formats that were negotiated during the initial handshake,
 there is no re-negotiation at this stage.
