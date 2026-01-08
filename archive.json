@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-06T01:39:03.078752+00:00",
+  "timestamp": "2026-01-08T01:39:05.565801+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -47,6 +47,11 @@
       "name": "wontfix",
       "description": "This will not be worked on",
       "color": "ffffff"
+    },
+    {
+      "name": "Pre-00",
+      "description": "",
+      "color": "01b013"
     }
   ],
   "issues": [
@@ -143,16 +148,35 @@
       "id": "I_kwDOQdsaoc7bq0D6",
       "title": "DTLS applicability and CMW size considerations",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "thomas-fossati"
+      ],
+      "labels": [
+        "Pre-00"
+      ],
       "body": "DTLS - does everything apply as-is? Specifically, do we need to worry about the CMW's size?",
       "createdAt": "2025-12-02T11:40:39Z",
-      "updatedAt": "2025-12-02T11:40:39Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-01-07T13:13:57Z",
+      "closedAt": "2026-01-07T13:13:57Z",
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Operational considerations.",
+          "createdAt": "2026-01-07T08:34:09Z",
+          "updatedAt": "2026-01-07T08:34:09Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It is discussed in the first paragraph of DTLS considerations section, which says:\n\nThe Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.",
+          "createdAt": "2026-01-07T13:00:17Z",
+          "updatedAt": "2026-01-07T13:00:17Z"
+        }
+      ]
     },
     {
       "number": 7,
@@ -293,12 +317,16 @@
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/13",
       "state": "OPEN",
       "author": "tireddy2",
-      "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tireddy2"
+      ],
+      "labels": [
+        "Pre-00"
+      ],
       "body": "attestation_secret is binding the public key but it needs to be validated by peer otherwise it is of no use. ",
       "createdAt": "2025-12-03T15:43:09Z",
-      "updatedAt": "2025-12-04T12:27:07Z",
+      "updatedAt": "2026-01-07T08:27:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -319,10 +347,12 @@
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Pre-00"
+      ],
       "body": "It assumes that the TLS Identity Key (TIK) private key is generated and held inside the TEE. However, the protocol as specified does not prevent a platform from attesting a public key whose private key is actually external to the TEE.",
       "createdAt": "2025-12-04T05:21:20Z",
-      "updatedAt": "2025-12-18T21:08:18Z",
+      "updatedAt": "2026-01-07T13:03:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -338,6 +368,13 @@
           "body": "I think the attestation should always bind to either the (exported?) attestation secret, the TIK public key, or both. And the evidence MUST provide verifiable proof that links up to the code producing the attestation secret, or handling the TIK, that the software which generated the evidence is doing this stuff correctly. Otherwise you just can't trust the attestation credential.\n\nTo me this is more similar to the treatment of TIK - you need proof from the peer that the TIK is under their possession. If the TIK just signed ClientHello instead of the longer transcript required for CertificateVerify, that proof of possession is not enough.",
           "createdAt": "2025-12-18T21:08:18Z",
           "updatedAt": "2025-12-18T21:08:18Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This issue is addressed in https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/25",
+          "createdAt": "2026-01-07T13:03:35Z",
+          "updatedAt": "2026-01-07T13:03:35Z"
         }
       ]
     },
@@ -349,11 +386,15 @@
       "state": "OPEN",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ionut-arm"
+      ],
+      "labels": [
+        "Pre-00"
+      ],
       "body": "As per title: should we explicitly state this?\n\nThe secret _could_ appear in the Evidence in plaintext, so it could be accessible to the Verifier, for example.",
       "createdAt": "2025-12-18T21:14:08Z",
-      "updatedAt": "2025-12-20T11:28:27Z",
+      "updatedAt": "2026-01-07T08:23:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -362,6 +403,13 @@
           "body": "I don't think this is a contradiction. We do trust the Verifier to some extent, so we can say this is secret and at the same time share it with the Verifier. Even if this would allow the Verifier to impersonate the Attester this is still OK, because by definition, the Verifier can allow *anybody* to impersonate the Attester.",
           "createdAt": "2025-12-20T11:28:27Z",
           "updatedAt": "2025-12-20T11:28:27Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "binding value or (attestation) binder.",
+          "createdAt": "2026-01-07T08:22:52Z",
+          "updatedAt": "2026-01-07T08:23:34Z"
         }
       ]
     },
@@ -389,11 +437,15 @@
       "state": "OPEN",
       "author": "yaronf",
       "authorAssociation": "OWNER",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "yaronf"
+      ],
+      "labels": [
+        "Pre-00"
+      ],
       "body": "> Companion documents are expected to define specific attestation mechanisms.\n\nI think this is not realistic (or necessary) and the text can be removed.",
       "createdAt": "2026-01-04T18:26:43Z",
-      "updatedAt": "2026-01-04T18:26:43Z",
+      "updatedAt": "2026-01-07T08:19:15Z",
       "closedAt": null,
       "comments": []
     },
@@ -418,15 +470,15 @@
       "id": "I_kwDOQdsaoc7hRynn",
       "title": "Message flows: Attestation messages",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "The 4 sequence diagrams in Sec. 5 each have two occurrences of the Attestation message. Since we're only discussing one-way attestation, this is a mistake.",
       "createdAt": "2026-01-04T18:56:48Z",
-      "updatedAt": "2026-01-04T18:56:48Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-06T13:47:39Z",
+      "closedAt": "2026-01-06T13:47:39Z",
       "comments": []
     }
   ],
@@ -1479,13 +1531,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-18T20:55:46Z",
-      "updatedAt": "2026-01-05T10:45:01Z",
+      "updatedAt": "2026-01-07T17:04:04Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "f3740f08a7b835682012d85c7cc30d63f9a20bec",
+      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
       "headRepository": "ionut-arm/draft-fossati-seat-early-attestation",
       "headRefName": "wordsmithing1",
-      "headRefOid": "2846c5960170dc322800d87d9aca3fe3f92db5ea",
+      "headRefOid": "043aa2fc5c13897101b600c7ea277b52a0ddca12",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -1676,6 +1728,46 @@
           "createdAt": "2026-01-05T10:45:01Z",
           "updatedAt": "2026-01-05T10:45:01Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Ya9kB",
+          "commit": {
+            "abbreviatedOid": "2846c59"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Changes look good to me, I have only one comment. ",
+          "createdAt": "2026-01-06T13:42:20Z",
+          "updatedAt": "2026-01-06T13:42:40Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "Are you referring to Measurement-derived identifiers ? \r\nYou may want to add more details on how unambiguous identifiers can be added.",
+              "createdAt": "2026-01-06T13:42:20Z",
+              "updatedAt": "2026-01-06T13:42:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7YttbC",
+          "commit": {
+            "abbreviatedOid": "2846c59"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-07T17:04:04Z",
+          "updatedAt": "2026-01-07T17:04:04Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "Ok, I've expanded the description here, though it's a fine line to walk between giving too many details and not giving enough. I stopped short of giving any examples, mostly because I'm not yet sure how these identifiers would look. We can revisit this in the future when we get more feedback.",
+              "createdAt": "2026-01-07T17:04:04Z",
+              "updatedAt": "2026-01-07T17:04:04Z"
+            }
+          ]
         }
       ]
     },
@@ -1684,20 +1776,327 @@
       "id": "PR_kwDOQdsaoc67b98p",
       "title": "Remove redundant Attestation in diagrams",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/24",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Fix #23.",
       "createdAt": "2026-01-04T19:17:51Z",
-      "updatedAt": "2026-01-04T19:17:51Z",
+      "updatedAt": "2026-01-06T13:47:38Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "f3740f08a7b835682012d85c7cc30d63f9a20bec",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-23",
       "headRefOid": "7b7fe29591341fb2a39b181d65d33b4dac896b81",
+      "closedAt": "2026-01-06T13:47:38Z",
+      "mergedAt": "2026-01-06T13:47:38Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "6dd0ea05a66f5177551fe341198a58edc5c59a4a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7YXLLY",
+          "commit": {
+            "abbreviatedOid": "7b7fe29"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-06T08:37:26Z",
+          "updatedAt": "2026-01-06T08:37:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Yari_",
+          "commit": {
+            "abbreviatedOid": "7b7fe29"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-06T13:21:08Z",
+          "updatedAt": "2026-01-06T13:21:08Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "id": "PR_kwDOQdsaoc67ukPq",
+      "title": "Address replay attack",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/25",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-06T14:02:57Z",
+      "updatedAt": "2026-01-07T15:04:29Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "6dd0ea05a66f5177551fe341198a58edc5c59a4a",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-1",
+      "headRefOid": "d809606bb2a9aa2d1ae34a624a2ab4263c409ed5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "@tireddy2 First of all, IIUC, this is not about a replay attack, it's about what I'll call \"unauthorized provisioning of the TIK\", i.e. an arbitrary server (not the TEE) being able to provision a certified TIK (CA-signed cert for an arbitrary private key) and then using it in our protocol.\r\n\r\nI would claim that this attack is impossible if the endorsed software follows the protocol, specifically:\r\n\r\n> The TEE itself, when possible, SHOULD generate the nonce by running HKDF with an allowlisted label and if it holds the TIK, SHOULD validate the pubic key.\r\n\r\nYes, this is a SHOULD and not a MUST, because we're trying to support multiple software architectures. And that may be something for us to discuss. But whenever the API into the TEE is wider than just a single nonce, this would mitigate this attack.",
+          "createdAt": "2026-01-06T16:22:41Z",
+          "updatedAt": "2026-01-06T16:22:41Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> First of all, IIUC, this is not about a replay attack, it's about what I'll call \"unauthorized provisioning of the TIK\", i.e. an arbitrary server (not the TEE) being able to provision a certified TIK (CA-signed cert for an arbitrary private key) and then using it in our protocol.\r\n\r\nJust to be clear, the proposed text does not describe this as a replay attack. The intent is to capture exactly the scenario\r\nyou describe.\r\n\r\n> \r\n> I would claim that this attack is impossible if the endorsed software follows the protocol, specifically:\r\n> \r\n> > The TEE itself, when possible, SHOULD generate the nonce by running HKDF with an allowlisted label and if it holds the TIK, SHOULD validate the pubic key.\r\n> \r\n> Yes, this is a SHOULD and not a MUST, because we're trying to support multiple software architectures. And that may be something for us to discuss. But whenever the API into the TEE is wider than just a single nonce, this would mitigate this attack.\r\n\r\nI agree that in architectures where the TEE both generates the attestation secret and validates the TIK public key, the attack is mitigated. The difficulty is that the protocol cannot assume such an API across multiple architectures. From the relying party\u2019s perspective, a compliant and a non-compliant implementation are indistinguishable unless the protocol requires the TEE to cryptographically bind the attestation secret to the TIK private key itself.",
+          "createdAt": "2026-01-07T05:51:36Z",
+          "updatedAt": "2026-01-07T05:51:36Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> From the relying party\u2019s perspective, a compliant and a non-compliant implementation are indistinguishable [\u2026]\r\n\r\nThe RP _can_ distinguish a compliant from a non-compliant implementation because the attestation evidence provided to the RP identifies the implementation.",
+          "createdAt": "2026-01-07T15:04:29Z",
+          "updatedAt": "2026-01-07T15:04:29Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 26,
+      "id": "PR_kwDOQdsaoc675y0k",
+      "title": "Attestation messages and DTLS",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/26",
+      "state": "MERGED",
+      "author": "thomas-fossati",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Added note on the impact of Attestation messages in DTLS.\r\n\r\nFix #6",
+      "createdAt": "2026-01-07T12:57:37Z",
+      "updatedAt": "2026-01-07T13:13:56Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "6dd0ea05a66f5177551fe341198a58edc5c59a4a",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "issue-6",
+      "headRefOid": "38e984311ca0e8abd92ab576014b9921efec1a42",
+      "closedAt": "2026-01-07T13:13:56Z",
+      "mergedAt": "2026-01-07T13:13:56Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "a9e5d4792ea7e437be880990f3a909890a2ef457"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Ypk9N",
+          "commit": {
+            "abbreviatedOid": "38e9843"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-07T13:02:15Z",
+          "updatedAt": "2026-01-07T13:02:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "id": "PR_kwDOQdsaoc676YKL",
+      "title": "Validation of attestation secret",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/27",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-07T13:44:30Z",
+      "updatedAt": "2026-01-07T13:45:28Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-2",
+      "headRefOid": "c64152606a2f72cc19610b9ede82defb344a5e81",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This PR addresses https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/13",
+          "createdAt": "2026-01-07T13:45:18Z",
+          "updatedAt": "2026-01-07T13:45:18Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 28,
+      "id": "PR_kwDOQdsaoc677K87",
+      "title": "slight adjustments to the key schedule diagram",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-07T14:50:19Z",
+      "updatedAt": "2026-01-07T18:30:09Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "keyschedule-adjust",
+      "headRefOid": "6fe2352418f4d2f7f7b5aa4ebe1e4bf346eabc17",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "@thomas-fossati Is it only about indentation? Also, the derived-secret is TLS 1.3, it's not a label we can change.",
+          "createdAt": "2026-01-07T17:02:50Z",
+          "updatedAt": "2026-01-07T17:02:50Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> @thomas-fossati Is it only about indentation?\r\n\r\nmostly, but not entirely.\r\n\r\n> Also, the derived-secret is TLS 1.3, it's not a label we can change.\r\n\r\nAh, I thought we were explicitly forking the two secret derivation trees.\r\nIf we aren't, the correct label is `\"derived\"` rather than `\"derived secret\"` \u2014 see [RFC-to-be 9846](https://www.rfc-editor.org/authors/rfc9846.html#figure-5)",
+          "createdAt": "2026-01-07T18:01:07Z",
+          "updatedAt": "2026-01-07T18:01:07Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "No, I don't think we need to be forking the tree. We create our own branch. And please correct the label then.",
+          "createdAt": "2026-01-07T18:30:08Z",
+          "updatedAt": "2026-01-07T18:30:08Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7YrihI",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2026-01-07T14:56:48Z",
+          "updatedAt": "2026-01-07T14:56:48Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7YtsdF",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "See my comment.",
+          "createdAt": "2026-01-07T17:03:17Z",
+          "updatedAt": "2026-01-07T17:03:17Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "id": "PR_kwDOQdsaoc678-QZ",
+      "title": "Rename secret to binder",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/29",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\"attestation secret\" has a lot of semantic baggage to carry. Replacing it with \"attestation binder\" as per #19\r\n\r\nFixes #19 ",
+      "createdAt": "2026-01-07T17:16:42Z",
+      "updatedAt": "2026-01-07T22:55:28Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "attestation-secret-rename",
+      "headRefOid": "ee2563ed25d4f07acda4362a7aa5dcdb0dbca6d7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Yu1pT",
+          "commit": {
+            "abbreviatedOid": "ee2563e"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "especially \u2764\ufe0f the fact that they are both 6 letters words!",
+          "createdAt": "2026-01-07T18:03:29Z",
+          "updatedAt": "2026-01-07T18:03:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Yydix",
+          "commit": {
+            "abbreviatedOid": "ee2563e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-07T22:55:28Z",
+          "updatedAt": "2026-01-07T22:55:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "id": "PR_kwDOQdsaoc68AiYL",
+      "title": "Remove unnecessary promise re: companion documents",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/30",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #21 \r\n\r\nAlso 2 more minor edits.",
+      "createdAt": "2026-01-07T23:26:23Z",
+      "updatedAt": "2026-01-07T23:28:04Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-21",
+      "headRefOid": "c60b4fd01ce06d56cda440e0437fbd4c6605cd3b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
