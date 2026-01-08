@@ -571,11 +571,11 @@ s_attest_secret = HKDF-Expand-Label(s_attest_main, "Early Attestation",
 ~~~~
 
 
-The attestation secret is derived independently by both the attester and the
-peer. The attester incorporates this attestation secret into the Evidence.
+The attestation binder is derived independently by both the attester and the
+peer. The attester incorporates this attestation binder into the Evidence.
 Upon receipt of the Attestation handshake message, the peer will have to derive
-the expected attestation secret using the same inputs and verify that the
-computed attestation secret matches the one in the evidence. If this verification
+the expected attestation binder using the same inputs and verify that the
+computed attestation binder matches the one in the evidence. If this verification
 fails, the peer will treat the attestation as invalid. This verification ensures
 that the Evidence is bound to the specific TLS session and TLS public key being
 attested.
