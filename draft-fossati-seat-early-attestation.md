@@ -534,7 +534,7 @@ The key derivation follows this structure:
 (EC)DHE ---> HKDF-Extract = Handshake Secret
                 |
                 v
-            Derive-Secret(., "attestation derived", "")
+            Derive-Secret(., "derived", "")
                 |
                 v
       0 ---> HKDF-Extract = Main Secret
