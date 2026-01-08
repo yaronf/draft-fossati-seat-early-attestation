@@ -767,7 +767,7 @@ Derive-Secret(., "derived secret", "")
        CMW payload.
 
    The TLS peer validates the attestation by deriving and verifying the
-   attestation secret as specified in Section 5.6.
+   attestation binder as specified in Section 5.6.
 
    Reattestation uses the Attestation formats that were negotiated
    during the initial handshake, there is no re-negotiation at this
