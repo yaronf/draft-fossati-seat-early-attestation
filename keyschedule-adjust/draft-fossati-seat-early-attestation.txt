@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 11 July 2026                                       Y. Deshpande
+Expires: 12 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          7 January 2026
+                                                          8 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 July 2026.
+   This Internet-Draft will expire on 12 July 2026.
 
 Copyright Notice
 
@@ -589,7 +589,7 @@ Table of Contents
    (EC)DHE ---> HKDF-Extract = Handshake Secret
                    |
                    v
-               Derive-Secret(., "attestation derived", "")
+               Derive-Secret(., "derived", "")
                    |
                    v
          0 ---> HKDF-Extract = Main Secret
