@@ -1871,8 +1871,14 @@ s_attest_binder = HKDF-Expand-Label(s_attest_main, "Early Attestation",
                                     TLS_Server_Public_Key, Hash.length)
 </pre><a href="#section-5.6-9" class="pilcrow">¶</a>
 </div>
-<p id="section-5.6-10">This ensures that each attestation binder is bound to the specific TLS public
-key being attested.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
+<p id="section-5.6-10">The attestation binder is derived independently by both the attester and the
+peer. The attester incorporates this attestation binder into the Evidence.
+Upon receipt of the Attestation handshake message, the peer will have to derive
+the expected attestation binder using the same inputs and verify that the
+computed attestation binder matches the one in the Evidence. If this verification
+fails, the peer will treat the attestation as invalid. This verification ensures
+that the Evidence is bound to the specific TLS session and TLS public key being
+attested.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="the-tls-stacks-interface-to-the-tee">
@@ -2001,7 +2007,7 @@ introduced by EKU.<a href="#section-7.2-9" class="pilcrow">¶</a></p>
             <p id="section-7.2-11.2.1">sends a new <code>Attestation</code> handshake message containing the updated CMW payload.<a href="#section-7.2-11.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-7.2-12">The TLS peer validates that the attestation payload incorporates the newly derived attestation binder.<a href="#section-7.2-12" class="pilcrow">¶</a></p>
+<p id="section-7.2-12">The TLS peer validates the attestation by deriving and verifying the attestation binder as specified in <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>.<a href="#section-7.2-12" class="pilcrow">¶</a></p>
 <p id="section-7.2-13">Reattestation uses the Attestation formats that were negotiated during the initial handshake,
 there is no re-negotiation at this stage.<a href="#section-7.2-13" class="pilcrow">¶</a></p>
 <p id="section-7.2-14">The decision to initiate reattestation is per local policy and may be based on
