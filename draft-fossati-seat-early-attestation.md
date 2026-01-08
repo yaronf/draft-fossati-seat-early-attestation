@@ -65,7 +65,7 @@ author:
 normative:
   I-D.ietf-tls-rfc8446bis: tls13
   I-D.ietf-rats-msg-wrap: cmw
-  I-D.ietf-tls-extended-key-update: eku
+
 informative:
   RFC6960: ocsp
   RFC9334: rats-arch
@@ -169,7 +169,6 @@ and the TLS connection is established.
 * Application code does not need to change. At most, some configuration is needed, similar to the current use of certificate trust stores.
 
 This document does not mandate any particular attestation technology.
-Companion documents are expected to define specific attestation mechanisms.
 
 # Conventions and Terminology
 
@@ -192,6 +191,9 @@ TIK-C-ID, TIK-S-ID:
 
 : An identifier for TIK-C or respectively, TIK-S. This may be a fingerprint
 (cryptographic hash) of the public key, but other implementations are possible.
+
+Attestation binder:
+: A cryptographic value used to bind the TLS handshake to the remote attestation session. May also be referred to as "binder" throughout the document.
 
 
 {::boilerplate bcp14-tagged}
@@ -258,7 +260,7 @@ Attestation Results encoded according to {{-cmw}}.
 The attestation payload MUST contain assertions relating to the attester's TLS
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
-over the Evidence or AttestationResults within the CMW MUST include a secret derived
+over the Evidence or AttestationResults within the CMW MUST include an attestation binder derived
 from the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
 and the attester's TLS identity public key, as specified in {{attestation-message-section}}.
 
@@ -282,7 +284,7 @@ This protocol supports both monolithic and split implementations. In a monolithi
 implementation, the TLS stack is completely embedded within the TEE. In a split
 implementation, the TLS stack is located outside the TEE, but any private keys
 (and in particular, the TIK) only exist within the TEE. In order to support
-both options, only the TIK's identity, its public component and a short generated secret are ever
+both options, only the TIK's identity, its public component and a short generated binder are ever
 passed between the Client or Server TLS stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
 their security properties often differ, see {{sec-guarantees}} for more details.
@@ -328,7 +330,7 @@ or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW MUST include:
 
-- A secret derived from the TLS main secret and the message transcript, up to ServerHello,
+- A binder derived from the TLS main secret and the message transcript, up to ServerHello,
 ensuring freshness of the attestation.
 - The attester's TLS identity public key (TIK-C for client attester, TIK-S for
   server attester)
@@ -393,8 +395,7 @@ Exch | + evidence_proposal
                                           + evidence_proposal | Params
                                          {CertificateRequest} v
                                                 {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
+                                          {CertificateVerify} | Auth
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
@@ -440,7 +441,6 @@ Exch | + evidence_request
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
-     | {Attestation}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 ~~~~
@@ -470,8 +470,7 @@ Exch | + results_proposal
                                            + results_proposal | Params
                                          {CertificateRequest} v
                                                 {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
+                                          {CertificateVerify} | Auth
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate}
@@ -513,7 +512,6 @@ Exch | + results_request
                                <--------  [Application Data*]
      ^ {Certificate}
 Auth | {CertificateVerify}
-     | {Attestation}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 ~~~~
@@ -557,25 +555,32 @@ are derived from the TLS main secret using Derive-Secret as defined in
 "s attestation main" respectively, and the handshake transcript up to and
 including ServerHello as the context.
 
-The client's attestation secret (`c_attest_secret`) that will be signed by
+The client's attestation binder (`c_attest_binder`) that will be signed by
 the TEE is derived by applying HKDF-Expand-Label to `c_attest_main` with
 the label "attestation" and the client's TLS public key as the context:
 
 ~~~~
-c_attestation_secret = HKDF-Expand-Label(c_attestation_main, "attestation",
-                                         TLS_Client_Public_Key, Hash.length)
+c_attest_binder = HKDF-Expand-Label(c_attest_main, "attestation",
+                                    TLS_Client_Public_Key, Hash.length)
 ~~~~
 
-Similarly, the server's attestation secret (`s_attest_secret`) is derived
+Similarly, the server's attestation binder (`s_attest_binder`) is derived
 from `s_attest_main`:
 
 ~~~~
-s_attestation_secret = HKDF-Expand-Label(s_attestation_main, "attestation",
-                                         TLS_Server_Public_Key, Hash.length)
+s_attest_binder = HKDF-Expand-Label(s_attest_main, "attestation",
+                                    TLS_Server_Public_Key, Hash.length)
 ~~~~
 
-This ensures that each attestation secret is bound to the specific TLS public
-key being attested.
+
+The attestation binder is derived independently by both the attester and the
+peer. The attester incorporates this attestation binder into the Evidence.
+Upon receipt of the Attestation handshake message, the peer will have to derive
+the expected attestation binder using the same inputs and verify that the
+computed attestation binder matches the one in the Evidence. If this verification
+fails, the peer will treat the attestation as invalid. This verification ensures
+that the Evidence is bound to the specific TLS session and TLS public key being
+attested.
 
 ## The TLS Stack's Interface to the TEE
 
@@ -590,6 +595,10 @@ Therefore we adopt a defense-in-depth approach:
 # DTLS Considerations
 
 The Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.
+
+Note that Attestation messages typically exceed 1,500 bytes in size.
+This means that the message will be split into multiple DTLS records, increasing the latency of handshake completion.
+This is particularly the case over channels where reordering and loss are more common due to factors such as routing transients, intermittent connectivity or mobility.
 
 In DTLS, handshake messages that do not solicit a response are acknowledged using the DTLS ACK message. Because the Attestation handshake message does not elicit a response, the receiving peer MUST send a DTLS ACK upon receipt of the Attestation message. This ACK confirms only that the message was received; it does not indicate that attestation appraisal has completed.
 
@@ -627,7 +636,7 @@ require refresh. Long-lived TLS connections require updated assurance that
 the peer continues to operate in a trustworthy state. This document
 therefore supports reattestation, in which either peer MAY request fresh
 Evidence at any time post-handshake. The attester MUST generate evidence
-using a freshly derived attestation_secret.
+using a freshly derived attestation_binder.
 
 Reattestation is tied to the completion of an Extended Key Update (EKU) exchange {{!I-D.ietf-tls-extended-key-update}}. TLS peers that require reattestation MUST support EKU,
 since reattestation depends on the key schedule update defined in the EKU draft.
@@ -637,7 +646,7 @@ make `Main Secret N+1` available to both peers.
 The Attestation message MUST be sent immediately before the attestor sends
 its EKU(new_key_update) message. Once `Main Secret N+1` is available
 (after the first two EKU messages), the attester derives a new
-attestation_secret from `Main Secret N+1`, using the concatenation of the
+attestation_binder from `Main Secret N+1`, using the concatenation of the
 EKU request and response messages and its TLS identity public key as context.
 
 The receiving peer, however, MUST NOT process the Attestation until the
@@ -648,7 +657,7 @@ both peers have confirmed that they share the same updated key state.
 For a client attester:
 
 ~~~
-client_attestation_secret =
+client_attestation_binder =
       Derive-Secret(Main Secret N+1,
                     "reattestation",
                     EKU(request) ||
@@ -659,7 +668,7 @@ client_attestation_secret =
 For a server attester:
 
 ~~~
-server_attestation_secret =
+server_attestation_binder =
       Derive-Secret(Main Secret N+1,
                     "reattestation",
                     EKU(request) ||
@@ -667,16 +676,16 @@ server_attestation_secret =
                     TLS_Server_Public_Key)
 ~~~
 
-Including the EKU request and response messages ensures that the resulting attestation secret
+Including the EKU request and response messages ensures that the resulting attestation binder
 is bound to the specific EKU exchange and therefore reflects fresh key-exchange entropy
 introduced by EKU.
 
-After deriving the fresh attestation_secret, the attester:
+After deriving the fresh attestation_binder, the attester:
 
-1. generates fresh Evidence using the new attestation_secret and
+1. generates fresh Evidence using the new attestation_binder and
 2. sends a new `Attestation` handshake message containing the updated CMW payload.
 
-The TLS peer validates that the attestation payload incorporates the newly derived attestation secret.
+The TLS peer validates the attestation by deriving and verifying the attestation binder as specified in {{crypto-ops}}.
 
 Reattestation uses the Attestation formats that were negotiated during the initial handshake,
 there is no re-negotiation at this stage.
@@ -878,7 +887,7 @@ evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 `Attestation` handshake message sent after the `CertificateVerify` message.
-The Evidence contained in the CMW payload MUST include a secret derived from
+The Evidence contained in the CMW payload MUST include a binder derived from
 the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
 in the TEE's signature, along with the client's TLS identity public key (TIK-C).
 The value conveyed in the evidence_proposal extension by the server MUST be
@@ -897,7 +906,7 @@ in an `Attestation` handshake message. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the `Attestation` handshake message sent
 after the CertificateVerify by the server. The Evidence
-contained in the CMW payload MUST include a secret derived from
+contained in the CMW payload MUST include a binder derived from
 the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
 in the TEE's signature, along with
 the server's TLS identity public key (TIK-S).
@@ -1005,7 +1014,7 @@ These properties may be explicitly promised ("attested") by the platform, or the
 the TLS main secret and message transcript. Differences between Background Check and Passport mode.
 </cref>
 
-## Security of Reattestation After EKU
+## Security of Reattestation After Extended Key Update
 
 Reattestation relies on the assumption that both peers have derived the same
 `Main Secret N+1` during the preceding EKU exchange. EKU by itself does not
