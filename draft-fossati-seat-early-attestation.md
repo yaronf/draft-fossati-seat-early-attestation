@@ -65,7 +65,7 @@ author:
 normative:
   I-D.ietf-tls-rfc8446bis: tls13
   I-D.ietf-rats-msg-wrap: cmw
-  I-D.ietf-tls-extended-key-update: eku
+
 informative:
   RFC6960: ocsp
   RFC9334: rats-arch
@@ -169,7 +169,6 @@ and the TLS connection is established.
 * Application code does not need to change. At most, some configuration is needed, similar to the current use of certificate trust stores.
 
 This document does not mandate any particular attestation technology.
-Companion documents are expected to define specific attestation mechanisms.
 
 # Conventions and Terminology
 
@@ -1018,7 +1017,7 @@ These properties may be explicitly promised ("attested") by the platform, or the
 the TLS main secret and message transcript. Differences between Background Check and Passport mode.
 </cref>
 
-## Security of Reattestation After EKU
+## Security of Reattestation After Extended Key Update
 
 Reattestation relies on the assumption that both peers have derived the same
 `Main Secret N+1` during the preceding EKU exchange. EKU by itself does not
