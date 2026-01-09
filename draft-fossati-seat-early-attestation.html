@@ -1223,7 +1223,10 @@ These extensions have been designed to allow the peers to use any attestation te
                 <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-cryptographic-operations" class="internal xref">Cryptographic Operations</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
-                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-the-tls-stacks-interface-to" class="internal xref">The TLS Stack's Interface to the TEE</a></p>
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-binding-the-tik-to-the-tee" class="internal xref">Binding the TIK to the TEE</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-the-tls-stacks-interface-to" class="internal xref">The TLS Stack's Interface to the TEE</a></p>
 </li>
             </ul>
 </li>
@@ -1911,23 +1914,35 @@ that the Evidence is bound to the specific TLS session and TLS public key being
 attested.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="the-tls-stacks-interface-to-the-tee">
+<div id="tik-binding">
 <section id="section-5.7">
-        <h3 id="name-the-tls-stacks-interface-to">
-<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-the-tls-stacks-interface-to" class="section-name selfRef">The TLS Stack's Interface to the TEE</a>
+        <h3 id="name-binding-the-tik-to-the-tee">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-binding-the-tik-to-the-tee" class="section-name selfRef">Binding the TIK to the TEE</a>
         </h3>
-<p id="section-5.7-1">When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
+<p id="section-5.7-1">This specification assumes that the TIK private key corresponding to the end-entity certificate used in the TLS handshake is generated inside a TEE and never leaves it. A platform could instead generate the TIK private key outside the TEE and compute the CertificateVerify signature using that external key. A relying party cannot detect this attack unless additional safeguards are in place.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<p id="section-5.7-2">This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
+<p id="section-5.7-3">To address this, the Evidence <span class="bcp14">MUST</span> include the TIK public key (TIK_pub). The relying party <span class="bcp14">MUST</span> verify that the TIK_pub included in the Evidence matches the public key presented in the TLS Certificate message. This binds the attestation Evidence to the TLS identity used for authentication.<a href="#section-5.7-3" class="pilcrow">¶</a></p>
+<p id="section-5.7-4">Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key prevents this relay attack.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
+<p id="section-5.7-5">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="the-tls-stacks-interface-to-the-tee">
+<section id="section-5.8">
+        <h3 id="name-the-tls-stacks-interface-to">
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-the-tls-stacks-interface-to" class="section-name selfRef">The TLS Stack's Interface to the TEE</a>
+        </h3>
+<p id="section-5.8-1">When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
 session. TEE implementations differ, and some only allow a single user-provided challenge value to be added to the Evidence with no associated checks.
-Therefore we adopt a defense-in-depth approach:<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+Therefore we adopt a defense-in-depth approach:<a href="#section-5.8-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.7-2.1">
-            <p id="section-5.7-2.1.1">Separate attesting applications within the same TEE <span class="bcp14">SHOULD NOT</span> be capable of impersonating each other via Evidence or Attestation Results. Therefore, if multiple applications are expected to use attestation credentials, evidence/AR generation APIs <span class="bcp14">SHOULD</span> reflect identifiers for the calling contexts into the generated credential. These identifiers can be reflected as separate claims in the credential, or can be measured as part of more generic claims. A Relying Party <span class="bcp14">SHOULD</span> be capable of differentiating between the attesting applications based on their credentials.<a href="#section-5.7-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.8-2.1">
+            <p id="section-5.8-2.1.1">Separate attesting applications within the same TEE <span class="bcp14">SHOULD NOT</span> be capable of impersonating each other via Evidence or Attestation Results. Therefore, if multiple applications are expected to use attestation credentials, evidence/AR generation APIs <span class="bcp14">SHOULD</span> reflect identifiers for the calling contexts into the generated credential. These identifiers can be reflected as separate claims in the credential, or can be measured as part of more generic claims. A Relying Party <span class="bcp14">SHOULD</span> be capable of differentiating between the attesting applications based on their credentials.<a href="#section-5.8-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.7-2.2">
-            <p id="section-5.7-2.2.1">The RP <span class="bcp14">SHOULD NOT</span> base its trust decision only on the Attester's trust root. It <span class="bcp14">SHOULD</span> also ensure that the entire attested software stack is endorsed.<a href="#section-5.7-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.8-2.2">
+            <p id="section-5.8-2.2.1">The RP <span class="bcp14">SHOULD NOT</span> base its trust decision only on the Attester's trust root. It <span class="bcp14">SHOULD</span> also ensure that the entire attested software stack is endorsed.<a href="#section-5.8-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.7-2.3">
-            <p id="section-5.7-2.3.1">The TEE itself, when possible, <span class="bcp14">SHOULD</span> generate the attestation secret by running the derivation operations defined in <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>, and, if it holds the TIK, <span class="bcp14">SHOULD</span> validate the public key. The attestation secret can be generated by the TEE only if TLS is running inside the TEE.<a href="#section-5.7-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.8-2.3">
+            <p id="section-5.8-2.3.1">The TEE itself, when possible, <span class="bcp14">SHOULD</span> generate the attestation secret by running the derivation operations defined in <a href="#crypto-ops" class="auto internal xref">Section 5.6</a>, and, if it holds the TIK, <span class="bcp14">SHOULD</span> validate the public key. The attestation secret can be generated by the TEE only if TLS is running inside the TEE.<a href="#section-5.8-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
