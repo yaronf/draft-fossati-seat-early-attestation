@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 12 July 2026                                       Y. Deshpande
+Expires: 13 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          8 January 2026
+                                                          9 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 July 2026.
+   This Internet-Draft will expire on 13 July 2026.
 
 Copyright Notice
 
@@ -586,24 +586,26 @@ Table of Contents
 
    The key derivation follows this structure:
 
-   0
-   |
-   v
-(EC)DHE -> HKDF-Extract = Handshake Secret
-   |
-   v
-Derive-Secret(., "derived secret", "")
-   |
-   v
-0 -> HKDF-Extract = Master Secret
-   |
-   +-> Derive-Secret(., "c attestation main", ClientHello...ServerHello)
-   |                     = c_attest_main
-   |
-   +-> Derive-Secret(., "s attestation main", ClientHello...ServerHello)
-   |                     = s_attest_main
+                   0
+                   |
+                   v
+   (EC)DHE ---> HKDF-Extract = Handshake Secret
+                   |
+                   v
+               Derive-Secret(., "derived", "")
+                   |
+                   v
+         0 ---> HKDF-Extract = Main Secret
+                   |
+                   +-----> Derive-Secret(., "c attestation main",
+                   |                     ClientHello...ServerHello)
+                   |              = c_attest_main
+                   |
+                   +-----> Derive-Secret(., "s attestation main",
+                                         ClientHello...ServerHello)
+                                  = s_attest_main
 
-                 Figure 6: Attestation Key Schedule.
+                    Figure 6: Attestation Key Schedule.
 
    The attestation main secrets (c_attest_main and s_attest_main) are
    derived from the TLS main secret using Derive-Secret as defined in
