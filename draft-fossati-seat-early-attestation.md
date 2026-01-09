@@ -584,6 +584,18 @@ fails, the peer will treat the attestation as invalid. This verification ensures
 that the Evidence is bound to the specific TLS session and TLS public key being
 attested.
 
+## Binding the TIK to the TEE {#tik-binding}
+
+This specification assumes that the TIK private key corresponding to the end-entity certificate used in the TLS handshake is generated inside a TEE and never leaves it. A platform could instead generate the TIK private key outside the TEE and compute the CertificateVerify signature using that external key. A relying party cannot detect this attack unless additional safeguards are in place.
+
+This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.
+
+To address this, the Evidence MUST include the TIK public key (TIK_pub). The relying party MUST verify that the TIK_pub included in the Evidence matches the public key presented in the TLS Certificate message. This binds the attestation Evidence to the TLS identity used for authentication.
+
+Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key prevents this relay attack.
+
+The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.
+
 ## The TLS Stack's Interface to the TEE
 
 When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
