@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-08T01:39:05.565801+00:00",
+  "timestamp": "2026-01-11T01:47:03.665515+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -315,7 +315,7 @@
       "id": "I_kwDOQdsaoc7b_L2d",
       "title": "validation of attestation secret",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/13",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -326,8 +326,8 @@
       ],
       "body": "attestation_secret is binding the public key but it needs to be validated by peer otherwise it is of no use. ",
       "createdAt": "2025-12-03T15:43:09Z",
-      "updatedAt": "2026-01-07T08:27:21Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-08T16:16:16Z",
+      "closedAt": "2026-01-08T16:16:16Z",
       "comments": [
         {
           "author": "yaronf",
@@ -335,6 +335,13 @@
           "body": "Is this sufficiently addressed in [Sec. 5.7](https://www.sheffer.org/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html#name-the-tls-stacks-interface-to)?",
           "createdAt": "2025-12-04T12:27:07Z",
           "updatedAt": "2025-12-04T12:27:07Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Resolved by #27.",
+          "createdAt": "2026-01-08T16:16:14Z",
+          "updatedAt": "2026-01-08T16:16:14Z"
         }
       ]
     },
@@ -343,7 +350,7 @@
       "id": "I_kwDOQdsaoc7cHkXW",
       "title": "Evidence Does Not Prevent Attestation of Non-TEE-Resident Identity Keys (TIK)",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -352,8 +359,8 @@
       ],
       "body": "It assumes that the TLS Identity Key (TIK) private key is generated and held inside the TEE. However, the protocol as specified does not prevent a platform from attesting a public key whose private key is actually external to the TEE.",
       "createdAt": "2025-12-04T05:21:20Z",
-      "updatedAt": "2026-01-07T13:03:36Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-09T10:44:06Z",
+      "closedAt": "2026-01-09T10:44:06Z",
       "comments": [
         {
           "author": "yaronf",
@@ -383,7 +390,7 @@
       "id": "I_kwDOQdsaoc7fNlLX",
       "title": "Is attestation secret meant to be secret?",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/19",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -394,8 +401,8 @@
       ],
       "body": "As per title: should we explicitly state this?\n\nThe secret _could_ appear in the Evidence in plaintext, so it could be accessible to the Verifier, for example.",
       "createdAt": "2025-12-18T21:14:08Z",
-      "updatedAt": "2026-01-07T08:23:34Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-08T10:33:48Z",
+      "closedAt": "2026-01-08T10:33:48Z",
       "comments": [
         {
           "author": "yaronf",
@@ -434,7 +441,7 @@
       "id": "I_kwDOQdsaoc7hRsqg",
       "title": "Companion documents?",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/21",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -445,8 +452,8 @@
       ],
       "body": "> Companion documents are expected to define specific attestation mechanisms.\n\nI think this is not realistic (or necessary) and the text can be removed.",
       "createdAt": "2026-01-04T18:26:43Z",
-      "updatedAt": "2026-01-07T08:19:15Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-08T13:26:31Z",
+      "closedAt": "2026-01-08T13:26:30Z",
       "comments": []
     },
     {
@@ -479,6 +486,22 @@
       "createdAt": "2026-01-04T18:56:48Z",
       "updatedAt": "2026-01-06T13:47:39Z",
       "closedAt": "2026-01-06T13:47:39Z",
+      "comments": []
+    },
+    {
+      "number": 31,
+      "id": "I_kwDOQdsaoc7iTYLt",
+      "title": "Restructure \"Binding the TIK to the TEE\"",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/31",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Most of this section is descriptive. I suggest to move the normative part (2 MUSTs) of this section elsewhere, and have the rest of this section in the Security Considerations.\n\nAlso, some of the text needs to be clarified. Specifically Sec. 5.6 includes the public key in the binder but not in the Evidence itself.",
+      "createdAt": "2026-01-09T12:14:19Z",
+      "updatedAt": "2026-01-09T12:14:19Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -1524,24 +1547,26 @@
       "id": "PR_kwDOQdsaoc65ruRu",
       "title": "Polish wording",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/18",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-12-18T20:55:46Z",
-      "updatedAt": "2026-01-07T17:04:04Z",
+      "updatedAt": "2026-01-08T16:00:18Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "baseRefOid": "4fb29b032ed0fb31b229382cc9480cf92a8192eb",
       "headRepository": "ionut-arm/draft-fossati-seat-early-attestation",
       "headRefName": "wordsmithing1",
-      "headRefOid": "043aa2fc5c13897101b600c7ea277b52a0ddca12",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "670e8b4bb66e4b3144b86895ec5e4108ed9cdcb0",
+      "closedAt": "2026-01-08T16:00:17Z",
+      "mergedAt": "2026-01-08T16:00:17Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "c2360412d6dd81e19ae54d458f5de8b335fcf915"
+      },
       "comments": [],
       "reviews": [
         {
@@ -1768,6 +1793,19 @@
               "updatedAt": "2026-01-07T17:04:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y7W35",
+          "commit": {
+            "abbreviatedOid": "043aa2f"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T13:29:57Z",
+          "updatedAt": "2026-01-08T13:29:57Z",
+          "comments": []
         }
       ]
     },
@@ -1831,24 +1869,26 @@
       "id": "PR_kwDOQdsaoc67ukPq",
       "title": "Address replay attack",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/25",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-06T14:02:57Z",
-      "updatedAt": "2026-01-07T15:04:29Z",
+      "updatedAt": "2026-01-09T10:43:40Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "6dd0ea05a66f5177551fe341198a58edc5c59a4a",
+      "baseRefOid": "a215dba9813651e3a4f7d370c38ee862115e7b5c",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-1",
-      "headRefOid": "d809606bb2a9aa2d1ae34a624a2ab4263c409ed5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "846587c94abbbd0c0dd2ab4a2ed007ec1f92c7b1",
+      "closedAt": "2026-01-09T10:43:40Z",
+      "mergedAt": "2026-01-09T10:43:40Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "aced1edc1beec032b93f825dd4cd0041f745a0bb"
+      },
       "comments": [
         {
           "author": "yaronf",
@@ -1870,9 +1910,72 @@
           "body": "> From the relying party\u2019s perspective, a compliant and a non-compliant implementation are indistinguishable [\u2026]\r\n\r\nThe RP _can_ distinguish a compliant from a non-compliant implementation because the attestation evidence provided to the RP identifies the implementation.",
           "createdAt": "2026-01-07T15:04:29Z",
           "updatedAt": "2026-01-07T15:04:29Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The RP _can_ distinguish a compliant from a non-compliant implementation because the attestation evidence provided to the RP identifies the implementation.\r\n\r\nAttesting that the TLS stack runs in the TEE establishes where the code executes, but it does not guarantee that the TIK private key was generated and is controlled by the TEE. A cryptographic binding is therefore still required to provide a verifiable proof of the origin and use of the TIK private key.",
+          "createdAt": "2026-01-08T07:06:46Z",
+          "updatedAt": "2026-01-08T07:06:46Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > The RP _can_ distinguish a compliant from a non-compliant implementation because the attestation evidence provided to the RP identifies the implementation.\r\n> \r\n> Attesting that the TLS stack runs in the TEE establishes where the code executes, but it does not guarantee that the TIK private key was generated and is controlled by the TEE. A cryptographic binding is therefore still required to provide a verifiable proof of the origin and use of the TIK private key.\r\n\r\nStrictly speaking, successfully appraised evidence about the piece of TCB handling the TIK/running the TLS endpoint guarantees the RP that all of the sought-after properties (including all TIK requirements) are satisfied.\r\n\r\nThis is the _magic_ of attestation :-)",
+          "createdAt": "2026-01-08T08:18:09Z",
+          "updatedAt": "2026-01-08T08:18:09Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The TEE will have to compute this signature internally and not accept externally supplied signatures for inclusion in Evidence.\r\n\r\nIs this not identical in effect to a similar (but less complex) requirement: \"the TEE will have to generate the TIK and include its public part in the Evidence, and not accept externally supplied keys\"?",
+          "createdAt": "2026-01-08T10:44:53Z",
+          "updatedAt": "2026-01-08T10:44:53Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > The TEE will have to compute this signature internally and not accept externally supplied signatures for inclusion in Evidence.\r\n> \r\n> Is this not identical in effect to a similar (but less complex) requirement: \"the TEE will have to generate the TIK and include its public part in the Evidence, and not accept externally supplied keys\"?\r\n\r\nAgreed, if the Evidence signed by the TEE includes the TIK public key, and the RP is required to verify that it matches the public key in the TLS end-entity certificate, this provides a protocol-visible binding for split deployments.",
+          "createdAt": "2026-01-08T13:49:14Z",
+          "updatedAt": "2026-01-08T13:49:14Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > The TEE will have to compute this signature internally and not accept externally supplied signatures for inclusion in Evidence.\r\n> \r\n> Is this not identical in effect to a similar (but less complex) requirement: \"the TEE will have to generate the TIK and include its public part in the Evidence, and not accept externally supplied keys\"?\r\n\r\n\r\n\r\n> > > The RP _can_ distinguish a compliant from a non-compliant implementation because the attestation evidence provided to the RP identifies the implementation.\r\n> > \r\n> > \r\n> > Attesting that the TLS stack runs in the TEE establishes where the code executes, but it does not guarantee that the TIK private key was generated and is controlled by the TEE. A cryptographic binding is therefore still required to provide a verifiable proof of the origin and use of the TIK private key.\r\n> \r\n> Strictly speaking, successfully appraised evidence about the piece of TCB handling the TIK/running the TLS endpoint guarantees the RP that all of the sought-after properties (including all TIK requirements) are satisfied.\r\n> \r\n> This is the _magic_ of attestation :-)\r\n\r\nIn split deployments, where TLS runs outside the TEE, attesting the TEE alone does not prove that the TIK private key used by TLS is the one generated and controlled by the TEE, so an explicit protocol-visible binding is still required.\r\n\r\nIn addition, an attacker can relay Evidence from a genuine TEE-based TLS endpoint to a non-TEE TLS stack, causing the relying party to accept a platform that is not actually executing the TLS endpoint. By including the TIK public key in the Evidence and requiring it to match the public key in the Certificate message, the Evidence is cryptographically bound to the TLS identity used for authentication, preventing reuse of Evidence across platforms or endpoints.\r\n\r\nIf this works, I will modify the text accordingly. ",
+          "createdAt": "2026-01-08T13:52:49Z",
+          "updatedAt": "2026-01-08T14:07:50Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "> In split deployments, where TLS runs outside the TEE, attesting the TEE alone does not prove that the TIK private key used by TLS is the one generated and controlled by the TEE, so an explicit protocol-visible binding is still required.\r\n> \r\n> In addition, an attacker can relay Evidence from a genuine TEE-based TLS endpoint to a non-TEE TLS stack, causing the relying party to accept a platform that is not actually executing the TLS endpoint. By including the TIK public key in the Evidence and requiring it to match the public key in the Certificate message, the Evidence is cryptographically bound to the TLS identity used for authentication, preventing reuse of Evidence across platforms or endpoints.\r\n> \r\n> If this works, I will modify the text accordingly.\r\n\r\nThe RP determines which software endorsements it is willing to trust, and so it can decide whether to trust split deployments or not. Let me point out that a non-TEE TLS stack can do all sorts of bad things such as leaking all of the network traffic that's supposed to be protected by TLS! In other words, all bets would be off.\r\n\r\nI agree with your second paragraph: the combination of strict enforcement of TEE endorsement/verification and the binding of the Evidence to the TIK's public key mitigates this relay attack.",
+          "createdAt": "2026-01-08T16:12:40Z",
+          "updatedAt": "2026-01-08T16:12:40Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > In split deployments, where TLS runs outside the TEE, attesting the TEE alone does not prove that the TIK private key used by TLS is the one generated and controlled by the TEE, so an explicit protocol-visible binding is still required.\r\n> > In addition, an attacker can relay Evidence from a genuine TEE-based TLS endpoint to a non-TEE TLS stack, causing the relying party to accept a platform that is not actually executing the TLS endpoint. By including the TIK public key in the Evidence and requiring it to match the public key in the Certificate message, the Evidence is cryptographically bound to the TLS identity used for authentication, preventing reuse of Evidence across platforms or endpoints.\r\n> > If this works, I will modify the text accordingly.\r\n> \r\n> The RP determines which software endorsements it is willing to trust, and so it can decide whether to trust split deployments or not. Let me point out that a non-TEE TLS stack can do all sorts of bad things such as leaking all of the network traffic that's supposed to be protected by TLS! In other words, all bets would be off.\r\n\r\nAgreed, the proposed binding ensures that the RP does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise. \r\n\r\n> \r\n> I agree with your second paragraph: the combination of strict enforcement of TEE endorsement/verification and the binding of the Evidence to the TIK's public key mitigates this relay attack.\r\n\r\nUpdated text, please check. ",
+          "createdAt": "2026-01-09T06:12:42Z",
+          "updatedAt": "2026-01-09T06:12:42Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7ZKNH8",
+          "commit": {
+            "abbreviatedOid": "846587c"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I'm not familiar with split-stack deployments to be able to assess this properly, but at least in terms of the relay attack the binding to pub_TIK seems like the best we can achieve.",
+          "createdAt": "2026-01-09T10:27:07Z",
+          "updatedAt": "2026-01-09T10:27:07Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 26,
@@ -1921,24 +2024,26 @@
       "id": "PR_kwDOQdsaoc676YKL",
       "title": "Validation of attestation secret",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/27",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-07T13:44:30Z",
-      "updatedAt": "2026-01-07T13:45:28Z",
+      "updatedAt": "2026-01-08T13:26:03Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
+      "baseRefOid": "f7abca06c349177dca7a7d3b2b090c079e99ceb8",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-2",
-      "headRefOid": "c64152606a2f72cc19610b9ede82defb344a5e81",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "0ce806dcfcf3567bc20b850a6e34ece5ea2fb2ce",
+      "closedAt": "2026-01-08T13:26:03Z",
+      "mergedAt": "2026-01-08T13:26:03Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "2f0a5ff42f5af9684ec4dcd83a339240abd139ce"
+      },
       "comments": [
         {
           "author": "tireddy2",
@@ -1948,31 +2053,106 @@
           "updatedAt": "2026-01-07T13:45:18Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Y5Foi",
+          "commit": {
+            "abbreviatedOid": "c641526"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Text looks good, I left a couple of patches below to address the terminology change from #29 ",
+          "createdAt": "2026-01-08T10:47:33Z",
+          "updatedAt": "2026-01-08T10:49:02Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nThe attestation binder is derived independently by both the attester and the\r\npeer. The attester incorporates this attestation binder into the Evidence.\r\nUpon receipt of the Attestation handshake message, the peer will have to derive\r\nthe expected attestation binder using the same inputs and verify that the\r\ncomputed attestation binder matches the one in the evidence. If this verification\r\nfails, the peer will treat the attestation as invalid. This verification ensures\r\nthat the Evidence is bound to the specific TLS session and TLS public key being\r\nattested.\r\n```",
+              "createdAt": "2026-01-08T10:47:33Z",
+              "updatedAt": "2026-01-08T10:49:02Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "```suggestion\r\nThe TLS peer validates the attestation by deriving and verifying the attestation binder as specified in {{crypto-ops}}.\r\n```",
+              "createdAt": "2026-01-08T10:47:54Z",
+              "updatedAt": "2026-01-08T10:49:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y6zV7",
+          "commit": {
+            "abbreviatedOid": "cc5e629"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2026-01-08T12:53:30Z",
+          "updatedAt": "2026-01-08T12:53:30Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y7MxL",
+          "commit": {
+            "abbreviatedOid": "cc5e629"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T13:18:56Z",
+          "updatedAt": "2026-01-08T13:18:56Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\r\ncomputed attestation binder matches the one in the Evidence. If this verification\r\n```",
+              "createdAt": "2026-01-08T13:18:56Z",
+              "updatedAt": "2026-01-08T13:18:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y7P0b",
+          "commit": {
+            "abbreviatedOid": "cc5e629"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM, commented a minor inconsistency..",
+          "createdAt": "2026-01-08T13:22:25Z",
+          "updatedAt": "2026-01-08T13:22:25Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 28,
       "id": "PR_kwDOQdsaoc677K87",
       "title": "slight adjustments to the key schedule diagram",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "thomas-fossati",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-07T14:50:19Z",
-      "updatedAt": "2026-01-07T18:30:09Z",
+      "updatedAt": "2026-01-09T05:50:07Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "keyschedule-adjust",
-      "headRefOid": "6fe2352418f4d2f7f7b5aa4ebe1e4bf346eabc17",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "02057647c6228a4517d5fc63696644a42c718d30",
+      "closedAt": "2026-01-09T05:50:07Z",
+      "mergedAt": "2026-01-09T05:50:07Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "a215dba9813651e3a4f7d370c38ee862115e7b5c"
+      },
       "comments": [
         {
           "author": "yaronf",
@@ -1994,6 +2174,20 @@
           "body": "No, I don't think we need to be forking the tree. We create our own branch. And please correct the label then.",
           "createdAt": "2026-01-07T18:30:08Z",
           "updatedAt": "2026-01-07T18:30:08Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> No, I don't think we need to be forking the tree. We create our own branch.\r\n\r\nOK (although I guess it doesn\u2019t harm to explicitly separate the two)\r\n\r\n> And please correct the label then.\r\n\r\nDone in [0205764](https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28/commits/02057647c6228a4517d5fc63696644a42c718d30)",
+          "createdAt": "2026-01-08T08:20:49Z",
+          "updatedAt": "2026-01-08T08:20:49Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Happy with the diagram as-is, but wouldn't it be equivalent to replacing the upper half (up to \"0 ---> HKDF-Extract\") with just `Master Secret`?\r\n\r\nYeah, see also https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28#discussion_r2672210832",
+          "createdAt": "2026-01-08T12:44:26Z",
+          "updatedAt": "2026-01-08T12:44:26Z"
         }
       ],
       "reviews": [
@@ -2022,6 +2216,185 @@
           "createdAt": "2026-01-07T17:03:17Z",
           "updatedAt": "2026-01-07T17:03:17Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y1aQK",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T06:20:32Z",
+          "updatedAt": "2026-01-08T06:20:32Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "what is the need for \"Derive-Secret(., \"attestation derived\", \"\")\" ? \r\nIt should be removed and replaced with \"Derive-Secret(., \"derived secret\", \"\")\", the draft should not change the way Main secret is calculated. ",
+              "createdAt": "2026-01-08T06:20:32Z",
+              "updatedAt": "2026-01-08T06:22:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y3DHI",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T08:19:02Z",
+          "updatedAt": "2026-01-08T08:19:03Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\n            Derive-Secret(., \"derived\", \"\")\r\n```",
+              "createdAt": "2026-01-08T08:19:02Z",
+              "updatedAt": "2026-01-08T08:19:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y3Fs_",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T08:22:03Z",
+          "updatedAt": "2026-01-08T08:22:03Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "See https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28#issuecomment-3720080581",
+              "createdAt": "2026-01-08T08:22:03Z",
+              "updatedAt": "2026-01-08T08:22:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y5OTt",
+          "commit": {
+            "abbreviatedOid": "0205764"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Happy with the diagram as-is, but wouldn't it be equivalent to replacing the upper half (up to \"0 ---> HKDF-Extract\") with just `Master Secret`?",
+          "createdAt": "2026-01-08T10:57:47Z",
+          "updatedAt": "2026-01-08T10:57:47Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y50lT",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T11:44:56Z",
+          "updatedAt": "2026-01-08T11:44:56Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I meant the sequence can be simplified to depict only the necessary part.\r\n\r\nMain Secret\r\n   |\r\n   +-----> Derive-Secret(., \"c attestation main\",\r\n   |                     ClientHello..ServerHello)\r\n   |              = c_attest_main\r\n   |\r\n   +-----> Derive-Secret(., \"s attestation main\",\r\n                         ClientHello..ServerHello)\r\n                  = s_attest_main\r\n\r\n",
+              "createdAt": "2026-01-08T11:44:56Z",
+              "updatedAt": "2026-01-08T11:44:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y6lAv",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T12:43:08Z",
+          "updatedAt": "2026-01-08T12:43:09Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Initially, I assumed that we\u2019d branch the key scheduler at the Handshake Secret stage, but [0205764](https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28/commits/02057647c6228a4517d5fc63696644a42c718d30) effectively makes the upper part of the diagram redundant.\r\n\r\nHowever, I am still not sure what is wrong with my initial assumption/understanding, since the idea that the binder is constructed from the HS secret seems pretty natural :-)",
+              "createdAt": "2026-01-08T12:43:08Z",
+              "updatedAt": "2026-01-08T12:43:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y7Ogl",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T13:20:54Z",
+          "updatedAt": "2026-01-08T13:20:54Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Yes, I don't see a problem deriving *attest_main from HS secret. We can fix it as \r\n\r\nMain Secret\r\n|\r\n+-----> Derive-Secret(., \"c attestation main\",\r\n| ClientHello..ServerHello)\r\n| = c_attest_main\r\n|\r\n+-----> Derive-Secret(., \"s attestation main\",\r\nClientHello..ServerHello)\r\n= s_attest_main",
+              "createdAt": "2026-01-08T13:20:54Z",
+              "updatedAt": "2026-01-08T13:20:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y9tHR",
+          "commit": {
+            "abbreviatedOid": "6fe2352"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-08T15:48:50Z",
+          "updatedAt": "2026-01-08T15:48:51Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "> Initially, I assumed that we\u2019d branch the key scheduler at the Handshake Secret stage, but [0205764](https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/28/commits/02057647c6228a4517d5fc63696644a42c718d30) effectively makes the upper part of the diagram redundant.\r\n> \r\n\r\nThe point of having the upper part of the diagram (an exact copy of the TLS RFC) is to make it easy for readers to understand where we come in.",
+              "createdAt": "2026-01-08T15:48:50Z",
+              "updatedAt": "2026-01-08T15:48:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y9tb7",
+          "commit": {
+            "abbreviatedOid": "0205764"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T15:49:10Z",
+          "updatedAt": "2026-01-08T15:49:10Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7ZHCxV",
+          "commit": {
+            "abbreviatedOid": "0205764"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-09T05:49:55Z",
+          "updatedAt": "2026-01-09T05:49:55Z",
+          "comments": []
         }
       ]
     },
@@ -2030,24 +2403,26 @@
       "id": "PR_kwDOQdsaoc678-QZ",
       "title": "Rename secret to binder",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/29",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "\"attestation secret\" has a lot of semantic baggage to carry. Replacing it with \"attestation binder\" as per #19\r\n\r\nFixes #19 ",
       "createdAt": "2026-01-07T17:16:42Z",
-      "updatedAt": "2026-01-07T22:55:28Z",
+      "updatedAt": "2026-01-08T10:33:51Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "attestation-secret-rename",
       "headRefOid": "ee2563ed25d4f07acda4362a7aa5dcdb0dbca6d7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-01-08T10:33:47Z",
+      "mergedAt": "2026-01-08T10:33:47Z",
+      "mergedBy": "ionut-arm",
+      "mergeCommit": {
+        "oid": "f7abca06c349177dca7a7d3b2b090c079e99ceb8"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2075,6 +2450,19 @@
           "createdAt": "2026-01-07T22:55:28Z",
           "updatedAt": "2026-01-07T22:55:28Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y1V_0",
+          "commit": {
+            "abbreviatedOid": "ee2563e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T06:16:00Z",
+          "updatedAt": "2026-01-08T06:16:00Z",
+          "comments": []
         }
       ]
     },
@@ -2083,26 +2471,68 @@
       "id": "PR_kwDOQdsaoc68AiYL",
       "title": "Remove unnecessary promise re: companion documents",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/30",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Fixes #21 \r\n\r\nAlso 2 more minor edits.",
       "createdAt": "2026-01-07T23:26:23Z",
-      "updatedAt": "2026-01-07T23:28:04Z",
+      "updatedAt": "2026-01-08T13:26:30Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "a9e5d4792ea7e437be880990f3a909890a2ef457",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-21",
       "headRefOid": "c60b4fd01ce06d56cda440e0437fbd4c6605cd3b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-01-08T13:26:30Z",
+      "mergedAt": "2026-01-08T13:26:29Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "4fb29b032ed0fb31b229382cc9480cf92a8192eb"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Y1VRi",
+          "commit": {
+            "abbreviatedOid": "c60b4fd"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T06:14:50Z",
+          "updatedAt": "2026-01-08T06:14:50Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y5PXm",
+          "commit": {
+            "abbreviatedOid": "c60b4fd"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T10:59:01Z",
+          "updatedAt": "2026-01-08T10:59:01Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Y60UK",
+          "commit": {
+            "abbreviatedOid": "c60b4fd"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-08T12:54:12Z",
+          "updatedAt": "2026-01-08T12:54:12Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
