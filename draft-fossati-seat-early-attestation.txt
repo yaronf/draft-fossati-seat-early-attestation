@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 13 July 2026                                       Y. Deshpande
+Expires: 17 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          9 January 2026
+                                                         13 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 July 2026.
+   This Internet-Draft will expire on 17 July 2026.
 
 Copyright Notice
 
@@ -132,7 +132,8 @@ Table of Contents
      14.1.  Normative References
      14.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-01
+     A.2.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale
      B.1.  Requires Certificate Authentication
      B.2.  Reattestation Not Fully Supported
@@ -577,7 +578,11 @@ Table of Contents
 
    This section defines the key derivation for attestation, which
    operates independently from the regular TLS key schedule as described
-   in Section 7.1 of [I-D.ietf-tls-rfc8446bis].
+   in Section 7.1 of [I-D.ietf-tls-rfc8446bis].  The attestation key
+   derivation adds new secrets to the standard TLS key schedule without
+   modifying any existing key derivation steps.  The standard TLS key
+   schedule is unchanged before and after Main Secret as specified in
+   [I-D.ietf-tls-rfc8446bis].
 
    The attestation key derivation uses HKDF Section 7.1 of
    [I-D.ietf-tls-rfc8446bis] to derive attestation-specific secrets from
@@ -585,18 +590,26 @@ Table of Contents
    for the client (c_attest_main) and one for the server
    (s_attest_main).
 
-   The key derivation follows this structure:
+   The attestation key derivation adds the following branches to the
+   standard TLS key schedule (Fig. 5 of [I-D.ietf-tls-rfc8446bis]):
 
-                   0
+            (earlier steps)
                    |
                    v
    (EC)DHE ---> HKDF-Extract = Handshake Secret
+                   |
+                   +-----> [Standard TLS key schedule continues...]
+                   |       (client/server handshake traffic)
                    |
                    v
                Derive-Secret(., "derived", "")
                    |
                    v
          0 ---> HKDF-Extract = Main Secret
+                   |
+                   +-----> [Standard TLS key schedule continues...]
+                   |       (client/server application traffic, etc.)
+                   |
                    |
                    +-----> Derive-Secret(., "c attestation main",
                    |                     ClientHello...ServerHello)
@@ -606,7 +619,7 @@ Table of Contents
                                          ClientHello...ServerHello)
                                   = s_attest_main
 
-                    Figure 6: Attestation Key Schedule.
+               Figure 6: Attestation Key Schedule Additions.
 
    The attestation main secrets (c_attest_main and s_attest_main) are
    derived from the TLS main secret using Derive-Secret as defined in
@@ -1435,7 +1448,13 @@ Table of Contents
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-00
+A.1.  draft-fossati-seat-early-attestation-01
+
+   *  Fix typo in key schedule.  Clarify (again) that this is only
+      adding to the schedule, not modifying any existing key
+      derivations.
+
+A.2.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
