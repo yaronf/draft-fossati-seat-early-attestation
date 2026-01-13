@@ -132,7 +132,8 @@ Table of Contents
      14.1.  Normative References
      14.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-01
+     A.2.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale
      B.1.  Requires Certificate Authentication
      B.2.  Reattestation Not Fully Supported
@@ -1447,7 +1448,13 @@ Table of Contents
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-00
+A.1.  draft-fossati-seat-early-attestation-01
+
+   *  Fix typo in key schedule.  Clarify (again) that this is only
+      adding to the schedule, not modifying any existing key
+      derivations.
+
+A.2.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
