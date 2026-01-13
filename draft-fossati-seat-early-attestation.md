@@ -521,25 +521,36 @@ Auth | {CertificateVerify}
 
 This section defines the key derivation for attestation, which operates independently
 from the regular TLS key schedule as described in {{Section 7.1 of I-D.ietf-tls-rfc8446bis}}.
+The attestation key derivation adds new secrets to the standard TLS key schedule without
+modifying any existing key derivation steps. The standard TLS key schedule is
+unchanged before and after Main Secret as specified in {{I-D.ietf-tls-rfc8446bis}}.
 
 The attestation key derivation uses HKDF {{Section 7.1 of I-D.ietf-tls-rfc8446bis}} to derive
 attestation-specific secrets from the TLS main secret. Two attestation main
 secrets are derived: one for the client (`c_attest_main`) and one for the
 server (`s_attest_main`).
 
-The key derivation follows this structure:
+The attestation key derivation adds the following branches to the standard TLS key schedule
+(Fig. 5 of {{I-D.ietf-tls-rfc8446bis}}):
 
 ~~~~ aasvg
-                0
+         (earlier steps)
                 |
                 v
 (EC)DHE ---> HKDF-Extract = Handshake Secret
+                |
+                +-----> [Standard TLS key schedule continues...]
+                |       (client/server handshake traffic)
                 |
                 v
             Derive-Secret(., "derived", "")
                 |
                 v
       0 ---> HKDF-Extract = Main Secret
+                |
+                +-----> [Standard TLS key schedule continues...]
+                |       (client/server application traffic, etc.)
+                |
                 |
                 +-----> Derive-Secret(., "c attestation main",
                 |                     ClientHello...ServerHello)
@@ -549,7 +560,7 @@ The key derivation follows this structure:
                                       ClientHello...ServerHello)
                                = s_attest_main
 ~~~~
-{: #figure-attestation-key-schedule title="Attestation Key Schedule."}
+{: #figure-attestation-key-schedule title="Attestation Key Schedule Additions."}
 
 The attestation main secrets (`c_attest_main` and `s_attest_main`)
 are derived from the TLS main secret using Derive-Secret as defined in
@@ -1108,6 +1119,10 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-01
+
+* Fix typo in key schedule. Clarify (again) that this is only adding to the schedule, not modifying any existing key derivations.
 
 ## draft-fossati-seat-early-attestation-00
 
