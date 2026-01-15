@@ -227,9 +227,9 @@ minimal impact on the existing TLS security properties. The changes consist of:
 - Negotiation extensions: New TLS extensions are added to ClientHello and
   EncryptedExtensions messages to negotiate the use of attestation and indicate
   supported attestation formats and verifiers. A new `Attestation` extension is
-  introduced that carries attestation Evidence or Attestation Results. 
+  introduced that carries attestation Evidence or Attestation Results.
 
-- Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the 
+- Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the
   regular TLS key schedule. As a result, attestation processing does not affect the standard TLS key derivation and security properties.
 
 This minimal integration approach provides an intuitive explanation of why the
@@ -477,7 +477,7 @@ updated attestation until the `CertificateUpdate` is authenticated.
 For reattestation, the attestation binder MUST be derived using the TLS exporter
 interface defined in Section 7.5 of {{-tls13}}.
 
-To do so, the attester derives a binding value using the TLS exporter interface 
+To do so, the attester derives a binding value using the TLS exporter interface
 associated with the current TLS connection. The exporter invocation uses:
 
 * the label `"Attestation Binding"`,
@@ -578,7 +578,7 @@ Values for content_format are defined in {{iana-content-formats}}.
 {: #figure-extension-results title="TLS Extension Structure for Attestation Results."}
 
 In the Passport Model, Attestation Results are sent in an `Attestation` extension
-(see {{attestation-extension-section}}) containing a CMW structure. The CMW structure 
+(see {{attestation-extension-section}}) containing a CMW structure. The CMW structure
 is defined in {{-cmw}}.
 
 # TLS Client and Server Handshake Behavior {#behavior}
@@ -615,7 +615,7 @@ Exch | + key_share*
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate*}
-     | + attestation*     
+     | + attestation*
 Auth | {CertificateVerify*}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
@@ -771,7 +771,7 @@ server.  If the server
 wants to request Attestation Results from the client, it MUST include the
 results_proposal extension in the EncryptedExtensions. This results_proposal
 extension in the EncryptedExtensions then indicates what Verifier the client is
-requested to provide Attestation Results from in an `Attestation` extension in 
+requested to provide Attestation Results from in an `Attestation` extension in
 the `Certificate` message. The value conveyed in the
 results_proposal extension by the server MUST be selected from one of the
 values provided in the results_proposal extension sent in the ClientHello.
