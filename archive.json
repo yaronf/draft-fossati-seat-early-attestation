@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-11T01:47:03.665515+00:00",
+  "timestamp": "2026-01-15T01:28:22.742037+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -502,6 +502,22 @@
       "createdAt": "2026-01-09T12:14:19Z",
       "updatedAt": "2026-01-09T12:14:19Z",
       "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 32,
+      "id": "I_kwDOQdsaoc7jAE-b",
+      "title": "Typo in key schedule",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/32",
+      "state": "CLOSED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The top of the key schedule diagram defers from 8446bis. Diagram and text should clarify that there are zero changes to the existing key schedule, only additions.",
+      "createdAt": "2026-01-13T11:36:33Z",
+      "updatedAt": "2026-01-13T15:18:49Z",
+      "closedAt": "2026-01-13T15:18:49Z",
       "comments": []
     }
   ],
@@ -2533,6 +2549,113 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 33,
+      "id": "PR_kwDOQdsaoc686bYU",
+      "title": "Fix typo in key schedule",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/33",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #32.",
+      "createdAt": "2026-01-13T11:56:39Z",
+      "updatedAt": "2026-01-13T15:18:48Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "aced1edc1beec032b93f825dd4cd0041f745a0bb",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-32",
+      "headRefOid": "5508d2352e6722e09e49a651055240c67cbb83a4",
+      "closedAt": "2026-01-13T15:18:48Z",
+      "mergedAt": "2026-01-13T15:18:48Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7Z4VLt",
+          "commit": {
+            "abbreviatedOid": "5508d23"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-13T11:59:28Z",
+          "updatedAt": "2026-01-13T11:59:28Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7Z5D5Y",
+          "commit": {
+            "abbreviatedOid": "5508d23"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thank you for taking care of this.",
+          "createdAt": "2026-01-13T12:46:44Z",
+          "updatedAt": "2026-01-13T12:46:44Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "PR_kwDOQdsaoc6897l-",
+      "title": "Paying for my mistake",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/34",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-13T16:12:11Z",
+      "updatedAt": "2026-01-13T16:12:11Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-fix-doc-history",
+      "headRefOid": "fd31de715e4466ead9c8c157ea5d7922902bb486",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 35,
+      "id": "PR_kwDOQdsaoc69LUMG",
+      "title": "Update to SCONE charter",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/35",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-14T15:02:58Z",
+      "updatedAt": "2026-01-14T15:02:59Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-3",
+      "headRefOid": "24eac0f190906046a09e2bede385783af69efd4e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
