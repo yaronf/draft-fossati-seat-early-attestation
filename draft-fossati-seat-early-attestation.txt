@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 17 July 2026                                       Y. Deshpande
+Expires: 19 July 2026                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         13 January 2026
+                                                         15 January 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 July 2026.
+   This Internet-Draft will expire on 19 July 2026.
 
 Copyright Notice
 
@@ -132,8 +132,9 @@ Table of Contents
      14.1.  Normative References
      14.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-01
-     A.2.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-02
+     A.2.  draft-fossati-seat-early-attestation-01
+     A.3.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale
      B.1.  Requires Certificate Authentication
      B.2.  Reattestation Not Fully Supported
@@ -1313,9 +1314,9 @@ Table of Contents
               Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
               Rosomakho, "Extended Key Update for Transport Layer
               Security (TLS) 1.3", Work in Progress, Internet-Draft,
-              draft-ietf-tls-extended-key-update-07, 1 November 2025,
+              draft-ietf-tls-extended-key-update-08, 13 January 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              extended-key-update-07>.
+              extended-key-update-08>.
 
    [I-D.ietf-tls-pake]
               Bauman, L., Benjamin, D., Menon, S., and C. A. Wood, "A
@@ -1448,13 +1449,17 @@ Table of Contents
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-01
+A.1.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.2.  draft-fossati-seat-early-attestation-00
+A.2.  draft-fossati-seat-early-attestation-01
+
+   (Submitted by mistake.)
+
+A.3.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
