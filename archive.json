@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-15T01:28:22.742037+00:00",
+  "timestamp": "2026-01-18T01:45:58.469812+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -518,6 +518,22 @@
       "createdAt": "2026-01-13T11:36:33Z",
       "updatedAt": "2026-01-13T15:18:49Z",
       "closedAt": "2026-01-13T15:18:49Z",
+      "comments": []
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOQdsaoc7jy0AQ",
+      "title": "Whether to derive attestaion bindier from the HS secret instead of Main Secret",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/36",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-16T12:01:21Z",
+      "updatedAt": "2026-01-16T12:01:21Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -2610,24 +2626,26 @@
       "id": "PR_kwDOQdsaoc6897l-",
       "title": "Paying for my mistake",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/34",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-13T16:12:11Z",
-      "updatedAt": "2026-01-13T16:12:11Z",
+      "updatedAt": "2026-01-15T11:58:15Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-fix-doc-history",
       "headRefOid": "fd31de715e4466ead9c8c157ea5d7922902bb486",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-01-15T11:58:15Z",
+      "mergedAt": "2026-01-15T11:58:15Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111"
+      },
       "comments": [],
       "reviews": []
     },
@@ -2643,19 +2661,140 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-01-14T15:02:59Z",
+      "updatedAt": "2026-01-16T14:18:40Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
-      "headRefOid": "24eac0f190906046a09e2bede385783af69efd4e",
+      "headRefOid": "b98fe4c28b4eef21e6dd6dfafc10202e917a2811",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7aem3w",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-15T12:50:31Z",
+          "updatedAt": "2026-01-15T12:50:31Z",
+          "comments": [
+            {
+              "originalPosition": 376,
+              "body": "I think you are right to derive from the HS secret rather than Main Secret, and we should change early-attestation to do it even if we don't adopt this approach.",
+              "createdAt": "2026-01-15T12:50:31Z",
+              "updatedAt": "2026-01-15T12:50:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7aeq_T",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-01-15T12:54:15Z",
+          "updatedAt": "2026-01-15T12:59:49Z",
+          "comments": [
+            {
+              "originalPosition": 712,
+              "body": "Need a small table here to say which extension goes where.",
+              "createdAt": "2026-01-15T12:54:15Z",
+              "updatedAt": "2026-01-15T12:59:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7auP52",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-16T08:36:13Z",
+          "updatedAt": "2026-01-16T08:36:13Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "I think this is a mistake. Certificate updates happen on a much longer cadence, months or even years. Re-attestation might happen every few hours because it's much cheaper.\r\n\r\nMoreover, the notion of an exported authenticator in the cert-update draft comes with all the baggage of post-handshake, i.e. the need for an extra messaging protocol (either on top of TLS or by reusing the TLS record protocol) that allows peers to distinguish between normal protected data and post-HS signaling. This would nullify the advantages of the current draft.\r\n\r\nAlternatively, if EKU was defined to take extensions, we could include this extension in message 2+3 (to ensure a fresh binder derived from Main N+1).",
+              "createdAt": "2026-01-16T08:36:13Z",
+              "updatedAt": "2026-01-16T08:40:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7ayFvL",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-16T12:01:37Z",
+          "updatedAt": "2026-01-16T12:01:37Z",
+          "comments": [
+            {
+              "originalPosition": 712,
+              "body": "I raised a separate issue for it. ",
+              "createdAt": "2026-01-16T12:01:37Z",
+              "updatedAt": "2026-01-16T12:01:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7ayGKM",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-16T12:02:05Z",
+          "updatedAt": "2026-01-16T12:02:05Z",
+          "comments": [
+            {
+              "originalPosition": 376,
+              "body": "Raised a separate issue for it.",
+              "createdAt": "2026-01-16T12:02:05Z",
+              "updatedAt": "2026-01-16T12:02:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7a0IJ7",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-16T14:18:39Z",
+          "updatedAt": "2026-01-16T14:18:40Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "Current practice increasingly relies on short-lived certificates (as discussed in the ACME WG), where certificate lifetimes may be on the order of days, making certificate refresh compatible with periodic re-attestation. \r\n\r\nCertificateUpdate is defined as a new TLS handshake message carrying an Exported Authenticator and is therefore a post-handshake signaling mechanism negotiated during the initial handshake. It is handled entirely by the TLS stack and does not require changes to the application.\r\n\r\nMy intent is to carry attestation information in the existing Certificate message during both handshake and post-handshake exchanges.\r\n\r\n",
+              "createdAt": "2026-01-16T14:18:39Z",
+              "updatedAt": "2026-01-16T14:18:40Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
