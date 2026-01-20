@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-18T01:45:58.469812+00:00",
+  "timestamp": "2026-01-20T01:39:39.917074+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -2661,7 +2661,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-01-16T14:18:40Z",
+      "updatedAt": "2026-01-18T13:20:40Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
@@ -2791,6 +2791,26 @@
               "body": "Current practice increasingly relies on short-lived certificates (as discussed in the ACME WG), where certificate lifetimes may be on the order of days, making certificate refresh compatible with periodic re-attestation. \r\n\r\nCertificateUpdate is defined as a new TLS handshake message carrying an Exported Authenticator and is therefore a post-handshake signaling mechanism negotiated during the initial handshake. It is handled entirely by the TLS stack and does not require changes to the application.\r\n\r\nMy intent is to carry attestation information in the existing Certificate message during both handshake and post-handshake exchanges.\r\n\r\n",
               "createdAt": "2026-01-16T14:18:39Z",
               "updatedAt": "2026-01-16T14:18:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7bE01V",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-18T13:20:40Z",
+          "updatedAt": "2026-01-18T13:20:40Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "> Current practice increasingly relies on short-lived certificates (as discussed in the ACME WG), where certificate lifetimes may be on the order of days, making certificate refresh compatible with periodic re-attestation.\r\n> \r\n\r\nThis is a good thing, but still longer IMO than what we'd like to see for reattestation.\r\n\r\n> CertificateUpdate is defined as a new TLS handshake message carrying an Exported Authenticator and is therefore a post-handshake signaling mechanism negotiated during the initial handshake. It is handled entirely by the TLS stack and does not require changes to the application.\r\n>\r\n\r\nI am very confused on how CertUpdate is supposed to be implemented, see a separate Slack thread. Regardless, I think the cadence argument is a good enough reason not to use it.\r\n \r\n> My intent is to carry attestation information in the existing Certificate message during both handshake and post-handshake exchanges.\r\n\r\nAnd I suggest that we consider using the EKU subtype mechanism (the already specified EKU extension hook) instead.\r\n\r\n",
+              "createdAt": "2026-01-18T13:20:40Z",
+              "updatedAt": "2026-01-18T13:20:40Z"
             }
           ]
         }
