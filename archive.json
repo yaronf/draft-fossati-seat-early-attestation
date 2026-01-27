@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-20T01:39:39.917074+00:00",
+  "timestamp": "2026-01-27T01:45:38.467219+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -206,9 +206,17 @@
       "labels": [],
       "body": "Error handling: \"unsupported evidence\" is the only alert. Is it good for failing verification as well? Maybe rename to \"Evidence rejected\"?",
       "createdAt": "2025-12-02T11:41:17Z",
-      "updatedAt": "2025-12-02T11:41:17Z",
+      "updatedAt": "2026-01-26T08:30:28Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "I, too, had the feeling that there should be an alert dedicated to failed attestation verification.",
+          "createdAt": "2026-01-26T08:30:28Z",
+          "updatedAt": "2026-01-26T08:30:28Z"
+        }
+      ]
     },
     {
       "number": 9,
@@ -468,9 +476,17 @@
       "labels": [],
       "body": "Sec. 4 mentions \"split implementations\" where the TLS stack is outside the TEE. The Cryptographic Operations section should describe separation of roles for such implementations, i.e. what is the TEE's exact role.",
       "createdAt": "2026-01-04T18:45:01Z",
-      "updatedAt": "2026-01-04T18:45:01Z",
+      "updatedAt": "2026-01-26T08:29:00Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "I think the split-implementation approach should be reflected in the use-cases draft, too. From reading through early-attestation-02, it is very unclear to me why an RP would need to verify management of the private key, but then have the TLS session (key) managed by an unverified component.",
+          "createdAt": "2026-01-26T08:29:00Z",
+          "updatedAt": "2026-01-26T08:29:00Z"
+        }
+      ]
     },
     {
       "number": 23,
@@ -533,6 +549,54 @@
       "body": "",
       "createdAt": "2026-01-16T12:01:21Z",
       "updatedAt": "2026-01-16T12:01:21Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 37,
+      "id": "I_kwDOQdsaoc7lxzr-",
+      "title": "Application-level considerations",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/37",
+      "state": "OPEN",
+      "author": "burgerdev",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft currently lists these advantages of intra-handshake:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L165-L169\n\nMaybe it's a question of definitions, but I don't think this holds up in practice. There are several steps for producing and verifying evidence that don't sound like they can be solved with \"At most, some configuration\":\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L374-L375\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L330-L334\n\nI guess these need to be implemented as callbacks to _some_ application code, since the TLS stack can't really know how to get or verify evidence by itself?\n\nI would appreciate:\n\n1. A section with API considerations (similar to https://www.rfc-editor.org/rfc/rfc9261#name-api-considerations).\n2. A review of the above advantages based on those suggested APIs.",
+      "createdAt": "2026-01-26T08:47:19Z",
+      "updatedAt": "2026-01-26T08:47:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 38,
+      "id": "I_kwDOQdsaoc7lx5UH",
+      "title": "Is the TIK protection requirement reasonable?",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/38",
+      "state": "OPEN",
+      "author": "burgerdev",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft currently requires the TIK to be TEE-protected:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L182-L185\n\nI understand the goal of the draft is to provide an attested TLS _session_. We already know from the post-handshake work that a trustworthy attested TLS session can be established with a long-term key that's not protected by a TEE. Why do we need it for intra-handshake?\n\nThe reason why this is important is that some flavours of TEEs are short-lived: confidential containers come to mind. It's probably infeasible to let all containers first do an ACME step (or similar) to get a certificate for their ephemeral key.",
+      "createdAt": "2026-01-26T08:55:22Z",
+      "updatedAt": "2026-01-26T08:55:22Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 39,
+      "id": "I_kwDOQdsaoc7lyGl1",
+      "title": "Relationship of binder, evidence and CMW signing",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/39",
+      "state": "OPEN",
+      "author": "burgerdev",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "It's somewhat implict in the draft that the CMW needs to contain certain items and needs to be signed. For example, the draft says both:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L262-L265\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L273-L276\n\nTo me, this implies that the binder is not included into the actual evidence, but somehow passed alongside it. (Otherwise, how could the AR be cached?)\n\nIt would be helpful if the draft was more specific about:\n\n1. How to construct the binder.\n2. How (whether) the binder needs to be tied to the evidence and laid out in the CMW.\n3. What requirements apply to the CMW signature.",
+      "createdAt": "2026-01-26T09:12:10Z",
+      "updatedAt": "2026-01-26T09:12:10Z",
       "closedAt": null,
       "comments": []
     }
