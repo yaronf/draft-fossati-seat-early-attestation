@@ -322,7 +322,7 @@ or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW MUST include:
 
-- A binder derived from the TLS handshake secret and the message transcript, up to ServerHello,
+- A binder equal to the TLS handshake transcript hash, as defined in {{crypto-ops}},
 ensuring freshness of the attestation.
 - The attester's TLS identity public key (TIK-C for client attester, TIK-S for
   server attester)
@@ -347,81 +347,53 @@ attestation, and the other uses the Background Check Model.
 
 ## Cryptographic Operations {#crypto-ops}
 
-This section defines the derivation of the attestation binder. The
-attestation binder is derived from the TLS Handshake Secret, as defined
-in {{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, and is therefore bound to the
-ephemeral key exchange and the handshake transcript.
+The cryptographic operations defined in this section bind attestation Evidence 
+to a specific TLS handshake. This binding prevents replay and relay of attestation 
+Evidence across different TLS connections, and ensures that attestation Evidence 
+presented during a handshake corresponds to the authenticated 
+TLS session in which it is conveyed.
 
-The derivation defined in this section does not modify the TLS key
-schedule and introduces no new traffic secrets.
+### Attestation Binder Definition
 
-This section defines the key derivation for attestation, which operates independently
-from the regular TLS key schedule as described in {{Section 7.1 of I-D.ietf-tls-rfc8446bis}}.
+The attestation binder MUST be the TLS handshake transcript hash covering
+messages from `ClientHello` to `ServerHello`, computed as
+defined in Section 4.4.1 of {{-tls13}}.
 
-The attestation binder derivation uses HKDF as defined in
-{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}. Two attestation handshake
-secrets are derived from the Handshake Secret: one for the client
-(`c_attest_hs`) and one for the server (`s_attest_hs`).
+The transcript hash uniquely identifies a TLS key exchange and is computed using
+the hash function associated with the negotiated TLS cipher suite.
 
+### Verification
 
-The key derivation follows this structure:
+Upon receipt of an `Attestation` extension, the peer MUST compute the TLS
+handshake transcript hash over messages from `ClientHello` to
+`ServerHello` and compare it to the attestation binder included in the
+attestation. If the values do not match, the peer MUST treat the
+attestation as invalid and abort the handshake.
 
-~~~~ aasvg
+### Security Properties
 
-            (earlier steps)
-                |
-                v
-(EC)DHE ---> HKDF-Extract = Handshake Secret
-                |
-                +-----> [Standard TLS key schedule continues...]
-                |       (client/server handshake traffic secret, etc.)
-                |
-                +-----> Derive-Secret(., "c attestation handshake",
-                |                     ClientHello...ServerHello)
-                |              = c_attest_hs
-                |
-                +-----> Derive-Secret(., "s attestation handshake",
-                                      ClientHello...ServerHello)
-                               = s_attest_hs
-~~~~
-{: #figure-attestation-key-schedule title="Attestation Key Schedule."}
+Binding attestation Evidence to the TLS handshake transcript hash provides the
+following security properties:
 
-The handshake transcript used as input to `Derive-Secret` is the transcript
-hash covering messages from `ClientHello` up to and including
-`ServerHello`.
+* Replay protection: Evidence generated for a previous handshake cannot be
+  reused in a later handshake.
+* Relay protection: Evidence obtained from one TLS connection cannot be
+  successfully presented in a different TLS connection, even in the presence of
+  an MiTM attacker.
 
-The client's attestation binder (`c_attest_binder`) is derived by applying
-`HKDF-Expand-Label` to `c_attest_hs` with the label `"attestation"` and the
-client's TLS end-entity public key as the context:
+In typical deployments where the TLS handshake executes outside the TEE, a
+compromised host can execute the TLS handshake in the rich operating system and
+use the TEE as a signing oracle by presenting the attestation binder value to
+obtain valid-looking attestation Evidence.
 
-~~~~
-c_attest_binder =
-    HKDF-Expand-Label(c_attest_hs,
-                      "attestation",
-                      TLS_Client_Public_Key,
-                      Hash.length)
-~~~~
-
-Similarly, the server's attestation binder (`s_attest_binder`) is derived
-from `s_attest_hs`:
-
-~~~~
-s_attest_binder =
-    HKDF-Expand-Label(s_attest_hs,
-                      "attestation",
-                      TLS_Server_Public_Key,
-                      Hash.length)
-~~~~
-
-
-The attestation binder is derived independently by both the attester and the
-peer. The attester incorporates this attestation binder into the Evidence.
-Upon receipt of the Attestation extension, the peer will have to derive
-the expected attestation binder using the same inputs and verify that the
-computed attestation binder matches the one in the Evidence. If this verification
-fails, the peer will treat the attestation as invalid. This verification ensures
-that the Evidence is bound to the specific TLS session and TLS public key being
-attested.
+Unless the TLS protocol explicitly requires the TEE to generate or directly
+participate in the ephemeral key exchange, the use of TLS key schedule derived
+values to generate the attestation binder does not prove that the TEE was
+involved in ephemeral key establishment. Accordingly, this specification does
+not rely on TLS key schedule secrets (e.g., the Handshake Secret) to assert TEE
+participation in the TLS handshake. Instead, it relies on binding attestation
+Evidence to the TLS handshake transcript for channel binding, and on appraisal of
+that Evidence by a Verifier, as defined in the RATS architecture.
 
 ## Binding the TIK to the TEE {#tik-binding}
 
