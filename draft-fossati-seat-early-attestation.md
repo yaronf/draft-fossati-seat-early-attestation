@@ -841,6 +841,14 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
+## draft-fossati-seat-early-attestation-02
+
+* Fix typo in key schedule. Clarify (again) that this is only adding to the schedule, not modifying any existing key derivations.
+
+## draft-fossati-seat-early-attestation-01
+
+(Submitted by mistake.)
+
 ## draft-fossati-seat-early-attestation-00
 
 Initial version of draft-fossati-seat-early-attestation.
