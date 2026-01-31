@@ -35,7 +35,7 @@ These extensions have been designed to allow the peers to use any attestation te
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.2.14
+    wcwidth 0.3.0
 -->
 <link href="draft-fossati-seat-early-attestation.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -576,6 +576,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -646,7 +647,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1058,7 +1059,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 19 July 2026</td>
+<td class="center">Expires 4 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1071,12 +1072,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-01-15" class="published">15 January 2026</time>
+<time datetime="2026-01-31" class="published">31 January 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-07-19">19 July 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-04">4 August 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1147,7 +1148,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1206,6 +1207,17 @@ These extensions have been designed to allow the peers to use any attestation te
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-cryptographic-operations" class="internal xref">Cryptographic Operations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
+                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="auto internal xref">5.1.1</a>.  <a href="#name-attestation-binder-definiti" class="internal xref">Attestation Binder Definition</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.2">
+                    <p id="section-toc.1-1.5.2.1.2.2.1"><a href="#section-5.1.2" class="auto internal xref">5.1.2</a>.  <a href="#name-verification" class="internal xref">Verification</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.3">
+                    <p id="section-toc.1-1.5.2.1.2.3.1"><a href="#section-5.1.3" class="auto internal xref">5.1.3</a>.  <a href="#name-security-properties" class="internal xref">Security Properties</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
                 <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-binding-the-tik-to-the-tee" class="internal xref">Binding the TIK to the TEE</a></p>
@@ -1516,7 +1528,7 @@ to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW <span class="bcp14">MUST</span> include:<a href="#section-4.1-9" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-10.1">
-            <p id="section-4.1-10.1.1">A binder derived from the TLS handshake secret and the message transcript, up to ServerHello,
+            <p id="section-4.1-10.1.1">A binder ensuring that the attestation is associated with this particular TLS connection, as defined in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>,
 ensuring freshness of the attestation.<a href="#section-4.1-10.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-10.2">
@@ -1558,109 +1570,67 @@ attestation, and the other uses the Background Check Model.<a href="#section-5-3
         <h3 id="name-cryptographic-operations">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-cryptographic-operations" class="section-name selfRef">Cryptographic Operations</a>
         </h3>
-<p id="section-5.1-1">This section defines the derivation of the attestation binder. The
-attestation binder is derived from the TLS Handshake Secret, as defined
-in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and is therefore bound to the
-ephemeral key exchange and the handshake transcript.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">The derivation defined in this section does not modify the TLS key
-schedule and introduces no new traffic secrets.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1-3">This section defines the key derivation for attestation, which operates independently
-from the regular TLS key schedule as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">The attestation binder derivation uses HKDF as defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>. Two attestation handshake
-secrets are derived from the Handshake Secret: one for the client
-(<code>c_attest_hs</code>) and one for the server (<code>s_attest_hs</code>).<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1-5">The key derivation follows this structure:<a href="#section-5.1-5" class="pilcrow">¶</a></p>
-<span id="name-attestation-key-schedule"></span><div id="_figure-attestation-key-schedule">
-<figure id="figure-2">
-          <div id="section-5.1-6.1">
-            <div class="alignLeft art-svg artwork" id="section-5.1-6.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="272" width="568" viewBox="0 0 568 272" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
-                <path d="M 136,48 L 136,64" fill="none" stroke="black"></path>
-                <path d="M 136,96 L 136,224" fill="none" stroke="black"></path>
-                <path d="M 72,80 L 96,80" fill="none" stroke="black"></path>
-                <path d="M 136,112 L 184,112" fill="none" stroke="black"></path>
-                <path d="M 136,160 L 184,160" fill="none" stroke="black"></path>
-                <path d="M 136,224 L 184,224" fill="none" stroke="black"></path>
-                <polygon class="arrowhead" points="192,224 180,218.4 180,229.6" fill="black" transform="rotate(0,184,224)"></polygon>
-                <polygon class="arrowhead" points="192,160 180,154.4 180,165.6" fill="black" transform="rotate(0,184,160)"></polygon>
-                <polygon class="arrowhead" points="192,112 180,106.4 180,117.6" fill="black" transform="rotate(0,184,112)"></polygon>
-                <polygon class="arrowhead" points="144,64 132,58.4 132,69.6" fill="black" transform="rotate(90,136,64)"></polygon>
-                <polygon class="arrowhead" points="104,80 92,74.4 92,85.6" fill="black" transform="rotate(0,96,80)"></polygon>
-                <g class="text">
-                  <text x="132" y="36">(earlier</text>
-                  <text x="196" y="36">steps)</text>
-                  <text x="32" y="84">(EC)DHE</text>
-                  <text x="156" y="84">HKDF-Extract</text>
-                  <text x="216" y="84">=</text>
-                  <text x="264" y="84">Handshake</text>
-                  <text x="332" y="84">Secret</text>
-                  <text x="232" y="116">[Standard</text>
-                  <text x="288" y="116">TLS</text>
-                  <text x="320" y="116">key</text>
-                  <text x="372" y="116">schedule</text>
-                  <text x="464" y="116">continues...]</text>
-                  <text x="252" y="132">(client/server</text>
-                  <text x="352" y="132">handshake</text>
-                  <text x="424" y="132">traffic</text>
-                  <text x="488" y="132">secret,</text>
-                  <text x="544" y="132">etc.)</text>
-                  <text x="260" y="164">Derive-Secret(.,</text>
-                  <text x="340" y="164">"c</text>
-                  <text x="400" y="164">attestation</text>
-                  <text x="496" y="164">handshake",</text>
-                  <text x="412" y="180">ClientHello...ServerHello)</text>
-                  <text x="256" y="196">=</text>
-                  <text x="312" y="196">c_attest_hs</text>
-                  <text x="260" y="228">Derive-Secret(.,</text>
-                  <text x="340" y="228">"s</text>
-                  <text x="400" y="228">attestation</text>
-                  <text x="496" y="228">handshake",</text>
-                  <text x="412" y="244">ClientHello...ServerHello)</text>
-                  <text x="256" y="260">=</text>
-                  <text x="312" y="260">s_attest_hs</text>
-                </g>
-              </svg><a href="#section-5.1-6.1.1" class="pilcrow">¶</a>
+<p id="section-5.1-1">The cryptographic operations defined in this section bind attestation Evidence
+to a specific TLS handshake. This binding prevents replay and relay of attestation
+Evidence across different TLS connections, and ensures that attestation Evidence
+presented during a handshake corresponds to the authenticated
+TLS session in which it is conveyed.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<div id="attestation-binder-definition">
+<section id="section-5.1.1">
+          <h4 id="name-attestation-binder-definiti">
+<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-attestation-binder-definiti" class="section-name selfRef">Attestation Binder Definition</a>
+          </h4>
+<p id="section-5.1.1-1">The attestation binder <span class="bcp14">MUST</span> be the TLS handshake transcript hash covering
+messages from <code>ClientHello</code> to <code>ServerHello</code> (inclusive), computed as
+defined in Section 4.4.1 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-2">The transcript hash uniquely identifies a TLS key exchange and is computed using
+the hash function associated with the negotiated TLS cipher suite.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+</section>
 </div>
+<div id="verification">
+<section id="section-5.1.2">
+          <h4 id="name-verification">
+<a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
+          </h4>
+<p id="section-5.1.2-1">Upon receipt of an <code>Attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the TLS
+handshake transcript hash over messages from <code>ClientHello</code> to
+<code>ServerHello</code> and compare it to the attestation binder included in the
+attestation. If the values do not match, the peer <span class="bcp14">MUST</span> treat the
+attestation as invalid and abort the handshake.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
+</section>
 </div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-attestation-key-schedule" class="selfRef">Attestation Key Schedule.</a>
-          </figcaption></figure>
+<div id="security-properties">
+<section id="section-5.1.3">
+          <h4 id="name-security-properties">
+<a href="#section-5.1.3" class="section-number selfRef">5.1.3. </a><a href="#name-security-properties" class="section-name selfRef">Security Properties</a>
+          </h4>
+<p id="section-5.1.3-1">Binding attestation Evidence to the TLS handshake transcript hash provides the
+following security properties:<a href="#section-5.1.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.1.3-2.1">
+              <p id="section-5.1.3-2.1.1">Replay protection: Evidence generated for a previous handshake cannot be
+reused in a later handshake.<a href="#section-5.1.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-5.1.3-2.2">
+              <p id="section-5.1.3-2.2.1">Relay protection: Evidence obtained from one TLS connection cannot be
+successfully presented in a different TLS connection, even in the presence of
+an MiTM attacker.<a href="#section-5.1.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-5.1.3-3">In typical deployments where the TLS handshake executes outside the TEE, a
+compromised host can execute the TLS handshake in the rich operating system and
+use the TEE as a signing oracle by presenting the attestation binder value to
+obtain valid-looking attestation Evidence.<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-4">Unless the TLS protocol explicitly requires the TEE to generate or directly
+participate in the ephemeral key exchange, the use of TLS key schedule derived
+values to generate the attestation binder does not prove that the TEE was
+involved in ephemeral key establishment. Accordingly, this specification does
+not rely on TLS key schedule secrets (e.g., the Handshake Secret) to assert TEE
+participation in the TLS handshake. Instead, it relies on binding attestation
+Evidence to the TLS handshake transcript for channel binding, and on appraisal of
+that Evidence by a Verifier, as defined in the RATS architecture.<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
+</section>
 </div>
-<p id="section-5.1-7">The handshake transcript used as input to <code>Derive-Secret</code> is the transcript
-hash covering messages from <code>ClientHello</code> up to and including
-<code>ServerHello</code>.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
-<p id="section-5.1-8">The client's attestation binder (<code>c_attest_binder</code>) is derived by applying
-<code>HKDF-Expand-Label</code> to <code>c_attest_hs</code> with the label <code>"attestation"</code> and the
-client's TLS end-entity public key as the context:<a href="#section-5.1-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1-9">
-<pre>
-c_attest_binder =
-    HKDF-Expand-Label(c_attest_hs,
-                      "attestation",
-                      TLS_Client_Public_Key,
-                      Hash.length)
-</pre><a href="#section-5.1-9" class="pilcrow">¶</a>
-</div>
-<p id="section-5.1-10">Similarly, the server's attestation binder (<code>s_attest_binder</code>) is derived
-from <code>s_attest_hs</code>:<a href="#section-5.1-10" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1-11">
-<pre>
-s_attest_binder =
-    HKDF-Expand-Label(s_attest_hs,
-                      "attestation",
-                      TLS_Server_Public_Key,
-                      Hash.length)
-</pre><a href="#section-5.1-11" class="pilcrow">¶</a>
-</div>
-<p id="section-5.1-12">The attestation binder is derived independently by both the attester and the
-peer. The attester incorporates this attestation binder into the Evidence.
-Upon receipt of the Attestation extension, the peer will have to derive
-the expected attestation binder using the same inputs and verify that the
-computed attestation binder matches the one in the Evidence. If this verification
-fails, the peer will treat the attestation as invalid. This verification ensures
-that the Evidence is bound to the specific TLS session and TLS public key being
-attested.<a href="#section-5.1-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="tik-binding">
@@ -1773,7 +1743,7 @@ negotiation extension. But also express Passport mode with and without freshness
 expected in the <code>Attestation</code> extension. The Evidence contained in
 the CMW payload is sent in the <code>Attestation</code> extension (see <a href="#attestation-extension-section" class="auto internal xref">Section 4.1</a>).<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <span id="name-tls-extension-structure-for"></span><div id="_figure-extension-evidence">
-<figure id="figure-3">
+<figure id="figure-2">
           <div class="alignLeft art-text artwork" id="section-6.1-2.1">
 <pre>
     enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
@@ -1809,7 +1779,7 @@ the CMW payload is sent in the <code>Attestation</code> extension (see <a href="
     } evidenceProposalTypeExtension;
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-tls-extension-structure-for" class="selfRef">TLS Extension Structure for Evidence.</a>
           </figcaption></figure>
 </div>
@@ -1823,7 +1793,7 @@ Values for content_format are defined in <span>[<a href="#iana-content-formats" 
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-attestation-results-extensi" class="section-name selfRef">Attestation Results Extensions (Passport Model)</a>
         </h3>
 <span id="name-tls-extension-structure-for-"></span><div id="_figure-extension-results">
-<figure id="figure-4">
+<figure id="figure-3">
           <div class="alignLeft art-text artwork" id="section-6.2-1.1">
 <pre>
     struct {
@@ -1853,7 +1823,7 @@ Values for content_format are defined in <span>[<a href="#iana-content-formats" 
     } resultsProposalTypeExtension;
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-tls-extension-structure-for-" class="selfRef">TLS Extension Structure for Attestation Results.</a>
           </figcaption></figure>
 </div>
@@ -1869,11 +1839,11 @@ is defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.iet
       <h2 id="name-tls-client-and-server-hands">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-tls-client-and-server-hands" class="section-name selfRef">TLS Client and Server Handshake Behavior</a>
       </h2>
-<p id="section-7-1">The high-level message exchange in <a href="#_figure-overview" class="auto internal xref">Figure 5</a> shows the
+<p id="section-7-1">The high-level message exchange in <a href="#_figure-overview" class="auto internal xref">Figure 4</a> shows the
 evidence_proposal, evidence_request, results_proposal, and results_request
 extensions added to the ClientHello and the EncryptedExtensions messages.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <span id="name-attestation-message-overvie"></span><div id="_figure-overview">
-<figure id="figure-5">
+<figure id="figure-4">
         <div class="alignLeft art-text artwork" id="section-7-2.1">
 <pre>
        Client                                           Server
@@ -1909,7 +1879,7 @@ Auth | {CertificateVerify*}
        [Application Data]      &lt;-------&gt;  [Application Data]
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-attestation-message-overvie" class="selfRef">Attestation Message Overview.</a>
         </figcaption></figure>
 </div>
