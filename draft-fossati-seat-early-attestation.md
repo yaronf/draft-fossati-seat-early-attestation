@@ -356,7 +356,7 @@ TLS session in which it is conveyed.
 ### Attestation Binder Definition
 
 The attestation binder MUST be the TLS handshake transcript hash covering
-messages from `ClientHello` to `ServerHello`, computed as
+messages from `ClientHello` to `ServerHello` (inclusive), computed as
 defined in Section 4.4.1 of {{-tls13}}.
 
 The transcript hash uniquely identifies a TLS key exchange and is computed using
