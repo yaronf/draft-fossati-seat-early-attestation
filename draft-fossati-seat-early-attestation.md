@@ -322,7 +322,7 @@ or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW MUST include:
 
-- A binder equal to the TLS handshake transcript hash, as defined in {{crypto-ops}},
+- A binder ensuring that the attestation is associated with this particular TLS connection, as defined in {{crypto-ops}},
 ensuring freshness of the attestation.
 - The attester's TLS identity public key (TIK-C for client attester, TIK-S for
   server attester)
