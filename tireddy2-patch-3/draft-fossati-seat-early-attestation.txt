@@ -125,7 +125,9 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-02
+     A.2.  draft-fossati-seat-early-attestation-01
+     A.3.  draft-fossati-seat-early-attestation-00
    Authors' Addresses
 
 1.  Introduction
@@ -1130,7 +1132,17 @@ Table of Contents
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-00
+A.1.  draft-fossati-seat-early-attestation-02
+
+   *  Fix typo in key schedule.  Clarify (again) that this is only
+      adding to the schedule, not modifying any existing key
+      derivations.
+
+A.2.  draft-fossati-seat-early-attestation-01
+
+   (Submitted by mistake.)
+
+A.3.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
