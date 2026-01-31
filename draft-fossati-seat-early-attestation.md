@@ -347,10 +347,10 @@ attestation, and the other uses the Background Check Model.
 
 ## Cryptographic Operations {#crypto-ops}
 
-The cryptographic operations defined in this section bind attestation Evidence 
-to a specific TLS handshake. This binding prevents replay and relay of attestation 
-Evidence across different TLS connections, and ensures that attestation Evidence 
-presented during a handshake corresponds to the authenticated 
+The cryptographic operations defined in this section bind attestation Evidence
+to a specific TLS handshake. This binding prevents replay and relay of attestation
+Evidence across different TLS connections, and ensures that attestation Evidence
+presented during a handshake corresponds to the authenticated
 TLS session in which it is conveyed.
 
 ### Attestation Binder Definition
