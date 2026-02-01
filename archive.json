@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-27T01:45:38.467219+00:00",
+  "timestamp": "2026-02-01T02:10:11.145246+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -597,6 +597,22 @@
       "body": "It's somewhat implict in the draft that the CMW needs to contain certain items and needs to be signed. For example, the draft says both:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L262-L265\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L273-L276\n\nTo me, this implies that the binder is not included into the actual evidence, but somehow passed alongside it. (Otherwise, how could the AR be cached?)\n\nIt would be helpful if the draft was more specific about:\n\n1. How to construct the binder.\n2. How (whether) the binder needs to be tied to the evidence and laid out in the CMW.\n3. What requirements apply to the CMW signature.",
       "createdAt": "2026-01-26T09:12:10Z",
       "updatedAt": "2026-01-26T09:12:10Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 40,
+      "id": "I_kwDOQdsaoc7mx_Tw",
+      "title": "Bring the I-D within SEAT charter",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/40",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "This is not a real issue, it's a suggested discussion framework so the editor team can reach consensus on an intra-handshake draft that maximizes our chances of falling inside the [SEAT charter](https://datatracker.ietf.org/group/seat/about/).\n\nThis issue depends heavily on Tiru's #35.\n\n1. CMW transmitted as a new TLS message vs. TLS extension to Certificate message: it's clear that the latter is the only thing that'll keep us within charter. Downsides: the attested peer must have a certificate, so PSK is forever out of scope.\n2. Binder:\n2.1. Convince the WG that adding a new derivation step that does not affect the existing schedule is kosher.\n2.2. Use only the ClientHello..ServerHello transcript.\n2.3. Use the transcript as well as the TIK public key but do NOT derive from the handshake secrets. (Per paragraph (1) above, we're forced to use certificates anyway.)\n3. Reattestation:\n3.1. Do nothing: if you want reattestation, you should abort and restart the connection. This could work in the real world but some people want reattestation for long-lived connections.\n3.2. EKU: we could use a subtype to extend EKU and add an EKU-Attestation message. The TLS WG might frown over this extension although formally it is legit.\n3.3. CertUpdate: it's not clear to me that this is a viable option. Also, certificate updates are likely done less often that we might want for reattestation.",
+      "createdAt": "2026-01-29T17:43:53Z",
+      "updatedAt": "2026-01-29T17:43:53Z",
       "closedAt": null,
       "comments": []
     }
@@ -2716,7 +2732,7 @@
     {
       "number": 35,
       "id": "PR_kwDOQdsaoc69LUMG",
-      "title": "Update to SCONE charter",
+      "title": "Update to align with SCONE charter",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/35",
       "state": "OPEN",
       "author": "tireddy2",
@@ -2725,13 +2741,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-01-18T13:20:40Z",
+      "updatedAt": "2026-01-31T07:05:54Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "9747bc4f853b3e2b5886b6a286be77bdf29e08d0",
+      "baseRefOid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
-      "headRefOid": "b98fe4c28b4eef21e6dd6dfafc10202e917a2811",
+      "headRefOid": "8f70238d0eb53d8bc2d71d32fa129b54bf0992ef",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2875,6 +2891,116 @@
               "body": "> Current practice increasingly relies on short-lived certificates (as discussed in the ACME WG), where certificate lifetimes may be on the order of days, making certificate refresh compatible with periodic re-attestation.\r\n> \r\n\r\nThis is a good thing, but still longer IMO than what we'd like to see for reattestation.\r\n\r\n> CertificateUpdate is defined as a new TLS handshake message carrying an Exported Authenticator and is therefore a post-handshake signaling mechanism negotiated during the initial handshake. It is handled entirely by the TLS stack and does not require changes to the application.\r\n>\r\n\r\nI am very confused on how CertUpdate is supposed to be implemented, see a separate Slack thread. Regardless, I think the cadence argument is a good enough reason not to use it.\r\n \r\n> My intent is to carry attestation information in the existing Certificate message during both handshake and post-handshake exchanges.\r\n\r\nAnd I suggest that we consider using the EKU subtype mechanism (the already specified EKU extension hook) instead.\r\n\r\n",
               "createdAt": "2026-01-18T13:20:40Z",
               "updatedAt": "2026-01-18T13:20:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7d8rMe",
+          "commit": {
+            "abbreviatedOid": "cb27db7"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-01-29T16:09:24Z",
+          "updatedAt": "2026-01-29T16:53:55Z",
+          "comments": [
+            {
+              "originalPosition": 146,
+              "body": "```suggestion\n- A binder ensuring that the attestation is associated with this particular TLS connection, as defined in {{crypto-ops}},\n```\n\nRemoved the cryptographic details so we don't have to keep updating the text.",
+              "createdAt": "2026-01-29T16:09:25Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            },
+            {
+              "originalPosition": 154,
+              "body": "I understand why you're removing this section but some of the narrative text is important and we'll have to bring it back:\n- For clarity of the system-level behavior, e.g. when an external Verifier should be invoked.\n- For clarity of processing rules, e.g. the recipient must verify A, B and C and abort the connection if they fail.",
+              "createdAt": "2026-01-29T16:13:41Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            },
+            {
+              "originalPosition": 299,
+              "body": "```suggestion\nmessages from `ClientHello` to `ServerHello` (inclusive), computed as\n```",
+              "createdAt": "2026-01-29T16:14:51Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            },
+            {
+              "originalPosition": 287,
+              "body": "```suggestion\nThe cryptographic operations defined in this section bind attestation Evidence\nto a specific TLS handshake. This binding prevents replay and relay of attestation\nEvidence across different TLS connections, and ensures that attestation Evidence\npresented during a handshake corresponds to the authenticated\nTLS session in which it is conveyed.\n```\n\nTrailing whitespace.",
+              "createdAt": "2026-01-29T16:27:11Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            },
+            {
+              "originalPosition": 300,
+              "body": "I'm very confused now. As far as I understand, the \"binder\" is the nonce that's signed as part of the evidence. Here we say that it's just a handshake transcript. But in the next section \"Binding the TIK to the TEE\" we explain why the binder needs to include the peer's public key (because even if the TLS stack is outside the TEE, the private key is always known to the TEE).\n\nAlso I suggest to use more formal notation here `c_attest_binder`, `s_attest_binder` so it's easier to see what the exact values are.",
+              "createdAt": "2026-01-29T16:45:23Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            },
+            {
+              "originalPosition": 508,
+              "body": "Updated: I still believe CertUpdate is not the way to go.\n* The period of certificate update is different from that of reattestation.\n* According to Yaroslav, CertUpdate has not had a good reception in the TLS WG. Whereas EKU is nearing LC.",
+              "createdAt": "2026-01-29T16:49:40Z",
+              "updatedAt": "2026-01-29T16:53:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7eb37_",
+          "commit": {
+            "abbreviatedOid": "cb27db7"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-31T06:44:45Z",
+          "updatedAt": "2026-01-31T06:44:45Z",
+          "comments": [
+            {
+              "originalPosition": 300,
+              "body": "I see the confusion, updated Cryptographic Operations section for clarity. \r\n\r\nThe signed evidence includes inputs originating from different trust domains.\r\n\r\n* The attestation binder is provided by the TLS stack and serves as a\r\nnonce that ensures freshness and binding to a specific TLS handshake.\r\n\r\n* The TLS Identity Key (TIK) binding claim, such as a hash of the TIK public\r\nkey, is generated by the TEE itself and ensures that the attested environment\r\ncontrols the TIK private key used for TLS authentication.\r\n\r\nThe draft no longer refers to c_attest_binder and s_attest_binder. ",
+              "createdAt": "2026-01-31T06:44:45Z",
+              "updatedAt": "2026-01-31T06:44:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7eb9jL",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-31T07:00:33Z",
+          "updatedAt": "2026-01-31T07:00:33Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "Since this is still an individual draft, it feels premature for it to influence TLS WG direction on whether CertificateUpdate or an update to EKU should be progressed. I suggest we first publish the draft and then raise the reattestation question in the SEAT WG (and eventually in the TLS WG).\r\n\r\nI am not ruling out a solution that extends the EKU exchange (e.g., with new subtypes to carry attestation immediately after EKU), which could be addressed in a SEAT draft, provided we have support from the TLS WG.",
+              "createdAt": "2026-01-31T07:00:33Z",
+              "updatedAt": "2026-01-31T07:00:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7ecAnQ",
+          "commit": {
+            "abbreviatedOid": "cb27db7"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-31T07:05:54Z",
+          "updatedAt": "2026-01-31T07:05:54Z",
+          "comments": [
+            {
+              "originalPosition": 154,
+              "body": "Sure, we can address it as a separate PR. ",
+              "createdAt": "2026-01-31T07:05:54Z",
+              "updatedAt": "2026-01-31T07:05:54Z"
             }
           ]
         }
