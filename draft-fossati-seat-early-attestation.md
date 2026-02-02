@@ -347,7 +347,7 @@ attestation, and the other uses the Background Check Model.
 
 ## Cryptographic Operations {#crypto-ops}
 
-The cryptographics operation defined in this section bind attestation Evidence
+The cryptographic operation defined in this section bind attestation Evidence
 to a specific TLS handshake. This binding prevents replay and relay of attestation
 Evidence across different TLS connections, and ensures that attestation Evidence
 presented during a handshake corresponds to the authenticated
@@ -416,9 +416,16 @@ To address this, the Evidence MUST include the hash of the TIK public key (TIK_p
 
 The Relying Party MUST compute the hash of the TIK public key extracted from the TLS end-entity certificate using
 the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
-verification binds the attestation Evidence to the TLS identity used for authentication.
+verification binds the attestation Evidence to the TLS identity used for authentication. This verification is performed by the Relying Party, as the Verifier may not be co-located with the Relying Party and may not have access to the TLS handshake or the TLS end-entity certificate, consistent with the RATS architecture.
+Alternatively, in deployments where the Verifier is not co-located with the Relying Party, the Relying Party MAY
+supply the Verifier with the hash of the TIK public key. The Verifier then compares this value with the TIK
+public key hash included in the Evidence. If the values do not match, the attestation MUST be considered invalid.
 
-Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key prevents this relay attack.
+Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs
+inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the
+Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the
+attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
+prevents this relay attack.
 
 The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.
 
