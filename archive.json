@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-01T02:10:11.145246+00:00",
+  "timestamp": "2026-02-03T02:00:44.938486+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -2741,13 +2741,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-01-31T07:05:54Z",
+      "updatedAt": "2026-02-02T14:13:39Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
-      "headRefOid": "8f70238d0eb53d8bc2d71d32fa129b54bf0992ef",
+      "headRefOid": "6a3876d9107f5b43e908bc8b8e6700f537a5467b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -3001,6 +3001,118 @@
               "body": "Sure, we can address it as a separate PR. ",
               "createdAt": "2026-01-31T07:05:54Z",
               "updatedAt": "2026-01-31T07:05:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7e3e-2",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-02T12:23:30Z",
+          "updatedAt": "2026-02-02T12:23:31Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "Maybe even present both options (CertUpdate and EKU) in the draft at a high level, to demonstrate that we intend to provide reattestation but not commit yet to either of the options.",
+              "createdAt": "2026-02-02T12:23:30Z",
+              "updatedAt": "2026-02-02T12:23:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7e3ic8",
+          "commit": {
+            "abbreviatedOid": "8f70238"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-02-02T12:26:56Z",
+          "updatedAt": "2026-02-02T12:57:28Z",
+          "comments": [
+            {
+              "originalPosition": 60,
+              "body": "cryptographic operations",
+              "createdAt": "2026-02-02T12:26:56Z",
+              "updatedAt": "2026-02-02T12:57:28Z"
+            },
+            {
+              "originalPosition": 86,
+              "body": "I think this needs to be formalized/standardized, so that the RP can verify it.",
+              "createdAt": "2026-02-02T12:29:23Z",
+              "updatedAt": "2026-02-02T12:57:28Z"
+            },
+            {
+              "originalPosition": 300,
+              "body": "The advantage of the formal notation is that it's easier to see the interfaces between components. For example, if the RP is using a separate Verifier, I don't think the Verifier would be able to verify the TIK public key if you only include it as a claim signed by the TEE.",
+              "createdAt": "2026-02-02T12:57:22Z",
+              "updatedAt": "2026-02-02T12:57:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7e5hJz",
+          "commit": {
+            "abbreviatedOid": "8f70238"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-02T14:04:32Z",
+          "updatedAt": "2026-02-02T14:04:33Z",
+          "comments": [
+            {
+              "originalPosition": 60,
+              "body": "Fixed. ",
+              "createdAt": "2026-02-02T14:04:33Z",
+              "updatedAt": "2026-02-02T14:04:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7e5tHN",
+          "commit": {
+            "abbreviatedOid": "cb27db7"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-02T14:13:04Z",
+          "updatedAt": "2026-02-02T14:13:04Z",
+          "comments": [
+            {
+              "originalPosition": 300,
+              "body": "I updated the text to address this issue. \r\n",
+              "createdAt": "2026-02-02T14:13:04Z",
+              "updatedAt": "2026-02-02T14:13:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7e5tjq",
+          "commit": {
+            "abbreviatedOid": "b98fe4c"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-02T14:13:20Z",
+          "updatedAt": "2026-02-02T14:13:21Z",
+          "comments": [
+            {
+              "originalPosition": 508,
+              "body": "Works for me. ",
+              "createdAt": "2026-02-02T14:13:21Z",
+              "updatedAt": "2026-02-02T14:13:21Z"
             }
           ]
         }
