@@ -1227,6 +1227,11 @@ These extensions have been designed to allow the peers to use any attestation te
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
                 <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-reattestation" class="internal xref">Reattestation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-design-options" class="internal xref">Design Options</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -1701,49 +1706,40 @@ Therefore we adopt a defense-in-depth approach:<a href="#section-5.3-1" class="p
         <h3 id="name-reattestation">
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-reattestation" class="section-name selfRef">Reattestation</a>
         </h3>
-<p id="section-5.4-1">Over time, attestation Evidence or Attestation Results may become stale and
-require refresh. Long-lived TLS connections require updated assurance that
-the peer continues to operate in a trustworthy state. This document
-therefore supports reattestation, in which either peer <span class="bcp14">MAY</span> request fresh
-Evidence at any time post-handshake. The attester <span class="bcp14">MUST</span> generate evidence
-using a freshly derived attestation_binder.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<p id="section-5.4-2">Reattestation is supported using the <code>CertificateUpdate</code> message defined in
-<span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
-<p id="section-5.4-3">To perform reattestation, the attester sends a <code>CertificateUpdate</code>
-containing a new <code>Certificate</code> message with an updated <code>attestation</code>
-extension.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
-<p id="section-5.4-4">The attestation payload included in a <code>CertificateUpdate</code> <span class="bcp14">MUST</span> be fresh
-and <span class="bcp14">MUST</span> be bound to the post-handshake TLS context using:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.4-5.1">
-            <p id="section-5.4-5.1.1">A TLS exporter derived from the current application traffic secret, and<a href="#section-5.4-5.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-5.4-5.2">
-            <p id="section-5.4-5.2.1">The transcript hash of the <code>CertificateUpdate</code> message.<a href="#section-5.4-5.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-5.4-6">The receiving peer <span class="bcp14">MUST NOT</span> apply authorization decisions based on the
-updated attestation until the <code>CertificateUpdate</code> is authenticated.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
-<p id="section-5.4-7">For reattestation, the attestation binder <span class="bcp14">MUST</span> be derived using the TLS exporter
-interface defined in Section 7.5 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.4-7" class="pilcrow">¶</a></p>
-<p id="section-5.4-8">To do so, the attester derives a binding value using the TLS exporter interface
-associated with the current TLS connection. The exporter invocation uses:<a href="#section-5.4-8" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.4-9.1">
-            <p id="section-5.4-9.1.1">the label <code>"Attestation Binding"</code>,<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-5.4-9.2">
-            <p id="section-5.4-9.2.1">the <code>certificate_request_context</code> value from the <code>CertificateRequest</code> message
-that triggered reattestation as the <code>context_value</code>, and<a href="#section-5.4-9.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-5.4-9.3">
-            <p id="section-5.4-9.3.1">a <code>key_length</code> of 32 bytes.<a href="#section-5.4-9.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-5.4-10">This construction cryptographically binds the Evidence to the established TLS
-session and provides freshness guarantees, as the exporter is derived from the
-current application traffic secret and incorporates a reattestation-specific
-context value.<a href="#section-5.4-10" class="pilcrow">¶</a></p>
+<p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state. This section discusses design options for handling attestation freshness.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<div id="design-options">
+<section id="section-5.4.1">
+          <h4 id="name-design-options">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-design-options" class="section-name selfRef">Design Options</a>
+          </h4>
+<div id="option-1-carrying-attestation-in-extended-key-update">
+<section id="section-5.4.1.1">
+            <h5 id="name-option-1-carrying-attestati">
+<a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-option-1-carrying-attestati" class="section-name selfRef">Option 1: Carrying Attestation in Extended Key Update</a>
+            </h5>
+<p id="section-5.4.1.1-1">One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new <code>ExtendedKeyUpdate</code> message subtype to carry attestation Evidence or Attestation Results.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.1-2">However, this approach tightly couples attestation to EKU, even though the two serve different purposes.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="option-2-no-reattestation-reconnect-for-freshness">
+<section id="section-5.4.1.2">
+            <h5 id="name-option-2-no-reattestation-r">
+<a href="#section-5.4.1.2" class="section-number selfRef">5.4.1.2. </a><a href="#name-option-2-no-reattestation-r" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
+            </h5>
+<p id="section-5.4.1.2-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="option-3-post-handshake-reattestation-using-certificateupdate">
+<section id="section-5.4.1.3">
+            <h5 id="name-option-3-post-handshake-rea">
+<a href="#section-5.4.1.3" class="section-number selfRef">5.4.1.3. </a><a href="#name-option-3-post-handshake-rea" class="section-name selfRef">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a>
+            </h5>
+<p id="section-5.4.1.3-1">In this design, reattestation is supported using the <code>CertificateUpdate</code> message defined in <span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>. Under this approach, the attester sends a <code>CertificateUpdate</code> message carrying a new <code>Certificate</code> message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
 </section>
 </div>
 </section>
