@@ -441,44 +441,25 @@ Therefore we adopt a defense-in-depth approach:
 
 ## Reattestation {#reattestation}
 
-Over time, attestation Evidence or Attestation Results may become stale and
-require refresh. Long-lived TLS connections require updated assurance that
-the peer continues to operate in a trustworthy state. This document
-therefore supports reattestation, in which either peer MAY request fresh
-Evidence at any time post-handshake. The attester MUST generate evidence
-using a freshly derived attestation_binder.
+Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state. This section discusses design options for handling attestation freshness.
 
-Reattestation is supported using the `CertificateUpdate` message defined in
-{{-cert-update}}.
+### Design Options
 
-To perform reattestation, the attester sends a `CertificateUpdate`
-containing a new `Certificate` message with an updated `attestation`
-extension.
+#### Option 1: Carrying Attestation in Extended Key Update
 
-The attestation payload included in a `CertificateUpdate` MUST be fresh
-and MUST be bound to the post-handshake TLS context using:
+One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new `ExtendedKeyUpdate` message subtype to carry attestation Evidence or Attestation Results.
 
-- A TLS exporter derived from the current application traffic secret, and
-- The transcript hash of the `CertificateUpdate` message.
+However, this approach tightly couples attestation to EKU, even though the two serve different purposes.
 
-The receiving peer MUST NOT apply authorization decisions based on the
-updated attestation until the `CertificateUpdate` is authenticated.
+#### Option 2: No Reattestation (Reconnect for Freshness)
 
-For reattestation, the attestation binder MUST be derived using the TLS exporter
-interface defined in Section 7.5 of {{-tls13}}.
+Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.
 
-To do so, the attester derives a binding value using the TLS exporter interface
-associated with the current TLS connection. The exporter invocation uses:
+This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.
 
-* the label `"Attestation Binding"`,
-* the `certificate_request_context` value from the `CertificateRequest` message
-  that triggered reattestation as the `context_value`, and
-* a `key_length` of 32 bytes.
+#### Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
-This construction cryptographically binds the Evidence to the established TLS
-session and provides freshness guarantees, as the exporter is derived from the
-current application traffic secret and incorporates a reattestation-specific
-context value.
+In this design, reattestation is supported using the `CertificateUpdate` message defined in {{-cert-update}}. Under this approach, the attester sends a `CertificateUpdate` message carrying a new `Certificate` message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.
 
 # Negotiating This Protocol {#negotiating-protocol}
 
