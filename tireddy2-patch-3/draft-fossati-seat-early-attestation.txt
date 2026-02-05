@@ -344,7 +344,7 @@ Table of Contents
    This message carries a CMW (Conceptual Message Wrapper) payload as
    defined in [I-D.ietf-rats-msg-wrap].
 
-   The Attestation extension structure is defined as follows:
+   The attestation extension structure is defined as follows:
 
        struct {
            opaque cmw_payload<1..2^24-1>;
