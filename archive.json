@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-03T02:00:44.938486+00:00",
+  "timestamp": "2026-02-05T01:57:14.128783+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -2741,13 +2741,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-02-02T14:13:39Z",
+      "updatedAt": "2026-02-04T14:30:30Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
-      "headRefOid": "6a3876d9107f5b43e908bc8b8e6700f537a5467b",
+      "headRefOid": "efb0ab4f4dcbbb0393c822031e6046febb9034a1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
