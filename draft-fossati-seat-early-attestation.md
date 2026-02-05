@@ -250,7 +250,7 @@ and are governed by the lifetime of the signed Attestation Results.
 
 When either the Evidence or the Attestation Results extension is successfully
 negotiated, attestation Evidence or Attestation Results are conveyed in an
-`Attestation` extension (see {{attestation-extension-section}}). The
+`attestation` extension (see {{attestation-extension-section}}). The
 CMW payload in the Attestation message contains the attestation Evidence or
 Attestation Results encoded according to {{-cmw}}.
 
