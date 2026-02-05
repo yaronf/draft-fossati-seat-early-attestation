@@ -375,7 +375,7 @@ the hash function associated with the negotiated TLS cipher suite.
 
 ### Verification
 
-Upon receipt of an `Attestation` extension, the peer MUST compute the TLS
+Upon receipt of an `attestation` extension, the peer MUST compute the TLS
 handshake transcript hash over messages from `ClientHello` to
 `ServerHello` and compare it to the attestation binder included in the
 attestation. If the values do not match, the peer MUST treat the
