@@ -283,7 +283,7 @@ Table of Contents
 
    When either the Evidence or the Attestation Results extension is
    successfully negotiated, attestation Evidence or Attestation Results
-   are conveyed in an Attestation extension (see Section 4.1).  The CMW
+   are conveyed in an attestation extension (see Section 4.1).  The CMW
    payload in the Attestation message contains the attestation Evidence
    or Attestation Results encoded according to [I-D.ietf-rats-msg-wrap].
 
