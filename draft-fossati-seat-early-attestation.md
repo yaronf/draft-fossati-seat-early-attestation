@@ -606,7 +606,7 @@ the Evidence types the client is able to provide to the server.
 
 The evidence_request extension in the ClientHello message indicates
 the Evidence types the client challenges the server to
-provide in an `Attestation` extension.
+provide in an `attestation` extension.
 
 The evidence_proposal and evidence_request extensions sent in
 the ClientHello each carry a list of supported Evidence types,
