@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 8 August 2026                                      Y. Deshpande
+Expires: 9 August 2026                                      Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         4 February 2026
+                                                         5 February 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2026.
+   This Internet-Draft will expire on 9 August 2026.
 
 Copyright Notice
 
@@ -136,15 +136,15 @@ Table of Contents
    Remote Attestation (RA) [RFC9334] is the process by which an entity
    produces evidence about itself that another party can use to evaluate
    the trustworthiness of that entity.  This document describes a series
-   of TLS extensions to the TLS handshake that enable the binding of the
-   TLS authentication key to a remote attestation session.  This enables
-   an attester, such as a confidential workload running in a Trusted
-   Execution Environment (TEE) [I-D.ietf-teep-architecture], or an IoT
-   device that is trying to authenticate itself to a network access
-   point, to present a more comprehensive set of security metrics to its
-   peer.  This, in turn, allows for the implementation of authorization
-   policies at the relying parties that are based on stronger security
-   signals.
+   of extensions to the TLS handshake that enable the binding of the TLS
+   connection and its authentication key to a remote attestation
+   session.  This enables an attester, such as a confidential workload
+   running in a Trusted Execution Environment (TEE)
+   [I-D.ietf-teep-architecture], or an IoT device that is trying to
+   authenticate itself to a network access point, to present a more
+   comprehensive set of security metrics to its peer.  This, in turn,
+   allows for the implementation of authorization policies at the
+   relying parties that are based on stronger security signals.
 
    Given the variety of deployed and emerging attestation technologies
    (e.g., [TPM1.2], [TPM2.0], [I-D.ietf-rats-eat]) these extensions have
