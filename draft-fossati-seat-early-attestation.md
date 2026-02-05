@@ -304,7 +304,7 @@ receiver MUST abort the handshake with a fatal `illegal_parameter` alert.
 
 This message carries a CMW (Conceptual Message Wrapper) payload as defined in {{-cmw}}.
 
-The `Attestation` extension structure is defined as follows:
+The `attestation` extension structure is defined as follows:
 
 ~~~~
     struct {
