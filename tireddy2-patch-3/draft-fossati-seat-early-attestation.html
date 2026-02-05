@@ -1617,7 +1617,7 @@ the hash function associated with the negotiated TLS cipher suite.<a href="#sect
           <h4 id="name-verification">
 <a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
           </h4>
-<p id="section-5.1.2-1">Upon receipt of an <code>Attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the TLS
+<p id="section-5.1.2-1">Upon receipt of an <code>attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the TLS
 handshake transcript hash over messages from <code>ClientHello</code> to
 <code>ServerHello</code> and compare it to the attestation binder included in the
 attestation. If the values do not match, the peer <span class="bcp14">MUST</span> treat the
