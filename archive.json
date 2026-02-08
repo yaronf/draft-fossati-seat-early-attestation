@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-05T01:57:14.128783+00:00",
+  "timestamp": "2026-02-08T02:26:16.232540+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -613,6 +613,70 @@
       "body": "This is not a real issue, it's a suggested discussion framework so the editor team can reach consensus on an intra-handshake draft that maximizes our chances of falling inside the [SEAT charter](https://datatracker.ietf.org/group/seat/about/).\n\nThis issue depends heavily on Tiru's #35.\n\n1. CMW transmitted as a new TLS message vs. TLS extension to Certificate message: it's clear that the latter is the only thing that'll keep us within charter. Downsides: the attested peer must have a certificate, so PSK is forever out of scope.\n2. Binder:\n2.1. Convince the WG that adding a new derivation step that does not affect the existing schedule is kosher.\n2.2. Use only the ClientHello..ServerHello transcript.\n2.3. Use the transcript as well as the TIK public key but do NOT derive from the handshake secrets. (Per paragraph (1) above, we're forced to use certificates anyway.)\n3. Reattestation:\n3.1. Do nothing: if you want reattestation, you should abort and restart the connection. This could work in the real world but some people want reattestation for long-lived connections.\n3.2. EKU: we could use a subtype to extend EKU and add an EKU-Attestation message. The TLS WG might frown over this extension although formally it is legit.\n3.3. CertUpdate: it's not clear to me that this is a viable option. Also, certificate updates are likely done less often that we might want for reattestation.",
       "createdAt": "2026-01-29T17:43:53Z",
       "updatedAt": "2026-01-29T17:43:53Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 41,
+      "id": "I_kwDOQdsaoc7og0pH",
+      "title": "Add a diagram for the API between TLS stack and TEE (split implementation)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/41",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "```text\n+----------------------------------------------------+      \n|                       TLS Stack                    |      \n|                                                    |      \n|                                                    |      \n+------|---------------------------------------------+      \n       |                         ^                          \n       | Nonce                   |                          \n       |                         |                          \n       | Transcript hash         | CMW (signed              \n       |                         |      Evidence/AR)        \n       | TIK public key hash     |                          \n       v                         |                          \n+--------------------------------|-------------------+      \n|                          TEE                       |      \n|                                                    |      \n|+-----------------+                                 |      \n|| TIK Private Key |                                 |      \n|+-----------------+                                 |      \n+----------------------------------------------------+      \n```",
+      "createdAt": "2026-02-05T10:47:50Z",
+      "updatedAt": "2026-02-05T10:47:50Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 42,
+      "id": "I_kwDOQdsaoc7owU10",
+      "title": "Editorial change: Need a small table here to say which extension goes where",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/42",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-02-06T05:32:39Z",
+      "updatedAt": "2026-02-06T05:32:39Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 43,
+      "id": "I_kwDOQdsaoc7owYrj",
+      "title": "Clarify System-Level Behavior and Processing Rules",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/43",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I understand the motivation for removing the Handshake overview section; however, some of the narrative text it contained is important and should be reintroduced in some form.\n\nIn particular, the removed text helped clarify:\n\na) System-level behavior, such as when an external Verifier is expected to be invoked.\nb) Processing rules at the receiver, including which checks must be performed and under what conditions the connection must be aborted if those checks fail.",
+      "createdAt": "2026-02-06T05:37:05Z",
+      "updatedAt": "2026-02-06T05:37:05Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 44,
+      "id": "I_kwDOQdsaoc7owsmF",
+      "title": "Explicit AIK Public Key Claim vs. Implicit Nonce-Based Binding",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/44",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There are two possible approaches for binding the Evidence to the TLS connection and the key provenance of the TIK private key of TIK private key in the Evidence, and I\u2019d like to discuss both and get feedback from the co-authors.\n\nOption 1: Implicit binding via nonce construction\n\nIn this approach, the TLS stack constructs a nonce that embeds both the TLS handshake transcript hash and the hash of the TIK public key, and passes this nonce to the TEE. The TEE verifies that the embedded public key hash corresponds to a TIK private key it manages and, if so, signs the nonce as part of the Evidence.\n\nOn the Relying Party (RP) side, the RP reconstructs the expected nonce using the TLS handshake transcript hash and the hash of the TIK public key extracted from the end-entity certificate. The RP (or an external Verifier, if not co-located) verifies the TEE signature over the nonce. Successful verification allows the RP to infer that the TEE controls the TIK private key corresponding to the public key used in the TLS handshake, even though the key identity is not carried as an explicit claim in the Evidence.\n\nThis approach relies on correct nonce construction by the TLS stack and correct enforcement by the TEE, and the binding between the attestation and the key is inferred indirectly rather than expressed as an explicit Evidence claim.\n\nOption 2: Explicit key identity claim in Evidence\nIn this approach, the Evidence itself carries an explicit claim, such as a hash of the public key (e.g., AIK_pub_hash). The nonce or challenge is used solely for freshness and channel binding. This allows the Relying Party to directly observe a statement like: \u201cThis Evidence attests to public key X,\u201d rather than inferring the binding indirectly from how the nonce is constructed and validated by the TEE.\n\nI prefer Option 2 as it would enable the Verifier to determine, based on attestation claims, whether the TIK private key is generated, stored, and protected within a secure element.\n\n",
+      "createdAt": "2026-02-06T06:00:57Z",
+      "updatedAt": "2026-02-06T06:04:27Z",
       "closedAt": null,
       "comments": []
     }
@@ -2741,13 +2805,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-02-04T14:30:30Z",
+      "updatedAt": "2026-02-05T13:58:49Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
-      "headRefOid": "efb0ab4f4dcbbb0393c822031e6046febb9034a1",
+      "headRefOid": "e2171ff63a5f7000bc374037ab6498183d2f1555",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -3113,6 +3177,56 @@
               "body": "Works for me. ",
               "createdAt": "2026-02-02T14:13:21Z",
               "updatedAt": "2026-02-02T14:13:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7f2-QN",
+          "commit": {
+            "abbreviatedOid": "efb0ab4"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "I am good with the 3 options for reattestation. All other comments are nits.\n\nFor consistency, I think the extension's name should be `attestation` (lower case).",
+          "createdAt": "2026-02-05T09:52:30Z",
+          "updatedAt": "2026-02-05T11:01:44Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\nThis document describes a series of extensions to the TLS handshake that enable the binding of the TLS connection and its authentication key to a remote attestation session.\n```",
+              "createdAt": "2026-02-05T09:52:30Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
+            },
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\nThis is achieved by reusing the generic encapsulation defined in {{-cmw}} for transporting Evidence and Attestation Results payloads in the `attestation` extension.\n```",
+              "createdAt": "2026-02-05T10:49:20Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
+            },
+            {
+              "originalPosition": 73,
+              "body": "```suggestion\n`attestation` extension (see {{attestation-extension-section}}). The\n```",
+              "createdAt": "2026-02-05T10:57:35Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
+            },
+            {
+              "originalPosition": 130,
+              "body": "```suggestion\nThe `attestation` extension structure is defined as follows:\n```",
+              "createdAt": "2026-02-05T10:58:09Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
+            },
+            {
+              "originalPosition": 390,
+              "body": "```suggestion\nUpon receipt of an `attestation` extension, the peer MUST compute the TLS\n```",
+              "createdAt": "2026-02-05T10:58:51Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
+            },
+            {
+              "originalPosition": 633,
+              "body": "```suggestion\nprovide in an `attestation` extension.\n```",
+              "createdAt": "2026-02-05T11:00:20Z",
+              "updatedAt": "2026-02-05T11:01:44Z"
             }
           ]
         }
