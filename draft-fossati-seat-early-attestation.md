@@ -74,6 +74,7 @@ informative:
   I-D.ietf-rats-daa: rats-daa
   I-D.ietf-oauth-selective-disclosure-jwt: sd-jwt
   I-D.ietf-teep-architecture: teep-arch
+  I-D.rosomakho-tls-cert-update: cert-update
   TPM1.2:
     target: https://trustedcomputinggroup.org/resource/tpm-main-specification/
     title: TPM Main Specification Level 2 Version 1.2, Revision 116
@@ -140,7 +141,7 @@ informative:
 The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using remote attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a series of protocol extensions to the TLS 1.3 handshake that enable the binding of the TLS authentication key to a remote attestation session.
+This document describes a series of TLS extensions that enable the binding of the TLS authentication key to a remote attestation session.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.
 
@@ -149,12 +150,12 @@ These extensions have been designed to allow the peers to use any attestation te
 #  Introduction
 
 Remote Attestation (RA) {{-rats-arch}} is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
-This document describes a series of protocol extensions to the TLS 1.3 handshake that enable the binding of the TLS authentication key to a remote attestation session.
+This document describes a series of extensions to the TLS handshake that enable the binding of the TLS connection and its authentication key to a remote attestation session.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) {{-teep-arch}}, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.
 
 Given the variety of deployed and emerging attestation technologies (e.g., {{TPM1.2}}, {{TPM2.0}}, {{-rats-eat}}) these extensions have been explicitly designed to be agnostic to the attestation formats.
-This is achieved by reusing the generic encapsulation defined in {{-cmw}} for transporting Evidence and Attestation Results payloads in the TLS Attestation handshake message.
+This is achieved by reusing the generic encapsulation defined in {{-cmw}} for transporting Evidence and Attestation Results payloads in the `attestation` extension.
 
 This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in {{Sections 5.2 and 5.1 of -rats-arch}}.
@@ -188,13 +189,13 @@ TIK-C, TIK-S:
 : The TIK that identifies the client or the server, respectively.
 
 TIK-C-ID, TIK-S-ID:
-
 : An identifier for TIK-C or respectively, TIK-S. This may be a fingerprint
 (cryptographic hash) of the public key, but other implementations are possible.
 
 Attestation binder:
-: A cryptographic value used to bind the TLS handshake to the remote attestation session. May also be referred to as "binder" throughout the document.
+: A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness. In this specification, the attestation binder is the TLS handshake transcript hash from ClientHello to ServerHello (inclusive).
 
+<!-- -->
 
 {::boilerplate bcp14-tagged}
 
@@ -225,15 +226,11 @@ minimal impact on the existing TLS security properties. The changes consist of:
 
 - Negotiation extensions: New TLS extensions are added to ClientHello and
   EncryptedExtensions messages to negotiate the use of attestation and indicate
-  supported attestation formats and verifiers.
+  supported attestation formats and verifiers. A new `Attestation` extension is
+  introduced that carries attestation Evidence or Attestation Results.
 
-- Independent handshake message: A new `Attestation` handshake message is
-  introduced that carries attestation Evidence or Attestation Results. This message
-  is completely independent of the standard TLS handshake flow and does not
-  interfere with existing handshake messages or their processing.
-
-- Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the regular TLS key schedule. As a result, attestation
-  processing does not affect the standard TLS key derivation and security properties.
+- Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence of the
+  regular TLS key schedule. As a result, attestation processing does not affect the standard TLS key derivation and security properties.
 
 This minimal integration approach provides an intuitive explanation of why the
 addition of attestation does not adversely affect TLS security. The attestation
@@ -253,7 +250,7 @@ and are governed by the lifetime of the signed Attestation Results.
 
 When either the Evidence or the Attestation Results extension is successfully
 negotiated, attestation Evidence or Attestation Results are conveyed in an
-`Attestation` handshake message (see {{attestation-message-section}}). The
+`attestation` extension (see {{attestation-extension-section}}). The
 CMW payload in the Attestation message contains the attestation Evidence or
 Attestation Results encoded according to {{-cmw}}.
 
@@ -261,8 +258,8 @@ The attestation payload MUST contain assertions relating to the attester's TLS
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
 over the Evidence or AttestationResults within the CMW MUST include an attestation binder derived
-from the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
-and the attester's TLS identity public key, as specified in {{attestation-message-section}}.
+from the TLS handshake secret and the message transcript up to ServerHello (see {{crypto-ops}})
+and the attester's TLS identity public key, as specified in {{attestation-extension-section}}.
 
 The relying party can obtain and appraise the remote Attestation Results either
 directly from the Attestation message (in the Passport Model), or by relaying
@@ -289,37 +286,32 @@ passed between the Client or Server TLS stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
 their security properties often differ, see {{sec-guarantees}} for more details.
 
-## Attestation Handshake Message {#attestation-message-section}
+## Attestation Extension {#attestation-extension-section}
+
+As defined in Section 4.4.2 of {{-tls13}}, the TLS `Certificate` message
+contains a `certificate_list`, which is a sequence of `CertificateEntry`
+structures.
 
 When attestation is negotiated via the extensions defined in this document,
-attestation Evidence or Attestation Results are conveyed in a new handshake
-message type: `Attestation`. This message carries a CMW (Conceptual Message
-Wrapper) payload as defined in {{-cmw}}.
+the `attestation` extension defined in this document MUST appear only in
+the first `CertificateEntry` of the `Certificate` message and applies
+exclusively to the end-entity certificate.
 
-The `Attestation` message structure is defined as follows:
+The extension MUST NOT appear in any other `CertificateEntry`.
+
+If the `attestation` extension is received in any other position, the
+receiver MUST abort the handshake with a fatal `illegal_parameter` alert.
+
+This message carries a CMW (Conceptual Message Wrapper) payload as defined in {{-cmw}}.
+
+The `attestation` extension structure is defined as follows:
 
 ~~~~
-    enum {
-        /* other handshake message types defined in {{I-D.ietf-tls-rfc8446bis}} */
-        attestation(TBD),
-        (255)
-    } HandshakeType;
-
-    struct {
-        HandshakeType msg_type;    /* handshake type */
-        uint24 length;             /* bytes in message */
-        select (Handshake.msg_type) {
-            case attestation:
-                Attestation;
-            /* other handshake message types */
-        };
-    } Handshake;
-
     struct {
         opaque cmw_payload<1..2^24-1>;
     } Attestation;
 ~~~~
-{: #figure-attestation-message title="Attestation Handshake Message Structure."}
+{: #figure-attestation-extension title="Attestation Extension Structure."}
 
 The `cmw_payload` field contains a CMW structure as defined in {{-cmw}}.
 Both JSON and CBOR serializations are allowed in CMW, with the emitter choosing
@@ -330,7 +322,7 @@ or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
 AttestationResults within the CMW MUST include:
 
-- A binder derived from the TLS main secret and the message transcript, up to ServerHello,
+- A binder ensuring that the attestation is associated with this particular TLS connection, as defined in {{crypto-ops}},
 ensuring freshness of the attestation.
 - The attester's TLS identity public key (TIK-C for client attester, TIK-S for
   server attester)
@@ -353,247 +345,66 @@ Mutual authentication via attestation combines these two (non-interfering)
 flows, including cases where one of the peers uses the Passport Model for its
 attestation, and the other uses the Background Check Model.
 
-## Handshake Overview {#handshake-overview}
-
-The handshake defined here is analogous to certificate-based authentication in a regular TLS handshake.
-The peer being attested first proves possession of the private key using the CertificateVerify message, which remains unchanged from baseline TLS. Following that, the TLS Identity Key (TIK) is bound by the TEE to the attestation credential being carried in a new Attestation handshake message (see {{attestation-message-section}}).
-
-The attestation Evidence or Attestation Results are conveyed in an `Attestation`
-handshake message (see {{attestation-message-section}}), which carries a CMW
-payload as defined in {{-cmw}}.
-
-## TLS Client Authenticating Using Evidence
-
-In this use case, the TLS server (acting as a relying party) challenges the TLS
-client (as the attester) to provide Evidence. A session-specific value is derived
-(see {{crypto-ops}})
-which incorporates randomness from both client and server, and this value is fed into the generation
-of the Evidence.
-The
-client sends the Evidence in an `Attestation` handshake message after the
-`CertificateVerify` message. The TLS server, when receiving the Evidence, will have
-to contact the Verifier (which is not shown in the diagram).
-
-An example of this flow can be found in device onboarding where the
-client initiates the communication with cloud infrastructure to
-get credentials, firmware and other configuration data provisioned
-to the device. For the server to consider the device genuine it needs
-to present Evidence.
-
-~~~~
-       Client                                           Server
-
-Key  ^ ClientHello
-Exch | + evidence_proposal
-     | + key_share*
-     | + signature_algorithms*
-     v                         -------->
-                                                  ServerHello ^ Key
-                                                 + key_share* | Exch
-                                                              v
-                                        {EncryptedExtensions} ^ Server
-                                          + evidence_proposal | Params
-                                         {CertificateRequest} v
-                                                {Certificate} ^
-                                          {CertificateVerify} | Auth
-                                                   {Finished} v
-                               <--------  [Application Data*]
-     ^ {Certificate}
-Auth | {CertificateVerify}
-     | {Attestation}
-     v {Finished}              -------->
-       [Application Data]      <------->  [Application Data]
-~~~~
-{: #figure-background-check-model1 title="TLS Client Providing Evidence to TLS Server."}
-
-
-## TLS Server Authenticating Using Evidence
-
-In this use case the TLS client challenges the TLS server to present Evidence.
-The TLS server acts as an attester while the TLS client is the relying party.
-The server sends the Evidence in an `Attestation` handshake message after the
-`CertificateVerify` message. The TLS client, when receiving the Evidence,
-will have to contact the Verifier (which is not shown in the diagram).
-
-An example of this flow can be found in confidential computing where
-a compute workload is only submitted to the server infrastructure
-once the client/user is assured that the confidential computing platform is
-genuine.
-
-~~~~
-       Client                                           Server
-
-Key  ^ ClientHello
-Exch | + evidence_request
-     | + key_share*
-     | + signature_algorithms*
-     v                         -------->
-                                                  ServerHello ^ Key
-                                                 + key_share* | Exch
-                                                              v
-                                        {EncryptedExtensions} ^ Server
-                                          + evidence_request  | Params
-                                         {CertificateRequest} v
-                                                {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
-                                                   {Finished} v
-                               <--------  [Application Data*]
-     ^ {Certificate}
-Auth | {CertificateVerify}
-     v {Finished}              -------->
-       [Application Data]      <------->  [Application Data]
-~~~~
-{: #figure-background-check-model2 title="TLS Server Providing Evidence to TLS Client."}
-
-## TLS Client Authenticating Using Attestation Results
-
-In this use case the TLS client, as the attester, provides Attestation Results
-to the TLS server. The TLS client is the attester and the TLS server acts as
-a relying party. Prior to delivering its Certificate message, the client must
-contact the Verifier (not shown in the diagram) to receive the Attestation
-Results that it will use as credentials. The client sends the Attestation
-Results in an `Attestation` handshake message after the `CertificateVerify` message.
-
-~~~~
-       Client                                           Server
-
-Key  ^ ClientHello
-Exch | + results_proposal
-     | + key_share*
-     | + signature_algorithms*
-     v                         -------->
-                                                  ServerHello ^ Key
-                                                 + key_share* | Exch
-                                                              v
-                                        {EncryptedExtensions} ^ Server
-                                           + results_proposal | Params
-                                         {CertificateRequest} v
-                                                {Certificate} ^
-                                          {CertificateVerify} | Auth
-                                                   {Finished} v
-                               <--------  [Application Data*]
-     ^ {Certificate}
-Auth | {CertificateVerify}
-     | {Attestation}
-     v {Finished}              -------->
-       [Application Data]      <------->  [Application Data]
-~~~~
-{: #figure-passport-model1 title="TLS Client Providing Results to TLS Server."}
-
-
-## TLS Server Authenticating Using Attestation Results
-
-In this use case the TLS client, as the relying party, requests Attestation
-Results from the TLS server. Prior to delivering its Certificate message, the
-server must contact the Verifier (not shown in the diagram) to receive the
-Attestation Results that it will use as credentials. The server sends the
-Attestation Results in an `Attestation` handshake message after the
-`CertificateVerify` message.
-
-~~~~
-       Client                                           Server
-
-Key  ^ ClientHello
-Exch | + results_request
-     | + key_share*
-     | + signature_algorithms*
-     v                         -------->
-                                                  ServerHello ^ Key
-                                                 + key_share* | Exch
-                                                              v
-                                        {EncryptedExtensions} ^ Server
-                                           + results_request  | Params
-                                         {CertificateRequest} v
-                                                {Certificate} ^
-                                          {CertificateVerify} |
-                                                {Attestation} | Auth
-                                                   {Finished} v
-                               <--------  [Application Data*]
-     ^ {Certificate}
-Auth | {CertificateVerify}
-     v {Finished}              -------->
-       [Application Data]      <------->  [Application Data]
-~~~~
-{: #figure-passport-model2 title="TLS Server Providing Attestation Results to TLS Client."}
-
 ## Cryptographic Operations {#crypto-ops}
 
-This section defines the key derivation for attestation, which operates independently
-from the regular TLS key schedule as described in {{Section 7.1 of I-D.ietf-tls-rfc8446bis}}.
-The attestation key derivation adds new secrets to the standard TLS key schedule without
-modifying any existing key derivation steps. The standard TLS key schedule is
-unchanged before and after Main Secret as specified in {{I-D.ietf-tls-rfc8446bis}}.
+The cryptographic operation defined in this section bind attestation Evidence
+to a specific TLS handshake. This binding prevents replay and relay of attestation
+Evidence across different TLS connections, and ensures that attestation Evidence
+presented during a handshake corresponds to the authenticated
+TLS session in which it is conveyed.
 
-The attestation key derivation uses HKDF {{Section 7.1 of I-D.ietf-tls-rfc8446bis}} to derive
-attestation-specific secrets from the TLS main secret. Two attestation main
-secrets are derived: one for the client (`c_attest_main`) and one for the
-server (`s_attest_main`).
+The attestation Evidence or Attestation Results are generated by a TEE and
+signed using an attestation key. The signed evidence includes
+inputs originating from different trust domains.
 
-The attestation key derivation adds the following branches to the standard TLS key schedule
-(Fig. 5 of {{I-D.ietf-tls-rfc8446bis}}):
+* The attestation binder is provided by the TLS stack and serves as a
+nonce that ensures freshness and binding to a specific TLS handshake.
 
-~~~~ aasvg
-         (earlier steps)
-                |
-                v
-(EC)DHE ---> HKDF-Extract = Handshake Secret
-                |
-                +-----> [Standard TLS key schedule continues...]
-                |       (client/server handshake traffic)
-                |
-                v
-            Derive-Secret(., "derived", "")
-                |
-                v
-      0 ---> HKDF-Extract = Main Secret
-                |
-                +-----> [Standard TLS key schedule continues...]
-                |       (client/server application traffic, etc.)
-                |
-                |
-                +-----> Derive-Secret(., "c attestation main",
-                |                     ClientHello...ServerHello)
-                |              = c_attest_main
-                |
-                +-----> Derive-Secret(., "s attestation main",
-                                      ClientHello...ServerHello)
-                               = s_attest_main
-~~~~
-{: #figure-attestation-key-schedule title="Attestation Key Schedule Additions."}
+* The TLS Identity Key (TIK) binding claim, such as a hash of the TIK public
+key, is generated by the TEE itself and ensures that the attested environment
+controls the TIK private key used for TLS authentication.
 
-The attestation main secrets (`c_attest_main` and `s_attest_main`)
-are derived from the TLS main secret using Derive-Secret as defined in
-{{Section 7.1 of I-D.ietf-tls-rfc8446bis}}, with the labels "c attestation main" and
-"s attestation main" respectively, and the handshake transcript up to and
-including ServerHello as the context.
+### Attestation Binder Definition
 
-The client's attestation binder (`c_attest_binder`) that will be signed by
-the TEE is derived by applying HKDF-Expand-Label to `c_attest_main` with
-the label "attestation" and the client's TLS public key as the context:
+The attestation binder MUST be the TLS handshake transcript hash covering
+messages from `ClientHello` to `ServerHello` (inclusive), computed as
+defined in Section 4.4.1 of {{-tls13}}.
 
-~~~~
-c_attest_binder = HKDF-Expand-Label(c_attest_main, "attestation",
-                                    TLS_Client_Public_Key, Hash.length)
-~~~~
+The transcript hash uniquely identifies a TLS key exchange and is computed using
+the hash function associated with the negotiated TLS cipher suite.
 
-Similarly, the server's attestation binder (`s_attest_binder`) is derived
-from `s_attest_main`:
+### Verification
 
-~~~~
-s_attest_binder = HKDF-Expand-Label(s_attest_main, "attestation",
-                                    TLS_Server_Public_Key, Hash.length)
-~~~~
+Upon receipt of an `attestation` extension, the peer MUST compute the TLS
+handshake transcript hash over messages from `ClientHello` to
+`ServerHello` and compare it to the attestation binder included in the
+attestation. If the values do not match, the peer MUST treat the
+attestation as invalid and abort the handshake.
 
+### Security Properties
 
-The attestation binder is derived independently by both the attester and the
-peer. The attester incorporates this attestation binder into the Evidence.
-Upon receipt of the Attestation handshake message, the peer will have to derive
-the expected attestation binder using the same inputs and verify that the
-computed attestation binder matches the one in the Evidence. If this verification
-fails, the peer will treat the attestation as invalid. This verification ensures
-that the Evidence is bound to the specific TLS session and TLS public key being
-attested.
+Binding attestation Evidence to the TLS handshake transcript hash provides the
+following security properties:
+
+* Replay protection: Evidence generated for a previous handshake cannot be
+  reused in a later handshake.
+* Relay protection: Evidence obtained from one TLS connection cannot be
+  successfully presented in a different TLS connection, even in the presence of
+  an MiTM attacker.
+
+In typical deployments where the TLS handshake executes outside the TEE, a
+compromised host can execute the TLS handshake in the rich operating system and
+use the TEE as a signing oracle by presenting the attestation binder value to
+obtain valid-looking attestation Evidence.
+
+Unless the TLS protocol explicitly requires the TEE to generate or directly
+participate in the ephemeral key exchange, the use of TLS key schedule derived
+values to generate the attestation binder does not prove that the TEE was
+involved in ephemeral key establishment. Accordingly, this specification does
+not rely on TLS key schedule secrets (e.g., the Handshake Secret) to assert TEE
+participation in the TLS handshake. Instead, it relies on binding attestation
+Evidence to the TLS handshake transcript for channel binding, and on appraisal of
+that Evidence by a Verifier, as defined in the RATS architecture.
 
 ## Binding the TIK to the TEE {#tik-binding}
 
@@ -601,9 +412,20 @@ This specification assumes that the TIK private key corresponding to the end-ent
 
 This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.
 
-To address this, the Evidence MUST include the TIK public key (TIK_pub). The relying party MUST verify that the TIK_pub included in the Evidence matches the public key presented in the TLS Certificate message. This binds the attestation Evidence to the TLS identity used for authentication.
+To address this, the Evidence MUST include the hash of the TIK public key (TIK_pub_hash). The TIK public key MUST be hashed using the hash algorithm associated with the negotiated TLS cipher suite for the TLS connection in which the Evidence is conveyed.
 
-Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key prevents this relay attack.
+The Relying Party MUST compute the hash of the TIK public key extracted from the TLS end-entity certificate using
+the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
+verification binds the attestation Evidence to the TLS identity used for authentication. This verification is performed by the Relying Party, as the Verifier may not be co-located with the Relying Party and may not have access to the TLS handshake or the TLS end-entity certificate, consistent with the RATS architecture.
+Alternatively, in deployments where the Verifier is not co-located with the Relying Party, the Relying Party MAY
+supply the Verifier with the hash of the TIK public key. The Verifier then compares this value with the TIK
+public key hash included in the Evidence. If the values do not match, the attestation MUST be considered invalid.
+
+Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs
+inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the
+Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the
+attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
+prevents this relay attack.
 
 The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.
 
@@ -617,107 +439,27 @@ Therefore we adopt a defense-in-depth approach:
 * The RP SHOULD NOT base its trust decision only on the Attester's trust root. It SHOULD also ensure that the entire attested software stack is endorsed.
 * The TEE itself, when possible, SHOULD generate the attestation secret by running the derivation operations defined in {{crypto-ops}}, and, if it holds the TIK, SHOULD validate the public key. The attestation secret can be generated by the TEE only if TLS is running inside the TEE.
 
-# DTLS Considerations
-
-The Attestation message MUST be handled using the existing DTLS handshake mechanisms for fragmentation, ordering, and retransmission to ensure reliable delivery.
-
-Note that Attestation messages typically exceed 1,500 bytes in size.
-This means that the message will be split into multiple DTLS records, increasing the latency of handshake completion.
-This is particularly the case over channels where reordering and loss are more common due to factors such as routing transients, intermittent connectivity or mobility.
-
-In DTLS, handshake messages that do not solicit a response are acknowledged using the DTLS ACK message. Because the Attestation handshake message does not elicit a response, the receiving peer MUST send a DTLS ACK upon receipt of the Attestation message. This ACK confirms only that the message was received; it does not indicate that attestation appraisal has completed.
-
-Once the attester receives the ACK, it MUST stop retransmitting the Attestation message. The receiving peer performs attestation appraisal asynchronously and applies its authorization policy once appraisal results become available.
-
-# After The Initial Handshake {#after-handshake}
-
-This section covers protocol behavior after the initial handshake, including
-session resumption, reattestation and the interaction between them.
-
-## Session Resumption {#session-resumption}
-
-TLS 1.3 supports session resumption using Pre-Shared Keys (PSK) as defined in
-{{Section 4.6 of I-D.ietf-tls-rfc8446bis}}. When using attestation, session resumption works
-normally when reattestation is not required.
-
-If client reattestation is required according to local policy (e.g., based on timing
-since the last attestation or changes in attestation state), session resumption
-MUST be rejected. The decision to reject resumption is per local policy and may
-depend on the timing of the resumption attempt relative to the required
-reattestation period. When resumption is rejected, the client MUST
-initiate a full handshake with attestation to obtain fresh attestation Evidence
-or Attestation Results.
-
-The rationale for rejecting resumption when reattestation is required is that
-attestation state may have changed since the original handshake, and fresh
-verification is needed to ensure the peer's platform and workload remain in a
-trustworthy state. If the client wishes to retain a long-running connection, it SHOULD
-perform reattestation {{reattestation}} periodically, as per local policy.
-
 ## Reattestation {#reattestation}
 
-Over time, attestation Evidence or Attestation Results may become stale and
-require refresh. Long-lived TLS connections require updated assurance that
-the peer continues to operate in a trustworthy state. This document
-therefore supports reattestation, in which either peer MAY request fresh
-Evidence at any time post-handshake. The attester MUST generate evidence
-using a freshly derived attestation_binder.
+Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state. This section discusses design options for handling attestation freshness.
 
-Reattestation is tied to the completion of an Extended Key Update (EKU) exchange {{!I-D.ietf-tls-extended-key-update}}. TLS peers that require reattestation MUST support EKU,
-since reattestation depends on the key schedule update defined in the EKU draft.
-The first two messages of an EKU exchange introduce fresh key-exchange input and
-make `Main Secret N+1` available to both peers.
+### Design Options
 
-The Attestation message MUST be sent immediately before the attestor sends
-its EKU(new_key_update) message. Once `Main Secret N+1` is available
-(after the first two EKU messages), the attester derives a new
-attestation_binder from `Main Secret N+1`, using the concatenation of the
-EKU request and response messages and its TLS identity public key as context.
+#### Option 1: Carrying Attestation in Extended Key Update
 
-The receiving peer, however, MUST NOT process the Attestation until the
-EKU exchange and the authenticated transition step have completed. This
-ensures that attestation bound to `Main Secret N+1` is accepted only after
-both peers have confirmed that they share the same updated key state.
+One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new `ExtendedKeyUpdate` message subtype to carry attestation Evidence or Attestation Results.
 
-For a client attester:
+However, this approach tightly couples attestation to EKU, even though the two serve different purposes.
 
-~~~
-client_attestation_binder =
-      Derive-Secret(Main Secret N+1,
-                    "reattestation",
-                    EKU(request) ||
-                    EKU(response) ||
-                    TLS_Client_Public_Key)
-~~~
+#### Option 2: No Reattestation (Reconnect for Freshness)
 
-For a server attester:
+Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.
 
-~~~
-server_attestation_binder =
-      Derive-Secret(Main Secret N+1,
-                    "reattestation",
-                    EKU(request) ||
-                    EKU(response) ||
-                    TLS_Server_Public_Key)
-~~~
+This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.
 
-Including the EKU request and response messages ensures that the resulting attestation binder
-is bound to the specific EKU exchange and therefore reflects fresh key-exchange entropy
-introduced by EKU.
+#### Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
-After deriving the fresh attestation_binder, the attester:
-
-1. generates fresh Evidence using the new attestation_binder and
-2. sends a new `Attestation` handshake message containing the updated CMW payload.
-
-The TLS peer validates the attestation by deriving and verifying the attestation binder as specified in {{crypto-ops}}.
-
-Reattestation uses the Attestation formats that were negotiated during the initial handshake,
-there is no re-negotiation at this stage.
-
-The decision to initiate reattestation is per local policy and may be based on
-factors such as elapsed time since the last attestation, changes in platform
-state, or security policy requirements.
+In this design, reattestation is supported using the `CertificateUpdate` message defined in {{-cert-update}}. Under this approach, the attester sends a `CertificateUpdate` message carrying a new `Certificate` message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.
 
 # Negotiating This Protocol {#negotiating-protocol}
 
@@ -734,8 +476,8 @@ negotiation extension. But also express Passport mode with and without freshness
 ## Evidence Extensions (Background Check Model) {#evidence-extensions}
 
 The EvidenceType structure contains an indicator for the type of Evidence
-expected in the `Attestation` handshake message. The Evidence contained in
-the CMW payload is sent in the `Attestation` handshake message (see {{attestation-message-section}}).
+expected in the `Attestation` extension. The Evidence contained in
+the CMW payload is sent in the `Attestation` extension (see {{attestation-extension-section}}).
 
 ~~~~
     enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
@@ -806,9 +548,9 @@ Values for content_format are defined in {{iana-content-formats}}.
 ~~~~
 {: #figure-extension-results title="TLS Extension Structure for Attestation Results."}
 
-In the Passport Model, Attestation Results are sent in an `Attestation` handshake
-message (see {{attestation-message-section}}) containing a CMW structure. The CMW
-structure is defined in {{-cmw}}.
+In the Passport Model, Attestation Results are sent in an `Attestation` extension
+(see {{attestation-extension-section}}) containing a CMW structure. The CMW structure
+is defined in {{-cmw}}.
 
 # TLS Client and Server Handshake Behavior {#behavior}
 
@@ -839,13 +581,13 @@ Exch | + key_share*
                                            + results_request* |
                                         {CertificateRequest*} v
                                                {Certificate*} ^
-                                         {CertificateVerify*} |
-                                               {Attestation*} | Auth
+                                              + attestation*  |
+                                         {CertificateVerify*} | Auth
                                                    {Finished} v
                                <--------  [Application Data*]
      ^ {Certificate*}
+     | + attestation*
 Auth | {CertificateVerify*}
-     | {Attestation*}
      v {Finished}              -------->
        [Application Data]      <------->  [Application Data]
 ~~~~
@@ -864,7 +606,7 @@ the Evidence types the client is able to provide to the server.
 
 The evidence_request extension in the ClientHello message indicates
 the Evidence types the client challenges the server to
-provide in an `Attestation` handshake message.
+provide in an `attestation` extension.
 
 The evidence_proposal and evidence_request extensions sent in
 the ClientHello each carry a list of supported Evidence types,
@@ -911,9 +653,9 @@ server wants to request Evidence from the client, it MUST include the
 evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
-`Attestation` handshake message sent after the `CertificateVerify` message.
+`Attestation` extension in the `Certificate` message.
 The Evidence contained in the CMW payload MUST include a binder derived from
-the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
+the TLS handshake secret and the message transcript up to ServerHello (see {{crypto-ops}})
 in the TEE's signature, along with the client's TLS identity public key (TIK-C).
 The value conveyed in the evidence_proposal extension by the server MUST be
 selected from one of the values provided in the evidence_proposal extension
@@ -927,12 +669,12 @@ extension in the ServerHello MUST be omitted.
 
 The evidence_request extension in the ClientHello indicates what
 types of Evidence the client can challenge the server to return
-in an `Attestation` handshake message. With the evidence_request
+in an `Attestation` extension. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
-Evidence type carried in the `Attestation` handshake message sent
+Evidence type carried in the `Attestation` extension sent
 after the CertificateVerify by the server. The Evidence
 contained in the CMW payload MUST include a binder derived from
-the TLS main secret and the message transcript up to ServerHello (see {{crypto-ops}})
+the TLS handshake secret and the message transcript up to ServerHello (see {{crypto-ops}})
 in the TEE's signature, along with
 the server's TLS identity public key (TIK-S).
 The Evidence type in the evidence_request extension MUST contain
@@ -953,11 +695,11 @@ extensions in the ClientHello message.
 
 The results_proposal extension in the ClientHello message indicates the Verifier
 identities from which the client can relay Attestation Results. The client sends the Attestation Results in an
-`Attestation` handshake message after the `CertificateVerify` message.
+`Attestation` extension in the `Certificate` message.
 
 The results_request extension in the ClientHello message indicates the Verifier
 identities from which the client expects the server to provide Attestation
-Results in an `Attestation` handshake message sent after the CertificateVerify.
+Results in an `Attestation` extension in the `Certificate` message.
 
 The results_proposal and results_request extensions sent in the ClientHello each
 carry a list of supported Verifier identities, sorted by preference.  When the
@@ -1000,8 +742,8 @@ server.  If the server
 wants to request Attestation Results from the client, it MUST include the
 results_proposal extension in the EncryptedExtensions. This results_proposal
 extension in the EncryptedExtensions then indicates what Verifier the client is
-requested to provide Attestation Results from in an `Attestation` handshake
-message sent after the `CertificateVerify` message.  The value conveyed in the
+requested to provide Attestation Results from in an `Attestation` extension in
+the `Certificate` message. The value conveyed in the
 results_proposal extension by the server MUST be selected from one of the
 values provided in the results_proposal extension sent in the ClientHello.
 
@@ -1014,7 +756,7 @@ The results_request extension in the ClientHello indicates what Verifiers the
 client trusts as issuers of Attestation Results for the server. With the
 results_request extension in the EncryptedExtensions, the server indicates the
 identity of the Verifier who issued the Attestation Results carried in the
-`Attestation` handshake message sent after the CertificateVerify by the
+`Attestation` extension sent in the Certificate by the
 server. The Verifier identity in the results_request extension MUST contain a
 single value selected from the results_request extension in the ClientHello.
 
@@ -1036,18 +778,8 @@ These properties may be explicitly promised ("attested") by the platform, or the
 ## Freshness Guarantees {#freshness-guarantees}
 
 <cref> TODO: Discuss freshness guarantees provided by secret derivation from
-the TLS main secret and message transcript. Differences between Background Check and Passport mode.
+the TLS handshake secret and message transcript. Differences between Background Check and Passport mode.
 </cref>
-
-## Security of Reattestation After Extended Key Update
-
-Reattestation relies on the assumption that both peers have derived the same
-`Main Secret N+1` during the preceding EKU exchange. EKU by itself does not
-guarantee that the peers transitioned to a consistent key state in the presence
-of an active attacker. Deployments that require stronger guarantees will have use an
-authenticated transition mechanism discussed in {{!I-D.ietf-tls-extended-key-update}}
-(e.g., post-handshake client authentication or Exported Authenticators) to
-detect key-schedule divergence before relying on reattestation results.
 
 # Privacy Considerations {#priv-cons}
 
@@ -1075,7 +807,7 @@ Due to the inherent asymmetry of the TLS protocol, if the Attester acts as the T
 
 ## TLS Extensions
 
-IANA is asked to allocate four new TLS extensions, evidence_request,
+IANA is asked to allocate five new TLS extensions, attestation, evidence_request,
 evidence_proposal, results_request, results_proposal, from the "TLS
 ExtensionType Values" subregistry of the "Transport Layer Security (TLS)
 Extensions" registry {{TLS-Ext-Registry}}.  These extensions are used in the
@@ -1099,18 +831,6 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 - DTLS-OK: Y
 - Reference: [This document]
 - Comment:
-
-## TLS Handshake Message Types
-
-IANA is requested to allocate a new value in the "TLS HandshakeType" registry
-of the "Transport Layer Security (TLS) Parameters" registry {{TLS-Param-Registry}},
-as follows:
-
-- Value: TBD
-- Description: attestation
-- DTLS-OK: Y
-- Reference: [This document]
-- Comment: Used to carry attestation Evidence or Attestation Results in the TLS handshake
 
 # Acknowledgements {#acknowledgements}
 
@@ -1148,29 +868,3 @@ The key changes include:
 
 <!-- Start of Appendices -->
 
-# Design Rationale {#design-rationale}
-
-This appendix explains the rationale for introducing a dedicated `Attestation`
-handshake message, instead of embedding attestation in an extension inside
-the TLS `Certificate` message. That approach fails to meet key security,
-and privacy requirements.
-
-## Requires Certificate Authentication
-
-TLS 1.3 supports authentication modes where no `Certificate` message is sent:
-
-* PSK-based authentication
-* PAKE-based authentication {{!I-D.ietf-tls-pake}}
-
-A design that relies on a `Certificate` message extension cannot operate in
-these cases. In contrast, a dedicated `Attestation` handshake message works
-regardless of authentication mode, making it compatible with the full TLS
-authentication spectrum.
-
-## Reattestation Not Fully Supported
-
-TLS allows Post-Handshake client authentication {{Section 4.2.6 of I-D.ietf-tls-rfc8446bis}}
-but provides no mechanism for Post-Handshake server authentication. As a result, a design
-that embeds attestation inside the `Certificate` message would allow only the client and
-not the server to refresh its attestation. This is insufficient for deployments that
-require periodic server reattestation.
