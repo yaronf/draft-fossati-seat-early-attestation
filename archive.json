@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-08T02:26:16.232540+00:00",
+  "timestamp": "2026-02-10T02:13:29.765236+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -2798,24 +2798,26 @@
       "id": "PR_kwDOQdsaoc69LUMG",
       "title": "Update to align with SCONE charter",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/35",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-14T15:02:58Z",
-      "updatedAt": "2026-02-05T13:58:49Z",
+      "updatedAt": "2026-02-08T07:02:31Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "4b45fe9cf52f1c58989daf9df0e3cea200ae0111",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-3",
       "headRefOid": "e2171ff63a5f7000bc374037ab6498183d2f1555",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-08T07:02:31Z",
+      "mergedAt": "2026-02-08T07:02:31Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "6e61f5fb6a8212173c05e7d007eddfeade95a340"
+      },
       "comments": [],
       "reviews": [
         {
