@@ -193,7 +193,7 @@ TIK-C-ID, TIK-S-ID:
 (cryptographic hash) of the public key, but other implementations are possible.
 
 Attestation binder:
-: A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness. In this specification, the attestation binder is the TLS handshake transcript hash from ClientHello to ServerHello (inclusive).
+: A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness.
 
 <!-- -->
 
@@ -229,8 +229,8 @@ minimal impact on the existing TLS security properties. The changes consist of:
   supported attestation formats and verifiers. A new `Attestation` extension is
   introduced that carries attestation Evidence or Attestation Results.
 
-- Independent key derivation: Key derivation for attestation (see {{crypto-ops}}) ensures independence from the
-  regular TLS key schedule. As a result, attestation processing does not affect the standard TLS key derivation and security properties.
+- Independent key derivation: Binder derivation for attestation (see {{crypto-ops}}) is completely independent of the
+  regular TLS key schedule. Attestation processing does not affect the standard TLS key derivation and security properties.
 
 This minimal integration approach provides an intuitive explanation of why the
 addition of attestation does not adversely affect TLS security. The attestation
@@ -243,8 +243,8 @@ security properties is still required.
 As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
 attestation Evidence or Attestation Results to be exchanged. Freshness of the
-exchanged Evidence is guaranteed through secret derivation from the TLS main
-secret and message transcript (see {{crypto-ops}}) when the Background Check
+exchanged Evidence is guaranteed through an Attestation Binder mechanism (see {{crypto-ops}})
+when the Background Check
 Model is in use. In the Passport Model, freshness expectations are more relaxed
 and are governed by the lifetime of the signed Attestation Results.
 
@@ -321,7 +321,8 @@ as well as the attester's TLS identity public key (TIK-C for client attester, TI
 server attester).
 
 This binding ensures that the attested key is the one used in the TLS handshake
-and provides freshness guarantees through secret derivation. See {{crypto-ops}} for details.
+and provides freshness guarantees through derivation from both peers' randomness.
+See {{crypto-ops}} for details.
 
 # Use of Attestation in the TLS Handshake
 
@@ -410,7 +411,7 @@ This specification assumes that the TIK private key corresponding to the end-ent
 
 This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.
 
-To address this, the signed Evidence MUST include a binder generated using the hash of the TIK public key (TIK_pub_hash). The TIK public key MUST be hashed using the hash algorithm associated with the negotiated TLS cipher suite for the TLS connection in which the Evidence is conveyed.
+To address this, the signed Evidence MUST include an Attestation Binder generated using the hash of the TIK public key (TIK_pub_hash) (see {crypto-ops}).
 
 The Relying Party MUST compute the hash of the TIK public key extracted from the TLS end-entity certificate using
 the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
@@ -425,7 +426,8 @@ Evidence only attests that a TLS stack is running in a TEE, the relying party ca
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.
 
-The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.
+The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not - in and of itself - ensure security of the TLS stack when the stack is
+outside the TEE, and see {sec-guarantees} for a further discussion.
 
 ## The TLS Stack's Interface to the TEE
 
@@ -652,9 +654,8 @@ evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 `Attestation` extension in the `Certificate` message.
-The Evidence contained in the CMW payload MUST include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see {{crypto-ops}})
-in the TEE's signature, along with the client's TLS identity public key (TIK-C).
+The signed Evidence contained in the CMW payload MUST include an Attestation Binder as a nonce value (see {{crypto-ops}})
+in the TEE's signature.
 The value conveyed in the evidence_proposal extension by the server MUST be
 selected from one of the values provided in the evidence_proposal extension
 sent in the ClientHello.
@@ -670,11 +671,8 @@ types of Evidence the client can challenge the server to return
 in an `Attestation` extension. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the `Attestation` extension sent
-after the CertificateVerify by the server. The Evidence
-contained in the CMW payload MUST include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see {{crypto-ops}})
-in the TEE's signature, along with
-the server's TLS identity public key (TIK-S).
+after the CertificateVerify by the server. The signed Evidence contained in the CMW payload MUST include an Attestation Binder as a nonce value (see {{crypto-ops}})
+in the TEE's signature.
 The Evidence type in the evidence_request extension MUST contain
 a single value selected from the evidence_request extension in
 the ClientHello.
@@ -775,8 +773,8 @@ These properties may be explicitly promised ("attested") by the platform, or the
 
 ## Freshness Guarantees {#freshness-guarantees}
 
-<cref> TODO: Discuss freshness guarantees provided by secret derivation from
-the TLS handshake secret and message transcript. Differences between Background Check and Passport mode.
+<cref> TODO: Discuss freshness guarantees provided by the Attestation Binder.
+Differences between Background Check and Passport mode.
 </cref>
 
 # Privacy Considerations {#priv-cons}
