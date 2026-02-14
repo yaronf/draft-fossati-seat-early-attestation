@@ -1396,7 +1396,7 @@ protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the
         <dd class="break"></dd>
 <dt id="section-2-3.7">Attestation binder:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.8">
-          <p id="section-2-3.8.1">A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness. In this specification, the attestation binder is the TLS handshake transcript hash from ClientHello to ServerHello (inclusive).<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.8.1">A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1444,8 +1444,8 @@ supported attestation formats and verifiers. A new <code>Attestation</code> exte
 introduced that carries attestation Evidence or Attestation Results.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1">Independent key derivation: Key derivation for attestation (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) ensures independence from the
-regular TLS key schedule. As a result, attestation processing does not affect the standard TLS key derivation and security properties.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-2.2.1">Independent key derivation: Binder derivation for attestation (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) is completely independent of the
+regular TLS key schedule. Attestation processing does not affect the standard TLS key derivation and security properties.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.2-3">This minimal integration approach provides an intuitive explanation of why the
@@ -1465,8 +1465,8 @@ security properties is still required.<a href="#section-3.2-3" class="pilcrow">�
 <p id="section-4-1">As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
 attestation Evidence or Attestation Results to be exchanged. Freshness of the
-exchanged Evidence is guaranteed through secret derivation from the TLS main
-secret and message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) when the Background Check
+exchanged Evidence is guaranteed through an Attestation Binder mechanism (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+when the Background Check
 Model is in use. In the Passport Model, freshness expectations are more relaxed
 and are governed by the lifetime of the signed Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">When either the Evidence or the Attestation Results extension is successfully
@@ -1538,7 +1538,8 @@ this particular TLS connection,
 as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for
 server attester).<a href="#section-4.1-9" class="pilcrow">¶</a></p>
 <p id="section-4.1-10">This binding ensures that the attested key is the one used in the TLS handshake
-and provides freshness guarantees through secret derivation. See <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> for details.<a href="#section-4.1-10" class="pilcrow">¶</a></p>
+and provides freshness guarantees through derivation from both peers' randomness.
+See <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> for details.<a href="#section-4.1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1655,7 +1656,7 @@ software being endorsed and verified, ensures that relay attacks are prevented.<
         </h3>
 <p id="section-5.2-1">This specification assumes that the TIK private key corresponding to the end-entity certificate used in the TLS handshake is generated inside a TEE and never leaves it. A platform could instead generate the TIK private key outside the TEE and compute the CertificateVerify signature using that external key. A relying party cannot detect this attack unless additional safeguards are in place.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">To address this, the signed Evidence <span class="bcp14">MUST</span> include a binder generated using the hash of the TIK public key (TIK_pub_hash). The TIK public key <span class="bcp14">MUST</span> be hashed using the hash algorithm associated with the negotiated TLS cipher suite for the TLS connection in which the Evidence is conveyed.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">To address this, the signed Evidence <span class="bcp14">MUST</span> include an Attestation Binder generated using the hash of the TIK public key (TIK_pub_hash) (see {crypto-ops}).<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">The Relying Party <span class="bcp14">MUST</span> compute the hash of the TIK public key extracted from the TLS end-entity certificate using
 the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
 verification binds the attestation Evidence to the TLS identity used for authentication. This verification is performed by the Relying Party, as the Verifier may not be co-located with the Relying Party and may not have access to the TLS handshake or the TLS end-entity certificate, consistent with the RATS architecture.
@@ -1667,7 +1668,8 @@ inside a TEE and relay that Evidence to the relying party while executing the TL
 Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.2-6">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not - in and of itself - ensure security of the TLS stack when the stack is
+outside the TEE, and see {sec-guarantees} for a further discussion.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="the-tls-stacks-interface-to-the-tee">
@@ -1966,9 +1968,8 @@ evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 <code>Attestation</code> extension in the <code>Certificate</code> message.
-The Evidence contained in the CMW payload <span class="bcp14">MUST</span> include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
-in the TEE's signature, along with the client's TLS identity public key (TIK-C).
+The signed Evidence contained in the CMW payload <span class="bcp14">MUST</span> include an Attestation Binder as a nonce value (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+in the TEE's signature.
 The value conveyed in the evidence_proposal extension by the server <span class="bcp14">MUST</span> be
 selected from one of the values provided in the evidence_proposal extension
 sent in the ClientHello.<a href="#section-7.1.2-3" class="pilcrow">¶</a></p>
@@ -1982,11 +1983,8 @@ types of Evidence the client can challenge the server to return
 in an <code>Attestation</code> extension. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the <code>Attestation</code> extension sent
-after the CertificateVerify by the server. The Evidence
-contained in the CMW payload <span class="bcp14">MUST</span> include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
-in the TEE's signature, along with
-the server's TLS identity public key (TIK-S).
+after the CertificateVerify by the server. The signed Evidence contained in the CMW payload <span class="bcp14">MUST</span> include an Attestation Binder as a nonce value (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+in the TEE's signature.
 The Evidence type in the evidence_request extension <span class="bcp14">MUST</span> contain
 a single value selected from the evidence_request extension in
 the ClientHello.<a href="#section-7.1.2-5" class="pilcrow">¶</a></p>
@@ -2116,8 +2114,8 @@ and the overall security level depends on their existence and quality of assuran
         <h3 id="name-freshness-guarantees">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-freshness-guarantees" class="section-name selfRef">Freshness Guarantees</a>
         </h3>
-<p id="section-8.2-1"><span class="cref"> TODO: Discuss freshness guarantees provided by secret derivation from
-the TLS handshake secret and message transcript. Differences between Background Check and Passport mode.
+<p id="section-8.2-1"><span class="cref"> TODO: Discuss freshness guarantees provided by the Attestation Binder.
+Differences between Background Check and Passport mode.
 </span><a href="#section-8.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
