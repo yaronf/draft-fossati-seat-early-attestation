@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-12T02:03:18.251991+00:00",
+  "timestamp": "2026-02-15T02:05:37.565153+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -717,6 +717,22 @@
       "body": "There are two possible approaches for binding the Evidence to the TLS connection and the key provenance of the TIK private key of TIK private key in the Evidence, and I\u2019d like to discuss both and get feedback from the co-authors.\n\nOption 1: Implicit binding via nonce construction\n\nIn this approach, the TLS stack constructs a nonce that embeds both the TLS handshake transcript hash and the hash of the TIK public key, and passes this nonce to the TEE. The TEE verifies that the embedded public key hash corresponds to a TIK private key it manages and, if so, signs the nonce as part of the Evidence.\n\nOn the Relying Party (RP) side, the RP reconstructs the expected nonce using the TLS handshake transcript hash and the hash of the TIK public key extracted from the end-entity certificate. The RP (or an external Verifier, if not co-located) verifies the TEE signature over the nonce. Successful verification allows the RP to infer that the TEE controls the TIK private key corresponding to the public key used in the TLS handshake, even though the key identity is not carried as an explicit claim in the Evidence.\n\nThis approach relies on correct nonce construction by the TLS stack and correct enforcement by the TEE, and the binding between the attestation and the key is inferred indirectly rather than expressed as an explicit Evidence claim.\n\nOption 2: Explicit key identity claim in Evidence\nIn this approach, the Evidence itself carries an explicit claim, such as a hash of the public key (e.g., AIK_pub_hash). The nonce or challenge is used solely for freshness and channel binding. This allows the Relying Party to directly observe a statement like: \u201cThis Evidence attests to public key X,\u201d rather than inferring the binding indirectly from how the nonce is constructed and validated by the TEE.\n\nI prefer Option 2 as it would enable the Verifier to determine, based on attestation claims, whether the TIK private key is generated, stored, and protected within a secure element.\n\n",
       "createdAt": "2026-02-06T06:00:57Z",
       "updatedAt": "2026-02-11T08:36:44Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 45,
+      "id": "I_kwDOQdsaoc7q6LPO",
+      "title": "SEAT charter phase 2, binder derivation",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/45",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Derive the binder from a message transcript, disconnected from the TLS key schedule. The binder is used as the Evidence's (or RA's) nonce, and is not part of the Evidence.",
+      "createdAt": "2026-02-14T10:56:35Z",
+      "updatedAt": "2026-02-14T10:56:35Z",
       "closedAt": null,
       "comments": []
     }
@@ -3273,6 +3289,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 46,
+      "id": "PR_kwDOQdsaoc7D01q7",
+      "title": "Define an Attestation Binder and its use as a nonce",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/46",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
+      "createdAt": "2026-02-14T21:04:39Z",
+      "updatedAt": "2026-02-14T21:04:39Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-45",
+      "headRefOid": "fde16404e32497f461e2d6985c2c434d2fa7ee28",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
