@@ -433,7 +433,42 @@ The proposed binding ensures that the relying party does not establish a TLS ses
 
 When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
 session. TEE implementations differ, and some only allow a single user-provided challenge value to be added to the Evidence with no associated checks.
-Therefore we adopt a defense-in-depth approach:
+
+Architecturally we propose to add a thin shim between the traditional TLS stack and the TEE
+as shown in the following diagram. Implementations will choose whether to incorporate
+the shim into the TEE (making for a "smarter" TEE and better protection
+for the remote attestation protocol), or in case of a legacy TEE that cannot be modified,
+the shim can be added to the TLS stack.
+
+~~~ aasvg
++----------------------------------------------------+  ------+
+|                                                    |        |
+|                         TLS Stack                  |        |
+|                                                    |        |
++------|---------------------------------------------+        |
+       |                         ^                            |
+       | Transcript hash         | CMW (Signed                |
+       |                         |      Evidence/AR;          |
+       | TIK public key hash     |      Nonce)                |
+       v                         |                            |
++----------------------------------------------------+        |
+|                                                    |        |
+|                  Early Attestation Shim            |    Measured
+|                                                    |   Components
++------|---------------------------------------------+        |
+       |                         ^                            |
+       | Nonce                   | Signed Evidence/AR         |
+       v                         |                            |
++--------------------------------|-------------------+        |
+|                                                    |        |
+|                          TEE                       |        |
+| +-----------------+                                |        |
+| | TIK Private Key |                                |        |
+| +-----------------+                                |        |
++----------------------------------------------------+  ------+
+~~~
+
+We adopt a defense-in-depth approach:
 
 * Separate attesting applications within the same TEE SHOULD NOT be capable of impersonating each other via Evidence or Attestation Results. Therefore, if multiple applications are expected to use attestation credentials, evidence/AR generation APIs SHOULD reflect identifiers for the calling contexts into the generated credential. These identifiers can be reflected as separate claims in the credential, or can be measured as part of more generic claims. A Relying Party SHOULD be capable of differentiating between the attesting applications based on their credentials.
 * The RP SHOULD NOT base its trust decision only on the Attester's trust root. It SHOULD also ensure that the entire attested software stack is endorsed.
