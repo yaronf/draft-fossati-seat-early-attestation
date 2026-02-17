@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 20 August 2026                                     Y. Deshpande
+Expires: 21 August 2026                                     Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                        16 February 2026
+                                                        17 February 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 August 2026.
+   This Internet-Draft will expire on 21 August 2026.
 
 Copyright Notice
 
@@ -519,15 +519,15 @@ Table of Contents
    checks.
 
    Architecturally we propose to add a thin shim between the traditional
-   TLS stack and the TEE as shown in the following diagram.
-   Implementations will choose whether to incorporate the shim into the
-   TEE (making for a "smarter" TEE and better protection for the remote
-   attestation protocol), or in case of a legacy TEE that cannot be
-   modified, the shim can be added to the TLS stack.
+   TLS stack and the TEE as shown in Figure 2.  Implementations will
+   choose whether to incorporate the shim into the TEE (making for a
+   "smarter" TEE and better protection for the remote attestation
+   protocol), or in case of a legacy TEE that cannot be modified, the
+   shim can be added to the TLS stack.
 
    +----------------------------------------------------+  ------+
    |                                                    |        |
-   |                         TLS Stack                  |        |
+   |                     TLS Stack                      |        |
    |                                                    |        |
    +------+---------------------------------------------+        |
           |                         ^                            |
@@ -537,7 +537,7 @@ Table of Contents
           v                         |                            |
    +--------------------------------+-------------------+        |
    |                                                    |   Measured &
-   |                  Early Attestation Shim            |    Reported
+   |              Early Attestation Shim                |    Reported
    |                                                    |   Components
    +------+---------------------------------------------+        |
           |                         ^                            |
@@ -545,11 +545,13 @@ Table of Contents
           v                         |                            |
    +--------------------------------+-------------------+        |
    |                                                    |        |
-   |                          TEE                       |        |
+   |                        TEE                         |        |
    | +-----------------+                                |        |
    | | TIK Private Key |                                |        |
    | +-----------------+                                |        |
    +----------------------------------------------------+  ------+
+
+                 Figure 2: TLS Stack Interface with the TEE
 
    We adopt a defense-in-depth approach:
 
@@ -668,7 +670,7 @@ Table of Contents
            }
        } evidenceProposalTypeExtension;
 
-              Figure 2: TLS Extension Structure for Evidence.
+              Figure 3: TLS Extension Structure for Evidence.
 
    Values for media_type are defined in [iana-media-types].  Values for
    content_format are defined in [iana-content-formats].
@@ -701,7 +703,7 @@ Table of Contents
            }
        } resultsProposalTypeExtension;
 
-         Figure 3: TLS Extension Structure for Attestation Results.
+         Figure 4: TLS Extension Structure for Attestation Results.
 
    In the Passport Model, Attestation Results are sent in an Attestation
    extension (see Section 4.1) containing a CMW structure.  The CMW
@@ -709,7 +711,7 @@ Table of Contents
 
 7.  TLS Client and Server Handshake Behavior
 
-   The high-level message exchange in Figure 4 shows the
+   The high-level message exchange in Figure 5 shows the
    evidence_proposal, evidence_request, results_proposal, and
    results_request extensions added to the ClientHello and the
    EncryptedExtensions messages.
@@ -746,7 +748,7 @@ Table of Contents
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
-                 Figure 4: Attestation Message Overview.
+                 Figure 5: Attestation Message Overview.
 
 7.1.  Background Check Model
 
