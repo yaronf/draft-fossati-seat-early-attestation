@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-15T02:05:37.565153+00:00",
+  "timestamp": "2026-02-17T01:59:04.430355+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -3302,7 +3302,7 @@
       "labels": [],
       "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
       "createdAt": "2026-02-14T21:04:39Z",
-      "updatedAt": "2026-02-14T21:04:39Z",
+      "updatedAt": "2026-02-15T14:57:19Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
@@ -3314,7 +3314,180 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7it9cv",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-15T07:50:31Z",
+          "updatedAt": "2026-02-15T07:56:47Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "0 as the IKM means there is no \"secret\" in c_attest_base. Use of Derive-Secret is suitable only when there a IKM which is a secret. \r\n\r\n",
+              "createdAt": "2026-02-15T07:50:31Z",
+              "updatedAt": "2026-02-15T07:57:24Z"
+            },
+            {
+              "originalPosition": 126,
+              "body": "I don't understand the motivation to use Derive-Secret followed by HKDF-Expand-Label. If we want to bind attestation to the negotiated handshake context. I propose: \n\nth = Transcript-Hash(ClientHello .. ServerHello)\n\nc_attest_binder = Hash(\"client attestation\" || ts)\ns_attest_binder = Hash(\"server attestation\" || ts)",
+              "createdAt": "2026-02-15T07:53:58Z",
+              "updatedAt": "2026-02-15T07:56:47Z"
+            },
+            {
+              "originalPosition": 168,
+              "body": "I don't get this line, are you referring to ephemeral public key or the TLS public key used in the end-entity certificate for authentication ? ",
+              "createdAt": "2026-02-15T07:56:09Z",
+              "updatedAt": "2026-02-15T07:56:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7iy9kd",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-15T14:53:30Z",
+          "updatedAt": "2026-02-15T14:53:31Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "There is no secret, and in fact I note it a few lines later. IMHO it's still the right primitive to use - it's basically HKDF.",
+              "createdAt": "2026-02-15T14:53:30Z",
+              "updatedAt": "2026-02-15T14:53:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7iy_PW",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-15T14:55:31Z",
+          "updatedAt": "2026-02-15T14:55:32Z",
+          "comments": [
+            {
+              "originalPosition": 126,
+              "body": "Using hash algorithms directly is dangerous because of [hash extension attacks](https://en.wikipedia.org/wiki/Length_extension_attack). What you propose may or may not be secure, and I'm taking a conservative approach.",
+              "createdAt": "2026-02-15T14:55:31Z",
+              "updatedAt": "2026-02-15T14:55:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7izAt-",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-15T14:57:19Z",
+          "updatedAt": "2026-02-15T14:57:19Z",
+          "comments": [
+            {
+              "originalPosition": 168,
+              "body": "The TLS public key. This is part of the ongoing discussion about the TLS-to-TEE API (and a possible shim in-between), see my Slack message.",
+              "createdAt": "2026-02-15T14:57:19Z",
+              "updatedAt": "2026-02-15T14:57:19Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 47,
+      "id": "PR_kwDOQdsaoc7EC8SS",
+      "title": "Add architecture diagram for TEE interface",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/47",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\r\n\r\n- Add architecture diagram showing TLS stack, Early Attestation Shim, and TEE layers\r\n- Clarify the role of the shim between TLS and TEE\r\n- Show data flows: transcript hash, TIK public key hash, nonce, and signed Evidence/AR\r\n- Explain shim can be in TEE (better protection) or TLS stack (legacy TEE support)\r\n\r\nCloses #41",
+      "createdAt": "2026-02-16T09:23:22Z",
+      "updatedAt": "2026-02-16T13:59:07Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-41",
+      "headRefOid": "96714c9641890ce9becebc5c86dcf5dc0aa80c4c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7jBHMe",
+          "commit": {
+            "abbreviatedOid": "96714c9"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-16T13:44:32Z",
+          "updatedAt": "2026-02-16T13:44:33Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "nit: the labels are not centered.  One can sense that cursor has no eyes :-)\n\nI can patch the three instances if you want.",
+              "createdAt": "2026-02-16T13:44:33Z",
+              "updatedAt": "2026-02-16T13:44:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7jBW5O",
+          "commit": {
+            "abbreviatedOid": "96714c9"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-16T13:58:21Z",
+          "updatedAt": "2026-02-16T13:58:21Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "Also add a number to the figure and refer it from the main body of the text",
+              "createdAt": "2026-02-16T13:58:21Z",
+              "updatedAt": "2026-02-16T13:58:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7jBX3I",
+          "commit": {
+            "abbreviatedOid": "96714c9"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM! (pending few nits)",
+          "createdAt": "2026-02-16T13:59:06Z",
+          "updatedAt": "2026-02-16T13:59:06Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
