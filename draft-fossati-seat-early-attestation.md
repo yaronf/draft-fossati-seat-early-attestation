@@ -435,7 +435,7 @@ When the TEE signs the Evidence or Attestation Results, it also binds them to th
 session. TEE implementations differ, and some only allow a single user-provided challenge value to be added to the Evidence with no associated checks.
 
 Architecturally we propose to add a thin shim between the traditional TLS stack and the TEE
-as shown in the following diagram. Implementations will choose whether to incorporate
+as shown in {{figure-tls-tee-interface}}. Implementations will choose whether to incorporate
 the shim into the TEE (making for a "smarter" TEE and better protection
 for the remote attestation protocol), or in case of a legacy TEE that cannot be modified,
 the shim can be added to the TLS stack.
@@ -443,7 +443,7 @@ the shim can be added to the TLS stack.
 ~~~ aasvg
 +----------------------------------------------------+  ------+
 |                                                    |        |
-|                         TLS Stack                  |        |
+|                     TLS Stack                      |        |
 |                                                    |        |
 +------+---------------------------------------------+        |
        |                         ^                            |
@@ -453,7 +453,7 @@ the shim can be added to the TLS stack.
        v                         |                            |
 +--------------------------------+-------------------+        |
 |                                                    |   Measured &
-|                  Early Attestation Shim            |    Reported
+|              Early Attestation Shim                |    Reported
 |                                                    |   Components
 +------+---------------------------------------------+        |
        |                         ^                            |
@@ -461,12 +461,13 @@ the shim can be added to the TLS stack.
        v                         |                            |
 +--------------------------------+-------------------+        |
 |                                                    |        |
-|                          TEE                       |        |
+|                        TEE                         |        |
 | +-----------------+                                |        |
 | | TIK Private Key |                                |        |
 | +-----------------+                                |        |
 +----------------------------------------------------+  ------+
 ~~~
+{: #figure-tls-tee-interface title="TLS Stack Interface with the TEE"}
 
 We adopt a defense-in-depth approach:
 
