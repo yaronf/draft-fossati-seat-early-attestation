@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-22T02:01:00.554323+00:00",
+  "timestamp": "2026-02-24T01:58:35.643342+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -3302,7 +3302,7 @@
       "labels": [],
       "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
       "createdAt": "2026-02-14T21:04:39Z",
-      "updatedAt": "2026-02-21T12:12:03Z",
+      "updatedAt": "2026-02-23T07:31:09Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
@@ -3446,6 +3446,26 @@
               "updatedAt": "2026-02-21T12:12:03Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7k2juN",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-23T07:31:09Z",
+          "updatedAt": "2026-02-23T07:31:09Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "> > The sequence of invocation of HKDF is HKDF-Extract followed by HKDF-Expand, see https://datatracker.ietf.org/doc/html/rfc8446#appendix-E.1.1\r\n> > RFC8446 discusses calling HKDF-Extract with 0 but not with HKDF-Expand.\r\n> \r\n> In fact, https://datatracker.ietf.org/doc/html/rfc8446#appendix-E.1.1 implies that HKDF-Extract should not be used on its own.\r\n\r\nMy comment is Derive-Secret only invokes HKDF-Expand but does not call HKDF-Extract. The sequence has to be modified to invoke HKDF-Extract followed by HKDF-Expand\r\n\r\n> \r\n> > Further, the handshake context for c_attest_base and s_attest_base has to be different, for instance, see https://datatracker.ietf.org/doc/html/rfc8446#section-4.4.\r\n> \r\n> @tireddy2 I'm not sure what you are referring to, we have a label here but not a \"context\".\r\n\r\nI meant the label used for c_attest_base and s_attest_base needs to be equivalent to the handshake context discussed in Section 4.4 of RFC8446.\r\n\r\ns_attest_base would use ClientHello ... later of EncryptedExtensions/CertificateRequest\r\nc_attest_base would be ClientHello ... later of server Finished/EndOfEarlyData",
+              "createdAt": "2026-02-23T07:31:09Z",
+              "updatedAt": "2026-02-23T07:31:10Z"
+            }
+          ]
         }
       ]
     },
@@ -3461,7 +3481,7 @@
       "labels": [],
       "body": "## Summary\r\n\r\n- Add architecture diagram showing TLS stack, Early Attestation Shim, and TEE layers\r\n- Clarify the role of the shim between TLS and TEE\r\n- Show data flows: transcript hash, TIK public key hash, nonce, and signed Evidence/AR\r\n- Explain shim can be in TEE (better protection) or TLS stack (legacy TEE support)\r\n\r\nCloses #41",
       "createdAt": "2026-02-16T09:23:22Z",
-      "updatedAt": "2026-02-21T11:58:38Z",
+      "updatedAt": "2026-02-23T20:15:48Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
@@ -3597,6 +3617,46 @@
               "body": "@tireddy2 What may need to be clarified further is that we get resistance to relay attacks only if the shim is part of the TEE. In other words, only if there are NO APIs into the TEE that bypass the shim.\r\n\r\nI don't think access control (in the common understanding of the term) is even relevant here, because for access control you need an identity system and these are all internal components (e.g., the TLS stack) that don't have their own identity. The alternative to access control is very strict API design, such as \"I sign an attestation for you only if it includes a public key and only I can associate that public key with a private key that I own\".",
               "createdAt": "2026-02-21T11:58:38Z",
               "updatedAt": "2026-02-21T11:58:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7k2cc4",
+          "commit": {
+            "abbreviatedOid": "4d284b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-23T07:21:04Z",
+          "updatedAt": "2026-02-23T07:21:04Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "@thomas-fossati had explained in the last week meeting that access control is possible. \r\n\r\nThe other aspect is that even if the TLS Stack and the Shim are not located in the TEE, it is possible for the TEE to capture the measurements of the TLS Stack and the Shim.",
+              "createdAt": "2026-02-23T07:21:04Z",
+              "updatedAt": "2026-02-23T07:21:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7lFAId",
+          "commit": {
+            "abbreviatedOid": "4d284b3"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-23T20:15:47Z",
+          "updatedAt": "2026-02-23T20:15:48Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I'd be happy to hear more from @thomas-fossati about access control.\r\n\r\nAgree about measurements, and this is actually shown in the diagram that this PR adds - see the right-hand part about \"measured and reported components\".",
+              "createdAt": "2026-02-23T20:15:47Z",
+              "updatedAt": "2026-02-23T20:15:48Z"
             }
           ]
         }
