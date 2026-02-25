@@ -362,9 +362,9 @@ defined in Section 4.4.1 and&nbsp;7.1 of {{-tls13}}.
 
 ~~~
 c_attest_base = Derive-Secret(0, "c attestation base",
-                              ClientHello...ServerHello)
+                              ClientHello...Server-Finished)
 s_attest_base = Derive-Secret(0, "s attestation base",
-                              ClientHello...ServerHello)
+                              ClientHello...EncryptedExtensions)
 
 c_attest_binder = HKDF-Expand-Label(c_attest_base, "attestation",
                                     TLS_Client_Public_Key, Hash.length)
@@ -372,7 +372,7 @@ s_attest_binder = HKDF-Expand-Label(s_attest_base, "attestation",
                                     TLS_Server_Public_Key, Hash.length)
 ~~~
 
-We note that despite the use of the `Derive-Secret` primitive, none of these values are secret.
+We note that despite the use of the `Derive-Secret` primitive, none of these values are secret. Similarly we do not call `HKDF-Extract` which would not be effective.
 
 ### Verification
 
@@ -384,6 +384,11 @@ attestation as invalid and abort the handshake.
 When a remote Verifier is used, the RP MUST compute the binder and convey it to the
 Verifier. The Verifier MUST verify that the conveyed binder is identical to the one that was signed
 in the Evidence or Attestation Results.
+
+<cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
+as a (new) conceptual message (CM) within a collection. This would provide
+the Verifier whatever information it cannot compute on its own, while
+not forcing the TLS stack to parse the Evidence.</cref>
 
 ### Security Properties
 
