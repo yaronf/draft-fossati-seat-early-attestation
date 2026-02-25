@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 18 August 2026                                     Y. Deshpande
+Expires: 29 August 2026                                     Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                        14 February 2026
+                                                        25 February 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 August 2026.
+   This Internet-Draft will expire on 29 August 2026.
 
 Copyright Notice
 
@@ -404,9 +404,9 @@ Table of Contents
    Section 4.4.1 and 7.1 of [I-D.ietf-tls-rfc8446bis].
 
  c_attest_base = Derive-Secret(0, "c attestation base",
-                               ClientHello...ServerHello)
+                               ClientHello...Server-Finished)
  s_attest_base = Derive-Secret(0, "s attestation base",
-                               ClientHello...ServerHello)
+                               ClientHello...EncryptedExtensions)
 
  c_attest_binder = HKDF-Expand-Label(c_attest_base, "attestation",
                                      TLS_Client_Public_Key, Hash.length)
@@ -414,7 +414,8 @@ Table of Contents
                                      TLS_Server_Public_Key, Hash.length)
 
    We note that despite the use of the Derive-Secret primitive, none of
-   these values are secret.
+   these values are secret.  Similarly we do not call HKDF-Extract which
+   would not be effective.
 
 5.1.2.  Verification
 
@@ -428,6 +429,13 @@ Table of Contents
    convey it to the Verifier.  The Verifier MUST verify that the
    conveyed binder is identical to the one that was signed in the
    Evidence or Attestation Results.
+
+
+   // TODO: define a way to transport the binder to a remote Verifier.
+   // Possibly as a (new) conceptual message (CM) within a collection.
+   // This would provide the Verifier whatever information it cannot
+   // compute on its own, while not forcing the TLS stack to parse the
+   // Evidence.
 
 5.1.3.  Security Properties
 
@@ -506,7 +514,44 @@ Table of Contents
    them to the TLS Identity public key and the TLS session.  TEE
    implementations differ, and some only allow a single user-provided
    challenge value to be added to the Evidence with no associated
-   checks.  Therefore we adopt a defense-in-depth approach:
+   checks.
+
+   Architecturally we propose to add a thin shim between the traditional
+   TLS stack and the TEE as shown in Figure 2.  Implementations will
+   choose whether to incorporate the shim into the TEE (making for a
+   "smarter" TEE and better protection for the remote attestation
+   protocol), or in case of a legacy TEE that cannot be modified, the
+   shim can be added to the TLS stack.
+
+   +----------------------------------------------------+  ------+
+   |                                                    |        |
+   |                     TLS Stack                      |        |
+   |                                                    |        |
+   +------+---------------------------------------------+        |
+          |                         ^                            |
+          | Transcript hash         | CMW (Signed                |
+          |                         |      Evidence/AR;          |
+          | TIK public key hash     |      Nonce)                |
+          v                         |                            |
+   +--------------------------------+-------------------+        |
+   |                                                    |   Measured &
+   |              Early Attestation Shim                |    Reported
+   |                                                    |   Components
+   +------+---------------------------------------------+        |
+          |                         ^                            |
+          | Nonce                   | Signed Evidence/AR         |
+          v                         |                            |
+   +--------------------------------+-------------------+        |
+   |                                                    |        |
+   |                        TEE                         |        |
+   | +-----------------+                                |        |
+   | | TIK Private Key |                                |        |
+   | +-----------------+                                |        |
+   +----------------------------------------------------+  ------+
+
+                 Figure 2: TLS Stack Interface with the TEE
+
+   We adopt a defense-in-depth approach:
 
    *  Separate attesting applications within the same TEE SHOULD NOT be
       capable of impersonating each other via Evidence or Attestation
@@ -527,6 +572,10 @@ Table of Contents
       Section 5.1, and, if it holds the TIK, SHOULD validate the public
       key.  The attestation secret can be generated by the TEE only if
       TLS is running inside the TEE.
+
+   *  As shown in the diagram, the TEE itself as well as the TLS stack
+      and the shim SHOULD all be measured and reported as part of the
+      platform's remote attestation.
 
 5.4.  Reattestation
 
@@ -623,7 +672,7 @@ Table of Contents
            }
        } evidenceProposalTypeExtension;
 
-              Figure 2: TLS Extension Structure for Evidence.
+              Figure 3: TLS Extension Structure for Evidence.
 
    Values for media_type are defined in [iana-media-types].  Values for
    content_format are defined in [iana-content-formats].
@@ -656,7 +705,7 @@ Table of Contents
            }
        } resultsProposalTypeExtension;
 
-         Figure 3: TLS Extension Structure for Attestation Results.
+         Figure 4: TLS Extension Structure for Attestation Results.
 
    In the Passport Model, Attestation Results are sent in an Attestation
    extension (see Section 4.1) containing a CMW structure.  The CMW
@@ -664,7 +713,7 @@ Table of Contents
 
 7.  TLS Client and Server Handshake Behavior
 
-   The high-level message exchange in Figure 4 shows the
+   The high-level message exchange in Figure 5 shows the
    evidence_proposal, evidence_request, results_proposal, and
    results_request extensions added to the ClientHello and the
    EncryptedExtensions messages.
@@ -701,7 +750,7 @@ Table of Contents
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
-                 Figure 4: Attestation Message Overview.
+                 Figure 5: Attestation Message Overview.
 
 7.1.  Background Check Model
 
