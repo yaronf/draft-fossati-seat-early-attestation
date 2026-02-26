@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 29 August 2026                                     Y. Deshpande
+Expires: 30 August 2026                                     Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                        25 February 2026
+                                                        26 February 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2026.
+   This Internet-Draft will expire on 30 August 2026.
 
 Copyright Notice
 
@@ -289,11 +289,11 @@ Table of Contents
    The attestation payload MUST contain assertions relating to the
    attester's TLS Identity Key (TIK-C for client attester, TIK-S for
    server attester), which associate the private key with the
-   attestation information.  The TEE's signature over the Evidence or
-   AttestationResults within the CMW MUST include an attestation binder
-   derived from the message transcript up to ServerHello (see
-   Section 5.1) and the attester's TLS identity public key, as specified
-   in Section 4.1.
+   attestation information.  The TEE's signature over the Evidence, or
+   the Verifier's signature over AttestationResults within the CMW MUST
+   include an attestation binder derived from the message transcript up
+   to ServerHello (see Section 5.1) and the attester's TLS identity
+   public key, as specified in Section 4.1.
 
    The relying party can obtain and appraise the remote Attestation
    Results either directly from the Attestation extension (in the
