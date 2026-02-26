@@ -193,7 +193,7 @@ TIK-C-ID, TIK-S-ID:
 (cryptographic hash) of the public key, but other implementations are possible.
 
 Attestation binder:
-: A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness.
+: A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.
 
 <!-- -->
 
