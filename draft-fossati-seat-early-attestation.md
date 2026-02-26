@@ -257,7 +257,7 @@ Attestation Results encoded according to {{-cmw}}.
 The attestation payload MUST contain assertions relating to the attester's TLS
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
-over the Evidence or AttestationResults within the CMW MUST include an attestation binder derived
+over the Evidence, or the Verifier's signature over AttestationResults within the CMW MUST include an attestation binder derived
 from the message transcript up to ServerHello (see {{crypto-ops}})
 and the attester's TLS identity public key, as specified in {{attestation-extension-section}}.
 
