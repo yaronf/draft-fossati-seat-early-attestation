@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-24T01:58:35.643342+00:00",
+  "timestamp": "2026-02-26T01:56:36.432680+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -642,7 +642,7 @@
       "id": "I_kwDOQdsaoc7og0pH",
       "title": "Add a diagram for the API between TLS stack and TEE (split implementation)",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/41",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
@@ -651,8 +651,8 @@
       ],
       "body": "```text\n+----------------------------------------------------+      \n|                       TLS Stack                    |      \n|                                                    |      \n|                                                    |      \n+------|---------------------------------------------+      \n       |                         ^                          \n       | Nonce                   |                          \n       |                         |                          \n       | Transcript hash         | CMW (signed              \n       |                         |      Evidence/AR)        \n       | TIK public key hash     |                          \n       v                         |                          \n+--------------------------------|-------------------+      \n|                          TEE                       |      \n|                                                    |      \n|+-----------------+                                 |      \n|| TIK Private Key |                                 |      \n|+-----------------+                                 |      \n+----------------------------------------------------+      \n```",
       "createdAt": "2026-02-05T10:47:50Z",
-      "updatedAt": "2026-02-11T09:06:19Z",
-      "closedAt": null,
+      "updatedAt": "2026-02-25T19:13:13Z",
+      "closedAt": "2026-02-25T19:13:13Z",
       "comments": [
         {
           "author": "yaronf",
@@ -3302,13 +3302,13 @@
       "labels": [],
       "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
       "createdAt": "2026-02-14T21:04:39Z",
-      "updatedAt": "2026-02-23T07:31:09Z",
+      "updatedAt": "2026-02-25T22:40:19Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
+      "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-45",
-      "headRefOid": "fde16404e32497f461e2d6985c2c434d2fa7ee28",
+      "headRefOid": "bdd152723a130b8c60930c58345f3c09ff17b07f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -3466,6 +3466,110 @@
               "updatedAt": "2026-02-23T07:31:10Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7lpCXG",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-25T08:49:10Z",
+          "updatedAt": "2026-02-25T08:49:10Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "Suggest to add a comment about not calling hkdf-extract.",
+              "createdAt": "2026-02-25T08:49:10Z",
+              "updatedAt": "2026-02-25T08:49:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7lpIUB",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-25T08:53:44Z",
+          "updatedAt": "2026-02-25T08:53:44Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "Agree we should follow the practice of CV context, despite the added complexity.",
+              "createdAt": "2026-02-25T08:53:44Z",
+              "updatedAt": "2026-02-25T08:53:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7l4Tfo",
+          "commit": {
+            "abbreviatedOid": "fde1640"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-25T20:25:36Z",
+          "updatedAt": "2026-02-25T20:25:36Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "@tireddy2 I ended up extending the transcript hash for both client and server, but with less complexity than the CV context. We can always change it if people feel strongly about it.",
+              "createdAt": "2026-02-25T20:25:36Z",
+              "updatedAt": "2026-02-25T20:25:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7l6Zla",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thank you! Looks good, left a few comments about some clarifications.",
+          "createdAt": "2026-02-25T22:15:08Z",
+          "updatedAt": "2026-02-25T22:40:19Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Slight consistency gap here, suggested change below.\n```suggestion\nassociate the private key with the attestation information. The TEE's signature\nover the Evidence, or the Verifier's signature over AttestationResults within the CMW MUST include an attestation binder derived\n```\nI'm also happy for variations on this, just wanted to clarify that for passport model there's no TEE signature.",
+              "createdAt": "2026-02-25T22:15:08Z",
+              "updatedAt": "2026-02-25T22:40:19Z"
+            },
+            {
+              "originalPosition": 126,
+              "body": "Guessing this is resolved by the other thread above?",
+              "createdAt": "2026-02-25T22:27:23Z",
+              "updatedAt": "2026-02-25T22:40:19Z"
+            },
+            {
+              "originalPosition": 136,
+              "body": "How does \"MUST\" work in situations like these, where you have two potential branches - this paragraph, or the next one, as alternatives? What I mean is, if the RP lets the verifier check the binder, then this isn't a MUST. Do we need to clarify that this is only when the whole appraisal is done at the RP side?",
+              "createdAt": "2026-02-25T22:30:04Z",
+              "updatedAt": "2026-02-25T22:40:19Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "Just a note: in our (now very old) prototype we basically had the CMW as one parameter in the REST call, and the binder as another param.",
+              "createdAt": "2026-02-25T22:31:08Z",
+              "updatedAt": "2026-02-25T22:40:19Z"
+            },
+            {
+              "originalPosition": 168,
+              "body": "`correct TEE` sounds vague to me. Do you mean that the TEE's identity is known / accepted, or that its state is acceptable? The following sentence seems to cover the latter, so I guess you mean the former here?",
+              "createdAt": "2026-02-25T22:38:04Z",
+              "updatedAt": "2026-02-25T22:40:19Z"
+            }
+          ]
         }
       ]
     },
@@ -3474,24 +3578,26 @@
       "id": "PR_kwDOQdsaoc7EC8SS",
       "title": "Add architecture diagram for TEE interface",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/47",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "## Summary\r\n\r\n- Add architecture diagram showing TLS stack, Early Attestation Shim, and TEE layers\r\n- Clarify the role of the shim between TLS and TEE\r\n- Show data flows: transcript hash, TIK public key hash, nonce, and signed Evidence/AR\r\n- Explain shim can be in TEE (better protection) or TLS stack (legacy TEE support)\r\n\r\nCloses #41",
       "createdAt": "2026-02-16T09:23:22Z",
-      "updatedAt": "2026-02-23T20:15:48Z",
+      "updatedAt": "2026-02-25T19:13:12Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6e61f5fb6a8212173c05e7d007eddfeade95a340",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-41",
-      "headRefOid": "4d284b37a8d7168f522d05f153d16ceedd215f3d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "75a6476968f4f4b7a4091c6314aed5bd91ab4b44",
+      "closedAt": "2026-02-25T19:13:12Z",
+      "mergedAt": "2026-02-25T19:13:12Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "350ed8c957f699c5ded84dbfe9da3efd7f025384"
+      },
       "comments": [],
       "reviews": [
         {
@@ -3659,8 +3765,54 @@
               "updatedAt": "2026-02-23T20:15:48Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7lNefa",
+          "commit": {
+            "abbreviatedOid": "4d284b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-24T06:42:30Z",
+          "updatedAt": "2026-02-24T06:42:30Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "> I'd be happy to hear more from @thomas-fossati about access control.\r\n> \r\n> Agree about measurements, and this is actually shown in the diagram that this PR adds - see the right-hand part about \"measured and reported components\".\r\n\r\nYes, we discussed it would be helpful to add text as well about it. ",
+              "createdAt": "2026-02-24T06:42:30Z",
+              "updatedAt": "2026-02-24T06:42:30Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 48,
+      "id": "PR_kwDOQdsaoc7GWGg0",
+      "title": "Add document history for -03",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/48",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-02-25T20:44:10Z",
+      "updatedAt": "2026-02-25T20:44:10Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-pre-03",
+      "headRefOid": "68fe497aec198a8328574c99c9d096070830dd2a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
