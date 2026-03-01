@@ -887,6 +887,15 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
+## draft-fossati-seat-early-attestation-03
+* Replace the Attestation message by an Attestation (certificate) extension,
+to bring this protocol within the requirements of the SEAT charter.
+* Define the attestation binder and decouple it from the TLS key schedule.
+* List multiple design options for reattestation.
+* Add architecture diagram for TLS stack interface with the TEE.
+* Add defense-in-depth guidance for measuring TEE, TLS stack, and shim.
+* Remove various outdated sections.
+
 ## draft-fossati-seat-early-attestation-02
 
 * Fix typo in key schedule. Clarify (again) that this is only adding to the schedule, not modifying any existing key derivations.
