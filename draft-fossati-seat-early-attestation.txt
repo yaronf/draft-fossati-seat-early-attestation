@@ -129,9 +129,10 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-02
-     A.2.  draft-fossati-seat-early-attestation-01
-     A.3.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-03
+     A.2.  draft-fossati-seat-early-attestation-02
+     A.3.  draft-fossati-seat-early-attestation-01
+     A.4.  draft-fossati-seat-early-attestation-00
    Authors' Addresses
 
 1.  Introduction
@@ -1201,17 +1202,35 @@ Table of Contents
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-02
+A.1.  draft-fossati-seat-early-attestation-03
+
+   *  Replace the Attestation message by an Attestation (certificate)
+      extension, to bring this protocol within the requirements of the
+      SEAT charter.
+
+   *  Define the attestation binder and decouple it from the TLS key
+      schedule.
+
+   *  List multiple design options for reattestation.
+
+   *  Add architecture diagram for TLS stack interface with the TEE.
+
+   *  Add defense-in-depth guidance for measuring TEE, TLS stack, and
+      shim.
+
+   *  Remove various outdated sections.
+
+A.2.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.2.  draft-fossati-seat-early-attestation-01
+A.3.  draft-fossati-seat-early-attestation-01
 
    (Submitted by mistake.)
 
-A.3.  draft-fossati-seat-early-attestation-00
+A.4.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
