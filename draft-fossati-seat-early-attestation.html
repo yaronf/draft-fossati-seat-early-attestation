@@ -1056,11 +1056,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Attestation in TLS/DTLS</td>
-<td class="right">February 2026</td>
+<td class="right">March 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 29 August 2026</td>
+<td class="center">Expires 2 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1073,12 +1073,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-25" class="published">25 February 2026</time>
+<time datetime="2026-03-01" class="published">1 March 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-29">29 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-09-02">2 September 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1149,7 +1149,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1230,7 +1230,13 @@ These extensions have been designed to allow the peers to use any attestation te
                 <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-reattestation" class="internal xref">Reattestation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
-                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-design-options" class="internal xref">Design Options</a></p>
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-option-1-carrying-attestati" class="internal xref">Option 1: Carrying Attestation in Extended Key Update</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.2">
+                    <p id="section-toc.1-1.5.2.4.2.2.1"><a href="#section-5.4.2" class="auto internal xref">5.4.2</a>.  <a href="#name-option-2-no-reattestation-r" class="internal xref">Option 2: No Reattestation (Reconnect for Freshness)</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.3">
+                    <p id="section-toc.1-1.5.2.4.2.3.1"><a href="#section-5.4.3" class="auto internal xref">5.4.3</a>.  <a href="#name-option-3-post-handshake-rea" class="internal xref">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a></p>
 </li>
                 </ul>
 </li>
@@ -1396,7 +1402,7 @@ protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the
         <dd class="break"></dd>
 <dt id="section-2-3.7">Attestation binder:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.8">
-          <p id="section-2-3.8.1">A cryptographic nonce value provided by the TLS stack to the TEE, used to bind attestation Evidence or to a specific TLS handshake and to provide freshness. In this specification, the attestation binder is the TLS handshake transcript hash from ClientHello to ServerHello (inclusive).<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.8.1">A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1441,11 +1447,12 @@ minimal impact on the existing TLS security properties. The changes consist of:<
             <p id="section-3.2-2.1.1">Negotiation extensions: New TLS extensions are added to ClientHello and
 EncryptedExtensions messages to negotiate the use of attestation and indicate
 supported attestation formats and verifiers. A new <code>Attestation</code> extension is
-introduced that carries attestation Evidence or Attestation Results.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
+introduced to the Certificate message. This extension carries attestation Evidence
+or Attestation Results.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1">Independent key derivation: Key derivation for attestation (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) ensures independence of the
-regular TLS key schedule. As a result, attestation processing does not affect the standard TLS key derivation and security properties.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-2.2.1">Independent key derivation: Binder derivation for attestation (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) is completely independent of the
+regular TLS key schedule. Attestation processing does not affect the standard TLS key derivation and security properties.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.2-3">This minimal integration approach provides an intuitive explanation of why the
@@ -1465,42 +1472,38 @@ security properties is still required.<a href="#section-3.2-3" class="pilcrow">�
 <p id="section-4-1">As typical with new features in TLS, the client indicates support for the new
 extension in the ClientHello message. The newly introduced extensions allow
 attestation Evidence or Attestation Results to be exchanged. Freshness of the
-exchanged Evidence is guaranteed through secret derivation from the TLS main
-secret and message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) when the Background Check
+exchanged Evidence is guaranteed through an Attestation Binder mechanism (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+when the Background Check
 Model is in use. In the Passport Model, freshness expectations are more relaxed
 and are governed by the lifetime of the signed Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">When either the Evidence or the Attestation Results extension is successfully
 negotiated, attestation Evidence or Attestation Results are conveyed in an
 <code>attestation</code> extension (see <a href="#attestation-extension-section" class="auto internal xref">Section 4.1</a>). The
-CMW payload in the Attestation message contains the attestation Evidence or
+CMW payload in the Attestation extension contains the attestation Evidence or
 Attestation Results encoded according to <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">The attestation payload <span class="bcp14">MUST</span> contain assertions relating to the attester's TLS
 Identity Key (TIK-C for client attester, TIK-S for server attester), which
 associate the private key with the attestation information. The TEE's signature
-over the Evidence or AttestationResults within the CMW <span class="bcp14">MUST</span> include an attestation binder derived
-from the TLS handshake secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+over the Evidence, or the Verifier's signature over AttestationResults within the CMW <span class="bcp14">MUST</span> include an attestation binder derived
+from the message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
 and the attester's TLS identity public key, as specified in <a href="#attestation-extension-section" class="auto internal xref">Section 4.1</a>.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The relying party can obtain and appraise the remote Attestation Results either
-directly from the Attestation message (in the Passport Model), or by relaying
-the Evidence from the Attestation message to the Verifier and receiving the
-Attestation Results. Subsequently, the attested key is used to verify the
-CertificateVerify message, which remains unchanged from baseline TLS.<a href="#section-4-4" class="pilcrow">¶</a></p>
+directly from the Attestation extension (in the Passport Model), or by relaying
+the Evidence from the Attestation extension to the Verifier and receiving the
+Attestation Results. Subsequent verification of possession of the attested key in the
+CertificateVerify message remains unchanged from baseline TLS.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <p id="section-4-5">When using the Passport Model, the remote Attestation Results obtained by the
-attester from its trusted Verifiers can be cached and used for any number of
+attester from its trusted Verifier can be cached and used for any number of
 subsequent TLS handshakes, as long as the freshness policy requirements are
 satisfied.<a href="#section-4-5" class="pilcrow">¶</a></p>
-<p id="section-4-6">In TLS a client has to demonstrate possession of the private key via the
-CertificateVerify message, when client-based authentication is requested.
-This behavior remains unchanged in the current protocol, with the CertificateVerify
-message proving possession of the TIK.<a href="#section-4-6" class="pilcrow">¶</a></p>
-<p id="section-4-7">This protocol supports both monolithic and split implementations. In a monolithic
+<p id="section-4-6">This protocol supports both monolithic and split implementations. In a monolithic
 implementation, the TLS stack is completely embedded within the TEE. In a split
 implementation, the TLS stack is located outside the TEE, but any private keys
 (and in particular, the TIK) only exist within the TEE. In order to support
 both options, only the TIK's identity, its public component and a short generated binder are ever
 passed between the Client or Server TLS stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
-their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 8.1</a> for more details.<a href="#section-4-7" class="pilcrow">¶</a></p>
+their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 8.1</a> for more details.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div id="attestation-extension-section">
 <section id="section-4.1">
         <h3 id="name-attestation-extension">
@@ -1537,19 +1540,13 @@ which serialization to use.<a href="#section-4.1-8" class="pilcrow">¶</a></p>
 <p id="section-4.1-9">The CMW payload <span class="bcp14">MUST</span> contain attestation Evidence (in Background Check Model)
 or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
 to the platform and workload state. The TEE's signature over the Evidence or
-AttestationResults within the CMW <span class="bcp14">MUST</span> include:<a href="#section-4.1-9" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.1-10.1">
-            <p id="section-4.1-10.1.1">A binder ensuring that the attestation is associated with this particular TLS connection, as defined in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>,
-ensuring freshness of the attestation.<a href="#section-4.1-10.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.1-10.2">
-            <p id="section-4.1-10.2.1">The attester's TLS identity public key (TIK-C for client attester, TIK-S for
-server attester)<a href="#section-4.1-10.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-4.1-11">This binding ensures that the attested key is the one used in the TLS handshake
-and provides freshness guarantees through secret derivation. See <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> for details.<a href="#section-4.1-11" class="pilcrow">¶</a></p>
+AttestationResults within the CMW <span class="bcp14">MUST</span> include a binder ensuring that the attestation is associated with
+this particular TLS connection,
+as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for
+server attester).<a href="#section-4.1-9" class="pilcrow">¶</a></p>
+<p id="section-4.1-10">This binding ensures that the attested key is the one used in the TLS handshake
+and provides freshness guarantees through derivation from both peers' randomness.
+See <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> for details.<a href="#section-4.1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1559,7 +1556,7 @@ and provides freshness guarantees through secret derivation. See <a href="#crypt
       <h2 id="name-use-of-attestation-in-the-t">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-use-of-attestation-in-the-t" class="section-name selfRef">Use of Attestation in the TLS Handshake</a>
       </h2>
-<p id="section-5-1">For both the Passport Model (described in section 5.1 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) and
+<p id="section-5-1">For both the Passport Model (described in Section 5.1 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) and
 Background Check Model (described in Section 5.2 of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>) the following
 modes of operation are allowed when used with TLS, namely:<a href="#section-5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1573,44 +1570,46 @@ modes of operation are allowed when used with TLS, namely:<a href="#section-5-1"
           <p id="section-5-2.3.1">TLS client and server mutually attest towards each other.<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-5-3">We will show the message exchanges of the first two cases in sub-sections below.
-Mutual authentication via attestation combines these two (non-interfering)
-flows, including cases where one of the peers uses the Passport Model for its
-attestation, and the other uses the Background Check Model.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-3">As noted, each peer's attestation is carried in the <code>Attestation</code> extension within
+that peer's Certificate message. This section describes how the attestation
+is produced, bound to the TLS handshake and verified by the recipient.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div id="crypto-ops">
 <section id="section-5.1">
         <h3 id="name-cryptographic-operations">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-cryptographic-operations" class="section-name selfRef">Cryptographic Operations</a>
         </h3>
-<p id="section-5.1-1">The cryptographic operation defined in this section bind attestation Evidence
+<p id="section-5.1-1">The cryptographic operations defined in this section bind attestation Evidence
 to a specific TLS handshake. This binding prevents replay and relay of attestation
 Evidence across different TLS connections, and ensures that attestation Evidence
 presented during a handshake corresponds to the authenticated
 TLS session in which it is conveyed.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">The attestation Evidence or Attestation Results are generated by a TEE and
-signed using an attestation key. The signed evidence includes
+signed using an attestation key. The signed Evidence includes
 inputs originating from different trust domains.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.1-3.1">
-            <p id="section-5.1-3.1.1">The attestation binder is provided by the TLS stack and serves as a
-nonce that ensures freshness and binding to a specific TLS handshake.<a href="#section-5.1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-5.1-3.2">
-            <p id="section-5.1-3.2.1">The TLS Identity Key (TIK) binding claim, such as a hash of the TIK public
-key, is generated by the TEE itself and ensures that the attested environment
-controls the TIK private key used for TLS authentication.<a href="#section-5.1-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-5.1-3">The attestation binder is provided by the TLS stack and serves as a
+nonce that ensures freshness and binding to a specific TLS handshake,
+as well as binding to the attester's TLS public key.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <div id="attestation-binder-definition">
 <section id="section-5.1.1">
           <h4 id="name-attestation-binder-definiti">
 <a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-attestation-binder-definiti" class="section-name selfRef">Attestation Binder Definition</a>
           </h4>
-<p id="section-5.1.1-1">The attestation binder <span class="bcp14">MUST</span> be the TLS handshake transcript hash covering
-messages from <code>ClientHello</code> to <code>ServerHello</code> (inclusive), computed as
-defined in Section 4.4.1 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-2">The transcript hash uniquely identifies a TLS key exchange and is computed using
-the hash function associated with the negotiated TLS cipher suite.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-1">The attestation binder is computed using primitives
+defined in Section 4.4.1 and 7.1 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.1-2">
+<pre>
+c_attest_base = Derive-Secret(0, "c attestation base",
+                              ClientHello...Server-Finished)
+s_attest_base = Derive-Secret(0, "s attestation base",
+                              ClientHello...EncryptedExtensions)
+
+c_attest_binder = HKDF-Expand-Label(c_attest_base, "attestation",
+                                    TLS_Client_Public_Key, Hash.length)
+s_attest_binder = HKDF-Expand-Label(s_attest_base, "attestation",
+                                    TLS_Server_Public_Key, Hash.length)
+</pre><a href="#section-5.1.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.1.1-3">We note that despite the use of the <code>Derive-Secret</code> primitive, none of these values are secret. Similarly we do not call <code>HKDF-Extract</code> which would not be effective.<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="verification">
@@ -1618,11 +1617,26 @@ the hash function associated with the negotiated TLS cipher suite.<a href="#sect
           <h4 id="name-verification">
 <a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
           </h4>
-<p id="section-5.1.2-1">Upon receipt of an <code>attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the TLS
-handshake transcript hash over messages from <code>ClientHello</code> to
-<code>ServerHello</code> and compare it to the attestation binder included in the
-attestation. If the values do not match, the peer <span class="bcp14">MUST</span> treat the
-attestation as invalid and abort the handshake.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-1">Upon receipt of an <code>attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the attestation binder.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-2">Depending on the architecture (see also <a href="#stack-tee-interface" class="auto internal xref">Section 5.3</a>), either the peer verifies
+the binding or else it delegates this responsibility to an external Verifier.<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.1.2-3.1">
+              <p id="section-5.1.2-3.1.1">In the former case, the peer <span class="bcp14">MUST</span> compare the computed binder value to the attestation binder
+included in the
+signed Evidence or signed Attestation Results. If the values do not match, the peer <span class="bcp14">MUST</span> treat the
+attestation as invalid and abort the handshake.<a href="#section-5.1.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-5.1.2-3.2">
+              <p id="section-5.1.2-3.2.1">In the latter case, the RP <span class="bcp14">MUST</span> convey the binder to the
+Verifier. The Verifier <span class="bcp14">MUST</span> verify that the conveyed binder is identical to the one that was signed
+in the Evidence or Attestation Results.<a href="#section-5.1.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-5.1.2-4"><span class="cref">TODO: define a way to transport the binder to a remote Verifier. Possibly
+as a (new) conceptual message (CM) within a collection. This would provide
+the Verifier whatever information it cannot compute on its own, while
+not forcing the TLS stack to parse the Evidence.</span><a href="#section-5.1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-properties">
@@ -1640,21 +1654,18 @@ reused in a later handshake.<a href="#section-5.1.3-2.1.1" class="pilcrow">¶</a
             <li class="normal" id="section-5.1.3-2.2">
               <p id="section-5.1.3-2.2.1">Relay protection: Evidence obtained from one TLS connection cannot be
 successfully presented in a different TLS connection, even in the presence of
-an MiTM attacker.<a href="#section-5.1.3-2.2.1" class="pilcrow">¶</a></p>
+a MiTM attacker.<a href="#section-5.1.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-5.1.3-3">In typical deployments where the TLS handshake executes outside the TEE, a
 compromised host can execute the TLS handshake in the rich operating system and
 use the TEE as a signing oracle by presenting the attestation binder value to
 obtain valid-looking attestation Evidence.<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-4">Unless the TLS protocol explicitly requires the TEE to generate or directly
-participate in the ephemeral key exchange, the use of TLS key schedule derived
-values to generate the attestation binder does not prove that the TEE was
-involved in ephemeral key establishment. Accordingly, this specification does
-not rely on TLS key schedule secrets (e.g., the Handshake Secret) to assert TEE
-participation in the TLS handshake. Instead, it relies on binding attestation
-Evidence to the TLS handshake transcript for channel binding, and on appraisal of
-that Evidence by a Verifier, as defined in the RATS architecture.<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-4">However an endorsed TEE (one that is operating as required by this protocol)
+is required to verify the binder against the TLS public key associated
+with the private key that it holds. This verification, in conjunction with the TEE's
+endorsement being verified, ensures that relay attacks are prevented.<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-5">An active MiTM attacker cannot mount a successful attack because the attestation binder is derived from the TLS handshake transcript, including encrypted handshake messages that are not visible to eavesdroppers. An active attacker also cannot replay or relay attestation Evidence across TLS connections, since the attestation binder is bound to the specific TLS handshake transcript and the TLS identity key. Any attempt to reuse valid Evidence in a different TLS connection results in a binder mismatch and verification failure.<a href="#section-5.1.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1666,7 +1677,7 @@ that Evidence by a Verifier, as defined in the RATS architecture.<a href="#secti
         </h3>
 <p id="section-5.2-1">This specification assumes that the TIK private key corresponding to the end-entity certificate used in the TLS handshake is generated inside a TEE and never leaves it. A platform could instead generate the TIK private key outside the TEE and compute the CertificateVerify signature using that external key. A relying party cannot detect this attack unless additional safeguards are in place.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">This risk is particularly relevant in split deployments, where the TLS stack does not reside inside the TEE. In such architectures, attesting the TEE alone does not prove that the TIK private key used by the TLS endpoint was generated, is stored, or is controlled by the TEE.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">To address this, the Evidence <span class="bcp14">MUST</span> include the hash of the TIK public key (TIK_pub_hash). The TIK public key <span class="bcp14">MUST</span> be hashed using the hash algorithm associated with the negotiated TLS cipher suite for the TLS connection in which the Evidence is conveyed.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">To address this, the signed Evidence <span class="bcp14">MUST</span> include an Attestation Binder generated using the hash of the TIK public key (TIK_pub_hash) (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">The Relying Party <span class="bcp14">MUST</span> compute the hash of the TIK public key extracted from the TLS end-entity certificate using
 the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
 verification binds the attestation Evidence to the TLS identity used for authentication. This verification is performed by the Relying Party, as the Verifier may not be co-located with the Relying Party and may not have access to the TLS handshake or the TLS end-entity certificate, consistent with the RATS architecture.
@@ -1678,10 +1689,11 @@ inside a TEE and relay that Evidence to the relying party while executing the TL
 Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.2-6">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not attempt to protect the confidentiality of the TLS main secret in split deployments, where the TLS stack executes in the rich OS and remains susceptible to compromise.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not - in and of itself - ensure security of the TLS stack when the stack is
+outside the TEE, and see <a href="#sec-guarantees" class="auto internal xref">Section 8.1</a> for a further discussion.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="the-tls-stacks-interface-to-the-tee">
+<div id="stack-tee-interface">
 <section id="section-5.3">
         <h3 id="name-the-tls-stacks-interface-to">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-the-tls-stacks-interface-to" class="section-name selfRef">The TLS Stack's Interface to the TEE</a>
@@ -1784,38 +1796,32 @@ all be measured and reported as part of the platform's remote attestation.<a hre
         <h3 id="name-reattestation">
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-reattestation" class="section-name selfRef">Reattestation</a>
         </h3>
-<p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state. This section discusses design options for handling attestation freshness.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<div id="design-options">
-<section id="section-5.4.1">
-          <h4 id="name-design-options">
-<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-design-options" class="section-name selfRef">Design Options</a>
-          </h4>
+<p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-2">This section discusses design options for handling attestation freshness.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <div id="option-1-carrying-attestation-in-extended-key-update">
-<section id="section-5.4.1.1">
-            <h5 id="name-option-1-carrying-attestati">
-<a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-option-1-carrying-attestati" class="section-name selfRef">Option 1: Carrying Attestation in Extended Key Update</a>
-            </h5>
-<p id="section-5.4.1.1-1">One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new <code>ExtendedKeyUpdate</code> message subtype to carry attestation Evidence or Attestation Results.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.1-2">However, this approach tightly couples attestation to EKU, even though the two serve different purposes.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
+<section id="section-5.4.1">
+          <h4 id="name-option-1-carrying-attestati">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-option-1-carrying-attestati" class="section-name selfRef">Option 1: Carrying Attestation in Extended Key Update</a>
+          </h4>
+<p id="section-5.4.1-1">One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new <code>ExtendedKeyUpdate</code> message subtype to carry attestation Evidence or Attestation Results.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-2">However, this approach tightly couples attestation to EKU, even though the two serve different purposes.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-2-no-reattestation-reconnect-for-freshness">
-<section id="section-5.4.1.2">
-            <h5 id="name-option-2-no-reattestation-r">
-<a href="#section-5.4.1.2" class="section-number selfRef">5.4.1.2. </a><a href="#name-option-2-no-reattestation-r" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
-            </h5>
-<p id="section-5.4.1.2-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
+<section id="section-5.4.2">
+          <h4 id="name-option-2-no-reattestation-r">
+<a href="#section-5.4.2" class="section-number selfRef">5.4.2. </a><a href="#name-option-2-no-reattestation-r" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
+          </h4>
+<p id="section-5.4.2-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.<a href="#section-5.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.2-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-3-post-handshake-reattestation-using-certificateupdate">
-<section id="section-5.4.1.3">
-            <h5 id="name-option-3-post-handshake-rea">
-<a href="#section-5.4.1.3" class="section-number selfRef">5.4.1.3. </a><a href="#name-option-3-post-handshake-rea" class="section-name selfRef">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a>
-            </h5>
-<p id="section-5.4.1.3-1">In this design, reattestation is supported using the <code>CertificateUpdate</code> message defined in <span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>. Under this approach, the attester sends a <code>CertificateUpdate</code> message carrying a new <code>Certificate</code> message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+<section id="section-5.4.3">
+          <h4 id="name-option-3-post-handshake-rea">
+<a href="#section-5.4.3" class="section-number selfRef">5.4.3. </a><a href="#name-option-3-post-handshake-rea" class="section-name selfRef">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a>
+          </h4>
+<p id="section-5.4.3-1">In this design, reattestation is supported using the <code>CertificateUpdate</code> message defined in <span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>. Under this approach, the attester sends a <code>CertificateUpdate</code> message carrying a new <code>Certificate</code> message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.<a href="#section-5.4.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1943,7 +1949,7 @@ is defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.iet
 <p id="section-7-1">The high-level message exchange in <a href="#_figure-overview" class="auto internal xref">Figure 5</a> shows the
 evidence_proposal, evidence_request, results_proposal, and results_request
 extensions added to the ClientHello and the EncryptedExtensions messages.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<span id="name-attestation-message-overvie"></span><div id="_figure-overview">
+<span id="name-early-attestation-handshake"></span><div id="_figure-overview">
 <figure id="figure-5">
         <div class="alignLeft art-text artwork" id="section-7-2.1">
 <pre>
@@ -1981,7 +1987,7 @@ Auth | {CertificateVerify*}
 </pre>
 </div>
 <figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
-<a href="#name-attestation-message-overvie" class="selfRef">Attestation Message Overview.</a>
+<a href="#name-early-attestation-handshake" class="selfRef">Early Attestation Handshake Overview</a>
         </figcaption></figure>
 </div>
 <div id="background-check-model">
@@ -2054,9 +2060,8 @@ evidence_proposal extension in the EncryptedExtensions. This
 evidence_proposal extension in the EncryptedExtensions then indicates
 what Evidence format the client is requested to provide in an
 <code>Attestation</code> extension in the <code>Certificate</code> message.
-The Evidence contained in the CMW payload <span class="bcp14">MUST</span> include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
-in the TEE's signature, along with the client's TLS identity public key (TIK-C).
+The signed Evidence contained in the CMW payload <span class="bcp14">MUST</span> include an Attestation Binder as a nonce value (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+in the TEE's signature.
 The value conveyed in the evidence_proposal extension by the server <span class="bcp14">MUST</span> be
 selected from one of the values provided in the evidence_proposal extension
 sent in the ClientHello.<a href="#section-7.1.2-3" class="pilcrow">¶</a></p>
@@ -2070,11 +2075,8 @@ types of Evidence the client can challenge the server to return
 in an <code>Attestation</code> extension. With the evidence_request
 extension in the EncryptedExtensions, the server indicates the
 Evidence type carried in the <code>Attestation</code> extension sent
-after the CertificateVerify by the server. The Evidence
-contained in the CMW payload <span class="bcp14">MUST</span> include a binder derived from
-the TLS handshake secret and the message transcript up to ServerHello (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
-in the TEE's signature, along with
-the server's TLS identity public key (TIK-S).
+after the CertificateVerify by the server. The signed Evidence contained in the CMW payload <span class="bcp14">MUST</span> include an Attestation Binder as a nonce value (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
+in the TEE's signature.
 The Evidence type in the evidence_request extension <span class="bcp14">MUST</span> contain
 a single value selected from the evidence_request extension in
 the ClientHello.<a href="#section-7.1.2-5" class="pilcrow">¶</a></p>
@@ -2204,8 +2206,8 @@ and the overall security level depends on their existence and quality of assuran
         <h3 id="name-freshness-guarantees">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-freshness-guarantees" class="section-name selfRef">Freshness Guarantees</a>
         </h3>
-<p id="section-8.2-1"><span class="cref"> TODO: Discuss freshness guarantees provided by secret derivation from
-the TLS handshake secret and message transcript. Differences between Background Check and Passport mode.
+<p id="section-8.2-1"><span class="cref"> TODO: Discuss freshness guarantees provided by the Attestation Binder.
+Differences between Background Check and Passport mode.
 </span><a href="#section-8.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
