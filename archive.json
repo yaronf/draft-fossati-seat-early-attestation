@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-26T01:56:36.432680+00:00",
+  "timestamp": "2026-03-01T02:07:57.165907+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -3302,13 +3302,13 @@
       "labels": [],
       "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
       "createdAt": "2026-02-14T21:04:39Z",
-      "updatedAt": "2026-02-25T22:40:19Z",
+      "updatedAt": "2026-02-27T06:25:13Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-45",
-      "headRefOid": "bdd152723a130b8c60930c58345f3c09ff17b07f",
+      "headRefOid": "6c5cd0e760dd5797d5483e3cf226bdab0a1c32e2",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -3570,6 +3570,230 @@
               "updatedAt": "2026-02-25T22:40:19Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7l_KMM",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T05:26:25Z",
+          "updatedAt": "2026-02-26T05:26:25Z",
+          "comments": [
+            {
+              "originalPosition": 126,
+              "body": "Yes.",
+              "createdAt": "2026-02-26T05:26:25Z",
+              "updatedAt": "2026-02-26T05:26:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7l_K0L",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T05:27:27Z",
+          "updatedAt": "2026-02-26T05:27:27Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "Thanks Yaron, update to this section looks good to me. ",
+              "createdAt": "2026-02-26T05:27:27Z",
+              "updatedAt": "2026-02-26T05:27:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7l_Ly_",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T05:28:46Z",
+          "updatedAt": "2026-02-26T05:28:51Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "Do we want to say that that only part of the handshake transcript used in the computation of s_attest_base and c_attest_base is visible to eavesdroppers ? \r\n\r\nI suggest adding following text:\r\n\r\nAn attacker cannot mount a successful attack because the attestation binder is derived from the TLS handshake transcript, including encrypted handshake messages that are not visible to eavesdroppers. An attacker also cannot replay or relay attestation Evidence across TLS connections, since the attestation binder is bound to the specific TLS handshake transcript and the TLS identity key. Any attempt to reuse valid Evidence in a different TLS connection results in a binder mismatch and verification failure.",
+              "createdAt": "2026-02-26T05:28:46Z",
+              "updatedAt": "2026-02-26T05:57:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mEbKL",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T10:16:25Z",
+          "updatedAt": "2026-02-26T10:40:47Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "There\u2019s a spurious \u201cto\u201d in the sentence?\n```suggestion\n: A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.\n```",
+              "createdAt": "2026-02-26T10:16:25Z",
+              "updatedAt": "2026-02-26T10:40:47Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "Personally, I am happy with this, but the suggested change has quite drastic ramifications: it kills passports as reusable attestation credentials, which is somehow their key selling point.",
+              "createdAt": "2026-02-26T10:23:22Z",
+              "updatedAt": "2026-02-26T10:40:47Z"
+            },
+            {
+              "originalPosition": 81,
+              "body": "OK, I agree.  This way, the attestation credentials are treated uniformly and there is symmetry between the topological modes, which is obviously a great simplification.  (The reduction in features that this brings should probably be highlighted somewhere, so that people are not taken by surprise.)\n\nThe comment I made in https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/46/changes#r2855782404 is no longer relevant.\n",
+              "createdAt": "2026-02-26T10:29:26Z",
+              "updatedAt": "2026-02-26T10:40:47Z"
+            },
+            {
+              "originalPosition": 17,
+              "body": "> [..] An attacker cannot mount a successful attack \n\nTiru, which attack are you referring to here?\n\nThat said, the second sentence _\u201cAn attacker also [\u2026]\u201d_ LGTM.",
+              "createdAt": "2026-02-26T10:33:05Z",
+              "updatedAt": "2026-02-26T10:40:47Z"
+            },
+            {
+              "originalPosition": 231,
+              "body": "Given what we say in L318-319:\n\n> _\"AttestationResults within the CMW MUST include a binder ensuring that the attestation is associated with this particular TLS connection\u201d_\n\nThere should be no differences in freshness between BG check and Passport ",
+              "createdAt": "2026-02-26T10:40:39Z",
+              "updatedAt": "2026-02-26T10:40:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mFxE7",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T11:19:20Z",
+          "updatedAt": "2026-02-26T11:19:20Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Just to make sure, @thomas-fossati  - not my suggested change, right?",
+              "createdAt": "2026-02-26T11:19:20Z",
+              "updatedAt": "2026-02-26T11:19:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mI6ZV",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T13:46:08Z",
+          "updatedAt": "2026-02-26T13:46:09Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> > [..] An attacker cannot mount a successful attack\r\n> \r\n> Tiru, which attack are you referring to here?\r\n\r\nI am assuming an on-path adversary with full network visibility and the ability to modify, inject, or replay messages.\r\n\r\n> \r\n> That said, the second sentence _\u201cAn attacker also [\u2026]\u201d_ LGTM.\r\n\r\n",
+              "createdAt": "2026-02-26T13:46:09Z",
+              "updatedAt": "2026-02-26T13:46:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mJ7Dh",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T14:30:08Z",
+          "updatedAt": "2026-02-26T14:30:08Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "ok, so perhaps \"An _active_ attacker\u201d ?",
+              "createdAt": "2026-02-26T14:30:08Z",
+              "updatedAt": "2026-02-26T14:30:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mQZ59",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T19:13:45Z",
+          "updatedAt": "2026-02-26T19:13:45Z",
+          "comments": [
+            {
+              "originalPosition": 168,
+              "body": "I meant to say, a measured/signed TEE that has been verified (e.g. through manual code review) to implement this protocol correctly. I would appreciate a text proposal.",
+              "createdAt": "2026-02-26T19:13:45Z",
+              "updatedAt": "2026-02-26T19:13:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mQgSm",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-26T19:19:31Z",
+          "updatedAt": "2026-02-26T19:19:31Z",
+          "comments": [
+            {
+              "originalPosition": 231,
+              "body": "> Given what we say in L318-319:\r\n> \r\n> > _\"AttestationResults within the CMW MUST include a binder ensuring that the attestation is associated with this particular TLS connection\u201d_\r\n> \r\n> There should be no differences in freshness between BG check and Passport\r\n\r\nBut this is a discussion we need to have. It is quite possible that we will end up with multiple options.",
+              "createdAt": "2026-02-26T19:19:31Z",
+              "updatedAt": "2026-02-26T19:19:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7mYfZV",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T06:25:12Z",
+          "updatedAt": "2026-02-27T06:25:13Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "New text: \r\n\r\nAn active attacker cannot mount a successful attack because the attestation binder is derived from the TLS handshake transcript, including encrypted handshake messages that are not visible to eavesdroppers. An active attacker also cannot replay or relay attestation Evidence across TLS connections, since the attestation binder is bound to the specific TLS handshake transcript and the TLS identity key. Any attempt to reuse valid Evidence in a different TLS connection results in a binder mismatch and verification failure.",
+              "createdAt": "2026-02-27T06:25:12Z",
+              "updatedAt": "2026-02-27T06:25:37Z"
+            }
+          ]
         }
       ]
     },
@@ -3800,7 +4024,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-02-25T20:44:10Z",
-      "updatedAt": "2026-02-25T20:44:10Z",
+      "updatedAt": "2026-02-26T05:23:10Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
@@ -3812,7 +4036,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7l_ILy",
+          "commit": {
+            "abbreviatedOid": "68fe497"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-26T05:23:10Z",
+          "updatedAt": "2026-02-26T05:23:10Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
