@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-01T02:07:57.165907+00:00",
+  "timestamp": "2026-03-03T02:00:51.736309+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -725,15 +725,15 @@
       "id": "I_kwDOQdsaoc7q6LPO",
       "title": "SEAT charter phase 2, binder derivation",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/45",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Derive the binder from a message transcript, disconnected from the TLS key schedule. The binder is used as the Evidence's (or RA's) nonce, and is not part of the Evidence.",
       "createdAt": "2026-02-14T10:56:35Z",
-      "updatedAt": "2026-02-14T10:56:35Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-01T15:47:40Z",
+      "closedAt": "2026-03-01T15:47:40Z",
       "comments": []
     }
   ],
@@ -3295,24 +3295,26 @@
       "id": "PR_kwDOQdsaoc7D01q7",
       "title": "Define an Attestation Binder and its use as a nonce",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/46",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Fixes #45.\r\n\r\nThis should be improved with:\r\n\r\n1. A clarifying discussion of the TLS/TEE architecture, and hopefully a diagram.\r\n2. A way for the RP to convey the Attestation Binder to a Verifier, possibly as a new kind of CMW \"indicator\".",
       "createdAt": "2026-02-14T21:04:39Z",
-      "updatedAt": "2026-02-27T06:25:13Z",
+      "updatedAt": "2026-03-01T15:47:39Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-45",
-      "headRefOid": "6c5cd0e760dd5797d5483e3cf226bdab0a1c32e2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "5945681eb39a4fcf14f6dbb1cf35040860f3781d",
+      "closedAt": "2026-03-01T15:47:39Z",
+      "mergedAt": "2026-03-01T15:47:39Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "6533003e9d5dc537c704aaf76eceaf52407f81e2"
+      },
       "comments": [],
       "reviews": [
         {
@@ -3794,6 +3796,26 @@
               "updatedAt": "2026-02-27T06:25:37Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7m0AUG",
+          "commit": {
+            "abbreviatedOid": "bdd1527"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-01T14:46:25Z",
+          "updatedAt": "2026-03-01T14:46:25Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "Looks good, but I don't like this kind of rationale in the normative text. Will include it in the \"Security Properties\" subsection a bit further down.",
+              "createdAt": "2026-03-01T14:46:25Z",
+              "updatedAt": "2026-03-01T14:46:25Z"
+            }
+          ]
         }
       ]
     },
@@ -4017,24 +4039,26 @@
       "id": "PR_kwDOQdsaoc7GWGg0",
       "title": "Add document history for -03",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/48",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-02-25T20:44:10Z",
-      "updatedAt": "2026-02-26T05:23:10Z",
+      "updatedAt": "2026-03-01T15:48:06Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "350ed8c957f699c5ded84dbfe9da3efd7f025384",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-pre-03",
       "headRefOid": "68fe497aec198a8328574c99c9d096070830dd2a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-01T15:48:06Z",
+      "mergedAt": "2026-03-01T15:48:06Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "fc2c885d8ebd53aa4019b1bc224ea90b826f9c50"
+      },
       "comments": [],
       "reviews": [
         {
