@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-03T02:00:51.736309+00:00",
+  "timestamp": "2026-03-05T01:57:55.608419+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -734,6 +734,22 @@
       "createdAt": "2026-02-14T10:56:35Z",
       "updatedAt": "2026-03-01T15:47:40Z",
       "closedAt": "2026-03-01T15:47:40Z",
+      "comments": []
+    },
+    {
+      "number": 49,
+      "id": "I_kwDOQdsaoc7vrPIw",
+      "title": "Binding the verifier provided Nonce to attestation binder",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/49",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Background check model, the verifier-provided nonce needs to be bound to the attestation binder",
+      "createdAt": "2026-03-04T09:50:19Z",
+      "updatedAt": "2026-03-04T09:50:19Z",
+      "closedAt": null,
       "comments": []
     }
   ],
