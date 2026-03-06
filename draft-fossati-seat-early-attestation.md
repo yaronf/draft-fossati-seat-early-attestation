@@ -497,7 +497,7 @@ Attestation Evidence or Attestation Results may become stale over time. For long
 ### Post-Handshake Reattestation Using Client Authentication
 
 Post-handshake client authentication defined in {{Section 4.6.2 of -tls13}} can
-be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation was negotiated for the TLS connection, the client includes the `attestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
+be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `attestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
 
 This mechanism allows a server to request refreshed attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.
 
