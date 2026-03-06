@@ -617,7 +617,7 @@ Table of Contents
    connection, the client includes the attestation extension in the
    Certificate message carrying updated Evidence or Attestation Results.
 
-   This mechanism allows a server to request refreshed attestation from
+   This mechanism allows a server to request updated attestation from
    the client.  However, TLS currently does not define a mechanism for
    post-handshake server authentication.  To address this limitation,
    the subsequent sections discuss design options for handling
