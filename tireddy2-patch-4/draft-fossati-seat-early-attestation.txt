@@ -613,9 +613,9 @@ Table of Contents
    the TLS server sends a CertificateRequest message after the TLS
    handshake authentication.  The client responds with the standard TLS
    authentication messages (Certificate, CertificateVerify, and
-   Finished).  If attestation was negotiated for the TLS connection, the
-   client includes the attestation extension in the Certificate message
-   carrying updated Evidence or Attestation Results.
+   Finished).  If attestation has been negotiated for the TLS
+   connection, the client includes the attestation extension in the
+   Certificate message carrying updated Evidence or Attestation Results.
 
    This mechanism allows a server to request refreshed attestation from
    the client.  However, TLS currently does not define a mechanism for
