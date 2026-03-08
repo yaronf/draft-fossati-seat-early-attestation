@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T01:57:55.608419+00:00",
+  "timestamp": "2026-03-08T01:59:07.389696+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -4089,6 +4089,144 @@
           "createdAt": "2026-02-26T05:23:10Z",
           "updatedAt": "2026-02-26T05:23:10Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 50,
+      "id": "PR_kwDOQdsaoc7Ick1V",
+      "title": "Updates to reattestation section",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/50",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-06T09:18:47Z",
+      "updatedAt": "2026-03-06T11:37:21Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "fc2c885d8ebd53aa4019b1bc224ea90b826f9c50",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-4",
+      "headRefOid": "35c8d6050936672bb0d93653811267414971b188",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc7onW6B",
+          "commit": {
+            "abbreviatedOid": "5211f2a"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2026-03-06T09:39:44Z",
+          "updatedAt": "2026-03-06T09:46:01Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\nPost-handshake client authentication defined in {{Section 4.6.2 of -tls13}} can\n```",
+              "createdAt": "2026-03-06T09:39:44Z",
+              "updatedAt": "2026-03-06T09:46:01Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\nbe used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `attestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.\n```",
+              "createdAt": "2026-03-06T09:45:28Z",
+              "updatedAt": "2026-03-06T09:46:01Z"
+            },
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\nThis mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.\n```",
+              "createdAt": "2026-03-06T09:45:51Z",
+              "updatedAt": "2026-03-06T09:46:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7ongpa",
+          "commit": {
+            "abbreviatedOid": "5211f2a"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-03-06T09:47:14Z",
+          "updatedAt": "2026-03-06T09:48:50Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "This subsection should follow the 3 options which are the core of the section, rather than precede them.",
+              "createdAt": "2026-03-06T09:47:14Z",
+              "updatedAt": "2026-03-06T09:48:50Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "I think this needs more discussion. In particular the binder for this attestation has not been defined so at the very least, there's no freshness.",
+              "createdAt": "2026-03-06T09:48:37Z",
+              "updatedAt": "2026-03-06T09:48:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7oorNK",
+          "commit": {
+            "abbreviatedOid": "5211f2a"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM!",
+          "createdAt": "2026-03-06T10:47:38Z",
+          "updatedAt": "2026-03-06T10:47:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7opQBk",
+          "commit": {
+            "abbreviatedOid": "5211f2a"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T11:19:25Z",
+          "updatedAt": "2026-03-06T11:19:25Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "The subsection is intentionally placed first because it is already defined in RFC 8446 and implemented in OpenSSL, while the three options that follow are alternatives for cases where server reattestation is required and are yet to be defined.",
+              "createdAt": "2026-03-06T11:19:25Z",
+              "updatedAt": "2026-03-06T11:19:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7opjb5",
+          "commit": {
+            "abbreviatedOid": "5211f2a"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T11:37:15Z",
+          "updatedAt": "2026-03-06T11:37:15Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Good point, added attestation binder. ",
+              "createdAt": "2026-03-06T11:37:15Z",
+              "updatedAt": "2026-03-06T11:37:15Z"
+            }
+          ]
         }
       ]
     }
