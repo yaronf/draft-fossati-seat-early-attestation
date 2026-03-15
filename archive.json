@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-08T01:59:07.389696+00:00",
+  "timestamp": "2026-03-15T02:11:00.483028+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -749,6 +749,22 @@
       "body": "In Background check model, the verifier-provided nonce needs to be bound to the attestation binder",
       "createdAt": "2026-03-04T09:50:19Z",
       "updatedAt": "2026-03-04T09:50:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 51,
+      "id": "I_kwDOQdsaoc7ySI5j",
+      "title": "Editorial: rename \"shim\" to \"adaptation layer\"",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/51",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "To distinguish from the expat shim. Note this is also inside the diagram.",
+      "createdAt": "2026-03-12T13:54:26Z",
+      "updatedAt": "2026-03-12T13:54:26Z",
       "closedAt": null,
       "comments": []
     }
