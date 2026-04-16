@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-15T02:11:00.483028+00:00",
+  "timestamp": "2026-04-16T02:31:25.010451+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -57,6 +57,11 @@
       "name": "Pre-03",
       "description": "",
       "color": "db5ff7"
+    },
+    {
+      "name": "Implementation Experience",
+      "description": "Feedback from implementing the draft",
+      "color": "0052cc"
     }
   ],
   "issues": [
@@ -765,6 +770,78 @@
       "body": "To distinguish from the expat shim. Note this is also inside the diagram.",
       "createdAt": "2026-03-12T13:54:26Z",
       "updatedAt": "2026-03-12T13:54:26Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 52,
+      "id": "I_kwDOQdsaoc7-WhiQ",
+      "title": "RFC 8446 non-compliance: attestation Certificate extension has no corresponding ClientHello extension",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/52",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "Implementation Experience"
+      ],
+      "body": "**Draft section:** \u00a74.1, \u00a76.1\n\nRFC 8446 \u00a74.2 requires that extensions appearing in the Certificate message correspond to the same extension type sent in ClientHello (server cert) or CertificateRequest (client cert). The draft uses `evidence_request` (a different type ID) in ClientHello to signal that the peer should include `attestation` in its Certificate. This violates the RFC's symmetric extension model.\n\n**Workaround in our implementation:** set the `ATTESTATION` bit in `sent_extensions` when writing `evidence_request`, pre-authorising it for the Certificate parser.\n\n**Proposed fix:** either assign `attestation` its own ClientHello/CertificateRequest extension, or explicitly carve out an exception to RFC 8446 \u00a74.2 in the draft text.",
+      "createdAt": "2026-04-15T08:13:12Z",
+      "updatedAt": "2026-04-15T08:13:12Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 53,
+      "id": "I_kwDOQdsaoc7-Wh7N",
+      "title": "Simplify binder derivation: use a single shared transcript checkpoint (ClientHello...ServerHello)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/53",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "Implementation Experience"
+      ],
+      "body": "**Draft section:** \u00a75.1.1\n\nThe current spec defines two asymmetric transcript checkpoints: `s_attest_base` over `ClientHello...EncryptedExtensions` and `c_attest_base` over `ClientHello...Server-Finished`. Each is the latest possible snapshot that avoids circularity for that side (a binder cannot cover the message it appears in).\n\n**Implementation cost of the current design:**\n- Requires snapshotting and storing two independent base secrets at two different handshake points\n- Derivation is wired into four separate state machine locations (EE-write, EE-parse, Server-Finished-write, Client-Finished-verify)\n- Requires guard flags to prevent re-derivation on HelloRetryRequest\n- Seven additional fields in the handshake context (`s_attest_base`, `c_attest_base`, `s_attest_binder`, `c_attest_binder`, `attest_binder_len`, `s_attest_base_derived`, `c_attest_base_derived`)\n\n**Proposed alternative:** use a single checkpoint `ClientHello...ServerHello`, shared by both sides:\n\n```\nattest_base = Derive-Secret(0, \"attestation base\", ClientHello...ServerHello)\nc_attest_binder = HKDF-Expand-Label(attest_base, \"attestation\", TLS_Client_Public_Key, Hash.length)\ns_attest_binder = HKDF-Expand-Label(attest_base, \"attestation\", TLS_Server_Public_Key, Hash.length)\n```\n\nThe ServerHello transcript is available on both sides before any Certificate is written, so there is no circularity and no asymmetry.\n\n**Security delta:** the binder no longer covers EncryptedExtensions or Server-Finished. However, both of those messages are already authenticated by the standard TLS Finished MAC, so a substitution attack on them would also break the Finished verification \u2014 the binder does not need to duplicate that protection. The core security property (replay protection via session-unique key share and random in ServerHello) is preserved.\n\n**Implementation benefit:** five handshake state fields collapse to one, four derivation call sites collapse to one, and the two-phase base/binder split can be resolved at Certificate time in a single step.",
+      "createdAt": "2026-04-15T08:13:29Z",
+      "updatedAt": "2026-04-15T08:13:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 54,
+      "id": "I_kwDOQdsaoc7-WiK-",
+      "title": "Draft silent on which alert to send for Evidence verification failure",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/54",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "Implementation Experience"
+      ],
+      "body": "**Draft section:** \u00a710.2\n\nThe draft assigns `unsupported_evidence` (\u00a710.2) to the negotiation phase (no common evidence type) and `unsupported_verifiers` to the result-proposal phase, but says nothing about what alert to send when the receiver computes the binder, calls the Verifier, and the Evidence turns out to be invalid (binder mismatch, untrusted ROT, malformed CMW). \u00a75.1.1 simply says \"abort the handshake\" with no alert specified.\n\n**Precedent:** RFC 8446 \u00a76.2 uses `decrypt_error` for handshake cryptographic failures including PSK binder mismatches. We follow that precedent in our implementation.\n\n**Proposed wording:** \"If the peer's Evidence is rejected (binder mismatch, failed verification, or malformed CMW), the receiver MUST send a `decrypt_error` fatal alert and abort.\"",
+      "createdAt": "2026-04-15T08:13:39Z",
+      "updatedAt": "2026-04-15T08:13:39Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 55,
+      "id": "I_kwDOQdsaoc7-Wigm",
+      "title": "context<0..255> in RFC 8446 HkdfLabel cannot hold post-quantum public keys (PQ blocker)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/55",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "Implementation Experience"
+      ],
+      "body": "**Draft section:** \u00a75.1.1\n\nThe draft uses the raw `TLS_Public_Key` (SubjectPublicKeyInfo DER) as the `context` input to `HKDF-Expand-Label`. RFC 8446 \u00a77.1 defines `context<0..255>`, a length-prefixed field with a hard 255-byte limit.\n\nClassical EC keys are well within this limit (P-256 SPKI \u2248 91 bytes, P-521 \u2248 158 bytes). However, post-quantum keys exceed it by a large margin:\n- ML-DSA-44 \u2248 1312 bytes\n- ML-DSA-65 \u2248 1952 bytes\n- Falcon-1024 \u2248 1793 bytes\n\nUsing a raw PQ SPKI as context is not encodable in a valid `HkdfLabel` and violates the RFC. This is a blocker for PQ deployments.\n\n**Implementation note:** our current implementation open-codes the PSA HKDF-Expand call directly (bypassing the standard helper that enforces the 255-byte limit) with an oversized stack buffer. This works for classical keys but will fail for PQ keys.\n\n**Proposed fix:** replace the raw public key with its hash:\n\n```\nc_attest_binder = HKDF-Expand-Label(c_attest_base, \"attestation\", Hash(TLS_Client_Public_Key), Hash.length)\ns_attest_binder = HKDF-Expand-Label(s_attest_base, \"attestation\", Hash(TLS_Server_Public_Key), Hash.length)\n```\n\nThe result always fits in 255 bytes regardless of algorithm. The binding property is preserved (hash preimage resistance pins the binder to a specific key), consistent with how RFC 8446 already handles transcripts. It also simplifies implementations: a fixed-size hash is easier to pass through the provider API than a variable-length DER blob.",
+      "createdAt": "2026-04-15T08:13:53Z",
+      "updatedAt": "2026-04-15T08:13:53Z",
       "closedAt": null,
       "comments": []
     }
