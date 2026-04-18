@@ -367,10 +367,14 @@ s_attest_base = Derive-Secret(0, "s attestation base",
                               ClientHello...EncryptedExtensions)
 
 c_attest_binder = HKDF-Expand-Label(c_attest_base, "attestation",
-                                    TLS_Client_Public_Key, Hash.length)
+                                    Hash(TLS_Client_Public_Key), Hash.length)
 s_attest_binder = HKDF-Expand-Label(s_attest_base, "attestation",
-                                    TLS_Server_Public_Key, Hash.length)
+                                    Hash(TLS_Server_Public_Key), Hash.length)
 ~~~
+
+`TLS_Client_Public_Key` and `TLS_Server_Public_Key` denote the DER-encoded
+SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the
+cipher suite hash function for the handshake (Section 7.1 of {{-tls13}}).
 
 We note that despite the use of the `Derive-Secret` primitive, none of these values are secret. Similarly we do not call `HKDF-Extract` which would not be effective.
 
@@ -886,6 +890,11 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-04
+
+* Hash TLS public keys in `HKDF-Expand-Label` context so `HkdfLabel` stays
+  within the 255-octet limit (post-quantum public keys); see {{crypto-ops}}.
 
 ## draft-fossati-seat-early-attestation-03
 * Replace the Attestation message by an Attestation (certificate) extension,
