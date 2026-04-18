@@ -16,3 +16,7 @@
 *.bak
 *.log
 
+# npm (aasvg for kramdown-rfc diagrams; see lib/doc/SETUP.md)
+/node_modules/
+package-lock.json
+

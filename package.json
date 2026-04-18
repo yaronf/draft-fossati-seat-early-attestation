@@ -1,0 +1,7 @@
+{
+  "name": "draft-fossati-seat-early-attestation",
+  "private": true,
+  "dependencies": {
+    "aasvg": "0.4.3"
+  }
+}
