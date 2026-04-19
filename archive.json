@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-16T02:31:25.010451+00:00",
+  "timestamp": "2026-04-19T02:32:19.332455+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -823,9 +823,17 @@
       ],
       "body": "**Draft section:** \u00a710.2\n\nThe draft assigns `unsupported_evidence` (\u00a710.2) to the negotiation phase (no common evidence type) and `unsupported_verifiers` to the result-proposal phase, but says nothing about what alert to send when the receiver computes the binder, calls the Verifier, and the Evidence turns out to be invalid (binder mismatch, untrusted ROT, malformed CMW). \u00a75.1.1 simply says \"abort the handshake\" with no alert specified.\n\n**Precedent:** RFC 8446 \u00a76.2 uses `decrypt_error` for handshake cryptographic failures including PSK binder mismatches. We follow that precedent in our implementation.\n\n**Proposed wording:** \"If the peer's Evidence is rejected (binder mismatch, failed verification, or malformed CMW), the receiver MUST send a `decrypt_error` fatal alert and abort.\"",
       "createdAt": "2026-04-15T08:13:39Z",
-      "updatedAt": "2026-04-15T08:13:39Z",
+      "updatedAt": "2026-04-18T13:22:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Rejecting Claude's helpful suggestion: I think we need a new alert here. Call it `attestation_failed`.",
+          "createdAt": "2026-04-18T13:22:26Z",
+          "updatedAt": "2026-04-18T13:22:26Z"
+        }
+      ]
     },
     {
       "number": 55,
@@ -4322,6 +4330,84 @@
           ]
         }
       ]
+    },
+    {
+      "number": 56,
+      "id": "PR_kwDOQdsaoc7TldJl",
+      "title": "Simplify binder derivation: single transcript checkpoint (ClientHello...ServerHello)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/56",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Implements the design from #53: one `attest_base` derived from `ClientHello...ServerHello` for both peers, with HKDF-Expand-Label unchanged for `c_attest_binder` / `s_attest_binder`.\n\nDocuments rationale (no circularity before Certificate), that EE and Finished are not in the binder but are covered by TLS Finished MACs, and adjusts the security-properties paragraph accordingly. Adds document history for -04.\n\nFixes #53\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-04-18T13:13:00Z",
+      "updatedAt": "2026-04-18T16:57:55Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "fc2c885d8ebd53aa4019b1bc224ea90b826f9c50",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-53",
+      "headRefOid": "9d1831507bbef20b96e3ff629843196caf6ad10e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 57,
+      "id": "PR_kwDOQdsaoc7TlkpZ",
+      "title": "Register attestation_failed alert for Evidence verification failure",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/57",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #54.\n\n- **Verification:** on Evidence rejection (binder mismatch, failed verification, malformed CMW), send `attestation_failed` and abort; pointer to IANA section.\n- **TLS Alerts:** separate negotiation alerts (`unsupported_evidence`, `unsupported_verifiers`) from post-`attestation` failure (`attestation_failed`).\n- **IANA:** third allocation TBD3 / `attestation_failed`.\n- **History:** -04 entry.\n\nFixes #54\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-04-18T13:26:57Z",
+      "updatedAt": "2026-04-18T15:19:05Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "fc2c885d8ebd53aa4019b1bc224ea90b826f9c50",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-54",
+      "headRefOid": "dd03a1e89f0ab38c687b34b24a653b3c4e990d36",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 58,
+      "id": "PR_kwDOQdsaoc7TloA9",
+      "title": "Hash public keys in attestation binder HKDF context (PQ-safe)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/58",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #55: `HKDF-Expand-Label` `context` must fit RFC 8446 `HkdfLabel` (255 octets). Replace raw SPKI with `Hash(TLS_*_Public_Key)` using the handshake `Hash`; add definitions and rationale (PQ keys, preimage binding). -04 history entry.\n\nFixes #55\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-04-18T13:32:13Z",
+      "updatedAt": "2026-04-18T15:19:13Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "fc2c885d8ebd53aa4019b1bc224ea90b826f9c50",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-55",
+      "headRefOid": "258dfc097d81a5d9e023a614be93294970a94e48",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
