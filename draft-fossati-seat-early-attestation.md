@@ -383,17 +383,22 @@ We note that despite the use of the `Derive-Secret` primitive, none of these val
 
 Upon receipt of an `attestation` extension, the peer MUST compute the attestation binder.
 
+If the peer's Evidence is rejected (binder mismatch, failed Evidence appraisal, or malformed CMW),
+the receiver MUST send an `attestation_failed` fatal alert and abort the handshake
+(see {{tls-alerts}}).
+
 Depending on the architecture (see also {{stack-tee-interface}}), either the peer verifies
 the binding or else it delegates this responsibility to an external Verifier.
 
 * In the former case, the peer MUST compare the computed binder value to the attestation binder
 included in the
 signed Evidence or signed Attestation Results. If the values do not match, the peer MUST treat the
-attestation as invalid and abort the handshake.
+attestation as invalid.
 
 * In the latter case, the RP MUST convey the binder to the
 Verifier. The Verifier MUST verify that the conveyed binder is identical to the one that was signed
-in the Evidence or Attestation Results.
+in the Evidence or Attestation Results. If verification fails, the receiver MUST treat the
+attestation as invalid.
 
 <cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
 as a (new) conceptual message (CM) within a collection. This would provide
@@ -870,9 +875,10 @@ Extensions" registry {{TLS-Ext-Registry}}.  These extensions are used in the
 ClientHello and the EncryptedExtensions messages. The values carried in these
 extensions are taken from TBD.
 
-## TLS Alerts
+## TLS Alerts {#tls-alerts}
 
-IANA is requested to allocate a value in the "TLS Alerts"
+
+IANA is requested to allocate values in the "TLS Alerts"
 subregistry of the "Transport Layer Security (TLS) Parameters" registry
 {{TLS-Param-Registry}} and populate it with the following entries:
 
@@ -888,6 +894,12 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 - Reference: [This document]
 - Comment:
 
+- Value: TBD3
+- Description: attestation_failed
+- DTLS-OK: Y
+- Reference: [This document]
+- Comment:
+
 # Acknowledgements {#acknowledgements}
 
 We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their contributions to earlier versions of this document.
@@ -898,6 +910,9 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 ## draft-fossati-seat-early-attestation-04
 
+* Register the `attestation_failed` alert for Evidence verification failure after
+  the `attestation` extension is processed; clarify roles of the three attestation-related
+  alerts in {{tls-alerts}}.
 * Hash TLS public keys in `HKDF-Expand-Label` context so `HkdfLabel` stays
   within the 255-octet limit (post-quantum public keys); see {{crypto-ops}}.
 * Simplify attestation binder derivation to a single shared transcript
