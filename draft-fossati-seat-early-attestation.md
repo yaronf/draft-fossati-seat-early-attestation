@@ -374,7 +374,7 @@ s_attest_binder = HKDF-Expand-Label(s_attest_base, "attestation",
 
 `TLS_Client_Public_Key` and `TLS_Server_Public_Key` denote the DER-encoded
 SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the
-cipher suite hash function for the handshake (Section 7.1 of {{-tls13}}).
+cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
 We note that despite the use of the `Derive-Secret` primitive, none of these values are secret. Similarly we do not call `HKDF-Extract` which would not be effective.
 
