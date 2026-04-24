@@ -1610,12 +1610,15 @@ attest_base = Derive-Secret(0, "attestation base",
                           ClientHello...ServerHello)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
-                                    TLS_Client_Public_Key, Hash.length)
+                                    Hash(TLS_Client_Public_Key), Hash.length)
 s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
-                                    TLS_Server_Public_Key, Hash.length)
+                                    Hash(TLS_Server_Public_Key), Hash.length)
 </pre><a href="#section-5.1.1-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5.1.1-4">We note that despite the use of the <code>Derive-Secret</code> primitive, none of these values are secret. Similarly we do not call <code>HKDF-Extract</code> which would not be effective.<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-4"><code>TLS_Client_Public_Key</code> and <code>TLS_Server_Public_Key</code> denote the DER-encoded
+SubjectPublicKeyInfo of the peer's end-entity certificate. <code>Hash</code> is the
+cipher suite hash function for the handshake (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>).<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-5">We note that despite the use of the <code>Derive-Secret</code> primitive, none of these values are secret. Similarly we do not call <code>HKDF-Extract</code> which would not be effective.<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="verification">
@@ -2451,8 +2454,12 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-A.1-1.1">
-            <p id="appendix-A.1-1.1.1">Simplify attestation binder derivation to a single shared transcript
-checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.1.1">Hash TLS public keys in <code>HKDF-Expand-Label</code> context so <code>HkdfLabel</code> stays
+within the 255-octet limit (post-quantum public keys); see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>.<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.1-1.2">
+            <p id="appendix-A.1-1.2.1">Simplify attestation binder derivation to a single shared transcript
+checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
