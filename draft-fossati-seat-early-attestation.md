@@ -175,6 +175,9 @@ This document does not mandate any particular attestation technology.
 
 The reader is assumed to be familiar with the vocabulary and concepts defined in
 {{Section 4 of -rats-arch}}.
+The verbs "appraise" and "verify" are used with distinctive semantics throughout the document, in a way that differs from {{-rats-arch}}.
+"Appraising" covers the act of checking the validity of Attestation Results or Evidence, as per {{-rats-arch}}, performed by Verifiers and Relying Parties respectively.
+"Verifying" covers all other checks performed by the two TLS peers, intended to assess the validity of claims, cryptographic operations, etc.
 
 The following terms are used in this document:
 
@@ -226,7 +229,7 @@ minimal impact on the existing TLS security properties. The changes consist of:
 
 - Negotiation extensions: New TLS extensions are added to ClientHello and
   EncryptedExtensions messages to negotiate the use of attestation and indicate
-  supported attestation formats and verifiers. A new `Attestation` extension is
+  supported attestation formats and Verifiers. A new `Attestation` extension is
   introduced to the Certificate message. This extension carries attestation Evidence
   or Attestation Results.
 
@@ -396,8 +399,8 @@ signed Evidence or signed Attestation Results. If the values do not match, the p
 attestation as invalid.
 
 * In the latter case, the RP MUST convey the binder to the
-Verifier. The Verifier MUST verify that the conveyed binder is identical to the one that was signed
-in the Evidence or Attestation Results. If verification fails, the receiver MUST treat the
+Verifier. The Verifier MUST appraise that the conveyed binder is identical to the one that was signed
+in the Evidence or Attestation Results. If appraisal fails, the receiver MUST treat the
 attestation as invalid.
 
 <cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
@@ -424,7 +427,7 @@ obtain valid-looking attestation Evidence.
 However an endorsed TEE (one that is operating as required by this protocol)
 is required to verify the binder against the TLS public key associated
 with the private key that it holds. This verification, in conjunction with the TEE's
-endorsement being verified, ensures that relay attacks are prevented.
+endorsement being appraised, ensures that relay attacks are prevented.
 
 An active attacker cannot replay or relay attestation Evidence across TLS
 connections: the attestation binder is bound to the transcript through
@@ -547,8 +550,8 @@ In this design, reattestation is supported using the `CertificateUpdate` message
 
 This section defines the TLS extensions used to negotiate the use of attestation
 in the TLS handshake. Two models are supported: the Background Check Model, where
-Evidence is exchanged and verified during the handshake, and the Passport Model,
-where pre-verified Evidence in the form of Attestation Results are presented. The extensions defined
+Evidence is exchanged and appraised during the handshake, and the Passport Model,
+where pre-appraised Evidence in the form of Attestation Results are presented. The extensions defined
 here allow peers to indicate their support for attestation and negotiate which
 attestation format and Verifier to use.
 
@@ -792,7 +795,7 @@ results_proposal extension in the ClientHello.
 
 The client MUST omit Verifier identities from the results_request extension in
 the ClientHello if it is not configured to trust Attestation Results issued by
-said verifiers. If the client does not act as a relying party with regards to
+said Verifiers. If the client does not act as a relying party with regards to
 the processing of Attestation Results (as defined in the RATS architecture) then
 the client MUST omit the results_request extension from the ClientHello.
 
