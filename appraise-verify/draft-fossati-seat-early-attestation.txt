@@ -195,7 +195,8 @@ Table of Contents
    the validity of Attestation Results or Evidence, as per [RFC9334],
    performed by Verifiers and Relying Parties respectively.  "Verifying"
    covers all other checks performed by the two TLS peers, intended to
-   assess the validity of claims, cryptographic operations, etc.
+   assess the correctness of the cryptographic and protocol operations
+   of the TLS layer.
 
    The following terms are used in this document:
 
