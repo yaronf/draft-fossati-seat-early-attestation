@@ -360,15 +360,16 @@ as well as binding to the attester's TLS public key.
 The attestation binder is computed using primitives
 defined in Section 4.4.1 and&nbsp;7.1 of {{-tls13}}.
 
-~~~
-c_attest_base = Derive-Secret(0, "c attestation base",
-                              ClientHello...Server-Finished)
-s_attest_base = Derive-Secret(0, "s attestation base",
-                              ClientHello...EncryptedExtensions)
+Both peers derive a single attestation base from the same transcript
+checkpoint, `ClientHello...ServerHello`.
 
-c_attest_binder = HKDF-Expand-Label(c_attest_base, "attestation",
+~~~
+attest_base = Derive-Secret(0, "attestation base",
+                          ClientHello...ServerHello)
+
+c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     TLS_Client_Public_Key, Hash.length)
-s_attest_binder = HKDF-Expand-Label(s_attest_base, "attestation",
+s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     TLS_Server_Public_Key, Hash.length)
 ~~~
 
@@ -416,7 +417,11 @@ is required to verify the binder against the TLS public key associated
 with the private key that it holds. This verification, in conjunction with the TEE's
 endorsement being verified, ensures that relay attacks are prevented.
 
-An active MiTM attacker cannot mount a successful attack because the attestation binder is derived from the TLS handshake transcript, including encrypted handshake messages that are not visible to eavesdroppers. An active attacker also cannot replay or relay attestation Evidence across TLS connections, since the attestation binder is bound to the specific TLS handshake transcript and the TLS identity key. Any attempt to reuse valid Evidence in a different TLS connection results in a binder mismatch and verification failure.
+An active attacker cannot replay or relay attestation Evidence across TLS
+connections: the attestation binder is bound to the transcript through
+`ServerHello` (including the negotiated key shares and both peers' random values) and to
+the TLS identity key. Any attempt to reuse valid Evidence in a different TLS
+connection results in a binder mismatch and verification failure.
 
 ## Binding the TIK to the TEE {#tik-binding}
 
@@ -886,6 +891,11 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-04
+
+* Simplify attestation binder derivation to a single shared transcript
+  checkpoint (`ClientHello...ServerHello`) for both peers (see {{crypto-ops}}).
 
 ## draft-fossati-seat-early-attestation-03
 * Replace the Attestation message by an Attestation (certificate) extension,
