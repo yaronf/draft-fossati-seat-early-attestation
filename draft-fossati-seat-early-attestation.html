@@ -1627,25 +1627,29 @@ cipher suite hash function for the handshake (<span><a href="https://datatracker
 <a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
           </h4>
 <p id="section-5.1.2-1">Upon receipt of an <code>attestation</code> extension, the peer <span class="bcp14">MUST</span> compute the attestation binder.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-2">Depending on the architecture (see also <a href="#stack-tee-interface" class="auto internal xref">Section 5.3</a>), either the peer verifies
-the binding or else it delegates this responsibility to an external Verifier.<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-2">If the peer's Evidence is rejected (binder mismatch, failed Evidence appraisal, or malformed CMW),
+the receiver <span class="bcp14">MUST</span> send an <code>attestation_failed</code> fatal alert and abort the handshake
+(see <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>).<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-3">Depending on the architecture (see also <a href="#stack-tee-interface" class="auto internal xref">Section 5.3</a>), either the peer verifies
+the binding or else it delegates this responsibility to an external Verifier.<a href="#section-5.1.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.1.2-3.1">
-              <p id="section-5.1.2-3.1.1">In the former case, the peer <span class="bcp14">MUST</span> compare the computed binder value to the attestation binder
+<li class="normal" id="section-5.1.2-4.1">
+              <p id="section-5.1.2-4.1.1">In the former case, the peer <span class="bcp14">MUST</span> compare the computed binder value to the attestation binder
 included in the
 signed Evidence or signed Attestation Results. If the values do not match, the peer <span class="bcp14">MUST</span> treat the
-attestation as invalid and abort the handshake.<a href="#section-5.1.2-3.1.1" class="pilcrow">¶</a></p>
+attestation as invalid.<a href="#section-5.1.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-5.1.2-3.2">
-              <p id="section-5.1.2-3.2.1">In the latter case, the RP <span class="bcp14">MUST</span> convey the binder to the
+            <li class="normal" id="section-5.1.2-4.2">
+              <p id="section-5.1.2-4.2.1">In the latter case, the RP <span class="bcp14">MUST</span> convey the binder to the
 Verifier. The Verifier <span class="bcp14">MUST</span> verify that the conveyed binder is identical to the one that was signed
-in the Evidence or Attestation Results.<a href="#section-5.1.2-3.2.1" class="pilcrow">¶</a></p>
+in the Evidence or Attestation Results. If verification fails, the receiver <span class="bcp14">MUST</span> treat the
+attestation as invalid.<a href="#section-5.1.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-5.1.2-4"><span class="cref">TODO: define a way to transport the binder to a remote Verifier. Possibly
+<p id="section-5.1.2-5"><span class="cref">TODO: define a way to transport the binder to a remote Verifier. Possibly
 as a (new) conceptual message (CM) within a collection. This would provide
 the Verifier whatever information it cannot compute on its own, while
-not forcing the TLS stack to parse the Evidence.</span><a href="#section-5.1.2-4" class="pilcrow">¶</a></p>
+not forcing the TLS stack to parse the Evidence.</span><a href="#section-5.1.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-properties">
@@ -2282,7 +2286,7 @@ extensions are taken from TBD.<a href="#section-10.1-1" class="pilcrow">¶</a></
         <h3 id="name-tls-alerts">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-tls-alerts" class="section-name selfRef">TLS Alerts</a>
         </h3>
-<p id="section-10.2-1">IANA is requested to allocate a value in the "TLS Alerts"
+<p id="section-10.2-1">IANA is requested to allocate values in the "TLS Alerts"
 subregistry of the "Transport Layer Security (TLS) Parameters" registry
 <span>[<a href="#TLS-Param-Registry" class="cite xref">TLS-Param-Registry</a>]</span> and populate it with the following entries:<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2315,6 +2319,21 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 </li>
           <li class="normal" id="section-10.2-2.10">
             <p id="section-10.2-2.10.1">Comment:<a href="#section-10.2-2.10.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.2-2.11">
+            <p id="section-10.2-2.11.1">Value: TBD3<a href="#section-10.2-2.11.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.2-2.12">
+            <p id="section-10.2-2.12.1">Description: attestation_failed<a href="#section-10.2-2.12.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.2-2.13">
+            <p id="section-10.2-2.13.1">DTLS-OK: Y<a href="#section-10.2-2.13.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.2-2.14">
+            <p id="section-10.2-2.14.1">Reference: [This document]<a href="#section-10.2-2.14.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.2-2.15">
+            <p id="section-10.2-2.15.1">Comment:<a href="#section-10.2-2.15.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2454,12 +2473,17 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-A.1-1.1">
-            <p id="appendix-A.1-1.1.1">Hash TLS public keys in <code>HKDF-Expand-Label</code> context so <code>HkdfLabel</code> stays
-within the 255-octet limit (post-quantum public keys); see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>.<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.1.1">Register the <code>attestation_failed</code> alert for Evidence verification failure after
+the <code>attestation</code> extension is processed; clarify roles of the three attestation-related
+alerts in <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>.<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-1.2">
-            <p id="appendix-A.1-1.2.1">Simplify attestation binder derivation to a single shared transcript
-checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.2.1">Hash TLS public keys in <code>HKDF-Expand-Label</code> context so <code>HkdfLabel</code> stays
+within the 255-octet limit (post-quantum public keys); see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>.<a href="#appendix-A.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.1-1.3">
+            <p id="appendix-A.1-1.3.1">Simplify attestation binder derivation to a single shared transcript
+checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
