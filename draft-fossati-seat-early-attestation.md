@@ -378,7 +378,7 @@ We note that despite the use of the `Derive-Secret` primitive, none of these val
 
 Upon receipt of an `attestation` extension, the peer MUST compute the attestation binder.
 
-If the peer's Evidence is rejected (binder mismatch, failed verification, or malformed CMW),
+If the peer's Evidence is rejected (binder mismatch, failed Evidence appraisal, or malformed CMW),
 the receiver MUST send an `attestation_failed` fatal alert and abort the handshake
 (see {{tls-alerts}}).
 
