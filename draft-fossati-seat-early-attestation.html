@@ -1230,13 +1230,16 @@ These extensions have been designed to allow the peers to use any attestation te
                 <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-reattestation" class="internal xref">Reattestation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
-                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-option-1-carrying-attestati" class="internal xref">Option 1: Carrying Attestation in Extended Key Update</a></p>
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-post-handshake-reattestatio" class="internal xref">Post-Handshake Reattestation Using Client Authentication</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.2">
-                    <p id="section-toc.1-1.5.2.4.2.2.1"><a href="#section-5.4.2" class="auto internal xref">5.4.2</a>.  <a href="#name-option-2-no-reattestation-r" class="internal xref">Option 2: No Reattestation (Reconnect for Freshness)</a></p>
+                    <p id="section-toc.1-1.5.2.4.2.2.1"><a href="#section-5.4.2" class="auto internal xref">5.4.2</a>.  <a href="#name-option-1-carrying-attestati" class="internal xref">Option 1: Carrying Attestation in Extended Key Update</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.3">
-                    <p id="section-toc.1-1.5.2.4.2.3.1"><a href="#section-5.4.3" class="auto internal xref">5.4.3</a>.  <a href="#name-option-3-post-handshake-rea" class="internal xref">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a></p>
+                    <p id="section-toc.1-1.5.2.4.2.3.1"><a href="#section-5.4.3" class="auto internal xref">5.4.3</a>.  <a href="#name-option-2-no-reattestation-r" class="internal xref">Option 2: No Reattestation (Reconnect for Freshness)</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.4">
+                    <p id="section-toc.1-1.5.2.4.2.4.1"><a href="#section-5.4.4" class="auto internal xref">5.4.4</a>.  <a href="#name-option-3-post-handshake-rea" class="internal xref">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a></p>
 </li>
                 </ul>
 </li>
@@ -1814,31 +1817,52 @@ all be measured and reported as part of the platform's remote attestation.<a hre
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-reattestation" class="section-name selfRef">Reattestation</a>
         </h3>
 <p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<p id="section-5.4-2">This section discusses design options for handling attestation freshness.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
-<div id="option-1-carrying-attestation-in-extended-key-update">
+<div id="post-handshake-reattestation-using-client-authentication">
 <section id="section-5.4.1">
-          <h4 id="name-option-1-carrying-attestati">
-<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-option-1-carrying-attestati" class="section-name selfRef">Option 1: Carrying Attestation in Extended Key Update</a>
+          <h4 id="name-post-handshake-reattestatio">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-post-handshake-reattestatio" class="section-name selfRef">Post-Handshake Reattestation Using Client Authentication</a>
           </h4>
-<p id="section-5.4.1-1">One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new <code>ExtendedKeyUpdate</code> message subtype to carry attestation Evidence or Attestation Results.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1-2">However, this approach tightly couples attestation to EKU, even though the two serve different purposes.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-1">Post-handshake client authentication defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-4.6.2" class="relref">Section 4.6.2</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> can
+be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a <code>CertificateRequest</code> message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (<code>Certificate</code>, <code>CertificateVerify</code>, and <code>Finished</code>). If attestation has been negotiated for the TLS connection, the client includes the <code>attestation</code> extension in the <code>Certificate</code> message carrying updated Evidence or Attestation Results.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-2">The attestation binder is derived from the post-handshake authentication
+transcript defined in Section 4.4 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4.1-3">
+<pre>
+pha_attest_base = Derive-Secret(0, "pha attestation base",
+                                ClientHello...client Finished +
+                                CertificateRequest)
+
+pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
+                                      TLS_Client_Public_Key, Hash.length)
+</pre><a href="#section-5.4.1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4.1-4">This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.<a href="#section-5.4.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="option-1-carrying-attestation-in-extended-key-update">
+<section id="section-5.4.2">
+          <h4 id="name-option-1-carrying-attestati">
+<a href="#section-5.4.2" class="section-number selfRef">5.4.2. </a><a href="#name-option-1-carrying-attestati" class="section-name selfRef">Option 1: Carrying Attestation in Extended Key Update</a>
+          </h4>
+<p id="section-5.4.2-1">One possible approach is to extend the Extended Key Update (EKU) mechanism by introducing a new <code>ExtendedKeyUpdate</code> message subtype to carry attestation Evidence or Attestation Results.<a href="#section-5.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.2-2">However, this approach tightly couples attestation to EKU, even though the two serve different purposes.<a href="#section-5.4.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-2-no-reattestation-reconnect-for-freshness">
-<section id="section-5.4.2">
+<section id="section-5.4.3">
           <h4 id="name-option-2-no-reattestation-r">
-<a href="#section-5.4.2" class="section-number selfRef">5.4.2. </a><a href="#name-option-2-no-reattestation-r" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
+<a href="#section-5.4.3" class="section-number selfRef">5.4.3. </a><a href="#name-option-2-no-reattestation-r" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
           </h4>
-<p id="section-5.4.2-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.<a href="#section-5.4.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.2-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.3-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.<a href="#section-5.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.3-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-3-post-handshake-reattestation-using-certificateupdate">
-<section id="section-5.4.3">
+<section id="section-5.4.4">
           <h4 id="name-option-3-post-handshake-rea">
-<a href="#section-5.4.3" class="section-number selfRef">5.4.3. </a><a href="#name-option-3-post-handshake-rea" class="section-name selfRef">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a>
+<a href="#section-5.4.4" class="section-number selfRef">5.4.4. </a><a href="#name-option-3-post-handshake-rea" class="section-name selfRef">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a>
           </h4>
-<p id="section-5.4.3-1">In this design, reattestation is supported using the <code>CertificateUpdate</code> message defined in <span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>. Under this approach, the attester sends a <code>CertificateUpdate</code> message carrying a new <code>Certificate</code> message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.<a href="#section-5.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.4-1">In this design, reattestation is supported using the <code>CertificateUpdate</code> message defined in <span>[<a href="#I-D.rosomakho-tls-cert-update" class="cite xref">I-D.rosomakho-tls-cert-update</a>]</span>. Under this approach, the attester sends a <code>CertificateUpdate</code> message carrying a new <code>Certificate</code> message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.<a href="#section-5.4.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
