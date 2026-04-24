@@ -508,7 +508,24 @@ all be measured and reported as part of the platform's remote attestation.
 
 Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may require updated assurance that the peer continues to operate in a trustworthy state.
 
-This section discusses design options for handling attestation freshness.
+### Post-Handshake Reattestation Using Client Authentication
+
+Post-handshake client authentication defined in {{Section 4.6.2 of -tls13}} can
+be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `attestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
+
+The attestation binder is derived from the post-handshake authentication
+transcript defined in Section 4.4 of {{-tls13}}.
+
+~~~
+pha_attest_base = Derive-Secret(0, "pha attestation base",
+                                ClientHello...client Finished +
+                                CertificateRequest)
+
+pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
+                                      TLS_Client_Public_Key, Hash.length)
+~~~
+
+This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.
 
 ### Option 1: Carrying Attestation in Extended Key Update
 
