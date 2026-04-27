@@ -175,13 +175,14 @@ This document does not mandate any particular attestation technology.
 
 The reader is assumed to be familiar with the vocabulary and concepts defined in
 {{Section 4 of -rats-arch}}.
-The verbs "appraise" and "verify" are used with distinctive semantics throughout the document.
-"Appraise" covers the act of checking the validity of Attestation Results or Evidence, as per {{-rats-arch}}, performed by Relying Parties and Verifiers respectively.
-"Verify" covers all other checks performed by the two TLS peers, intended to assess the correctness of the cryptographic and protocol operations of the TLS layer.
 
 The following terms are used in this document:
 
 {: vspace="0"}
+
+The terms "appraise" and "verify" are used with distinctive semantics throughout the document:
+: "Appraise" covers the act of checking the validity of Attestation Results or Evidence, as per {{-rats-arch}}, performed by Relying Parties and Verifiers respectively.
+"Verify" covers all other checks performed by the two TLS peers, intended to assess the correctness of the cryptographic and protocol operations of the TLS layer.
 
 TLS Identity Key (TIK):
 : A cryptographic key used by one of the peers to authenticate itself during the
