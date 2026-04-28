@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-26T02:35:13.937199+00:00",
+  "timestamp": "2026-04-28T02:44:41.627434+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -4544,13 +4544,13 @@
       "labels": [],
       "body": "Does this distinction sound acceptable? I think we need a distinction, but I worry that \"verify\" is too close to what RFC9334 uses, so maybe using \"check\" instead would be better (or a similar alternative).",
       "createdAt": "2026-04-24T14:25:42Z",
-      "updatedAt": "2026-04-25T08:26:49Z",
+      "updatedAt": "2026-04-27T09:25:05Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "cbebe0c64a2236b440712e3a2251af33c8be399d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "appraise-verify",
-      "headRefOid": "fa71e352790fa33d37204e045d98e878ec61ed8d",
+      "headRefOid": "91179b81cfb4467e1fe40daaca7ef95bf113c2b4",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -4826,6 +4826,39 @@
               "body": "I propose changing the text to:\nThe terms \"appraise\" and \"verify\" are used with distinctive semantics throughout the document.\n\nThis aligns with the standard IETF boilerplate pattern and then move the new text below \"The following terms are used in this document\" phrasing just below it in the same section.\"",
               "createdAt": "2026-04-25T08:26:02Z",
               "updatedAt": "2026-04-25T08:26:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc75GgN2",
+          "commit": {
+            "abbreviatedOid": "fa71e35"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-04-27T08:17:52Z",
+          "updatedAt": "2026-04-27T08:17:52Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc75IG_e",
+          "commit": {
+            "abbreviatedOid": "fa71e35"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-27T09:18:32Z",
+          "updatedAt": "2026-04-27T09:18:32Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Done!",
+              "createdAt": "2026-04-27T09:18:32Z",
+              "updatedAt": "2026-04-27T09:18:32Z"
             }
           ]
         }
