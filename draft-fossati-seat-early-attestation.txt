@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 26 October 2026                                    Y. Deshpande
+Expires: 31 October 2026                                    Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                           24 April 2026
+                                                           29 April 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 October 2026.
+   This Internet-Draft will expire on 31 October 2026.
 
 Copyright Notice
 
@@ -193,6 +193,15 @@ Table of Contents
 
    The following terms are used in this document:
 
+   The terms "appraise" and "verify" are used with distinctive
+   semantics throughout the document:
+      "Appraise" covers the act of checking the validity of Attestation
+      Results or Evidence, as per [RFC9334], performed by Relying
+      Parties and Verifiers respectively.  "Verify" covers all other
+      checks performed by the two TLS peers, intended to assess the
+      correctness of the cryptographic and protocol operations of the
+      TLS layer.
+
    TLS Identity Key (TIK):
       A cryptographic key used by one of the peers to authenticate
       itself during the TLS handshake.  The protocol's security is
@@ -260,7 +269,7 @@ Table of Contents
    *  Negotiation extensions: New TLS extensions are added to
       ClientHello and EncryptedExtensions messages to negotiate the use
       of attestation and indicate supported attestation formats and
-      verifiers.  A new Attestation extension is introduced to the
+      Verifiers.  A new Attestation extension is introduced to the
       Certificate message.  This extension carries attestation Evidence
       or Attestation Results.
 
@@ -450,9 +459,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
       MUST treat the attestation as invalid.
 
    *  In the latter case, the RP MUST convey the binder to the Verifier.
-      The Verifier MUST verify that the conveyed binder is identical to
-      the one that was signed in the Evidence or Attestation Results.
-      If verification fails, the receiver MUST treat the attestation as
+      The Verifier MUST appraise that the conveyed binder is identical
+      to the one that was signed in the Evidence or Attestation Results.
+      If appraisal fails, the receiver MUST treat the attestation as
       invalid.
 
 
@@ -483,7 +492,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    However an endorsed TEE (one that is operating as required by this
    protocol) is required to verify the binder against the TLS public key
    associated with the private key that it holds.  This verification, in
-   conjunction with the TEE's endorsement being verified, ensures that
+   conjunction with the TEE's endorsement being appraised, ensures that
    relay attacks are prevented.
 
    An active attacker cannot replay or relay attestation Evidence across
@@ -680,8 +689,8 @@ pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
 
    This section defines the TLS extensions used to negotiate the use of
    attestation in the TLS handshake.  Two models are supported: the
-   Background Check Model, where Evidence is exchanged and verified
-   during the handshake, and the Passport Model, where pre-verified
+   Background Check Model, where Evidence is exchanged and appraised
+   during the handshake, and the Passport Model, where pre-appraised
    Evidence in the form of Attestation Results are presented.  The
    extensions defined here allow peers to indicate their support for
    attestation and negotiate which attestation format and Verifier to
@@ -933,7 +942,7 @@ pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
 
    The client MUST omit Verifier identities from the results_request
    extension in the ClientHello if it is not configured to trust
-   Attestation Results issued by said verifiers.  If the client does not
+   Attestation Results issued by said Verifiers.  If the client does not
    act as a relying party with regards to the processing of Attestation
    Results (as defined in the RATS architecture) then the client MUST
    omit the results_request extension from the ClientHello.

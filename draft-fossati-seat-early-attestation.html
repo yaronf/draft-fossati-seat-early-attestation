@@ -1060,7 +1060,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 26 October 2026</td>
+<td class="center">Expires 31 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1073,12 +1073,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-24" class="published">24 April 2026</time>
+<time datetime="2026-04-29" class="published">29 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-26">26 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-31">31 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1149,7 +1149,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1391,27 +1391,33 @@ and the TLS connection is established.<a href="#section-1-5.3.1" class="pilcrow"
 <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">The following terms are used in this document:<a href="#section-2-2" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-2-3">
-        <dt id="section-2-3.1">TLS Identity Key (TIK):</dt>
+        <dt id="section-2-3.1">The terms "appraise" and "verify" are used with distinctive semantics throughout the document:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.2">
-          <p id="section-2-3.2.1">A cryptographic key used by one of the peers to authenticate itself during the
-TLS handshake. The protocol's security is critically dependent on the provenance, lifetime and
-protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the X.509 certificate's end entity key and is maintained and protected by the TEE.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.2.1">"Appraise" covers the act of checking the validity of Attestation Results or Evidence, as per <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>, performed by Relying Parties and Verifiers respectively.
+"Verify" covers all other checks performed by the two TLS peers, intended to assess the correctness of the cryptographic and protocol operations of the TLS layer.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-2-3.3">TIK-C, TIK-S:</dt>
+<dt id="section-2-3.3">TLS Identity Key (TIK):</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.4">
-          <p id="section-2-3.4.1">The TIK that identifies the client or the server, respectively.<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.4.1">A cryptographic key used by one of the peers to authenticate itself during the
+TLS handshake. The protocol's security is critically dependent on the provenance, lifetime and
+protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the X.509 certificate's end entity key and is maintained and protected by the TEE.<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-2-3.5">TIK-C-ID, TIK-S-ID:</dt>
+<dt id="section-2-3.5">TIK-C, TIK-S:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.6">
-          <p id="section-2-3.6.1">An identifier for TIK-C or respectively, TIK-S. This may be a fingerprint
-(cryptographic hash) of the public key, but other implementations are possible.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.6.1">The TIK that identifies the client or the server, respectively.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-2-3.7">Attestation binder:</dt>
+<dt id="section-2-3.7">TIK-C-ID, TIK-S-ID:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.8">
-          <p id="section-2-3.8.1">A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.8.1">An identifier for TIK-C or respectively, TIK-S. This may be a fingerprint
+(cryptographic hash) of the public key, but other implementations are possible.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.9">Attestation binder:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.10">
+          <p id="section-2-3.10.1">A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.<a href="#section-2-3.10.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1455,7 +1461,7 @@ minimal impact on the existing TLS security properties. The changes consist of:<
 <li class="normal" id="section-3.2-2.1">
             <p id="section-3.2-2.1.1">Negotiation extensions: New TLS extensions are added to ClientHello and
 EncryptedExtensions messages to negotiate the use of attestation and indicate
-supported attestation formats and verifiers. A new <code>Attestation</code> extension is
+supported attestation formats and Verifiers. A new <code>Attestation</code> extension is
 introduced to the Certificate message. This extension carries attestation Evidence
 or Attestation Results.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
@@ -1644,8 +1650,8 @@ attestation as invalid.<a href="#section-5.1.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-5.1.2-4.2">
               <p id="section-5.1.2-4.2.1">In the latter case, the RP <span class="bcp14">MUST</span> convey the binder to the
-Verifier. The Verifier <span class="bcp14">MUST</span> verify that the conveyed binder is identical to the one that was signed
-in the Evidence or Attestation Results. If verification fails, the receiver <span class="bcp14">MUST</span> treat the
+Verifier. The Verifier <span class="bcp14">MUST</span> appraise that the conveyed binder is identical to the one that was signed
+in the Evidence or Attestation Results. If appraisal fails, the receiver <span class="bcp14">MUST</span> treat the
 attestation as invalid.<a href="#section-5.1.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
@@ -1680,7 +1686,7 @@ obtain valid-looking attestation Evidence.<a href="#section-5.1.3-3" class="pilc
 <p id="section-5.1.3-4">However an endorsed TEE (one that is operating as required by this protocol)
 is required to verify the binder against the TLS public key associated
 with the private key that it holds. This verification, in conjunction with the TEE's
-endorsement being verified, ensures that relay attacks are prevented.<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
+endorsement being appraised, ensures that relay attacks are prevented.<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
 <p id="section-5.1.3-5">An active attacker cannot replay or relay attestation Evidence across TLS
 connections: the attestation binder is bound to the transcript through
 <code>ServerHello</code> (including the negotiated key shares and both peers' random values) and to
@@ -1876,8 +1882,8 @@ pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
       </h2>
 <p id="section-6-1">This section defines the TLS extensions used to negotiate the use of attestation
 in the TLS handshake. Two models are supported: the Background Check Model, where
-Evidence is exchanged and verified during the handshake, and the Passport Model,
-where pre-verified Evidence in the form of Attestation Results are presented. The extensions defined
+Evidence is exchanged and appraised during the handshake, and the Passport Model,
+where pre-appraised Evidence in the form of Attestation Results are presented. The extensions defined
 here allow peers to indicate their support for attestation and negotiate which
 attestation format and Verifier to use.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2"><span class="cref">Can we simplify this structure: remove the dual request/proposal, and unify the evidence+AR to a single
@@ -2158,7 +2164,7 @@ client has no Verifier identities to send in the ClientHello it <span class="bcp
 results_proposal extension in the ClientHello.<a href="#section-7.2.1-5" class="pilcrow">¶</a></p>
 <p id="section-7.2.1-6">The client <span class="bcp14">MUST</span> omit Verifier identities from the results_request extension in
 the ClientHello if it is not configured to trust Attestation Results issued by
-said verifiers. If the client does not act as a relying party with regards to
+said Verifiers. If the client does not act as a relying party with regards to
 the processing of Attestation Results (as defined in the RATS architecture) then
 the client <span class="bcp14">MUST</span> omit the results_request extension from the ClientHello.<a href="#section-7.2.1-6" class="pilcrow">¶</a></p>
 </section>
