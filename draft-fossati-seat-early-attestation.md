@@ -370,7 +370,7 @@ checkpoint, `ClientHello...ServerHello`.
 ~~~
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
-                                ClientHello...ServerHello, Hash.length)
+                                Hash(ClientHello...ServerHello), Hash.length)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     Hash(TLS_Client_Public_Key), Hash.length)
