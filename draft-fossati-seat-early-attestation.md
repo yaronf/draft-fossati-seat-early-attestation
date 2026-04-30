@@ -365,12 +365,12 @@ The attestation binder is computed using primitives
 defined in Section 4.4.1 and&nbsp;7.1 of {{-tls13}}.
 
 Both peers derive a single attestation base from the same transcript
-checkpoint, `ClientHello...ServerHello`.
+checkpoint, `ClientHello...EncryptedExtensions`.
 
 ~~~
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
-                                Hash(ClientHello...ServerHello), Hash.length)
+                                Hash(ClientHello...EncryptedExtensions), Hash.length)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     Hash(TLS_Client_Public_Key), Hash.length)
@@ -382,8 +382,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the
 cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
-We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The "0" parameter denotes
-a byte string of Hash.length zeroes.
+We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The "0" parameter denotes a byte string of Hash.length zeroes.
 
 ### Verification
 
@@ -432,11 +431,7 @@ is required to verify the binder against the TLS public key associated
 with the private key that it holds. This verification, in conjunction with the TEE's
 endorsement being appraised, ensures that relay attacks are prevented.
 
-An active attacker cannot replay or relay attestation Evidence across TLS
-connections: the attestation binder is bound to the transcript through
-`ServerHello` (including the negotiated key shares and both peers' random values) and to
-the TLS identity key. Any attempt to reuse valid Evidence in a different TLS
-connection results in a binder mismatch and verification failure.
+An active attacker cannot replay or relay attestation Evidence across TLS connections: the attestation binder is bound to the transcript through EncryptedExtensions (including the negotiated key shares, both peers' random values, and the encrypted extensions) and to the TLS identity key. Any attempt to reuse valid Evidence in a different TLS connection results in a binder mismatch and verification failure.
 
 ## Binding the TIK to the TEE {#tik-binding}
 
