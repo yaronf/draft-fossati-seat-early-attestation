@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-28T02:44:41.627434+00:00",
+  "timestamp": "2026-04-30T02:45:47.429778+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -791,11 +791,12 @@
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [
+        "Pre-03",
         "Implementation Experience"
       ],
       "body": "**Draft section:** \u00a74.1, \u00a76.1\n\nRFC 8446 \u00a74.2 requires that extensions appearing in the Certificate message correspond to the same extension type sent in ClientHello (server cert) or CertificateRequest (client cert). The draft uses `evidence_request` (a different type ID) in ClientHello to signal that the peer should include `attestation` in its Certificate. This violates the RFC's symmetric extension model.\n\n**Workaround in our implementation:** set the `ATTESTATION` bit in `sent_extensions` when writing `evidence_request`, pre-authorising it for the Certificate parser.\n\n**Proposed fix:** either assign `attestation` its own ClientHello/CertificateRequest extension, or explicitly carve out an exception to RFC 8446 \u00a74.2 in the draft text.",
       "createdAt": "2026-04-15T08:13:12Z",
-      "updatedAt": "2026-04-15T08:13:12Z",
+      "updatedAt": "2026-04-29T08:14:32Z",
       "closedAt": null,
       "comments": []
     },
@@ -876,6 +877,22 @@
       "body": "Derivation should follow the main document. Specifically, hash the public key to allow for longer public keys.",
       "createdAt": "2026-04-24T16:43:59Z",
       "updatedAt": "2026-04-24T16:43:59Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 61,
+      "id": "I_kwDOQdsaoc8AAAABAzdmZg",
+      "title": "Combined negotiation extensions",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/61",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We currently have a bunch of extensions for negotiating support in both directions. It would be good to only have one extension together. Below there's a possible solution to this.\n\n```\nenum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;\n\nstruct {\n    typeEncoding type_encoding;\n    select (EvidenceType.type_encoding) {\n        case CONTENT_FORMAT: uint16 content_format;\n        case MEDIA_TYPE: opaque media_type<0..2^16-1>;\n    };\n} EvidenceType;\n\nstruct {\n    opaque verifier_identity<0..2^16-1>;\n} VerifierIdentityType;\n\nenum { evidence(0), result(1), (255) } AttestationMechanism;\n\nstruct {\n    AttestationMechanism mechanism;\n    select (mechanism) {\n        case evidence: EvidenceType;\n        case result:   VerifierIdentityType;\n    } argument;\n} AttestationScheme;\n\nstruct {\n    select (Handshake.msg_type) {\n        case client_hello:\n            AttestationScheme server_verification_schemes<0..2^16-1>;\n            \n            AttestationScheme client_generation_schemes<0..2^16-1>;\n\n        case encrypted_extensions:\n            AttestationScheme selected_scheme;\n\n        case certificate_request:\n            AttestationScheme client_verification_schemes<1..2^16-1>;\n    };\n} RemoteAttestationExtension;\n```",
+      "createdAt": "2026-04-29T08:17:52Z",
+      "updatedAt": "2026-04-29T08:17:52Z",
       "closedAt": null,
       "comments": []
     }
@@ -4537,24 +4554,26 @@
       "id": "PR_kwDOQdsaoc7VXZUl",
       "title": "Make distinction between verify and appraise",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/59",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Does this distinction sound acceptable? I think we need a distinction, but I worry that \"verify\" is too close to what RFC9334 uses, so maybe using \"check\" instead would be better (or a similar alternative).",
       "createdAt": "2026-04-24T14:25:42Z",
-      "updatedAt": "2026-04-27T09:25:05Z",
+      "updatedAt": "2026-04-29T07:47:59Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "cbebe0c64a2236b440712e3a2251af33c8be399d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "appraise-verify",
       "headRefOid": "91179b81cfb4467e1fe40daaca7ef95bf113c2b4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-04-29T07:47:59Z",
+      "mergedAt": "2026-04-29T07:47:59Z",
+      "mergedBy": "ionut-arm",
+      "mergeCommit": {
+        "oid": "455f90fa31888c8e89b6bbdda44d05bb520424bb"
+      },
       "comments": [],
       "reviews": [
         {
@@ -4861,6 +4880,19 @@
               "updatedAt": "2026-04-27T09:18:32Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76CqLF",
+          "commit": {
+            "abbreviatedOid": "91179b8"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-04-29T07:46:34Z",
+          "updatedAt": "2026-04-29T07:46:34Z",
+          "comments": []
         }
       ]
     }
