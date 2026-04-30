@@ -382,7 +382,8 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the
 cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
-We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine.
+We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The "0" parameter denotes
+a byte string of Hash.length zeroes.
 
 ### Verification
 
