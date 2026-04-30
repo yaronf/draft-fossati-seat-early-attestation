@@ -435,7 +435,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Hash is the cipher suite hash function for the handshake (Section 7.1
    of [I-D.ietf-tls-rfc8446bis]).
 
-   We note that HKDF-Expand-Label is usedto produce binding values
+   We note that HKDF-Expand-Label is used to produce binding values
    rather than keying material.  HKDF-Extract is not called, as there is
    no input key material to mix.
 
