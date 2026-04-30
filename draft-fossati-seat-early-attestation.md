@@ -368,8 +368,9 @@ Both peers derive a single attestation base from the same transcript
 checkpoint, `ClientHello...ServerHello`.
 
 ~~~
-attest_base = Derive-Secret(0, "attestation base",
-                          ClientHello...ServerHello)
+
+attest_base = HKDF-Expand-Label(0, "attestation base",
+                                ClientHello...ServerHello, Hash.length)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     Hash(TLS_Client_Public_Key), Hash.length)
@@ -381,7 +382,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the
 cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
-We note that despite the use of the `Derive-Secret` primitive, none of these values are secret. Similarly we do not call `HKDF-Extract` which would not be effective.
+We note that `HKDF-Expand-Label` is usedto produce binding values rather than keying material. `HKDF-Extract` is not called, as there is no input key material to mix.
 
 ### Verification
 
@@ -938,6 +939,7 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
   within the 255-octet limit (post-quantum public keys); see {{crypto-ops}}.
 * Simplify attestation binder derivation to a single shared transcript
   checkpoint (`ClientHello...ServerHello`) for both peers (see {{crypto-ops}}).
+* Replaced Derive-Secret with HKDF-Expand-Label
 
 ## draft-fossati-seat-early-attestation-03
 * Replace the Attestation message by an Attestation (certificate) extension,
