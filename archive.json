@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-30T02:45:47.429778+00:00",
+  "timestamp": "2026-05-03T02:44:51.448584+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -4892,6 +4892,293 @@
           "body": "",
           "createdAt": "2026-04-29T07:46:34Z",
           "updatedAt": "2026-04-29T07:46:34Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 62,
+      "id": "PR_kwDOQdsaoc7W-Ted",
+      "title": "Replace Derive-Secret",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/62",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-30T05:52:33Z",
+      "updatedAt": "2026-05-01T05:54:22Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "455f90fa31888c8e89b6bbdda44d05bb520424bb",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-5",
+      "headRefOid": "813bf1cada363cca2b8d9dc577218c7f0d7e4f8f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "No, ServerHello is unencrypted (in a normal handshake). How can it be? The server\u2019s key share has not been sent yet.\r\n\r\nFrom: Thomas Fossati ***@***.***>\r\nDate: Thursday, 30 April 2026 at 15:40\r\nTo: yaronf/draft-fossati-seat-early-attestation ***@***.***>\r\nCc: Yaron Sheffer ***@***.***>, Review requested ***@***.***>\r\nSubject: Re: [yaronf/draft-fossati-seat-early-attestation] Replace Derive-Secret (PR #62)\r\n\r\n\r\n@thomas-fossati commented on this pull request.\r\n\r\n________________________________\r\n\r\nIn draft-fossati-seat-early-attestation.md<https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/62#discussion_r3167962332>:\r\n\r\n> @@ -381,7 +382,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, \"attestation\",\r\n SubjectPublicKeyInfo of the peer's end-entity certificate. `Hash` is the\r\n cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).\r\n\r\n-We note that despite the use of the `Derive-Secret` primitive, none of these values are secret. Similarly we do not call `HKDF-Extract` which would not be effective.\r\n+We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not called, as there is no input key material to mix.\r\n\r\n\r\nNo, ServerHello is encrypted in TLS 1.3 :)\r\n\r\ndamn, I must get it tattooed on my eyelids :-)\r\n\r\n\u2014\r\nReply to this email directly, view it on GitHub<https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/62#discussion_r3167962332>, or unsubscribe<https://github.com/notifications/unsubscribe-auth/AAJU7ZAJFSJHSOMFUXEP74D4YNCT3AVCNFSM6AAAAACYLWQQDGVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHM2DEMBVGE3DANZTGI>.\r\nTriage notifications on the go with GitHub Mobile for iOS<https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675> or Android<https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.\r\nYou are receiving this because your review was requested.\r\n",
+          "createdAt": "2026-04-30T12:59:01Z",
+          "updatedAt": "2026-04-30T12:59:01Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> No, ServerHello is unencrypted (in a normal handshake). How can it be? The server\u2019s key share has not been sent yet. \r\n\r\nI was assuming it includes EncryptedExtensions, we will have to fix it to be included. \r\n",
+          "createdAt": "2026-04-30T14:51:31Z",
+          "updatedAt": "2026-04-30T14:51:31Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "> > No, ServerHello is unencrypted (in a normal handshake). How can it be? The server\u2019s key share has not been sent yet.\r\n> \r\n> I was assuming it includes EncryptedExtensions, we will have to fix it to be included.\r\n\r\nPlease don't! We went back and forth on this: the binder does NOT need secret material in it, it just needs randomness from both client and server. And using ClientHello...ServerHello simplifies the implementation.",
+          "createdAt": "2026-04-30T14:55:06Z",
+          "updatedAt": "2026-04-30T14:55:06Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > > No, ServerHello is unencrypted (in a normal handshake). How can it be? The server\u2019s key share has not been sent yet.\r\n> > \r\n> > \r\n> > I was assuming it includes EncryptedExtensions, we will have to fix it to be included.\r\n> \r\n> Please don't! We went back and forth on this: the binder does NOT need secret material in it, it just needs randomness from both client and server. And using ClientHello...ServerHello simplifies the implementation.\r\n\r\n\r\n\r\n> > > No, ServerHello is unencrypted (in a normal handshake). How can it be? The server\u2019s key share has not been sent yet.\r\n> > \r\n> > \r\n> > I was assuming it includes EncryptedExtensions, we will have to fix it to be included.\r\n> \r\n> Please don't! We went back and forth on this: the binder does NOT need secret material in it, it just needs randomness from both client and server. And using ClientHello...ServerHello simplifies the implementation.\r\n\r\nI modified the attack model to explain that ClientHello...ServerHello is sufficient, please check. ",
+          "createdAt": "2026-05-01T05:52:40Z",
+          "updatedAt": "2026-05-01T05:52:40Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc76i1yi",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "\ud83d\udea2 it!",
+          "createdAt": "2026-04-30T08:00:24Z",
+          "updatedAt": "2026-04-30T08:58:39Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "purely editorial suggestion (feel free to ignore)\n\n```suggestion\nWe note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine.\n```",
+              "createdAt": "2026-04-30T08:00:25Z",
+              "updatedAt": "2026-04-30T08:58:39Z"
+            },
+            {
+              "originalPosition": 17,
+              "body": "Unrelated to this PR, I have a question.  It seems to me that we are using `HKDF-Expand` in a rather unconventional fashion.  In particular, we use 0 as the \u201csecret\" parameter, which, in theory, should be a pseudorandom key. Do we have any evidence that this construction is solid from a cryptographic perspective?\n\n(If I were to design it from scratch, I would probably use `ClientHello\u2026ServerHello` as IKM for `HKDF-Extract` and use the \u201cconcentrated\u201d output to feed `HKDF-Expand`.)\n\n",
+              "createdAt": "2026-04-30T08:55:29Z",
+              "updatedAt": "2026-04-30T08:58:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76nmGJ",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-04-30T11:22:48Z",
+          "updatedAt": "2026-04-30T11:23:22Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> Do we have any evidence that this construction is solid from a cryptographic perspective?\n\nWe don't need the binder to function as a secret, right? We're just using `HKDF-Expand` because it provides the crypto properties of a hash function, wrapped up for use within the scope of TLS. From that perspective, I don't think we need to care whether the secret is 0.\n\nObviously, IANACryptographer, but this seems no different to hash-binding two tokens / pieces of data, and HKDF gives us at least hash guarantees.",
+              "createdAt": "2026-04-30T11:22:48Z",
+              "updatedAt": "2026-04-30T11:23:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76o3sS",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:19:47Z",
+          "updatedAt": "2026-04-30T12:19:47Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> Unrelated to this PR, I have a question. It seems to me that we are using `HKDF-Expand` in a rather unconventional fashion. In particular, we use 0 as the \u201csecret\" parameter, which, in theory, should be a pseudorandom key. Do we have any evidence that this construction is solid from a cryptographic perspective?\r\n\r\nIf you look into Section 7.1 of https://datatracker.ietf.org/doc/rfc8446/, 0 is used as input to HKDF-Extract. I don't see any problem in using 0 as input as we are not deriving any keying material. The goal is an passive attacker who is monitoring the traffic should not generate the binding value (it should only be generated by the TLS peers). \r\n\r\n> \r\n> (If I were to design it from scratch, I would probably use `ClientHello\u2026ServerHello` as IKM for `HKDF-Extract` and use the \u201cconcentrated\u201d output to feed `HKDF-Expand`.)\r\n\r\nPlease see E.1.1 of RFC8446, it allows any number of HKDF-Expand invocations without invoking HKDF-Extract. It says:  Multiple applications of HKDF-Expand to some of the same inputs are allowed as long as these are differentiated via the key and/or the labels.\r\n\r\nwe could however use \"Handshake Secret\" as IKM (which is already derived from HKDF-Extract). \r\n\r\nattest_base = HKDF-Expand-Label(Handshake Secret, \"attestation base\",\r\n                                ClientHello...ServerHello, Hash.length)\r\n\r\nc_attest_binder = HKDF-Expand-Label(attest_base, \"client attestation\",\r\n                                    Hash(TLS_Client_Public_Key), Hash.length)\r\ns_attest_binder = HKDF-Expand-Label(attest_base, \"server attestation\",\r\n                                    Hash(TLS_Server_Public_Key), Hash.length)\r\n\r\nwe can discuss in our next call. ",
+              "createdAt": "2026-04-30T12:19:47Z",
+              "updatedAt": "2026-04-30T12:20:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76o392",
+          "commit": {
+            "abbreviatedOid": "281071a"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:19:56Z",
+          "updatedAt": "2026-04-30T12:19:56Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "I haven\u2019t (and I don\u2019t intend to) read Krawczyk\u2019s HKDF paper \ud83d\ude13 , but the [definitions in RFC5869](https://www.rfc-editor.org/rfc/rfc5869#section-2.3) are quite clear about the expected nature of the parameters, which we seem to have interpreted rather liberally \ud83d\ude04 \n\nIn particular, setting PRK=0 doesn\u2019t look very appropriate, does it?\n\nGoing back to first principles, what we want is to gather as much entropy as possible from the ClientHello...ServerHello transcript and use it to bootstrap our binder by mixing in the TIK as well.\n\nWe also have the size limit imposed by the attester ABI/API to consider, which requires us to securely truncate the output of the mix.\n\nThis, to me, seems the job for which XOFs (e.g., SHAKE) are designed for:\n\n```go\n\tshake := sha3.NewShake256()\n\tshake.Write(transcript, TIK)\n\tbinder := make([]byte, binderSize)\n\tshake.Read(binder)\n```\n\nInstead of using a primitive designed for a different purpose in an unconventional way.",
+              "createdAt": "2026-04-30T12:19:56Z",
+              "updatedAt": "2026-04-30T12:19:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76pLWf",
+          "commit": {
+            "abbreviatedOid": "281071a"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:31:09Z",
+          "updatedAt": "2026-04-30T12:34:20Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> If you look into Section 7.1 of https://datatracker.ietf.org/doc/rfc8446/, 0 is used as input to HKDF-Extract.\n\nSure, but we're using HKDF-Expand, not HKDF-Extract.\n\nThat 0 is the IKM, which is OK to be 0 if you don\u2019t have any input key material from where to start your \u201centropy squeezing\".\n\n> The goal is an passive attacker who is monitoring the traffic should not generate the binding value (it should only be generated by the TLS peers).\n\nI don't think that's the goal here.  If it was, then we\u2019d be in trouble because all parameters are publicly visible to a passive observer.\n\n",
+              "createdAt": "2026-04-30T12:31:09Z",
+              "updatedAt": "2026-04-30T12:34:20Z"
+            },
+            {
+              "originalPosition": 17,
+              "body": "That said, I realise that I am bgine more paranoid than necessary, but I'd feel more at ease if we examined it thoroughly to make sure the construction is sound.",
+              "createdAt": "2026-04-30T12:34:12Z",
+              "updatedAt": "2026-04-30T12:34:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76pUSL",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:36:19Z",
+          "updatedAt": "2026-04-30T12:36:19Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> we can discuss in our next call.\r\n\r\n\ud83d\udc4d ",
+              "createdAt": "2026-04-30T12:36:19Z",
+              "updatedAt": "2026-04-30T12:36:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76pWHD",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:37:26Z",
+          "updatedAt": "2026-04-30T12:37:26Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> > If you look into Section 7.1 of https://datatracker.ietf.org/doc/rfc8446/, 0 is used as input to HKDF-Extract.\r\n> \r\n> Sure, but we're using HKDF-Expand, not HKDF-Extract.\r\n> \r\n> That 0 is the IKM, which is OK to be 0 if you don\u2019t have any input key material from where to start your \u201centropy squeezing\".\r\n> \r\n> > The goal is an passive attacker who is monitoring the traffic should not generate the binding value (it should only be generated by the TLS peers).\r\n> \r\n> I don't think that's the goal here. If it was, then we\u2019d be in trouble because all parameters are publicly visible to a passive observer.\r\n\r\nNo, ServerHello is encrypted in TLS 1.3 :)",
+              "createdAt": "2026-04-30T12:37:26Z",
+              "updatedAt": "2026-04-30T12:37:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76pakc",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T12:40:09Z",
+          "updatedAt": "2026-04-30T12:40:09Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "> No, ServerHello is encrypted in TLS 1.3 :)\r\n\r\ndamn, I must get it tattooed on my eyelids :-)",
+              "createdAt": "2026-04-30T12:40:09Z",
+              "updatedAt": "2026-04-30T12:40:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76p-lW",
+          "commit": {
+            "abbreviatedOid": "281071a"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-04-30T13:02:51Z",
+          "updatedAt": "2026-04-30T13:11:00Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\n                                Hash(ClientHello...ServerHello), Hash.length)\n```\n\nAs opposed to the bare transcript. This is in line with the definition of `Derive-Secret`.",
+              "createdAt": "2026-04-30T13:02:51Z",
+              "updatedAt": "2026-04-30T13:11:00Z"
+            },
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\nWe note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The \"0\" parameter denotes\na byte string of Hash.length zeroes.\n```",
+              "createdAt": "2026-04-30T13:09:02Z",
+              "updatedAt": "2026-04-30T13:11:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76qoGo",
+          "commit": {
+            "abbreviatedOid": "784b188"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-30T13:24:27Z",
+          "updatedAt": "2026-04-30T13:24:27Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "I was going to ask whether we have any resident cryptographers to ask, but it seems we first need to figure out what exact properties we expect from the construction anyway. I agree with Yaron, though - don't think the transcript is (/ should be?) secret.",
+              "createdAt": "2026-04-30T13:24:27Z",
+              "updatedAt": "2026-04-30T13:24:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc76wF5t",
+          "commit": {
+            "abbreviatedOid": "ffe9c5e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "See my comment re: the transcript.",
+          "createdAt": "2026-04-30T16:41:35Z",
+          "updatedAt": "2026-04-30T16:41:35Z",
           "comments": []
         }
       ]
