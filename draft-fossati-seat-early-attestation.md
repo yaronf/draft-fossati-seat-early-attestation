@@ -518,9 +518,9 @@ The attestation binder is derived from the post-handshake authentication
 transcript defined in Section 4.4 of {{-tls13}}.
 
 ~~~
-pha_attest_base = Derive-Secret(0, "pha attestation base",
-                                ClientHello...client Finished +
-                                CertificateRequest)
+pha_attest_base = HKDF-Expand-Label(0, "pha attestation base",
+                                    Hash(ClientHello...client Finished + 
+                                    CertificateRequest), Hash.length)
 
 pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
                                       TLS_Client_Public_Key, Hash.length)
