@@ -519,7 +519,7 @@ transcript defined in Section 4.4 of {{-tls13}}.
 
 ~~~
 pha_attest_base = HKDF-Expand-Label(0, "pha attestation base",
-                                    Hash(ClientHello...client Finished + 
+                                    Hash(ClientHello...client Finished +
                                     CertificateRequest), Hash.length)
 
 pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
