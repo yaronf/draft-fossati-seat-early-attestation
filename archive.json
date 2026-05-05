@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-03T02:44:51.448584+00:00",
+  "timestamp": "2026-05-05T02:35:47.590284+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -4901,24 +4901,26 @@
       "id": "PR_kwDOQdsaoc7W-Ted",
       "title": "Replace Derive-Secret",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/62",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-04-30T05:52:33Z",
-      "updatedAt": "2026-05-01T05:54:22Z",
+      "updatedAt": "2026-05-04T09:41:28Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "455f90fa31888c8e89b6bbdda44d05bb520424bb",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-5",
-      "headRefOid": "813bf1cada363cca2b8d9dc577218c7f0d7e4f8f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "2a03ede9d97c17fb5da3b1a8bad59ab311b5f21c",
+      "closedAt": "2026-05-04T09:41:28Z",
+      "mergedAt": "2026-05-04T09:41:28Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "8f74a1814c685094bfcc7e5c7845ddfc29f0803d"
+      },
       "comments": [
         {
           "author": "yaronf",
@@ -5180,6 +5182,126 @@
           "createdAt": "2026-04-30T16:41:35Z",
           "updatedAt": "2026-04-30T16:41:35Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc77bBEJ",
+          "commit": {
+            "abbreviatedOid": "813bf1c"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "We also use `Derive-Secret` in the \"Post-Handshake Reattestation\u201d section.  Should we change that instance too?",
+          "createdAt": "2026-05-04T07:35:37Z",
+          "updatedAt": "2026-05-04T07:35:37Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc77cuxR",
+          "commit": {
+            "abbreviatedOid": "813bf1c"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-04T08:52:04Z",
+          "updatedAt": "2026-05-04T08:52:04Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\nWe note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The \"0\" parameter denotes a byte string of `Hash.length` zeroes.\n```\n\n(editorial)",
+              "createdAt": "2026-05-04T08:52:04Z",
+              "updatedAt": "2026-05-04T08:52:04Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 63,
+      "id": "PR_kwDOQdsaoc7X9EBd",
+      "title": "Remove Derive-secret from PHA",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/63",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-05-04T09:49:54Z",
+      "updatedAt": "2026-05-04T13:16:06Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "8f74a1814c685094bfcc7e5c7845ddfc29f0803d",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-6",
+      "headRefOid": "3c97b276711bd21aa750321330d031ad97692da8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc77ebYk",
+          "commit": {
+            "abbreviatedOid": "3c97b27"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-04T10:02:59Z",
+          "updatedAt": "2026-05-04T10:02:59Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\n                                    Hash(ClientHello...ClientFinished +\n```\n\nEditorial (consistent notation).",
+              "createdAt": "2026-05-04T10:02:59Z",
+              "updatedAt": "2026-05-04T10:02:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc77ecFU",
+          "commit": {
+            "abbreviatedOid": "3c97b27"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-04T10:03:31Z",
+          "updatedAt": "2026-05-04T10:03:31Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Why not ClientHello...ServerHello as for the main binder?",
+              "createdAt": "2026-05-04T10:03:31Z",
+              "updatedAt": "2026-05-04T10:03:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc77jXRn",
+          "commit": {
+            "abbreviatedOid": "3c97b27"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-04T13:16:06Z",
+          "updatedAt": "2026-05-04T13:16:06Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "ClientHello\u2026 ClientFinished + CertificateRequest provides a fresh binder for re-attestation, as the certificate_request_context carried in the CertificateRequest changes for every post-handshake client authentication.",
+              "createdAt": "2026-05-04T13:16:06Z",
+              "updatedAt": "2026-05-04T13:16:06Z"
+            }
+          ]
         }
       ]
     }
