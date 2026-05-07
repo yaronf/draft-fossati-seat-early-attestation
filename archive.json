@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-05T02:35:47.590284+00:00",
+  "timestamp": "2026-05-07T02:42:26.174390+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5230,7 +5230,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-05-04T09:49:54Z",
-      "updatedAt": "2026-05-04T13:16:06Z",
+      "updatedAt": "2026-05-05T13:58:04Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "8f74a1814c685094bfcc7e5c7845ddfc29f0803d",
@@ -5300,6 +5300,26 @@
               "body": "ClientHello\u2026 ClientFinished + CertificateRequest provides a fresh binder for re-attestation, as the certificate_request_context carried in the CertificateRequest changes for every post-handshake client authentication.",
               "createdAt": "2026-05-04T13:16:06Z",
               "updatedAt": "2026-05-04T13:16:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc78DK1y",
+          "commit": {
+            "abbreviatedOid": "3c97b27"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-05T13:58:04Z",
+          "updatedAt": "2026-05-05T13:58:04Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "I see your point but this is still very inconsistent with the base binder (and we're back to maintaining multiple transcript check points). I'm sure there's a better way.",
+              "createdAt": "2026-05-05T13:58:04Z",
+              "updatedAt": "2026-05-05T13:58:04Z"
             }
           ]
         }
