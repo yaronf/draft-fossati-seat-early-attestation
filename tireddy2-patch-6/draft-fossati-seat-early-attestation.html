@@ -1060,7 +1060,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 5 November 2026</td>
+<td class="center">Expires 15 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1073,12 +1073,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-04" class="published">4 May 2026</time>
+<time datetime="2026-05-14" class="published">14 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-11-05">5 November 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-15">15 November 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1149,7 +1149,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1826,19 +1826,9 @@ all be measured and reported as part of the platform's remote attestation.<a hre
           </h4>
 <p id="section-5.4.1-1">Post-handshake client authentication defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-4.6.2" class="relref">Section 4.6.2</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> can
 be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a <code>CertificateRequest</code> message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (<code>Certificate</code>, <code>CertificateVerify</code>, and <code>Finished</code>). If attestation has been negotiated for the TLS connection, the client includes the <code>attestation</code> extension in the <code>Certificate</code> message carrying updated Evidence or Attestation Results.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1-2">The attestation binder is derived from the post-handshake authentication
+<p id="section-5.4.1-2">The attestation binder can be derived from the post-handshake authentication
 transcript defined in Section 4.4 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1-3">
-<pre>
-pha_attest_base = HKDF-Expand-Label(0, "pha attestation base",
-                                    Hash(ClientHello...client Finished +
-                                    CertificateRequest), Hash.length)
-
-pha_attest_binder = HKDF-Expand-Label(pha_attest_base, "attestation",
-                                      TLS_Client_Public_Key, Hash.length)
-</pre><a href="#section-5.4.1-3" class="pilcrow">¶</a>
-</div>
-<p id="section-5.4.1-4">This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.<a href="#section-5.4.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-3">This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-1-carrying-attestation-in-extended-key-update">
