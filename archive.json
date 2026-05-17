@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-14T02:55:45.684304+00:00",
+  "timestamp": "2026-05-17T02:53:34.550695+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5247,24 +5247,26 @@
       "id": "PR_kwDOQdsaoc7X9EBd",
       "title": "Remove Derive-secret from PHA",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/63",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-05-04T09:49:54Z",
-      "updatedAt": "2026-05-05T13:58:04Z",
+      "updatedAt": "2026-05-15T05:44:08Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "8f74a1814c685094bfcc7e5c7845ddfc29f0803d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-6",
-      "headRefOid": "3c97b276711bd21aa750321330d031ad97692da8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d629caeb8bc31904ccda9c95aa26196564307d1e",
+      "closedAt": "2026-05-15T05:44:08Z",
+      "mergedAt": "2026-05-15T05:44:08Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "c8d1105d176d0c4bac87eafb245aa8ab1695cf11"
+      },
       "comments": [],
       "reviews": [
         {
@@ -5346,6 +5348,32 @@
               "updatedAt": "2026-05-05T13:58:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7_x8_Q",
+          "commit": {
+            "abbreviatedOid": "d629cae"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-14T15:42:03Z",
+          "updatedAt": "2026-05-14T15:42:03Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc7_yRth",
+          "commit": {
+            "abbreviatedOid": "d629cae"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-14T15:53:28Z",
+          "updatedAt": "2026-05-14T15:53:28Z",
+          "comments": []
         }
       ]
     }
