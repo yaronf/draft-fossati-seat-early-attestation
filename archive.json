@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-17T02:53:34.550695+00:00",
+  "timestamp": "2026-05-28T02:56:23.446154+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -479,7 +479,7 @@
       "id": "I_kwDOQdsaoc7hRwV_",
       "title": "Split implementation",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/22",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
@@ -488,8 +488,8 @@
       ],
       "body": "Sec. 4 mentions \"split implementations\" where the TLS stack is outside the TEE. The Cryptographic Operations section should describe separation of roles for such implementations, i.e. what is the TEE's exact role.",
       "createdAt": "2026-01-04T18:45:01Z",
-      "updatedAt": "2026-02-11T08:53:41Z",
-      "closedAt": null,
+      "updatedAt": "2026-05-27T07:48:24Z",
+      "closedAt": "2026-05-27T07:48:24Z",
       "comments": [
         {
           "author": "burgerdev",
@@ -497,6 +497,13 @@
           "body": "I think the split-implementation approach should be reflected in the use-cases draft, too. From reading through early-attestation-02, it is very unclear to me why an RP would need to verify management of the private key, but then have the TLS session (key) managed by an unverified component.",
           "createdAt": "2026-01-26T08:29:00Z",
           "updatedAt": "2026-01-26T08:29:00Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done (for now). @tireddy2 - feel free to reopen or create new issue if we need more details",
+          "createdAt": "2026-05-27T07:48:24Z",
+          "updatedAt": "2026-05-27T07:48:24Z"
         }
       ]
     },
@@ -613,7 +620,7 @@
       "id": "I_kwDOQdsaoc7lyGl1",
       "title": "Relationship of binder, evidence and CMW signing",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/39",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "burgerdev",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -622,9 +629,17 @@
       ],
       "body": "It's somewhat implict in the draft that the CMW needs to contain certain items and needs to be signed. For example, the draft says both:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L262-L265\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L273-L276\n\nTo me, this implies that the binder is not included into the actual evidence, but somehow passed alongside it. (Otherwise, how could the AR be cached?)\n\nIt would be helpful if the draft was more specific about:\n\n1. How to construct the binder.\n2. How (whether) the binder needs to be tied to the evidence and laid out in the CMW.\n3. What requirements apply to the CMW signature.",
       "createdAt": "2026-01-26T09:12:10Z",
-      "updatedAt": "2026-02-11T08:40:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-05-27T07:59:35Z",
+      "closedAt": "2026-05-27T07:59:35Z",
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the resolution for those points is:\n\n1. We've covered this now. (see [here](https://www.sheffer.org/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html#name-attestation-binder-definiti).\n2. We've covered this throughout the doc, mentioning multiple times that the binder needs to be used as a nonce when generating the evidence.\n3. The CMW is only a container for the evidence/ARs, and does not need to be signed. it's just there to preserve typing. anything signed is only contained by the CMW.",
+          "createdAt": "2026-05-27T07:59:35Z",
+          "updatedAt": "2026-05-27T07:59:35Z"
+        }
+      ]
     },
     {
       "number": 40,
@@ -723,15 +738,25 @@
       "state": "OPEN",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "thomas-fossati"
+      ],
       "labels": [
         "Pre-03"
       ],
       "body": "There are two possible approaches for binding the Evidence to the TLS connection and the key provenance of the TIK private key of TIK private key in the Evidence, and I\u2019d like to discuss both and get feedback from the co-authors.\n\nOption 1: Implicit binding via nonce construction\n\nIn this approach, the TLS stack constructs a nonce that embeds both the TLS handshake transcript hash and the hash of the TIK public key, and passes this nonce to the TEE. The TEE verifies that the embedded public key hash corresponds to a TIK private key it manages and, if so, signs the nonce as part of the Evidence.\n\nOn the Relying Party (RP) side, the RP reconstructs the expected nonce using the TLS handshake transcript hash and the hash of the TIK public key extracted from the end-entity certificate. The RP (or an external Verifier, if not co-located) verifies the TEE signature over the nonce. Successful verification allows the RP to infer that the TEE controls the TIK private key corresponding to the public key used in the TLS handshake, even though the key identity is not carried as an explicit claim in the Evidence.\n\nThis approach relies on correct nonce construction by the TLS stack and correct enforcement by the TEE, and the binding between the attestation and the key is inferred indirectly rather than expressed as an explicit Evidence claim.\n\nOption 2: Explicit key identity claim in Evidence\nIn this approach, the Evidence itself carries an explicit claim, such as a hash of the public key (e.g., AIK_pub_hash). The nonce or challenge is used solely for freshness and channel binding. This allows the Relying Party to directly observe a statement like: \u201cThis Evidence attests to public key X,\u201d rather than inferring the binding indirectly from how the nonce is constructed and validated by the TEE.\n\nI prefer Option 2 as it would enable the Verifier to determine, based on attestation claims, whether the TIK private key is generated, stored, and protected within a secure element.\n\n",
       "createdAt": "2026-02-06T06:00:57Z",
-      "updatedAt": "2026-02-11T08:36:44Z",
+      "updatedAt": "2026-05-27T08:17:09Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There is symmetric work to convey the verified public key from the Verifier back to the RP.\n\nSee https://github.com/ietf-rats-wg/draft-ietf-rats-ear/issues/36.",
+          "createdAt": "2026-05-27T08:17:09Z",
+          "updatedAt": "2026-05-27T08:17:09Z"
+        }
+      ]
     },
     {
       "number": 45,
@@ -789,14 +814,16 @@
       "state": "OPEN",
       "author": "yaronf",
       "authorAssociation": "OWNER",
-      "assignees": [],
+      "assignees": [
+        "ionut-arm"
+      ],
       "labels": [
         "Pre-03",
         "Implementation Experience"
       ],
       "body": "**Draft section:** \u00a74.1, \u00a76.1\n\nRFC 8446 \u00a74.2 requires that extensions appearing in the Certificate message correspond to the same extension type sent in ClientHello (server cert) or CertificateRequest (client cert). The draft uses `evidence_request` (a different type ID) in ClientHello to signal that the peer should include `attestation` in its Certificate. This violates the RFC's symmetric extension model.\n\n**Workaround in our implementation:** set the `ATTESTATION` bit in `sent_extensions` when writing `evidence_request`, pre-authorising it for the Certificate parser.\n\n**Proposed fix:** either assign `attestation` its own ClientHello/CertificateRequest extension, or explicitly carve out an exception to RFC 8446 \u00a74.2 in the draft text.",
       "createdAt": "2026-04-15T08:13:12Z",
-      "updatedAt": "2026-04-29T08:14:32Z",
+      "updatedAt": "2026-05-27T08:12:48Z",
       "closedAt": null,
       "comments": []
     },
@@ -888,11 +915,13 @@
       "state": "OPEN",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "ionut-arm"
+      ],
       "labels": [],
       "body": "We currently have a bunch of extensions for negotiating support in both directions. It would be good to only have one extension together. Below there's a possible solution to this.\n\n```\nenum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;\n\nstruct {\n    typeEncoding type_encoding;\n    select (EvidenceType.type_encoding) {\n        case CONTENT_FORMAT: uint16 content_format;\n        case MEDIA_TYPE: opaque media_type<0..2^16-1>;\n    };\n} EvidenceType;\n\nstruct {\n    opaque verifier_identity<0..2^16-1>;\n} VerifierIdentityType;\n\nenum { evidence(0), result(1), (255) } AttestationMechanism;\n\nstruct {\n    AttestationMechanism mechanism;\n    select (mechanism) {\n        case evidence: EvidenceType;\n        case result:   VerifierIdentityType;\n    } argument;\n} AttestationScheme;\n\nstruct {\n    select (Handshake.msg_type) {\n        case client_hello:\n            AttestationScheme server_verification_schemes<0..2^16-1>;\n            \n            AttestationScheme client_generation_schemes<0..2^16-1>;\n\n        case encrypted_extensions:\n            AttestationScheme selected_scheme;\n\n        case certificate_request:\n            AttestationScheme client_verification_schemes<1..2^16-1>;\n    };\n} RemoteAttestationExtension;\n```",
       "createdAt": "2026-04-29T08:17:52Z",
-      "updatedAt": "2026-04-29T08:17:52Z",
+      "updatedAt": "2026-05-27T08:12:41Z",
       "closedAt": null,
       "comments": []
     },
