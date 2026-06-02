@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-28T02:56:23.446154+00:00",
+  "timestamp": "2026-06-02T03:45:03.015829+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -620,17 +620,17 @@
       "id": "I_kwDOQdsaoc7lyGl1",
       "title": "Relationship of binder, evidence and CMW signing",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/39",
-      "state": "CLOSED",
+      "state": "OPEN",
       "author": "burgerdev",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [
-        "Pre-03"
+      "assignees": [
+        "ionut-arm"
       ],
+      "labels": [],
       "body": "It's somewhat implict in the draft that the CMW needs to contain certain items and needs to be signed. For example, the draft says both:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L262-L265\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L273-L276\n\nTo me, this implies that the binder is not included into the actual evidence, but somehow passed alongside it. (Otherwise, how could the AR be cached?)\n\nIt would be helpful if the draft was more specific about:\n\n1. How to construct the binder.\n2. How (whether) the binder needs to be tied to the evidence and laid out in the CMW.\n3. What requirements apply to the CMW signature.",
       "createdAt": "2026-01-26T09:12:10Z",
-      "updatedAt": "2026-05-27T07:59:35Z",
-      "closedAt": "2026-05-27T07:59:35Z",
+      "updatedAt": "2026-06-01T09:40:36Z",
+      "closedAt": null,
       "comments": [
         {
           "author": "ionut-arm",
@@ -638,6 +638,13 @@
           "body": "I think the resolution for those points is:\n\n1. We've covered this now. (see [here](https://www.sheffer.org/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html#name-attestation-binder-definiti).\n2. We've covered this throughout the doc, mentioning multiple times that the binder needs to be used as a nonce when generating the evidence.\n3. The CMW is only a container for the evidence/ARs, and does not need to be signed. it's just there to preserve typing. anything signed is only contained by the CMW.",
           "createdAt": "2026-05-27T07:59:35Z",
           "updatedAt": "2026-05-27T07:59:35Z"
+        },
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "Hey @ionut-arm,\n\npoints 1-3 are indeed resolved, thanks! However, now I believe there is a contradiction between:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/c8d1105d176d0c4bac87eafb245aa8ab1695cf11/draft-fossati-seat-early-attestation.md?plain=1#L275-L278\n\nand \n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/c8d1105d176d0c4bac87eafb245aa8ab1695cf11/draft-fossati-seat-early-attestation.md?plain=1#L395-L406\n\nEither the attestation results can be cached and used for more than one session, or they are generated for each session, but surely not both? I'd say that cutting the two paragraphs from *Attestation Extensions* would be justified.\n\nCheers, Markus ",
+          "createdAt": "2026-06-01T07:39:31Z",
+          "updatedAt": "2026-06-01T07:39:31Z"
         }
       ]
     },
