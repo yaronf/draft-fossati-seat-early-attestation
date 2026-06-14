@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-11T03:46:02.898166+00:00",
+  "timestamp": "2026-06-14T03:53:24.343570+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -223,15 +223,15 @@
       "id": "I_kwDOQdsaoc7bq0my",
       "title": "Review error handling and alert naming",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Error handling: \"unsupported evidence\" is the only alert. Is it good for failing verification as well? Maybe rename to \"Evidence rejected\"?",
       "createdAt": "2025-12-02T11:41:17Z",
-      "updatedAt": "2026-01-26T08:30:28Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-12T10:08:38Z",
+      "closedAt": "2026-06-12T10:08:38Z",
       "comments": [
         {
           "author": "burgerdev",
@@ -239,6 +239,13 @@
           "body": "I, too, had the feeling that there should be an alert dedicated to failed attestation verification.",
           "createdAt": "2026-01-26T08:30:28Z",
           "updatedAt": "2026-01-26T08:30:28Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in the latest revision. See \"TLS Alerts\" section.",
+          "createdAt": "2026-06-12T10:08:38Z",
+          "updatedAt": "2026-06-12T10:08:38Z"
         }
       ]
     },
@@ -968,7 +975,7 @@
       "labels": [],
       "body": "# Proposal: Adapt RFC 9345 Delegation Mechanism for TEE-bound Ephemeral Keys\n\n## Definitions\n\nIn this proposal, the TLS Identity Key role is split into two distinct keys:\n\n* **LTK:** the long-term, CA-backed WebPKI identity key, which may be bound to an HSM, TPM, KMS, or REE-side protection domain.\n* **Ephemeral TIK:** a short-lived key generated inside the TEE runtime. The private key never leaves the TEE.\n\nThe LTK authenticates the service identity and signs a Delegated Credential. The ephemeral TIK signs the TLS `CertificateVerify` message and is bound to attestation Evidence.\n\n## Motivation\n\nThe aim of this proposal is to provide operational freedom to separate the long-term WebPKI identity key from a TEE-generated ephemeral TLS signing key, while preserving cryptographic assurance that the handshake key is TEE-bound.\n\nIn split TLS architectures, deploying the long-term WebPKI TLS identity key directly inside the TEE can be operationally restrictive. For orchestrated confidential workloads, such as Kubernetes, routing this LTK through an untrusted control plane can violate the hardware threat model and require complex out-of-band key broker services for secure injection.\n\n### Defence-in-depth compound authentication\n\nWhen multiple hardware roots of trust are available, the LTK can be protected by one root of trust, such as a TPM or HSM, while the ephemeral TIK is generated and protected by the TEE runtime.\n\n### Confidential containers / service mesh\n\nThis proposal provides the cryptographic plumbing required to operationalize [Paul Howard's cloud-to-edge \"Logical TEE\" ](https://github.com/tls-attestation/materials/blob/main/lc24/attested_tls_use_cases_paulh.pdf) concept and address the proxy mediation requirements currently being reviewed in the[ use-cases draft](https://github.com/tls-attestation/use-cases-and-properties/pull/48).\n\nIn a realistic Confidential Containers (CoCo) Kubernetes deployment using Kata, placing an Envoy sidecar directly inside the hardware TEE makes the proxy itself the attested endpoint, preserving standard service mesh routing. Adapting RFC 9345 makes this architecture viable by allowing the TEE-bound proxy to generate ephemeral, hardware-attested keys and dynamically request a short-lived Delegated Credential from an external KMS. This eliminates the need to inject the long-term WebPKI private key into the TEE workload or through the Kubernetes workload deployment path.\n\n\n## Proposed Solution\n\nThis proposal adapts the cryptographic delegation mechanism from RFC 9345 Delegated Credentials. A WebPKI private key delegates TLS signing authority to a short-lived, TEE-bound key.\n\nThis creates a verifiable bridge between standard WebPKI authentication and hardware-attested runtime authentication.\n\n```text\n                     normal WebPKI\n                         |\n                         v\n+--------------------------------------------------+\n| X.509 cert                                       |\n| Subject: pod.example.com                         |\n| Key:     pubLTK                                  |\n+--------------------------------------------------+\n                         |\n                         | RFC 9345 DC signature\n                         v\n+==================================================+\n| Delegated Credential                             |\n| Key:       pubTIK                                |\n| Validity:  short-lived                           |\n| Algorithm: CertificateVerify algorithm           |\n+==================================================+\n                         |\n                         | TLS CertificateVerify\n                         v\n+==================================================+\n| TEE                                              |\n| Holds privTIK                                    |\n| Signs TLS handshake                              |\n| Produces attestation Evidence for pubTIK         |\n+==================================================+\n\n```\n\n## Attester Side\n\n```\n// 1. Standard X.509 cert from CA.\nlet webPKI_CA_sig = sign(privCA, (ID_S, pubLTK))\nlet ltk_cert = ((ID_S, pubLTK), webPKI_CA_sig)\n\n// 2. TEE generates ephemeral TLS signing key.\nlet (pubTIK, privTIK) = TEE.GenerateKey()\n\n// 3. LTK delegates to the TEE-bound key using RFC 9345.\nlet tik_dc_sig = sign(\n    privLTK,\n    RFC9345_DC_Payload(pubTIK, valid_time, alg)\n)\n\nlet tik_dc = (pubTIK, valid_time, alg, tik_dc_sig)\n\n// 4. Derive attestation base from handshake transcript (per I-D \u00a7crypto-ops).\nlet attest_base = HKDF-Expand-Label(\n    0,\n    \"attestation base\",\n    Hash(ClientHello...ServerHello),\n    Hash.length\n)\n\n// 5. Bind binder to the full delegation context; pubTIK is already\n//    committed to inside Hash(tik_dc), so it is not included separately.\nlet dc_context = Hash(pubLTK || Hash(tik_dc))\n\nlet s_attest_binder = HKDF-Expand-Label(\n    attest_base,\n    \"attestation\",\n    dc_context,\n    Hash.length\n)\n\n// 6. TEE produces Evidence for pubTIK and s_attest_binder.\nlet evidence = TEE.Attest(pubTIK, s_attest_binder)\n\n// 7. TEE signs TLS CertificateVerify with privTIK.\n\n```\n\n## Verifier Side\n\n```\n// 1. Validate the standard WebPKI chain.\nverify(pubCA, (ID_S, pubLTK))\n\n// 2. Validate the Delegated Credential using RFC 9345 rules.\nverify(pubLTK, RFC9345_DC_Payload(pubTIK, valid_time, alg))\n\n// 2a. Check credential validity window.\n// 2b. Check remaining validity does not exceed 7 days.\n// 2c. Check dc_cert_verify_algorithm matches CertificateVerify.\n\n// 3. Recompute attestation binder.\nlet attest_base = HKDF-Expand-Label(\n    0,\n    \"attestation base\",\n    Hash(ClientHello...ServerHello),\n    Hash.length\n)\n\nlet dc_context = Hash(pubLTK || Hash(tik_dc))\n\nlet expected_binder = HKDF-Expand-Label(\n    attest_base,\n    \"attestation\",\n    dc_context,\n    Hash.length\n)\n\n// 4. Appraise Evidence against expected_binder and pubTIK.\n\n// 5. Verify TLS CertificateVerify using pubTIK.\nverify(pubTIK, CertificateVerifyTranscript, sig)\n\n```\n\n## DC Delivery in the TLS Handshake\n\nRFC 9345 requires the Delegated Credential to be sent as an extension within the `CertificateEntry` of the end-entity certificate in the `Certificate` message.\n\nThe Early Attestation draft already places an `attestation` extension in that same `CertificateEntry`. Under this proposal, the DC is carried as a second extension alongside the `attestation` extension within the same `CertificateEntry`.\n\nWhen both extensions are present, the Delegated Credential public key is the key used for `CertificateVerify`, and the attestation Evidence applies to that delegated key.\n\n## Security Considerations\n\nThis construction combines three checks:\n\n1. WebPKI validation proves the service identity.\n2. RFC 9345 validation proves that the service identity key delegated authority to the TEE-bound key.\n3. Attestation proves that the delegated private key is controlled by the expected TEE runtime and bound to the current TLS handshake.\n\nThe delegated key remains short-lived and subject to RFC 9345 validity and algorithm constraints. The attestation binder prevents replay of Evidence across handshakes and binds the attested key to the delegation context used in this session.\n\nImplementations should also account for RFC 9345 security considerations, including delegated credential lifetime, session resumption behavior, and cross-protocol risks when the LTK is used in older or unintended signing contexts.\n\n### DelegationUsage Requirement\n\nUnder standard deployments, RFC 9345 mandates the presence of a CA-issued `DelegationUsage` X.509 extension. Present support for this extension is currently limited (e.g., DigiCert has direct support, Let's Encrypt does not). Explicit support may expand alongside the publishing of a TLS-RA protocol such as this as a proposed standard.\n\nFor the purpose of this proposal, the explicit negotiation of the `attestation` extension provides the contextual authorization to accept this delegation in the absence of the mandatory `DelegationUsage` X.509 extension. Longer term, this proposal defines a TLS-RA profile of RFC 9345 that would need TLSWG review.\n\nImplementation error may still represent real risk if the LTK is not isolated within a control plane or HSM and is caused to participate with legacy interactive traffic. These considerations should be expressed within the draft.\n",
       "createdAt": "2026-05-13T16:37:31Z",
-      "updatedAt": "2026-05-13T16:41:02Z",
+      "updatedAt": "2026-06-12T03:26:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -977,6 +984,13 @@
           "body": "@tireddy2 Just a clarification on the threat model. The formal analysis demonstrates defence-in-depth in the case where the TEE-bound TIK may be compromised, but security holds under the assumption the LTK is secure (presumably from a separate HW RoT) and vice-versa. Let me know if you would still like to see the full formalization, or simple more detail in a \"human readable\" form. Cheers! -N",
           "createdAt": "2026-05-13T16:41:02Z",
           "updatedAt": "2026-05-13T16:41:02Z"
+        },
+        {
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "body": "@tireddy2 @yaronf \n\nYou've likely seen that I formalized the latest -04 revision with the RFC 9345 proposal [on-list](https://mailarchive.ietf.org/arch/msg/seat/EQmA8V6ULWl1cP9V4kOuIhv4DeI/). While the results regarding the use of KEMs vs DHKE for key establishment are well within expectations, I did want to emphasize that the binder changes are also well within expectations. So no surprises in either case.\n\nMy active question is if there was active interest in integrating the mechanism direct with the Early Attestation draft or maybe if anyone had thoughts about spinning this particular proposal re: RFC 9345 integration into it's own I-D? ",
+          "createdAt": "2026-06-12T03:26:19Z",
+          "updatedAt": "2026-06-12T03:26:19Z"
         }
       ]
     }
