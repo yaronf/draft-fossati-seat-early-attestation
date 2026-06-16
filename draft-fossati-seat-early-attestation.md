@@ -159,7 +159,7 @@ This is achieved by reusing the generic encapsulation defined in {{-cmw}} for tr
 
 This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in {{Sections 5.2 and 5.1 of -rats-arch}}.
-This is detailed in {{evidence-extensions}} and {{attestation-results-extensions}}.
+This is detailed in {{negotiating-protocol}}.
 
 The protocol we propose is implemented completely at the TLS level, resulting in several related advantages:
 
@@ -578,7 +578,7 @@ The server can respond with an empty reply if it does not support the proposed s
         select (Handshake.msg_type) {
             case client_hello:
                 AttestationScheme server_attester_schemes<0..2^16-1>;
-                
+
                 AttestationScheme client_attester_schemes<0..2^16-1>;
 
             case encrypted_extensions:
