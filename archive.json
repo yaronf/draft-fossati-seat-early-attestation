@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-14T03:53:24.343570+00:00",
+  "timestamp": "2026-06-16T03:55:18.288514+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5450,6 +5450,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 65,
+      "id": "PR_kwDOQdsaoc7mobk-",
+      "title": "WIP: Change negotiation to use a single extension",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/65",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also changes the Cert message extension to use the same name. Also updates the descriptions of how the two RA topologies are supported.",
+      "createdAt": "2026-06-15T16:28:35Z",
+      "updatedAt": "2026-06-15T16:28:36Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "c8d1105d176d0c4bac87eafb245aa8ab1695cf11",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "negotiation",
+      "headRefOid": "9c9ef2e6c3ffd17a840c3ec97f2201fca29f8adb",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
