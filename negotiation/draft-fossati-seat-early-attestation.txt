@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 18 December 2026                                   Y. Deshpande
+Expires: 19 December 2026                                   Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                            16 June 2026
+                                                            17 June 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 December 2026.
+   This Internet-Draft will expire on 19 December 2026.
 
 Copyright Notice
 
@@ -437,7 +437,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 5.1.2.  Verification
 
-   Upon receipt of an remoteAttestation extension, the peer MUST compute
+   Upon receipt of a remoteAttestation extension, the peer MUST compute
    the attestation binder.
 
    If the peer's Evidence is rejected (binder mismatch, failed Evidence
