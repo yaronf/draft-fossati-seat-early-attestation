@@ -863,7 +863,8 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
    client_attester_scheme in EncryptedExtensions the corresponding
    attestation scheme provided by the client.  If the server chooses to
    request that the client attests itself using one of the provided
-   schemes, it MUST also send a CertificateRequest message.
+   schemes, it MUST also send a CertificateRequest message that includes
+   the remoteAttestation extension (see Figure 3).
 
    Both schemes selected for server_attester_scheme and
    client_attester_scheme MUST be selected from the schemes provided in
