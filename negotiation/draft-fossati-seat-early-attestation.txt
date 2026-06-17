@@ -93,7 +93,7 @@ Table of Contents
    3.  Overview
      3.1.  Authentication vs. Attestation
      3.2.  Integration into the TLS Handshake
-   4.  Attestation Extensions
+   4.  Attestation Extension
      4.1.  Remote Attestation Extension
    5.  Use of Attestation in the TLS Handshake
      5.1.  Cryptographic Operations
@@ -113,7 +113,8 @@ Table of Contents
    7.  TLS Client and Server Handshake Behavior
      7.1.  Client Hello
      7.2.  Server Hello
-     7.3.  Following Server Hello
+     7.3.  Certificate Request
+     7.4.  Following Server Hello
    8.  Security Considerations
      8.1.  Security Guarantees
      8.2.  Freshness Guarantees
@@ -280,23 +281,22 @@ Table of Contents
    unmodified.  Nevertheless, formal validation of these security
    properties is still required.
 
-4.  Attestation Extensions
+4.  Attestation Extension
 
    As typical with new features in TLS, the client indicates support for
    the new extension in the ClientHello message.  The newly introduced
-   extensions allow attestation Evidence or Attestation Results to be
+   extension allows attestation Evidence or Attestation Results to be
    exchanged.  Freshness of the exchanged Evidence is guaranteed through
    an Attestation Binder mechanism (see Section 5.1) when the Background
    Check Model is in use.  In the Passport Model, freshness expectations
    are more relaxed and are governed by the lifetime of the signed
    Attestation Results.
 
-   When either the Evidence or the Attestation Results extension is
-   successfully negotiated, attestation Evidence or Attestation Results
-   are conveyed in an remoteAttestation extension (see Section 4.1).
-   The CMW payload in the Attestation extension contains the attestation
-   Evidence or Attestation Results encoded according to
-   [I-D.ietf-rats-msg-wrap].
+   When the extension is successfully negotiated, attestation Evidence
+   or Attestation Results are conveyed in a remoteAttestation extension
+   (see Section 4.1).  The CMW payload in the Attestation extension
+   contains the attestation Evidence or Attestation Results encoded
+   according to [I-D.ietf-rats-msg-wrap].
 
    The attestation payload MUST contain assertions relating to the
    attester's TLS Identity Key (TIK-C for client attester, TIK-S for
@@ -350,13 +350,56 @@ Table of Contents
    This message carries a CMW (Conceptual Message Wrapper) payload as
    defined in [I-D.ietf-rats-msg-wrap].
 
-   The remoteAttestation extension structure is defined as follows:
+   The remoteAttestation extension structure is defined in Figure 1.  As
+   per Section 4.2 of [I-D.ietf-tls-rfc8446bis], a single extension is
+   used across the entire handshake.  The extension is used in
+   ClientHello, EncryptedExtensions, and CertificateRequest messages for
+   protocol negotiation (see Section 6).  The extension is used in
+   Certificate messages for carrying attestation credentials.
+
+       enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
 
        struct {
-           opaque cmw_payload<1..2^24-1>;
+           typeEncoding type_encoding;
+           select (EvidenceType.type_encoding) {
+               case CONTENT_FORMAT: uint16 content_format;
+               case MEDIA_TYPE: opaque media_type<0..2^16-1>;
+           };
+       } EvidenceType;
+
+       struct {
+           opaque verifier_identity<0..2^16-1>;
+       } VerifierIdentityType;
+
+       enum { evidence(0), result(1), (255) } AttestationMechanism;
+
+       struct {
+           AttestationMechanism mechanism;
+           select (mechanism) {
+               case evidence: EvidenceType;
+               case result:   VerifierIdentityType;
+           } argument;
+       } AttestationScheme;
+
+       struct {
+           select (Handshake.msg_type) {
+               case client_hello:
+                   AttestationScheme server_attester_schemes<0..2^16-1>;
+
+                   AttestationScheme client_attester_schemes<0..2^16-1>;
+
+               case encrypted_extensions:
+                   AttestationScheme chosen_server_scheme;
+
+               case certificate_request:
+                   AttestationScheme chosen_client_scheme;
+
+               case certificate:
+                   opaque cmw_payload<1..2^24-1>;
+           };
        } remoteAttestation;
 
-                 Figure 1: Attestation Extension Structure.
+   Figure 1: TLS Extension Structure for Remote Attestation negotiation.
 
    The cmw_payload field contains a CMW structure as defined in
    [I-D.ietf-rats-msg-wrap].  Both JSON and CBOR serializations are
@@ -685,7 +728,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    are supported: the Background Check Model, where Evidence is
    exchanged and appraised during the handshake, and the Passport Model,
    where pre-appraised Evidence in the form of Attestation Results are
-   presented.  The extension defined in Figure 3 allows peers to
+   presented.  The extension defined in Figure 1 allows peers to
    indicate their support for attestation and negotiate which
    attestation format and, if required, which Verifier to use.
 
@@ -698,69 +741,30 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    least one AttestationScheme structure.
 
    The server replies with its preferred schemes for both server- and
-   client-as-attester.  The server can respond with an empty reply if it
-   does not support the proposed schemes, or if it does not want to
+   client-as-attester.  The selected server-as-attester scheme is sent
+   in the EncryptedExtensions message.  The selected client-as-attester
+   scheme is sent in the CertificateRequest message.  The server MUST
+   omit the remoteAttestation extension from EncryptedExtensions and
+   CertificateRequest messages if it does not support the corresponding
+   proposed schemes, or if it does not want the corresponding peer to
    engage in remote attestation.
 
-    enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
-
-    struct {
-        typeEncoding type_encoding;
-        select (EvidenceType.type_encoding) {
-            case CONTENT_FORMAT: uint16 content_format;
-            case MEDIA_TYPE: opaque media_type<0..2^16-1>;
-        };
-    } EvidenceType;
-
-    struct {
-        opaque verifier_identity<0..2^16-1>;
-    } VerifierIdentityType;
-
-    enum { evidence(0), result(1), (255) } AttestationMechanism;
-
-    struct {
-        AttestationMechanism mechanism;
-        select (mechanism) {
-            case evidence: EvidenceType;
-            case result:   VerifierIdentityType;
-        } argument;
-    } AttestationScheme;
-
-    struct {
-        select (Handshake.msg_type) {
-            case client_hello:
-                AttestationScheme server_attester_schemes<0..2^16-1>;
-
-                AttestationScheme client_attester_schemes<0..2^16-1>;
-
-            case encrypted_extensions:
-                AttestationScheme server_attester_scheme<0..1>;
-
-                AttestationScheme client_attester_scheme<0..1>;
-
-            case certificate_request:
-                AttestationScheme client_verification_schemes<1..2^16-1>;
-        };
-    } remoteAttestation;
-
-Figure 3: TLS Extension Structure for Remote Attestation negotiation.
+   The remoteAttestation extension used to negotiate support for the
+   protocol described in this document is defined in Figure 1.
 
    Values for media_type are defined in [iana-media-types].  Values for
    content_format are defined in [iana-content-formats].  The
    verifier_identity field can be used to carry an identifier for a
-   Verifier instance, such as a raw public key, a certificate name
-   (subjectAltName, DistinguishedName), or a certificate thumbprint.
-
-   The Evidence or Attestation Results contained in the CMW payload are
-   sent in the corresponding remoteAttestation extension in the
-   Certificate message (see Section 4.1).  The CMW structure is defined
-   in [I-D.ietf-rats-msg-wrap].
+   Verifier instance.  The identifier needs to be stable across the
+   lifetime of the connection (potentially across Verifier credential
+   rotation), for example a subjectAltName.
 
 7.  TLS Client and Server Handshake Behavior
 
-   The high-level message exchange in Figure 4 shows the
+   The high-level message exchange in Figure 3 shows the
    remoteAttestation extension added to the ClientHello, the
-   EncryptedExtensions, and the Certificate messages.
+   EncryptedExtensions, the CertificateRequest, and the Certificate
+   messages.
 
          Client                                           Server
 
@@ -775,11 +779,9 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
                                                    + key_share* | Exch
                                               + pre_shared_key* v
                                           {EncryptedExtensions} ^ Server
-                                           + evidence_proposal* | Params
-                                            + evidence_request* |
-                                            + results_proposal* |
-                                             + results_request* |
-                                          {CertificateRequest*} v
+                                           + remoteAttestation* | Params
+                                          {CertificateRequest*} |
+                                           + remoteAttestation* v
                                                  {Certificate*} ^
                                           + remoteAttestation*  |
                                            {CertificateVerify*} | Auth
@@ -791,7 +793,7 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
-              Figure 4: Early Attestation Handshake Overview
+              Figure 3: Early Attestation Handshake Overview
 
 7.1.  Client Hello
 
@@ -849,48 +851,47 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
    schemes conveyed under client_attester_schemes the server is expected
    to act as a relying party, while the client is the attester.
 
-   If the server chooses to attest itself using one of the provided
-   schemes, it MUST include in the server_attester_scheme in
-   EncryptedExtensions the corresponding attestation scheme provided by
-   the client.  The server MUST populate the Certificate message
-   extension according to its chosen scheme.  If the server has chosen
-   an evidence scheme, the signed Evidence contained in the CMW payload
-   MUST include an Attestation Binder as a nonce value (see Section 5.1)
-   in the TEE's signature.
+   If the server chooses to attest itself, it MUST select one of the
+   schemes provided by the client in server_attester_schemes.  The
+   server MUST then also include the remoteAttestation extension in the
+   EncryptedExtensions message, and MUST include the chosen attestation
+   scheme in the chosen_server_scheme.  The server MUST populate the
+   Certificate message extension according to its chosen scheme.  If the
+   server has chosen an evidence scheme, the signed Evidence contained
+   in the CMW payload MUST include an Attestation Binder as a nonce
+   value (see Section 5.1) in the TEE's signature.
 
-   If the server chooses to request that the client attests itself using
-   one of the provided schemes, it MUST include in the
-   client_attester_scheme in EncryptedExtensions the corresponding
-   attestation scheme provided by the client.  If the server chooses to
-   request that the client attests itself using one of the provided
-   schemes, it MUST also send a CertificateRequest message that includes
-   the remoteAttestation extension (see Figure 3).
-
-   Both schemes selected for server_attester_scheme and
-   client_attester_scheme MUST be selected from the schemes provided in
+   Both schemes selected for chosen_server_scheme and
+   chosen_client_scheme MUST be selected from the schemes provided in
    the remoteAttestation extension sent in the ClientHello.
 
-   If either the server_attester_schemes or client_attester_schemes sent
-   in ClientHello are empty, or if the server does not want to proceed
-   with either client or server attestation, either of
-   server_attester_scheme or client_attester_scheme can be left empty.
    If both server_attester_schemes and client_attester_schemes are
    empty, or if the server does not want to proceed with remote
    attestation, the server MUST terminate the session as described
    above, with a fatal alert of type "unsupported_attestation_schemes".
 
-7.3.  Following Server Hello
+7.3.  Certificate Request
 
-   Upon receipt of the EncryptedExtensions the client can verify that
-   the server's choices are valid.  The client MUST check that at least
-   one remote attestation scheme was returned, and that the returned
-   schemes were among the corresponding proposed lists.  If the server
-   has rejected that one peer act as an attester by not selecting a
-   corresponding scheme, and the client's policy demands that the remote
-   attestation take place, the client MUST terminate the session with a
-   fatal alert of type "attestation_required".
+   If the server chooses to request that the client attests itself, it
+   MUST select one of the schemes provided by the client in
+   client_attester_schemes.  The server MUST then also send a
+   CertificateRequest message that includes the remoteAttestation
+   extension (see Figure 1), and MUST include the chosen attestation
+   scheme in chosen_client_scheme.
 
-   If the server has selected a valid client_attester_scheme, the client
+7.4.  Following Server Hello
+
+   Upon receipt of the EncryptedExtensions and potentially of the
+   CertificateRequest messages, the client can verify that the server's
+   choices are valid.  The client MUST check that at least one remote
+   attestation scheme was returned, and that the returned schemes were
+   among the corresponding proposed lists.  If the server has rejected
+   that one peer act as an attester by not selecting a corresponding
+   scheme, and the client's policy demands that the remote attestation
+   take place, the client MUST terminate the session with a fatal alert
+   of type "attestation_required".
+
+   If the server has selected a valid chosen_client_scheme, the client
    MUST populate the Certificate message extension according to that
    scheme.  If the server has chosen an evidence scheme for the client,
    the signed Evidence contained in the CMW payload MUST include an
@@ -974,13 +975,12 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
 
 10.1.  TLS Extensions
 
-   IANA is asked to allocate five new TLS extensions, attestation,
-   evidence_request, evidence_proposal, results_request,
-   results_proposal, from the "TLS ExtensionType Values" subregistry of
-   the "Transport Layer Security (TLS) Extensions" registry
-   [TLS-Ext-Registry].  These extensions are used in the ClientHello and
-   the EncryptedExtensions messages.  The values carried in these
-   extensions are taken from TBD.
+   IANA is asked to allocate a new TLS extension, remoteAttestation,
+   from the "TLS ExtensionType Values" subregistry of the "Transport
+   Layer Security (TLS) Extensions" registry [TLS-Ext-Registry].  This
+   extension is used in the ClientHello, EncryptedExtensions,
+   CertificateRequest, and Certificate messages.  The values carried in
+   this extension are defined in Figure 1.
 
 10.2.  TLS Alerts
 
