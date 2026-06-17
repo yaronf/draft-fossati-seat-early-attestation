@@ -675,7 +675,7 @@ The server MUST populate the Certificate message extension according to its chos
 If the server has chosen an `evidence` scheme, the signed Evidence contained in the CMW payload MUST include an Attestation Binder as a nonce value (see {{crypto-ops}}) in the TEE's signature.
 
 If the server chooses to request that the client attests itself using one of the provided schemes, it MUST include in the `client_attester_scheme` in EncryptedExtensions the corresponding attestation scheme provided by the client.
-If the server chooses to request that the client attests itself using one of the provided schemes, it MUST also send a CertificateRequest message.
+If the server chooses to request that the client attests itself using one of the provided schemes, it MUST also send a CertificateRequest message that includes the `remoteAttestation` extension (see {{figure-remote-attestation-extension}}).
 
 Both schemes selected for `server_attester_scheme` and `client_attester_scheme` MUST be selected from the schemes provided in the remoteAttestation extension sent in the ClientHello.
 
