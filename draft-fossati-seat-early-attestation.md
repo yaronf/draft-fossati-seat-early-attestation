@@ -658,7 +658,7 @@ For the Background Check Model, the client MUST omit Evidence types from the `se
 If the server receives a ClientHello that contains the remoteAttestation extension, then three outcomes are possible:
 
 -  The server does not support the extension defined in this document.
-   In this case, the server returns the EncryptedExtensions without the remoteAttestationExtension.
+   In this case, the server returns the EncryptedExtensions without the `remoteAttestation` extension.
 
 -  The server supports the extension defined in this document, but it does not have any remote attestation scheme in common with the client.
    Then, the server terminates the session with a fatal alert of type "unsupported_attestation_schemes".
