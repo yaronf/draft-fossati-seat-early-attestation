@@ -677,7 +677,7 @@ If the server has chosen an `evidence` scheme, the signed Evidence contained in 
 If the server chooses to request that the client attests itself using one of the provided schemes, it MUST include in the `client_attester_scheme` in EncryptedExtensions the corresponding attestation scheme provided by the client.
 If the server chooses to request that the client attests itself using one of the provided schemes, it MUST also send a CertificateRequest message.
 
-Both schemes selected for `server_attester_scheme` and  `client_attester_scheme` MUST be selected from the schemes provided in the remoteAttestation extension sent in the ClientHello.
+Both schemes selected for `server_attester_scheme` and `client_attester_scheme` MUST be selected from the schemes provided in the remoteAttestation extension sent in the ClientHello.
 
 If either the `server_attester_schemes` or `client_attester_schemes` sent in ClientHello are empty, or if the server does not want to proceed with either client or server attestation, either of `server_attester_scheme` or `client_attester_scheme` can be left empty.
 If both `server_attester_schemes` and `client_attester_schemes` are empty, or if the server does not want to proceed with remote attestation, the server MUST terminate the session as described above, with a fatal alert of type "unsupported_attestation_schemes".
