@@ -386,7 +386,7 @@ We note that `HKDF-Expand-Label` is used to produce binding values rather than k
 
 ### Verification
 
-Upon receipt of an `remoteAttestation` extension, the peer MUST compute the attestation binder.
+Upon receipt of a `remoteAttestation` extension, the peer MUST compute the attestation binder.
 
 If the peer's Evidence is rejected (binder mismatch, failed Evidence appraisal, or malformed CMW),
 the receiver MUST send an `attestation_failed` fatal alert and abort the handshake
