@@ -2009,7 +2009,7 @@ If both <code>server_attester_schemes</code> and <code>client_attester_schemes</
         </h3>
 <p id="section-7.3-1">Upon receipt of the EncryptedExtensions the client can verify that the server's choices are valid.
 The client <span class="bcp14">MUST</span> check that at least one remote attestation scheme was returned, and that the returned schemes were among the corresponding proposed lists.
-If the server has rejected that one peer act as an attester by not selecting a corresponding scheme, and the client's policy demands that the remote attestation take place, the client <span class="bcp14">MUST</span> terminate the session with a fata alert of type "attestation_required".<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+If the server has rejected that one peer act as an attester by not selecting a corresponding scheme, and the client's policy demands that the remote attestation take place, the client <span class="bcp14">MUST</span> terminate the session with a fatal alert of type "attestation_required".<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <p id="section-7.3-2">If the server has selected a valid <code>client_attester_scheme</code>, the client <span class="bcp14">MUST</span> populate the Certificate message extension according to that scheme.
 If the server has chosen an <code>evidence</code> scheme for the client, the signed Evidence contained in the CMW payload <span class="bcp14">MUST</span> include an Attestation Binder as a nonce value (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) in the TEE's signature.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 </section>

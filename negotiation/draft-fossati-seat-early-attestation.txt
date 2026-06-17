@@ -887,7 +887,7 @@ Figure 3: TLS Extension Structure for Remote Attestation negotiation.
    has rejected that one peer act as an attester by not selecting a
    corresponding scheme, and the client's policy demands that the remote
    attestation take place, the client MUST terminate the session with a
-   fata alert of type "attestation_required".
+   fatal alert of type "attestation_required".
 
    If the server has selected a valid client_attester_scheme, the client
    MUST populate the Certificate message extension according to that
