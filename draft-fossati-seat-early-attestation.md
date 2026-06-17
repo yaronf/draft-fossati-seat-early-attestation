@@ -686,7 +686,7 @@ If both `server_attester_schemes` and `client_attester_schemes` are empty, or if
 
 Upon receipt of the EncryptedExtensions the client can verify that the server's choices are valid.
 The client MUST check that at least one remote attestation scheme was returned, and that the returned schemes were among the corresponding proposed lists.
-If the server has rejected that one peer act as an attester by not selecting a corresponding scheme, and the client's policy demands that the remote attestation take place, the client MUST terminate the session with a fata alert of type "attestation_required".
+If the server has rejected that one peer act as an attester by not selecting a corresponding scheme, and the client's policy demands that the remote attestation take place, the client MUST terminate the session with a fatal alert of type "attestation_required".
 
 If the server has selected a valid `client_attester_scheme`, the client MUST populate the Certificate message extension according to that scheme.
 If the server has chosen an `evidence` scheme for the client, the signed Evidence contained in the CMW payload MUST include an Attestation Binder as a nonce value (see {{crypto-ops}}) in the TEE's signature.
