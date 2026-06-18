@@ -253,12 +253,8 @@ In the Passport Model, freshness expectations are more relaxed and are governed 
 When the extension is successfully negotiated, attestation Evidence or Attestation Results are conveyed in a `remoteAttestation` extension (see {{remote-attestation-extension-section}}).
 The CMW payload in the Attestation extension contains the attestation Evidence or Attestation Results encoded according to {{-cmw}}.
 
-The attestation payload MUST contain assertions relating to the attester's TLS
-Identity Key (TIK-C for client attester, TIK-S for server attester), which
-associate the private key with the attestation information. The TEE's signature
-over the Evidence, or the Verifier's signature over AttestationResults within the CMW MUST include an attestation binder derived
-from the message transcript (see {{crypto-ops}})
-and the attester's TLS identity public key, as specified in {{remote-attestation-extension-section}}.
+The attestation payload MUST contain assertions relating to the attester's TLS Identity Key (TIK-C for client attester, TIK-S for server attester), which associate the private key with the attestation information.
+The TEE's signature over the Evidence within the CMW MUST include an attestation binder derived from the message transcript (see {{crypto-ops}}) and the attester's TLS identity public key, as specified in {{remote-attestation-extension-section}}.
 
 The relying party can obtain and appraise the remote Attestation Results either
 directly from the Attestation extension (in the Passport Model), or by relaying
@@ -352,13 +348,8 @@ The `cmw_payload` field contains a CMW structure as defined in {{-cmw}}.
 Both JSON and CBOR serializations are allowed in CMW, with the emitter choosing
 which serialization to use.
 
-The CMW payload MUST contain attestation Evidence (in Background Check Model)
-or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
-to the platform and workload state. The TEE's signature over the Evidence or
-AttestationResults within the CMW MUST include a binder ensuring that the attestation is associated with
-this particular TLS connection,
-as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for
-server attester).
+The CMW payload MUST contain attestation Evidence (in Background Check Model) or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK) to the platform and workload state.
+The TEE's signature over the Evidence within the CMW MUST include a binder ensuring that the attestation is associated with this particular TLS connection, as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for server attester).
 
 This binding ensures that the attested key is the one used in the TLS handshake
 and provides freshness guarantees through derivation from both peers' randomness.
@@ -583,6 +574,8 @@ The client MUST populate at least one AttestationScheme structure.
 
 The server replies with its preferred schemes for both server- and client-as-attester.
 The selected server-as-attester scheme is sent in the EncryptedExtensions message.
+While for Background Check the server scheme can be extracted from the CMW sent by the server as part of its Certificate message, for Passport model the Verifier which issued the Attestation Results must be confirmed by the server explicitly.
+In order to preserve symmetry and aid the client in handling the server's attestation token, the server explicitly sends its scheme as part of EncryptedExtensions.
 The selected client-as-attester scheme is sent in the CertificateRequest message.
 The server MUST omit the `remoteAttestation` extension from EncryptedExtensions and CertificateRequest messages if it does not support the corresponding proposed schemes, or if it does not want the corresponding peer to engage in remote attestation.
 
