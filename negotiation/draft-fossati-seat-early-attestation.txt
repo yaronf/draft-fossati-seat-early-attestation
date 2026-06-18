@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 19 December 2026                                   Y. Deshpande
+Expires: 20 December 2026                                   Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                            17 June 2026
+                                                            18 June 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 December 2026.
+   This Internet-Draft will expire on 20 December 2026.
 
 Copyright Notice
 
@@ -301,11 +301,10 @@ Table of Contents
    The attestation payload MUST contain assertions relating to the
    attester's TLS Identity Key (TIK-C for client attester, TIK-S for
    server attester), which associate the private key with the
-   attestation information.  The TEE's signature over the Evidence, or
-   the Verifier's signature over AttestationResults within the CMW MUST
-   include an attestation binder derived from the message transcript
-   (see Section 5.1) and the attester's TLS identity public key, as
-   specified in Section 4.1.
+   attestation information.  The TEE's signature over the Evidence
+   within the CMW MUST include an attestation binder derived from the
+   message transcript (see Section 5.1) and the attester's TLS identity
+   public key, as specified in Section 4.1.
 
    The relying party can obtain and appraise the remote Attestation
    Results either directly from the Attestation extension (in the
@@ -408,11 +407,10 @@ Table of Contents
    The CMW payload MUST contain attestation Evidence (in Background
    Check Model) or Attestation Results (in Passport Model) that binds
    the TLS Identity Key (TIK) to the platform and workload state.  The
-   TEE's signature over the Evidence or AttestationResults within the
-   CMW MUST include a binder ensuring that the attestation is associated
-   with this particular TLS connection, as well as the attester's TLS
-   identity public key (TIK-C for client attester, TIK-S for server
-   attester).
+   TEE's signature over the Evidence within the CMW MUST include a
+   binder ensuring that the attestation is associated with this
+   particular TLS connection, as well as the attester's TLS identity
+   public key (TIK-C for client attester, TIK-S for server attester).
 
    This binding ensures that the attested key is the one used in the TLS
    handshake and provides freshness guarantees through derivation from
@@ -742,12 +740,18 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
    The server replies with its preferred schemes for both server- and
    client-as-attester.  The selected server-as-attester scheme is sent
-   in the EncryptedExtensions message.  The selected client-as-attester
-   scheme is sent in the CertificateRequest message.  The server MUST
-   omit the remoteAttestation extension from EncryptedExtensions and
-   CertificateRequest messages if it does not support the corresponding
-   proposed schemes, or if it does not want the corresponding peer to
-   engage in remote attestation.
+   in the EncryptedExtensions message.  While for Background Check the
+   server scheme can be extracted from the CMW sent by the server as
+   part of its Certificate message, for Passport model the Verifier
+   which issued the Attestation Results must be confirmed by the server
+   explicitly.  In order to preserve symmetry and aid the client in
+   handling the server's attestation token, the server explicitly sends
+   its scheme as part of EncryptedExtensions.  The selected client-as-
+   attester scheme is sent in the CertificateRequest message.  The
+   server MUST omit the remoteAttestation extension from
+   EncryptedExtensions and CertificateRequest messages if it does not
+   support the corresponding proposed schemes, or if it does not want
+   the corresponding peer to engage in remote attestation.
 
    The remoteAttestation extension used to negotiate support for the
    protocol described in this document is defined in Figure 1.
@@ -1114,9 +1118,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    [I-D.rosomakho-tls-cert-update]
               Rosomakho, Y. and T. Reddy.K, "Certificate Update in TLS
               1.3", Work in Progress, Internet-Draft, draft-rosomakho-
-              tls-cert-update-01, 21 December 2025,
+              tls-cert-update-02, 18 June 2026,
               <https://datatracker.ietf.org/doc/html/draft-rosomakho-
-              tls-cert-update-01>.
+              tls-cert-update-02>.
 
    [iana-content-formats]
               IANA, "CoAP Content-Formats",

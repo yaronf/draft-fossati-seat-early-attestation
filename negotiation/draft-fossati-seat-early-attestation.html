@@ -18,24 +18,25 @@ This document describes a series of TLS extensions that enable the binding of th
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually. 
     " name="description">
-<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="attestation" name="keyword">
 <meta content="RATS" name="keyword">
 <meta content="TLS" name="keyword">
 <meta content="draft-fossati-seat-early-attestation-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.33.0
-    Python 3.12.13
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.7.0
+    wcwidth 0.8.1
 -->
 <link href="draft-fossati-seat-early-attestation.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1058,7 +1059,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 19 December 2026</td>
+<td class="center">Expires 20 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1071,12 +1072,12 @@ svg {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-17" class="published">17 June 2026</time>
+<time datetime="2026-06-18" class="published">18 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-19">19 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-20">20 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1147,7 +1148,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1470,12 +1471,8 @@ Freshness of the exchanged Evidence is guaranteed through an Attestation Binder 
 In the Passport Model, freshness expectations are more relaxed and are governed by the lifetime of the signed Attestation Results.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">When the extension is successfully negotiated, attestation Evidence or Attestation Results are conveyed in a <code>remoteAttestation</code> extension (see <a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>).
 The CMW payload in the Attestation extension contains the attestation Evidence or Attestation Results encoded according to <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">The attestation payload <span class="bcp14">MUST</span> contain assertions relating to the attester's TLS
-Identity Key (TIK-C for client attester, TIK-S for server attester), which
-associate the private key with the attestation information. The TEE's signature
-over the Evidence, or the Verifier's signature over AttestationResults within the CMW <span class="bcp14">MUST</span> include an attestation binder derived
-from the message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>)
-and the attester's TLS identity public key, as specified in <a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-3">The attestation payload <span class="bcp14">MUST</span> contain assertions relating to the attester's TLS Identity Key (TIK-C for client attester, TIK-S for server attester), which associate the private key with the attestation information.
+The TEE's signature over the Evidence within the CMW <span class="bcp14">MUST</span> include an attestation binder derived from the message transcript (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) and the attester's TLS identity public key, as specified in <a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The relying party can obtain and appraise the remote Attestation Results either
 directly from the Attestation extension (in the Passport Model), or by relaying
 the Evidence from the Attestation extension to the Verifier and receiving the
@@ -1567,13 +1564,8 @@ The extension is used in Certificate messages for carrying attestation credentia
 <p id="section-4.1-8">The <code>cmw_payload</code> field contains a CMW structure as defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span>.
 Both JSON and CBOR serializations are allowed in CMW, with the emitter choosing
 which serialization to use.<a href="#section-4.1-8" class="pilcrow">¶</a></p>
-<p id="section-4.1-9">The CMW payload <span class="bcp14">MUST</span> contain attestation Evidence (in Background Check Model)
-or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK)
-to the platform and workload state. The TEE's signature over the Evidence or
-AttestationResults within the CMW <span class="bcp14">MUST</span> include a binder ensuring that the attestation is associated with
-this particular TLS connection,
-as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for
-server attester).<a href="#section-4.1-9" class="pilcrow">¶</a></p>
+<p id="section-4.1-9">The CMW payload <span class="bcp14">MUST</span> contain attestation Evidence (in Background Check Model) or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK) to the platform and workload state.
+The TEE's signature over the Evidence within the CMW <span class="bcp14">MUST</span> include a binder ensuring that the attestation is associated with this particular TLS connection, as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for server attester).<a href="#section-4.1-9" class="pilcrow">¶</a></p>
 <p id="section-4.1-10">This binding ensures that the attested key is the one used in the TLS handshake
 and provides freshness guarantees through derivation from both peers' randomness.
 See <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> for details.<a href="#section-4.1-10" class="pilcrow">¶</a></p>
@@ -1889,6 +1881,8 @@ The extension defined in <a href="#_figure-remote-attestation-extension" class="
 The client <span class="bcp14">MUST</span> populate at least one AttestationScheme structure.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <p id="section-6-4">The server replies with its preferred schemes for both server- and client-as-attester.
 The selected server-as-attester scheme is sent in the EncryptedExtensions message.
+While for Background Check the server scheme can be extracted from the CMW sent by the server as part of its Certificate message, for Passport model the Verifier which issued the Attestation Results must be confirmed by the server explicitly.
+In order to preserve symmetry and aid the client in handling the server's attestation token, the server explicitly sends its scheme as part of EncryptedExtensions.
 The selected client-as-attester scheme is sent in the CertificateRequest message.
 The server <span class="bcp14">MUST</span> omit the <code>remoteAttestation</code> extension from EncryptedExtensions and CertificateRequest messages if it does not support the corresponding proposed schemes, or if it does not want the corresponding peer to engage in remote attestation.<a href="#section-6-4" class="pilcrow">¶</a></p>
 <p id="section-6-5">The <code>remoteAttestation</code> extension used to negotiate support for the protocol described in this document is defined in <a href="#_figure-remote-attestation-extension" class="auto internal xref">Figure 1</a>.<a href="#section-6-5" class="pilcrow">¶</a></p>
@@ -2238,7 +2232,7 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 <dd class="break"></dd>
 <dt id="I-D.rosomakho-tls-cert-update">[I-D.rosomakho-tls-cert-update]</dt>
         <dd>
-<span class="refAuthor">Rosomakho, Y.</span> and <span class="refAuthor">T. Reddy.K</span>, <span class="refTitle">"Certificate Update in TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-rosomakho-tls-cert-update-01</span>, <time datetime="2025-12-21" class="refDate">21 December 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-update-01">https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-update-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Rosomakho, Y.</span> and <span class="refAuthor">T. Reddy.K</span>, <span class="refTitle">"Certificate Update in TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-rosomakho-tls-cert-update-02</span>, <time datetime="2026-06-18" class="refDate">18 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-update-02">https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-update-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="iana-content-formats">[iana-content-formats]</dt>
         <dd>
