@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-16T03:55:18.288514+00:00",
+  "timestamp": "2026-06-18T03:43:50.146346+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5463,19 +5463,206 @@
       "labels": [],
       "body": "Also changes the Cert message extension to use the same name. Also updates the descriptions of how the two RA topologies are supported.",
       "createdAt": "2026-06-15T16:28:35Z",
-      "updatedAt": "2026-06-15T16:28:36Z",
+      "updatedAt": "2026-06-17T23:12:39Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "c8d1105d176d0c4bac87eafb245aa8ab1695cf11",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "negotiation",
-      "headRefOid": "9c9ef2e6c3ffd17a840c3ec97f2201fca29f8adb",
+      "headRefOid": "c7dd3b5d108f33a8c4db24c0972957aecee4189f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Folks, I'm considering renaming the selected schemes to `chosen_client_scheme` and `chosen_server_scheme` to avoid the names being one small typo away from what's in ClientHello. Thoughts?",
+          "createdAt": "2026-06-17T16:02:26Z",
+          "updatedAt": "2026-06-17T16:02:26Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok, I've pushed quite a big update. Didn't realise there was a big RA Extension section. I've now merged that somewhat with the negotiation section, in the sense that the extension definition covers both negotiation and credential transport.\r\n\r\nOne thing I'm worried I haven't covered properly is the checking that the client has to do once it receives the extensions from the server. Since I've now made the server omit the extensions when no scheme was chosen (so for example, no extension in EE if the server isn't attesting), there are probably some corner cases there.\r\n\r\nEDIT: Oh yeah, and I've tried to address outstanding comments from @tireddy2 and @yaronf above.",
+          "createdAt": "2026-06-17T23:11:54Z",
+          "updatedAt": "2026-06-17T23:12:39Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDJjhXQ",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "A few typos and two sections that still reflect the pre-unification design (handshake diagram and IANA). Inline suggestions on changed lines below; see also the two follow-up comments on unchanged lines.",
+          "createdAt": "2026-06-16T12:28:44Z",
+          "updatedAt": "2026-06-16T12:28:44Z",
+          "comments": [
+            {
+              "originalPosition": 92,
+              "body": "Grammar.\n\n```suggestion\nUpon receipt of a `remoteAttestation` extension, the peer MUST compute the attestation binder.\n```",
+              "createdAt": "2026-06-16T12:28:44Z",
+              "updatedAt": "2026-06-16T12:28:44Z"
+            },
+            {
+              "originalPosition": 457,
+              "body": "Typo / inconsistent naming.\n\n```suggestion\n   In this case, the server returns the EncryptedExtensions without the `remoteAttestation` extension.\n```",
+              "createdAt": "2026-06-16T12:28:44Z",
+              "updatedAt": "2026-06-16T12:28:44Z"
+            },
+            {
+              "originalPosition": 476,
+              "body": "Extra space.\n\n```suggestion\nBoth schemes selected for `server_attester_scheme` and `client_attester_scheme` MUST be selected from the schemes provided in the remoteAttestation extension sent in the ClientHello.\n```",
+              "createdAt": "2026-06-16T12:28:44Z",
+              "updatedAt": "2026-06-16T12:28:44Z"
+            },
+            {
+              "originalPosition": 485,
+              "body": "Typo.\n\n```suggestion\nIf the server has rejected that one peer act as an attester by not selecting a corresponding scheme, and the client's policy demands that the remote attestation take place, the client MUST terminate the session with a fatal alert of type \"attestation_required\".\n```",
+              "createdAt": "2026-06-16T12:28:44Z",
+              "updatedAt": "2026-06-16T12:28:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDJjtqw",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Two more items that could not be attached as inline suggestions (these lines are unchanged in the PR diff, so GitHub does not offer an Apply button):\n\n### `draft-fossati-seat-early-attestation.md` \u2014 overview figure (~L621)\n\nThe EncryptedExtensions block still shows the four old extensions. It should match the unified design:\n\n```suggestion\n                                         + remoteAttestation*  | Params\n```\n\n(replace the four lines `evidence_proposal*`, `evidence_request*`, `results_proposal*`, `results_request*`)\n\n### `draft-fossati-seat-early-attestation.md` \u2014 IANA (~L741)\n\nStill requests five separate extensions from the old design:\n\n```suggestion\nIANA is asked to allocate a new TLS extension, remoteAttestation, from the\n\"TLS ExtensionType Values\" subregistry of the \"Transport Layer Security (TLS)\nExtensions\" registry {{TLS-Ext-Registry}}.  This extension is used in the\nClientHello, EncryptedExtensions, CertificateRequest, and Certificate messages.\nThe values carried in this extension are defined in\n{{figure-remote-attestation-extension}}.\n```",
+          "createdAt": "2026-06-16T12:29:07Z",
+          "updatedAt": "2026-06-16T12:30:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDJ4UaA",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Comment on RFC 8446 compliance for client attestation (#52).",
+          "createdAt": "2026-06-16T13:10:46Z",
+          "updatedAt": "2026-06-16T13:10:47Z",
+          "comments": [
+            {
+              "originalPosition": 474,
+              "body": "Related to #52 / RFC 8446 Section 4.4.2: for client attestation, extensions in the client `Certificate` must correspond to extensions in `CertificateRequest`, not only to what was sent in `ClientHello`. The figure already defines a `certificate_request` variant (`client_verification_schemes`); the Server Hello text should require it explicitly.\n\n```suggestion\nIf the server chooses to request that the client attests itself using one of the provided schemes, it MUST also send a CertificateRequest message that includes the `remoteAttestation` extension (see {{figure-remote-attestation-extension}}).\n```",
+              "createdAt": "2026-06-16T13:10:46Z",
+              "updatedAt": "2026-06-16T13:10:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDTLAHw",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-17T14:07:49Z",
+          "updatedAt": "2026-06-17T14:07:49Z",
+          "comments": [
+            {
+              "originalPosition": 203,
+              "body": "The extension currently appears in EE to carry the server's selection (server_attester_scheme / client_attester_scheme). But both selections seem to be conveyed by other messages in the same server flight:\n\nThe server's Evidence/Results are delivered in the CMW in its Certificate message, which is self-describing. so the EE echo just pre-announces what the Certificate carries.\n\nWhen the server wants the client to attest, it signals that by sending a CertificateRequest. So putting client_attester_scheme in EE just duplicates what CertificateRequest already conveys.",
+              "createdAt": "2026-06-17T14:07:49Z",
+              "updatedAt": "2026-06-17T14:10:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDTONzg",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-17T14:13:22Z",
+          "updatedAt": "2026-06-17T14:13:22Z",
+          "comments": [
+            {
+              "originalPosition": 229,
+              "body": "Since verifier_identity is configured/advertised ahead of time and needs to stay valid across the Verifier rotating its credentials, I think it should be limited to stable identifiers (e.g., subjectAltName). ",
+              "createdAt": "2026-06-17T14:13:22Z",
+              "updatedAt": "2026-06-17T14:13:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDT70ZQ",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-17T15:37:49Z",
+          "updatedAt": "2026-06-17T15:37:49Z",
+          "comments": [
+            {
+              "originalPosition": 474,
+              "body": "Thanks for noticing, I completely blanked out on that.",
+              "createdAt": "2026-06-17T15:37:49Z",
+              "updatedAt": "2026-06-17T15:37:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDUAkRA",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-17T15:47:06Z",
+          "updatedAt": "2026-06-17T15:47:06Z",
+          "comments": [
+            {
+              "originalPosition": 203,
+              "body": "I agree with the client_attester_scheme, that's duplicate for sure.\r\n\r\nFor server_attester_scheme the situation is slightly murkier. For Results, the CMW does not describe which verifier provided the AR, so there's no duplication. For Evidence there is (more than) duplication - the client doesn't even need to know what the scheme is, actually. It can just send the CMW to a Verifier. Not sure yet how to reconcile this, I'll mull it over.\r\n\r\nEDIT: I guess maybe the client knowing the scheme allows it to select the \"right\" Verifier to send the CMW to. So the question is: is it better to send the scheme explicitly, or for the client to parse it from the CMW?",
+              "createdAt": "2026-06-17T15:47:06Z",
+              "updatedAt": "2026-06-17T16:04:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDVFlUg",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-17T18:09:12Z",
+          "updatedAt": "2026-06-17T18:09:12Z",
+          "comments": [
+            {
+              "originalPosition": 203,
+              "body": "Given the above points, I'm inclined to keep both schemes explicitly in the extension, just with the client scheme in the CertificateRequest. Doing this partially for symmetry, given the issue with verifier identity I mentioned above.",
+              "createdAt": "2026-06-17T18:09:12Z",
+              "updatedAt": "2026-06-17T18:09:13Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
