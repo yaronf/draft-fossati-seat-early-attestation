@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-18T03:43:50.146346+00:00",
+  "timestamp": "2026-06-21T04:00:41.203011+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5454,26 +5454,28 @@
     {
       "number": 65,
       "id": "PR_kwDOQdsaoc7mobk-",
-      "title": "WIP: Change negotiation to use a single extension",
+      "title": "Change negotiation to use a single extension",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/65",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Also changes the Cert message extension to use the same name. Also updates the descriptions of how the two RA topologies are supported.",
       "createdAt": "2026-06-15T16:28:35Z",
-      "updatedAt": "2026-06-17T23:12:39Z",
+      "updatedAt": "2026-06-20T06:11:00Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "c8d1105d176d0c4bac87eafb245aa8ab1695cf11",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "negotiation",
-      "headRefOid": "c7dd3b5d108f33a8c4db24c0972957aecee4189f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "242c86ad4dec901672d9f5811b024f956d219345",
+      "closedAt": "2026-06-20T06:10:59Z",
+      "mergedAt": "2026-06-20T06:10:59Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "24967d4f47d5c1ceb611780be134f6c6d7af5dfa"
+      },
       "comments": [
         {
           "author": "ionut-arm",
@@ -5488,6 +5490,13 @@
           "body": "Ok, I've pushed quite a big update. Didn't realise there was a big RA Extension section. I've now merged that somewhat with the negotiation section, in the sense that the extension definition covers both negotiation and credential transport.\r\n\r\nOne thing I'm worried I haven't covered properly is the checking that the client has to do once it receives the extensions from the server. Since I've now made the server omit the extensions when no scheme was chosen (so for example, no extension in EE if the server isn't attesting), there are probably some corner cases there.\r\n\r\nEDIT: Oh yeah, and I've tried to address outstanding comments from @tireddy2 and @yaronf above.",
           "createdAt": "2026-06-17T23:11:54Z",
           "updatedAt": "2026-06-17T23:12:39Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The binder requirement contradicts the Passport model. The draft says Attestation Results can be cached and used for any number of subsequent TLS handshakes, which will not have the binder derived from the handshake transcript.\r\n\r\nDone",
+          "createdAt": "2026-06-18T21:44:23Z",
+          "updatedAt": "2026-06-18T21:44:23Z"
         }
       ],
       "reviews": [
@@ -5576,9 +5585,9 @@
           "comments": [
             {
               "originalPosition": 203,
-              "body": "The extension currently appears in EE to carry the server's selection (server_attester_scheme / client_attester_scheme). But both selections seem to be conveyed by other messages in the same server flight:\n\nThe server's Evidence/Results are delivered in the CMW in its Certificate message, which is self-describing. so the EE echo just pre-announces what the Certificate carries.\n\nWhen the server wants the client to attest, it signals that by sending a CertificateRequest. So putting client_attester_scheme in EE just duplicates what CertificateRequest already conveys.",
+              "body": "The extension currently appears in EE to carry the server's selection (server_attester_scheme / client_attester_scheme). But both selections seem to be conveyed by other messages in the same server flight:\n\nThe server's Evidence/Results are delivered in the CMW in its Certificate message, so the EE just pre-announces what the Certificate carries.\n\nWhen the server wants the client to attest, it signals that by sending a CertificateRequest. So putting client_attester_scheme in EE just duplicates what CertificateRequest would convey.",
               "createdAt": "2026-06-17T14:07:49Z",
-              "updatedAt": "2026-06-17T14:10:00Z"
+              "updatedAt": "2026-06-18T08:24:19Z"
             }
           ]
         },
@@ -5661,6 +5670,85 @@
               "updatedAt": "2026-06-17T18:09:13Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDZk4aQ",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "The binder requirement contradicts the Passport model. The draft says Attestation Results can be cached and used for any number of subsequent TLS handshakes, which will not have the binder derived from the handshake transcript. ",
+          "createdAt": "2026-06-18T08:29:11Z",
+          "updatedAt": "2026-06-18T09:42:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDaH4PQ",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-18T09:42:38Z",
+          "updatedAt": "2026-06-18T09:42:38Z",
+          "comments": [
+            {
+              "originalPosition": 203,
+              "body": "Good point, please add the justification for carrying server_attester_scheme in EE. ",
+              "createdAt": "2026-06-18T09:42:38Z",
+              "updatedAt": "2026-06-18T09:42:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDe5XVA",
+          "commit": {
+            "abbreviatedOid": "449b3fe"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-18T21:44:08Z",
+          "updatedAt": "2026-06-18T21:44:08Z",
+          "comments": [
+            {
+              "originalPosition": 203,
+              "body": "Done!",
+              "createdAt": "2026-06-18T21:44:08Z",
+              "updatedAt": "2026-06-18T21:44:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDiNQ1Q",
+          "commit": {
+            "abbreviatedOid": "242c86a"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-19T10:42:48Z",
+          "updatedAt": "2026-06-19T10:42:48Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABDiUMpg",
+          "commit": {
+            "abbreviatedOid": "242c86a"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-19T11:02:53Z",
+          "updatedAt": "2026-06-19T11:02:53Z",
+          "comments": []
         }
       ]
     }
