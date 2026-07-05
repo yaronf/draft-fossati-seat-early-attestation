@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-21T04:00:41.203011+00:00",
+  "timestamp": "2026-07-05T02:53:10.575035+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5748,6 +5748,46 @@
           "body": "",
           "createdAt": "2026-06-19T11:02:53Z",
           "updatedAt": "2026-06-19T11:02:53Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 66,
+      "id": "PR_kwDOQdsaoc7tjKaE",
+      "title": "Clean up \"extensions\" text",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/66",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also, update changelog.\r\n\r\nUnfortunately I started reading the abstract only after pressing the submit button :[",
+      "createdAt": "2026-07-03T10:41:33Z",
+      "updatedAt": "2026-07-03T11:20:15Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "24967d4f47d5c1ceb611780be134f6c6d7af5dfa",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "extension-oops",
+      "headRefOid": "c4cf2954bfc6b016422617e80a064905a1405916",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABE7GpVw",
+          "commit": {
+            "abbreviatedOid": "c4cf295"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-03T11:20:15Z",
+          "updatedAt": "2026-07-03T11:20:15Z",
           "comments": []
         }
       ]
