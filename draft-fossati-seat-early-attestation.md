@@ -141,20 +141,20 @@ informative:
 The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using remote attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a series of TLS extensions that enable the binding of the TLS authentication key to a remote attestation session.
+This document describes a TLS extension that enables the negotiation and binding of the TLS authentication key to a remote attestation session.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
-These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.
+This extension has been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.
 
 --- middle
 
 #  Introduction
 
 Remote Attestation (RA) {{-rats-arch}} is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
-This document describes a series of extensions to the TLS handshake that enable the binding of the TLS connection and its authentication key to a remote attestation session.
+This document describes an extension to the TLS handshake that enables the binding of the TLS connection and its authentication key to a remote attestation session.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) {{-teep-arch}}, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.
 
-Given the variety of deployed and emerging attestation technologies (e.g., {{TPM1.2}}, {{TPM2.0}}, {{-rats-eat}}) these extensions have been explicitly designed to be agnostic to the attestation formats.
+Given the variety of deployed and emerging attestation technologies (e.g., {{TPM1.2}}, {{TPM2.0}}, {{-rats-eat}}) this extension has been explicitly designed to be agnostic to the attestation formats.
 This is achieved by reusing the generic encapsulation defined in {{-cmw}} for transporting Evidence and Attestation Results payloads in the `remoteAttestation` extension.
 
 This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
@@ -228,11 +228,7 @@ well as guarantees of platform integrity.
 The lightweight integration of attestation into the TLS handshake is designed to have
 minimal impact on the existing TLS security properties. The changes consist of:
 
-- Negotiation extensions: New TLS extensions are added to ClientHello and
-  EncryptedExtensions messages to negotiate the use of attestation and indicate
-  supported attestation formats and Verifiers. A new `remoteAttestation` extension is
-  introduced to the Certificate message. This extension carries attestation Evidence
-  or Attestation Results.
+- Negotiation extension: A new `remoteAttestation` TLS extension is added to ClientHello, EncryptedExtensions, CertificateRequest, and Certificate messages to negotiate the use of attestation, indicate supported attestation formats and Verifiers, and carry the attestation credential.
 
 - Independent key derivation: Binder derivation for attestation (see {{crypto-ops}}) is completely independent of the
   regular TLS key schedule. Attestation processing does not affect the standard TLS key derivation and security properties.
@@ -763,6 +759,10 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-05
+
+* Change extension model to a single `remoteAttestation` extension that covers all handshake messages which need extending.
 
 ## draft-fossati-seat-early-attestation-04
 
