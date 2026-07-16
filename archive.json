@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-09T02:47:43.345676+00:00",
+  "timestamp": "2026-07-16T02:25:10.744114+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -998,6 +998,32 @@
           "body": "I've copied this to a new wiki page over here: [https://github.com/tls-attestation/seat-architecture/wiki/Proposal:-Adapt-RFC-9345](https://github.com/tls-attestation/seat-architecture/wiki/Proposal:-Adapt-RFC-9345-Delegation-Mechanism-for-TEE%E2%80%90bound-Ephemeral-Keys)  so I am going to close this specific issue to avoid any future duplicate conversation. ",
           "createdAt": "2026-07-06T23:24:51Z",
           "updatedAt": "2026-07-06T23:24:51Z"
+        }
+      ]
+    },
+    {
+      "number": 67,
+      "id": "I_kwDOQdsaoc8AAAABI4VbAA",
+      "title": "Binder padding",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/67",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ionut-arm"
+      ],
+      "labels": [],
+      "body": "The attestation binders we define in the Cryptographic Operations section have a defined length of `Hash.length`. Attestation evidence APIs/ABIs tend to have their own requirements for size of input, generally 64 bytes.\n\nWe must define the padding mechanism - I'd suggest starting with the binder bytes and padding to expected length with 0s.\n\nI guess the question is what to do if the input length is smaller than the hash length - truncate? Seems risky.",
+      "createdAt": "2026-07-15T08:54:49Z",
+      "updatedAt": "2026-07-15T10:05:05Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Even more concerning is the fact that the RP would not know the size, so it can't tell the verifier what to check for.\n\ncc @marianamass-arm",
+          "createdAt": "2026-07-15T10:05:05Z",
+          "updatedAt": "2026-07-15T10:05:05Z"
         }
       ]
     }
