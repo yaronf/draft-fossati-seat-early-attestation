@@ -841,7 +841,7 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
   transcript binding (`ClientHello...ServerHello`) and EKM binding offer equal
   relay resistance (see {{relay-resistance}}).
 * Expand Privacy Considerations to cover server attestation to unauthenticated
-  clients, with mitigations (incremental disclosure, selective disclosure via
+  clients, with mitigations (selective disclosure via
   SD-CWT, and the Passport model) (see {{server-attester-privacy}}).
 * Add an appendix with the design rationale for anchoring the binder to the
   transcript rather than to an exporter secret (see {{transcript-vs-exporter}}).
