@@ -715,9 +715,7 @@ Because each peer independently contributes fresh material, neither peer alone
 controls the transcript, and the resulting binder is unique to the specific
 connection (two-sided uniqueness).
 
-The two constructions therefore offer equal relay resistance. The rationale for
-anchoring to the transcript rather than to an exporter value is given in
-{{transcript-vs-exporter}}.
+The two constructions therefore offer equal relay resistance.
 
 The relay resistance of this mechanism does not depend on the transcript being secret. 
 It relies instead on the attestation binder, which is unique to the connection and 
