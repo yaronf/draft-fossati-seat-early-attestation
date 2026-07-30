@@ -14,9 +14,9 @@
        The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using remote attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a series of TLS extensions that enable the binding of the TLS authentication key to a remote attestation session.
+This document describes a TLS extension that enables the negotiation and binding of the TLS authentication key to a remote attestation session.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
-These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually. 
+This extension has been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually. 
     " name="description">
 <meta content="xml2rfc 3.34.0" name="generator">
 <meta content="attestation" name="keyword">
@@ -32,11 +32,11 @@ These extensions have been designed to allow the peers to use any attestation te
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.10.1
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.8.2
 -->
 <link href="draft-fossati-seat-early-attestation.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -72,7 +72,6 @@ These extensions have been designed to allow the peers to use any attestation te
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -121,7 +120,6 @@ These extensions have been designed to allow the peers to use any attestation te
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -186,7 +184,6 @@ These extensions have been designed to allow the peers to use any attestation te
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -1055,11 +1052,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Attestation in TLS/DTLS</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 22 December 2026</td>
+<td class="center">Expires 31 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1072,12 +1069,12 @@ svg {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-20" class="published">20 June 2026</time>
+<time datetime="2026-07-30" class="published">30 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-22">22 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-31">31 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1109,9 +1106,9 @@ svg {
 <p id="section-abstract-1">The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using remote attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a series of TLS extensions that enable the binding of the TLS authentication key to a remote attestation session.
+This document describes a TLS extension that enables the negotiation and binding of the TLS authentication key to a remote attestation session.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
-These extensions have been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+This extension has been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1148,7 +1145,7 @@ These extensions have been designed to allow the peers to use any attestation te
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1268,15 +1265,23 @@ These extensions have been designed to allow the peers to use any attestation te
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-security-guarantees" class="internal xref">Security Guarantees</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-relay-resistance" class="internal xref">Relay Resistance</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-freshness-guarantees" class="internal xref">Freshness Guarantees</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-security-guarantees" class="internal xref">Security Guarantees</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-freshness-guarantees" class="internal xref">Freshness Guarantees</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-server-attestation-to-unaut" class="internal xref">Server Attestation to Unauthenticated Clients</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -1307,24 +1312,36 @@ These extensions have been designed to allow the peers to use any attestation te
             <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-04</a></p>
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-draft-fossati-seat-early-at" class="internal xref">draft-fossati-seat-early-attestation-06</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-draft-fossati-seat-early-att" class="internal xref">draft-fossati-seat-early-attestation-03</a></p>
+                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-draft-fossati-seat-early-att" class="internal xref">draft-fossati-seat-early-attestation-05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
-                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-draft-fossati-seat-early-atte" class="internal xref">draft-fossati-seat-early-attestation-02</a></p>
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-draft-fossati-seat-early-atte" class="internal xref">draft-fossati-seat-early-attestation-04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.4">
-                <p id="section-toc.1-1.13.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-draft-fossati-seat-early-attes" class="internal xref">draft-fossati-seat-early-attestation-01</a></p>
+                <p id="section-toc.1-1.13.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-draft-fossati-seat-early-attes" class="internal xref">draft-fossati-seat-early-attestation-03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.5">
-                <p id="section-toc.1-1.13.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-draft-fossati-seat-early-attest" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
+                <p id="section-toc.1-1.13.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-draft-fossati-seat-early-attest" class="internal xref">draft-fossati-seat-early-attestation-02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.6">
+                <p id="section-toc.1-1.13.2.6.1"><a href="#appendix-A.6" class="auto internal xref">A.6</a>.  <a href="#name-draft-fossati-seat-early-attesta" class="internal xref">draft-fossati-seat-early-attestation-01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.7">
+                <p id="section-toc.1-1.13.2.7.1"><a href="#appendix-A.7" class="auto internal xref">A.7</a>.  <a href="#name-draft-fossati-seat-early-attestat" class="internal xref">draft-fossati-seat-early-attestation-00</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-design-rationale-why-the-tr" class="internal xref">Design Rationale: Why the Transcript and Not the Exporter</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-computing-the-handshake-tra" class="internal xref">Computing the Handshake Transcript with Existing TLS APIs</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1336,10 +1353,10 @@ These extensions have been designed to allow the peers to use any attestation te
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">Remote Attestation (RA) <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
-This document describes a series of extensions to the TLS handshake that enable the binding of the TLS connection and its authentication key to a remote attestation session.
+This document describes an extension to the TLS handshake that enables the binding of the TLS connection and its authentication key to a remote attestation session.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) <span>[<a href="#I-D.ietf-teep-architecture" class="cite xref">I-D.ietf-teep-architecture</a>]</span>, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Given the variety of deployed and emerging attestation technologies (e.g., <span>[<a href="#TPM1.2" class="cite xref">TPM1.2</a>]</span>, <span>[<a href="#TPM2.0" class="cite xref">TPM2.0</a>]</span>, <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>) these extensions have been explicitly designed to be agnostic to the attestation formats.
+<p id="section-1-2">Given the variety of deployed and emerging attestation technologies (e.g., <span>[<a href="#TPM1.2" class="cite xref">TPM1.2</a>]</span>, <span>[<a href="#TPM2.0" class="cite xref">TPM2.0</a>]</span>, <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span>) this extension has been explicitly designed to be agnostic to the attestation formats.
 This is achieved by reusing the generic encapsulation defined in <span>[<a href="#I-D.ietf-rats-msg-wrap" class="cite xref">I-D.ietf-rats-msg-wrap</a>]</span> for transporting Evidence and Attestation Results payloads in the <code>remoteAttestation</code> extension.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This specification provides both one-way (server-only) and mutual (client and server) authentication using traditional TLS authentication combined with attestation, and allows the attestation topologies at each peer to be independent of each other.
 The proposed design supports both background-check and passport topologies, as described in Sections <a href="https://rfc-editor.org/rfc/rfc9334#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc9334#section-5.1" class="relref">5.1</a> of <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
@@ -1363,7 +1380,7 @@ and the TLS connection is established.<a href="#section-1-5.3.1" class="pilcrow"
 <p id="section-1-6">This document does not mandate any particular attestation technology.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="conventions-and-terminology">
+<div id="terminology">
 <section id="section-2">
       <h2 id="name-conventions-and-terminology">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-terminology" class="section-name selfRef">Conventions and Terminology</a>
@@ -1399,6 +1416,11 @@ protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the
 <dt id="section-2-3.9">Attestation binder:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.10">
           <p id="section-2-3.10.1">A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.<a href="#section-2-3.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.11">Two-sided uniqueness:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.12">
+          <p id="section-2-3.12.1">The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore unique to the specific connection.<a href="#section-2-3.12.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1440,11 +1462,7 @@ well as guarantees of platform integrity.<a href="#section-3.1-3" class="pilcrow
 minimal impact on the existing TLS security properties. The changes consist of:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-2.1">
-            <p id="section-3.2-2.1.1">Negotiation extensions: New TLS extensions are added to ClientHello and
-EncryptedExtensions messages to negotiate the use of attestation and indicate
-supported attestation formats and Verifiers. A new <code>remoteAttestation</code> extension is
-introduced to the Certificate message. This extension carries attestation Evidence
-or Attestation Results.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-2.1.1">Negotiation extension: A new <code>remoteAttestation</code> TLS extension is added to ClientHello, EncryptedExtensions, CertificateRequest, and Certificate messages to negotiate the use of attestation, indicate supported attestation formats and Verifiers, and carry the attestation credential.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-2.2">
             <p id="section-3.2-2.2.1">Independent key derivation: Binder derivation for attestation (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>) is completely independent of the
@@ -1489,7 +1507,7 @@ implementation, the TLS stack is located outside the TEE, but any private keys
 both options, only the TIK's identity, its public component and a short generated binder are ever
 passed between the Client or Server TLS stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
-their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 8.1</a> for more details.<a href="#section-4-6" class="pilcrow">¶</a></p>
+their security properties often differ, see <a href="#sec-guarantees" class="auto internal xref">Section 8.2</a> for more details.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div id="remote-attestation-extension-section">
 <section id="section-4.1">
         <h3 id="name-remote-attestation-extensio">
@@ -1635,6 +1653,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 SubjectPublicKeyInfo of the peer's end-entity certificate. <code>Hash</code> is the
 cipher suite hash function for the handshake (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>).<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.1.1-5">We note that <code>HKDF-Expand-Label</code> is used to produce binding values rather than keying material. <code>HKDF-Extract</code> is not invoked, as there is no input key material to combine. The "0" parameter denotes a byte string of <code>Hash.length</code> zeroes.<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-6"><code>HKDF-Expand-Label</code> is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.1" class="relref">Section 7.1</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, which builds on the HKDF construction <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>; its use here does not modify the TLS protocol or the TLS key schedule.<a href="#section-5.1.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="verification">
@@ -1719,7 +1738,7 @@ Evidence only attests that a TLS stack is running in a TEE, the relying party ca
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
 <p id="section-5.2-6">The proposed binding ensures that the relying party does not establish a TLS session with a TLS endpoint whose TIK is not generated and controlled by the TEE. It does not - in and of itself - ensure security of the TLS stack when the stack is
-outside the TEE, and see <a href="#sec-guarantees" class="auto internal xref">Section 8.1</a> for a further discussion.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+outside the TEE, and see <a href="#sec-guarantees" class="auto internal xref">Section 8.2</a> for a further discussion.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="stack-tee-interface">
@@ -2010,36 +2029,89 @@ If the server has chosen an <code>evidence</code> scheme for the client, the sig
       <h2 id="name-security-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-8-1">TBD.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<div id="sec-guarantees">
+<div id="relay-resistance">
 <section id="section-8.1">
-        <h3 id="name-security-guarantees">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-security-guarantees" class="section-name selfRef">Security Guarantees</a>
+        <h3 id="name-relay-resistance">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-relay-resistance" class="section-name selfRef">Relay Resistance</a>
         </h3>
-<p id="section-8.1-1">We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
-and the overall security level depends on their existence and quality of assurance:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">A relay attack succeeds when Evidence produced in one TLS connection can be
+presented by a different party in another TLS connection. Preventing it
+requires that Evidence be bound to a value that is unique to the TLS connection
+in which it is conveyed, so that Evidence generated in any one connection
+cannot be replayed in any other.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">This mechanism meets that requirement by binding Evidence to the handshake
+transcript checkpoint <code>ClientHello...ServerHello</code> (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>), a value
+that is unique to each connection. The binding does not rely on the application
+traffic secrets, nor on any value exported from the completed handshake such as
+the Exported Keying Material (EKM; <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.5" class="relref">Section 7.5</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>). EKM is an equally
+valid per-connection anchor; the remainder of this section shows that binding to
+the transcript checkpoint and binding to EKM provide equivalent relay
+resistance.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">The two approaches differ only in which connection-unique value the Evidence is
+anchored to:<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.1-2.1">
-            <p id="section-8.1-2.1.1">The Identity Key is generated by the TEE.<a href="#section-8.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8.1-4.1">
+            <p id="section-8.1-4.1.1">A post-handshake binding anchors Evidence to EKM, a value that becomes
+available only after the handshake completes.<a href="#section-8.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.1-2.2">
-            <p id="section-8.1-2.2.1">The Identity Key is never exported or leaked outside the TEE.<a href="#section-8.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-8.1-2.3">
-            <p id="section-8.1-2.3.1">The TLS protocol, whether implemented by the TEE or outside the TEE, is implemented correctly and (for example) does not leak any session key material.<a href="#section-8.1-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-8.1-4.2">
+            <p id="section-8.1-4.2.1">The mechanism in this document anchors Evidence to
+<code>Transcript-Hash(ClientHello...ServerHello)</code>.<a href="#section-8.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.1-3">These properties may be explicitly promised ("attested") by the platform, or they can be assured in other ways such as by providing source code, reproducible builds, formal verification etc. The exact mechanisms are out of scope of this document.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-5">Both anchors are unique per connection. The transcript checkpoint commits to
+both peers' fresh ephemeral key-exchange contributions, that is, the client's
+and server's <code>key_share</code> entries (whether (EC)DHE public keys or a PQC KEM
+public key and ciphertext), as well as <code>ClientHello.random</code> and
+<code>ServerHello.random</code>.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
+<p id="section-8.1-6">Because each peer independently contributes fresh material, neither peer alone
+controls the transcript, and the resulting binder is unique to the specific
+connection (two-sided uniqueness).<a href="#section-8.1-6" class="pilcrow">¶</a></p>
+<p id="section-8.1-7">The two constructions therefore offer equal relay resistance.<a href="#section-8.1-7" class="pilcrow">¶</a></p>
+<p id="section-8.1-8">The relay resistance of this mechanism does not depend on the transcript being secret.
+It relies instead on the attestation binder, which is unique to the connection and
+bound to the attester's TLS identity key, being carried in Evidence signed by the
+TEE (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a> and <a href="#tik-binding" class="auto internal xref">Section 5.2</a>); the confidentiality of ClientHello
+and ServerHello is not required.<a href="#section-8.1-8" class="pilcrow">¶</a></p>
+<p id="section-8.1-9">Although <code>ClientHello</code> and <code>ServerHello</code> are visible to an on-path observer, an
+eavesdropper cannot reuse them to complete a new TLS connection, as it does not know
+the ephemeral private keys behind the key shares they carry. Nor can the client or
+server reproduce an earlier transcript: each contributes fresh key-exchange material
+to every handshake, so every connection yields a different transcript, and therefore a
+different binder.<a href="#section-8.1-9" class="pilcrow">¶</a></p>
+<p id="section-8.1-10">The rationale for anchoring to the transcript rather than to an exporter value is
+given in <a href="#transcript-vs-exporter" class="auto internal xref">Appendix B</a>.<a href="#section-8.1-10" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-guarantees">
+<section id="section-8.2">
+        <h3 id="name-security-guarantees">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-security-guarantees" class="section-name selfRef">Security Guarantees</a>
+        </h3>
+<p id="section-8.2-1">We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
+and the overall security level depends on their existence and quality of assurance:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-8.2-2.1">
+            <p id="section-8.2-2.1.1">The Identity Key is generated by the TEE.<a href="#section-8.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-8.2-2.2">
+            <p id="section-8.2-2.2.1">The Identity Key is never exported or leaked outside the TEE.<a href="#section-8.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-8.2-2.3">
+            <p id="section-8.2-2.3.1">The TLS protocol, whether implemented by the TEE or outside the TEE, is implemented correctly and (for example) does not leak any session key material.<a href="#section-8.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-8.2-3">These properties may be explicitly promised ("attested") by the platform, or they can be assured in other ways such as by providing source code, reproducible builds, formal verification etc. The exact mechanisms are out of scope of this document.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="freshness-guarantees">
-<section id="section-8.2">
+<section id="section-8.3">
         <h3 id="name-freshness-guarantees">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-freshness-guarantees" class="section-name selfRef">Freshness Guarantees</a>
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-freshness-guarantees" class="section-name selfRef">Freshness Guarantees</a>
         </h3>
-<p id="section-8.2-1"><span class="cref"> TODO: Discuss freshness guarantees provided by the Attestation Binder.
+<p id="section-8.3-1"><span class="cref"> TODO: Discuss freshness guarantees provided by the Attestation Binder.
 Differences between Background Check and Passport mode.
-</span><a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</span><a href="#section-8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2074,7 +2146,30 @@ Some ways to address this include:<a href="#section-9-2" class="pilcrow">¶</a><
       </ul>
 <p id="section-9-4">The latter two also have the property of hiding the peer's identity from the RP.<a href="#section-9-4" class="pilcrow">¶</a></p>
 <p id="section-9-5">Note that the equivalent of OCSP "stapling" involves using a passport topology where the Verifier's involvement is unrelated to the TLS session.<a href="#section-9-5" class="pilcrow">¶</a></p>
-<p id="section-9-6">Due to the inherent asymmetry of the TLS protocol, if the Attester acts as the TLS server, a malicious TLS client could potentially retrieve sensitive information from attestation Evidence without the client's trustworthiness first being established by the server.<a href="#section-9-6" class="pilcrow">¶</a></p>
+<div id="server-attester-privacy">
+<section id="section-9.1">
+        <h3 id="name-server-attestation-to-unaut">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-server-attestation-to-unaut" class="section-name selfRef">Server Attestation to Unauthenticated Clients</a>
+        </h3>
+<p id="section-9.1-1">Due to the inherent asymmetry of the TLS handshake, when the Attester acts as the
+TLS server it produces attestation before the client has authenticated. As a
+result, any unauthenticated client that completes the handshake can read
+the Claims carried in the server's Evidence, without its own trustworthiness first
+being established by the server. The following considerations bound the impact of
+this exposure and offer mitigations.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9.1-2.1">
+            <p id="section-9.1-2.1.1">Passport model with selective disclosure: In the Passport topology
+(<span><a href="https://rfc-editor.org/rfc/rfc9334#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>), the server presents a Verifier-signed
+Attestation Result instead of the Evidence, so the Evidence never reaches the
+client. As the signer, the Verifier can issue this result in
+selectively-disclosable form (SD-CWT <span>[<a href="#I-D.ietf-spice-sd-cwt" class="cite xref">I-D.ietf-spice-sd-cwt</a>]</span> or SD-JWT <span>[<a href="#I-D.ietf-oauth-selective-disclosure-jwt" class="cite xref">I-D.ietf-oauth-selective-disclosure-jwt</a>]</span>), letting
+the server reveal only a subset of Claims.<a href="#section-9.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-9.1-3">See <span>[<a href="#I-D.ounsworth-rats-privacy-framework" class="cite xref">I-D.ounsworth-rats-privacy-framework</a>]</span> for a broader treatment of privacy in the RATS context.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="iana-considerations">
@@ -2212,7 +2307,7 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 <dd class="break"></dd>
 <dt id="I-D.fossati-tls-attestation">[I-D.fossati-tls-attestation]</dt>
         <dd>
-<span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Howard, P.</span>, <span class="refAuthor">Mihalcea, I.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Niemi, A.</span>, and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Using Attestation in Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-fossati-tls-attestation-09</span>, <time datetime="2025-04-30" class="refDate">30 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-09">https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Howard, P.</span>, <span class="refAuthor">Mihalcea, I.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Niemi, A.</span>, and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Using Attestation in Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-fossati-tls-attestation-10</span>, <time datetime="2026-07-23" class="refDate">23 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-10">https://datatracker.ietf.org/doc/html/draft-fossati-tls-attestation-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-oauth-selective-disclosure-jwt">[I-D.ietf-oauth-selective-disclosure-jwt]</dt>
         <dd>
@@ -2226,9 +2321,17 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
         <dd>
 <span class="refAuthor">Lundblade, L.</span>, <span class="refAuthor">Mandyam, G.</span>, <span class="refAuthor">O'Donoghue, J.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"The Entity Attestation Token (EAT)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-eat-31</span>, <time datetime="2024-09-06" class="refDate">6 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31">https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-spice-sd-cwt">[I-D.ietf-spice-sd-cwt]</dt>
+        <dd>
+<span class="refAuthor">Prorock, M.</span>, <span class="refAuthor">Steele, O.</span>, <span class="refAuthor">Birkholz, H.</span>, and <span class="refAuthor">R. Mahy</span>, <span class="refTitle">"Selective Disclosure CBOR Web Tokens (SD-CWT)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-spice-sd-cwt-08</span>, <time datetime="2026-06-01" class="refDate">1 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-spice-sd-cwt-08">https://datatracker.ietf.org/doc/html/draft-ietf-spice-sd-cwt-08</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-teep-architecture">[I-D.ietf-teep-architecture]</dt>
         <dd>
 <span class="refAuthor">Pei, M.</span>, <span class="refAuthor">Tschofenig, H.</span>, <span class="refAuthor">Thaler, D.</span>, and <span class="refAuthor">D. M. Wheeler</span>, <span class="refTitle">"Trusted Execution Environment Provisioning (TEEP) Architecture"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-teep-architecture-19</span>, <time datetime="2022-10-24" class="refDate">24 October 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-teep-architecture-19">https://datatracker.ietf.org/doc/html/draft-ietf-teep-architecture-19</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ounsworth-rats-privacy-framework">[I-D.ounsworth-rats-privacy-framework]</dt>
+        <dd>
+<span class="refAuthor">Ounsworth, M.</span>, <span class="refAuthor">Tschofenig, H.</span>, and <span class="refAuthor">G. Lehmann</span>, <span class="refTitle">"Privacy Framework for Remote ATtestation procedureS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ounsworth-rats-privacy-framework-00</span>, <time datetime="2026-06-18" class="refDate">18 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ounsworth-rats-privacy-framework-00">https://datatracker.ietf.org/doc/html/draft-ounsworth-rats-privacy-framework-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.rosomakho-tls-cert-update">[I-D.rosomakho-tls-cert-update]</dt>
         <dd>
@@ -2245,6 +2348,10 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 <dt id="RA-TLS">[RA-TLS]</dt>
         <dd>
 <span class="refAuthor">Knauth, T.</span>, <span class="refAuthor">Steiner, M.</span>, <span class="refAuthor">Chakrabarti, S.</span>, <span class="refAuthor">Lei, L.</span>, <span class="refAuthor">Xing, C.</span>, and <span class="refAuthor">M. Vij</span>, <span class="refTitle">"Integrating Remote Attestation with Transport Layer Security"</span>, <time datetime="2018-01" class="refDate">January 2018</time>, <span>&lt;<a href="https://arxiv.org/abs/1801.05863">https://arxiv.org/abs/1801.05863</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5869">[RFC5869]</dt>
+        <dd>
+<span class="refAuthor">Krawczyk, H.</span> and <span class="refAuthor">P. Eronen</span>, <span class="refTitle">"HMAC-based Extract-and-Expand Key Derivation Function (HKDF)"</span>, <span class="seriesInfo">RFC 5869</span>, <span class="seriesInfo">DOI 10.17487/RFC5869</span>, <time datetime="2010-05" class="refDate">May 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5869">https://www.rfc-editor.org/rfc/rfc5869</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6960">[RFC6960]</dt>
         <dd>
@@ -2280,125 +2387,211 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
       <h2 id="name-document-history">
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
       </h2>
-<div id="draft-fossati-seat-early-attestation-04">
+<div id="draft-fossati-seat-early-attestation-06">
 <section id="appendix-A.1">
         <h3 id="name-draft-fossati-seat-early-at">
-<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-draft-fossati-seat-early-at" class="section-name selfRef">draft-fossati-seat-early-attestation-04</a>
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-draft-fossati-seat-early-at" class="section-name selfRef">draft-fossati-seat-early-attestation-06</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-A.1-1.1">
-            <p id="appendix-A.1-1.1.1">Register the <code>attestation_failed</code> alert for Evidence verification failure after
-the <code>attestation</code> extension is processed; clarify roles of the three attestation-related
-alerts in <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>.<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.1.1">Add a Security Considerations subsection on relay resistance, showing that
+transcript binding (<code>ClientHello...ServerHello</code>) and EKM binding offer equal
+relay resistance (see <a href="#relay-resistance" class="auto internal xref">Section 8.1</a>).<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-1.2">
-            <p id="appendix-A.1-1.2.1">Hash TLS public keys in <code>HKDF-Expand-Label</code> context so <code>HkdfLabel</code> stays
-within the 255-octet limit (post-quantum public keys); see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>.<a href="#appendix-A.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.2.1">Expand Privacy Considerations to cover server attestation to unauthenticated
+clients, with mitigations (selective disclosure via
+SD-CWT, and the Passport model) (see <a href="#server-attester-privacy" class="auto internal xref">Section 9.1</a>).<a href="#appendix-A.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-1.3">
-            <p id="appendix-A.1-1.3.1">Simplify attestation binder derivation to a single shared transcript
-checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.3.1">Add an appendix with the design rationale for anchoring the binder to the
+transcript rather than to an exporter secret (see <a href="#transcript-vs-exporter" class="auto internal xref">Appendix B</a>).<a href="#appendix-A.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-A.1-1.4">
-            <p id="appendix-A.1-1.4.1">Replaced Derive-Secret with HKDF-Expand-Label<a href="#appendix-A.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-A.1-1.4.1">Add an appendix noting that the <code>ClientHello...ServerHello</code> transcript can be
+computed using existing TLS-stack APIs, requiring no new interface (see
+<a href="#transcript-apis" class="auto internal xref">Appendix C</a>).<a href="#appendix-A.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.1-1.5">
+            <p id="appendix-A.1-1.5.1">Clarify that <code>HKDF-Expand-Label</code> is the TLS 1.3 wrapper over <code>HKDF-Expand</code>
+(<span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>) and that its use does not modify the TLS protocol or the key
+schedule.<a href="#appendix-A.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="draft-fossati-seat-early-attestation-05">
+<section id="appendix-A.2">
+        <h3 id="name-draft-fossati-seat-early-att">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-draft-fossati-seat-early-att" class="section-name selfRef">draft-fossati-seat-early-attestation-05</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-A.2-1.1">
+            <p id="appendix-A.2-1.1.1">Change extension model to a single <code>remoteAttestation</code> extension that covers all handshake messages which need extending.<a href="#appendix-A.2-1.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="draft-fossati-seat-early-attestation-04">
+<section id="appendix-A.3">
+        <h3 id="name-draft-fossati-seat-early-atte">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-draft-fossati-seat-early-atte" class="section-name selfRef">draft-fossati-seat-early-attestation-04</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-A.3-1.1">
+            <p id="appendix-A.3-1.1.1">Register the <code>attestation_failed</code> alert for Evidence verification failure after
+the <code>attestation</code> extension is processed; clarify roles of the three attestation-related
+alerts in <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>.<a href="#appendix-A.3-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.3-1.2">
+            <p id="appendix-A.3-1.2.1">Hash TLS public keys in <code>HKDF-Expand-Label</code> context so <code>HkdfLabel</code> stays
+within the 255-octet limit (post-quantum public keys); see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>.<a href="#appendix-A.3-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.3-1.3">
+            <p id="appendix-A.3-1.3.1">Simplify attestation binder derivation to a single shared transcript
+checkpoint (<code>ClientHello...ServerHello</code>) for both peers (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>).<a href="#appendix-A.3-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.3-1.4">
+            <p id="appendix-A.3-1.4.1">Replaced Derive-Secret with HKDF-Expand-Label<a href="#appendix-A.3-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="draft-fossati-seat-early-attestation-03">
-<section id="appendix-A.2">
-        <h3 id="name-draft-fossati-seat-early-att">
-<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-draft-fossati-seat-early-att" class="section-name selfRef">draft-fossati-seat-early-attestation-03</a>
+<section id="appendix-A.4">
+        <h3 id="name-draft-fossati-seat-early-attes">
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-draft-fossati-seat-early-attes" class="section-name selfRef">draft-fossati-seat-early-attestation-03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-A.2-1.1">
-            <p id="appendix-A.2-1.1.1">Replace the Attestation message by an Attestation (certificate) extension,
-to bring this protocol within the requirements of the SEAT charter.<a href="#appendix-A.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.4-1.1">
+            <p id="appendix-A.4-1.1.1">Replace the Attestation message by an Attestation (certificate) extension,
+to bring this protocol within the requirements of the SEAT charter.<a href="#appendix-A.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.2-1.2">
-            <p id="appendix-A.2-1.2.1">Define the attestation binder and decouple it from the TLS key schedule.<a href="#appendix-A.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.2">
+            <p id="appendix-A.4-1.2.1">Define the attestation binder and decouple it from the TLS key schedule.<a href="#appendix-A.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.2-1.3">
-            <p id="appendix-A.2-1.3.1">List multiple design options for reattestation.<a href="#appendix-A.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.3">
+            <p id="appendix-A.4-1.3.1">List multiple design options for reattestation.<a href="#appendix-A.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.2-1.4">
-            <p id="appendix-A.2-1.4.1">Add architecture diagram for TLS stack interface with the TEE.<a href="#appendix-A.2-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.4">
+            <p id="appendix-A.4-1.4.1">Add architecture diagram for TLS stack interface with the TEE.<a href="#appendix-A.4-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.2-1.5">
-            <p id="appendix-A.2-1.5.1">Add defense-in-depth guidance for measuring TEE, TLS stack, and shim.<a href="#appendix-A.2-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.5">
+            <p id="appendix-A.4-1.5.1">Add defense-in-depth guidance for measuring TEE, TLS stack, and shim.<a href="#appendix-A.4-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.2-1.6">
-            <p id="appendix-A.2-1.6.1">Remove various outdated sections.<a href="#appendix-A.2-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.6">
+            <p id="appendix-A.4-1.6.1">Remove various outdated sections.<a href="#appendix-A.4-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="draft-fossati-seat-early-attestation-02">
-<section id="appendix-A.3">
-        <h3 id="name-draft-fossati-seat-early-atte">
-<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-draft-fossati-seat-early-atte" class="section-name selfRef">draft-fossati-seat-early-attestation-02</a>
+<section id="appendix-A.5">
+        <h3 id="name-draft-fossati-seat-early-attest">
+<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-draft-fossati-seat-early-attest" class="section-name selfRef">draft-fossati-seat-early-attestation-02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-A.3-1.1">
-            <p id="appendix-A.3-1.1.1">Fix typo in key schedule. Clarify (again) that this is only adding to the schedule, not modifying any existing key derivations.<a href="#appendix-A.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.5-1.1">
+            <p id="appendix-A.5-1.1.1">Fix typo in key schedule. Clarify (again) that this is only adding to the schedule, not modifying any existing key derivations.<a href="#appendix-A.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="draft-fossati-seat-early-attestation-01">
-<section id="appendix-A.4">
-        <h3 id="name-draft-fossati-seat-early-attes">
-<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-draft-fossati-seat-early-attes" class="section-name selfRef">draft-fossati-seat-early-attestation-01</a>
+<section id="appendix-A.6">
+        <h3 id="name-draft-fossati-seat-early-attesta">
+<a href="#appendix-A.6" class="section-number selfRef">A.6. </a><a href="#name-draft-fossati-seat-early-attesta" class="section-name selfRef">draft-fossati-seat-early-attestation-01</a>
         </h3>
-<p id="appendix-A.4-1">(Submitted by mistake.)<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.6-1">(Submitted by mistake.)<a href="#appendix-A.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="draft-fossati-seat-early-attestation-00">
-<section id="appendix-A.5">
-        <h3 id="name-draft-fossati-seat-early-attest">
-<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-draft-fossati-seat-early-attest" class="section-name selfRef">draft-fossati-seat-early-attestation-00</a>
+<section id="appendix-A.7">
+        <h3 id="name-draft-fossati-seat-early-attestat">
+<a href="#appendix-A.7" class="section-number selfRef">A.7. </a><a href="#name-draft-fossati-seat-early-attestat" class="section-name selfRef">draft-fossati-seat-early-attestation-00</a>
         </h3>
-<p id="appendix-A.5-1">Initial version of draft-fossati-seat-early-attestation.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
-<p id="appendix-A.5-2">This version represents a major architectural change from <span>[<a href="#I-D.fossati-tls-attestation" class="cite xref">I-D.fossati-tls-attestation</a>]</span>.
-The key changes include:<a href="#appendix-A.5-2" class="pilcrow">¶</a></p>
+<p id="appendix-A.7-1">Initial version of draft-fossati-seat-early-attestation.<a href="#appendix-A.7-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.7-2">This version represents a major architectural change from <span>[<a href="#I-D.fossati-tls-attestation" class="cite xref">I-D.fossati-tls-attestation</a>]</span>.
+The key changes include:<a href="#appendix-A.7-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-A.5-3.1">
-            <p id="appendix-A.5-3.1.1">Removed certificate extension mechanism for conveying attestation Evidence<a href="#appendix-A.5-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.7-3.1">
+            <p id="appendix-A.7-3.1.1">Removed certificate extension mechanism for conveying attestation Evidence<a href="#appendix-A.7-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.2">
-            <p id="appendix-A.5-3.2.1">Introduced new <code>Attestation</code> handshake message for carrying CMW (Conceptual Message Wrapper) payload<a href="#appendix-A.5-3.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.2">
+            <p id="appendix-A.7-3.2.1">Introduced new <code>Attestation</code> handshake message for carrying CMW (Conceptual Message Wrapper) payload<a href="#appendix-A.7-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.3">
-            <p id="appendix-A.5-3.3.1"><code>Attestation</code> message sent after CertificateVerify when server is attester<a href="#appendix-A.5-3.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.3">
+            <p id="appendix-A.7-3.3.1"><code>Attestation</code> message sent after CertificateVerify when server is attester<a href="#appendix-A.7-3.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.4">
-            <p id="appendix-A.5-3.4.1"><code>Attestation</code> message sent after CertificateVerify message when client is attester<a href="#appendix-A.5-3.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.4">
+            <p id="appendix-A.7-3.4.1"><code>Attestation</code> message sent after CertificateVerify message when client is attester<a href="#appendix-A.7-3.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.5">
-            <p id="appendix-A.5-3.5.1">Removed use cases section<a href="#appendix-A.5-3.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.5">
+            <p id="appendix-A.7-3.5.1">Removed use cases section<a href="#appendix-A.7-3.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.6">
-            <p id="appendix-A.5-3.6.1">Removed KAT (Key Attestation Token) and PAT (Platform Attestation Token) references, using CMW directly<a href="#appendix-A.5-3.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.6">
+            <p id="appendix-A.7-3.6.1">Removed KAT (Key Attestation Token) and PAT (Platform Attestation Token) references, using CMW directly<a href="#appendix-A.7-3.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.7">
-            <p id="appendix-A.5-3.7.1">Nonces (client and server) and attester's TLS identity public key are included in TEE-signed Evidence/AttestationResults within CMW<a href="#appendix-A.5-3.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.7">
+            <p id="appendix-A.7-3.7.1">Nonces (client and server) and attester's TLS identity public key are included in TEE-signed Evidence/AttestationResults within CMW<a href="#appendix-A.7-3.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.8">
-            <p id="appendix-A.5-3.8.1">CertificateVerify remains unchanged from baseline TLS (no proof-of-possession needed)<a href="#appendix-A.5-3.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.8">
+            <p id="appendix-A.7-3.8.1">CertificateVerify remains unchanged from baseline TLS (no proof-of-possession needed)<a href="#appendix-A.7-3.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.9">
-            <p id="appendix-A.5-3.9.1">Added session resumption discussion (resumption <span class="bcp14">MUST</span> be rejected if reattestation is required per local policy)<a href="#appendix-A.5-3.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.9">
+            <p id="appendix-A.7-3.9.1">Added session resumption discussion (resumption <span class="bcp14">MUST</span> be rejected if reattestation is required per local policy)<a href="#appendix-A.7-3.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-3.10">
-            <p id="appendix-A.5-3.10.1">Added reattestation<a href="#appendix-A.5-3.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-3.10">
+            <p id="appendix-A.7-3.10.1">Added reattestation<a href="#appendix-A.7-3.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="transcript-vs-exporter">
 <section id="appendix-B">
+      <h2 id="name-design-rationale-why-the-tr">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-design-rationale-why-the-tr" class="section-name selfRef">Design Rationale: Why the Transcript and Not the Exporter</a>
+      </h2>
+<p id="appendix-B-1"><a href="#relay-resistance" class="auto internal xref">Section 8.1</a> establishes that binding to the
+<code>ClientHello...ServerHello</code> transcript checkpoint and binding to an exported
+value (EKM) offers two independent methods to provide equal relay resistance. This appendix discusses the rationale behind anchoring the
+attestation binder to the transcript rather than to an exporter
+secret.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-2.1">
+          <p id="appendix-B-2.1.1">Attestation happens during the handshake. When Evidence is produced and bound
+as part of the handshake, EKM does not yet exist: it is derived only after the
+handshake completes. Evidence produced during the handshake therefore cannot be
+anchored to EKM.<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.2">
+          <p id="appendix-B-2.2.1">TLS 1.3 defines an <code>early_exporter_secret</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14#section-7.5" class="relref">Section 7.5</a> of [<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>),
+which is available earlier. However, it is only meaningful when a PSK is in use.
+With no PSK, the Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret
+has no secret input; moreover, it is derived from the ClientHello alone and
+carries no contribution from the server side of the handshake. It therefore does
+not provide the two-sided uniqueness (<a href="#terminology" class="auto internal xref">Section 2</a>) the binder requires.<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="transcript-apis">
+<section id="appendix-C">
+      <h2 id="name-computing-the-handshake-tra">
+<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-computing-the-handshake-tra" class="section-name selfRef">Computing the Handshake Transcript with Existing TLS APIs</a>
+      </h2>
+<p id="appendix-C-1">The attestation binder is computed over <code>Transcript-Hash(ClientHello...ServerHello)</code>
+(see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>). Both messages are already held by the TLS stack at the point
+attestation runs, so computing the binder requires no change to the TLS
+protocol.  Additionally, TLS stacks typically expose handshake messages via callback
+interfaces before the handshake completes; the application can obtain ClientHello
+and ServerHello through these existing hooks without any new protocol interface.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-D">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

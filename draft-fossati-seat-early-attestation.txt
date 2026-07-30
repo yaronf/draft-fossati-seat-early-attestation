@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 22 December 2026                                   Y. Deshpande
+Expires: 31 January 2027                                    Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                            20 June 2026
+                                                            30 July 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -26,14 +26,14 @@ Abstract
    state.  Such an assurance can be achieved using remote attestation
    which is a process by which an entity produces Evidence about itself
    that another party can use to appraise whether that entity is found
-   in a secure state.  This document describes a series of TLS
-   extensions that enable the binding of the TLS authentication key to a
-   remote attestation session.  This enables an entity capable of
+   in a secure state.  This document describes a TLS extension that
+   enables the negotiation and binding of the TLS authentication key to
+   a remote attestation session.  This enables an entity capable of
    producing attestation Evidence, such as a confidential workload
    running in a Trusted Execution Environment (TEE), or an IoT device
    that is trying to authenticate itself to a network access point, to
    present a more comprehensive set of security metrics to its peer.
-   These extensions have been designed to allow the peers to use any
+   This extension has been designed to allow the peers to use any
    attestation technology, in any remote attestation topology, and to
    use them mutually.
 
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 December 2026.
+   This Internet-Draft will expire on 31 January 2027.
 
 Copyright Notice
 
@@ -116,9 +116,11 @@ Table of Contents
      7.3.  Certificate Request
      7.4.  Following Server Hello
    8.  Security Considerations
-     8.1.  Security Guarantees
-     8.2.  Freshness Guarantees
+     8.1.  Relay Resistance
+     8.2.  Security Guarantees
+     8.3.  Freshness Guarantees
    9.  Privacy Considerations
+     9.1.  Server Attestation to Unauthenticated Clients
    10. IANA Considerations
      10.1.  TLS Extensions
      10.2.  TLS Alerts
@@ -127,19 +129,25 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-04
-     A.2.  draft-fossati-seat-early-attestation-03
-     A.3.  draft-fossati-seat-early-attestation-02
-     A.4.  draft-fossati-seat-early-attestation-01
-     A.5.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-06
+     A.2.  draft-fossati-seat-early-attestation-05
+     A.3.  draft-fossati-seat-early-attestation-04
+     A.4.  draft-fossati-seat-early-attestation-03
+     A.5.  draft-fossati-seat-early-attestation-02
+     A.6.  draft-fossati-seat-early-attestation-01
+     A.7.  draft-fossati-seat-early-attestation-00
+   Appendix B.  Design Rationale: Why the Transcript and Not the
+           Exporter
+   Appendix C.  Computing the Handshake Transcript with Existing TLS
+           APIs
    Authors' Addresses
 
 1.  Introduction
 
    Remote Attestation (RA) [RFC9334] is the process by which an entity
    produces evidence about itself that another party can use to evaluate
-   the trustworthiness of that entity.  This document describes a series
-   of extensions to the TLS handshake that enable the binding of the TLS
+   the trustworthiness of that entity.  This document describes an
+   extension to the TLS handshake that enables the binding of the TLS
    connection and its authentication key to a remote attestation
    session.  This enables an attester, such as a confidential workload
    running in a Trusted Execution Environment (TEE)
@@ -150,7 +158,7 @@ Table of Contents
    relying parties that are based on stronger security signals.
 
    Given the variety of deployed and emerging attestation technologies
-   (e.g., [TPM1.2], [TPM2.0], [I-D.ietf-rats-eat]) these extensions have
+   (e.g., [TPM1.2], [TPM2.0], [I-D.ietf-rats-eat]) this extension has
    been explicitly designed to be agnostic to the attestation formats.
    This is achieved by reusing the generic encapsulation defined in
    [I-D.ietf-rats-msg-wrap] for transporting Evidence and Attestation
@@ -218,6 +226,13 @@ Table of Contents
       It is used for binding attestation Evidence to a specific TLS
       handshake and for providing freshness.
 
+   Two-sided uniqueness:
+      The property that each peer independently contributes fresh nonces
+      and key-exchange material to the handshake, so that neither peer
+      alone can determine the transcript hash.  The attestation binder
+      derived from that transcript is therefore unique to the specific
+      connection.
+
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
    "OPTIONAL" in this document are to be interpreted as described in
@@ -262,12 +277,11 @@ Table of Contents
    designed to have minimal impact on the existing TLS security
    properties.  The changes consist of:
 
-   *  Negotiation extensions: New TLS extensions are added to
-      ClientHello and EncryptedExtensions messages to negotiate the use
-      of attestation and indicate supported attestation formats and
-      Verifiers.  A new remoteAttestation extension is introduced to the
-      Certificate message.  This extension carries attestation Evidence
-      or Attestation Results.
+   *  Negotiation extension: A new remoteAttestation TLS extension is
+      added to ClientHello, EncryptedExtensions, CertificateRequest, and
+      Certificate messages to negotiate the use of attestation, indicate
+      supported attestation formats and Verifiers, and carry the
+      attestation credential.
 
    *  Independent key derivation: Binder derivation for attestation (see
       Section 5.1) is completely independent of the regular TLS key
@@ -327,7 +341,7 @@ Table of Contents
    are ever passed between the Client or Server TLS stack and its
    Attestation Service.  While the two types of implementations offer
    identical functionality, their security properties often differ, see
-   Section 8.1 for more details.
+   Section 8.2 for more details.
 
 4.1.  Remote Attestation Extension
 
@@ -476,6 +490,11 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    is no input key material to combine.  The "0" parameter denotes a
    byte string of Hash.length zeroes.
 
+   HKDF-Expand-Label is defined in Section 7.1 of
+   [I-D.ietf-tls-rfc8446bis], which builds on the HKDF construction
+   [RFC5869]; its use here does not modify the TLS protocol or the TLS
+   key schedule.
+
 5.1.2.  Verification
 
    Upon receipt of a remoteAttestation extension, the peer MUST compute
@@ -588,7 +607,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    establish a TLS session with a TLS endpoint whose TIK is not
    generated and controlled by the TEE.  It does not - in and of itself
    - ensure security of the TLS stack when the stack is outside the TEE,
-   and see Section 8.1 for a further discussion.
+   and see Section 8.2 for a further discussion.
 
 5.3.  The TLS Stack's Interface to the TEE
 
@@ -904,9 +923,65 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 8.  Security Considerations
 
-   TBD.
+8.1.  Relay Resistance
 
-8.1.  Security Guarantees
+   A relay attack succeeds when Evidence produced in one TLS connection
+   can be presented by a different party in another TLS connection.
+   Preventing it requires that Evidence be bound to a value that is
+   unique to the TLS connection in which it is conveyed, so that
+   Evidence generated in any one connection cannot be replayed in any
+   other.
+
+   This mechanism meets that requirement by binding Evidence to the
+   handshake transcript checkpoint ClientHello...ServerHello (see
+   Section 5.1), a value that is unique to each connection.  The binding
+   does not rely on the application traffic secrets, nor on any value
+   exported from the completed handshake such as the Exported Keying
+   Material (EKM; Section 7.5 of [I-D.ietf-tls-rfc8446bis]).  EKM is an
+   equally valid per-connection anchor; the remainder of this section
+   shows that binding to the transcript checkpoint and binding to EKM
+   provide equivalent relay resistance.
+
+   The two approaches differ only in which connection-unique value the
+   Evidence is anchored to:
+
+   *  A post-handshake binding anchors Evidence to EKM, a value that
+      becomes available only after the handshake completes.
+
+   *  The mechanism in this document anchors Evidence to Transcript-
+      Hash(ClientHello...ServerHello).
+
+   Both anchors are unique per connection.  The transcript checkpoint
+   commits to both peers' fresh ephemeral key-exchange contributions,
+   that is, the client's and server's key_share entries (whether (EC)DHE
+   public keys or a PQC KEM public key and ciphertext), as well as
+   ClientHello.random and ServerHello.random.
+
+   Because each peer independently contributes fresh material, neither
+   peer alone controls the transcript, and the resulting binder is
+   unique to the specific connection (two-sided uniqueness).
+
+   The two constructions therefore offer equal relay resistance.
+
+   The relay resistance of this mechanism does not depend on the
+   transcript being secret.  It relies instead on the attestation
+   binder, which is unique to the connection and bound to the attester's
+   TLS identity key, being carried in Evidence signed by the TEE (see
+   Section 5.1 and Section 5.2); the confidentiality of ClientHello and
+   ServerHello is not required.
+
+   Although ClientHello and ServerHello are visible to an on-path
+   observer, an eavesdropper cannot reuse them to complete a new TLS
+   connection, as it does not know the ephemeral private keys behind the
+   key shares they carry.  Nor can the client or server reproduce an
+   earlier transcript: each contributes fresh key-exchange material to
+   every handshake, so every connection yields a different transcript,
+   and therefore a different binder.
+
+   The rationale for anchoring to the transcript rather than to an
+   exporter value is given in Appendix B.
+
+8.2.  Security Guarantees
 
    We note that as a pure cryptographic protocol, attested TLS as-is
    only guarantees that the Identity Key is known by the TEE.  A number
@@ -927,7 +1002,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    source code, reproducible builds, formal verification etc.  The exact
    mechanisms are out of scope of this document.
 
-8.2.  Freshness Guarantees
+8.3.  Freshness Guarantees
 
 
    // TODO: Discuss freshness guarantees provided by the Attestation
@@ -970,10 +1045,27 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    topology where the Verifier's involvement is unrelated to the TLS
    session.
 
-   Due to the inherent asymmetry of the TLS protocol, if the Attester
-   acts as the TLS server, a malicious TLS client could potentially
-   retrieve sensitive information from attestation Evidence without the
-   client's trustworthiness first being established by the server.
+9.1.  Server Attestation to Unauthenticated Clients
+
+   Due to the inherent asymmetry of the TLS handshake, when the Attester
+   acts as the TLS server it produces attestation before the client has
+   authenticated.  As a result, any unauthenticated client that
+   completes the handshake can read the Claims carried in the server's
+   Evidence, without its own trustworthiness first being established by
+   the server.  The following considerations bound the impact of this
+   exposure and offer mitigations.
+
+   *  Passport model with selective disclosure: In the Passport topology
+      (Section 5.1 of [RFC9334]), the server presents a Verifier-signed
+      Attestation Result instead of the Evidence, so the Evidence never
+      reaches the client.  As the signer, the Verifier can issue this
+      result in selectively-disclosable form (SD-CWT
+      [I-D.ietf-spice-sd-cwt] or SD-JWT
+      [I-D.ietf-oauth-selective-disclosure-jwt]), letting the server
+      reveal only a subset of Claims.
+
+   See [I-D.ounsworth-rats-privacy-framework] for a broader treatment of
+   privacy in the RATS context.
 
 10.  IANA Considerations
 
@@ -1081,9 +1173,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               Deshpande, Y., Niemi, A., and T. Fossati, "Using
               Attestation in Transport Layer Security (TLS) and Datagram
               Transport Layer Security (DTLS)", Work in Progress,
-              Internet-Draft, draft-fossati-tls-attestation-09, 30 April
-              2025, <https://datatracker.ietf.org/doc/html/draft-
-              fossati-tls-attestation-09>.
+              Internet-Draft, draft-fossati-tls-attestation-10, 23 July
+              2026, <https://datatracker.ietf.org/doc/html/draft-
+              fossati-tls-attestation-10>.
 
    [I-D.ietf-oauth-selective-disclosure-jwt]
               Fett, D., Yasuda, K., and B. Campbell, "Selective
@@ -1107,6 +1199,13 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               September 2024, <https://datatracker.ietf.org/doc/html/
               draft-ietf-rats-eat-31>.
 
+   [I-D.ietf-spice-sd-cwt]
+              Prorock, M., Steele, O., Birkholz, H., and R. Mahy,
+              "Selective Disclosure CBOR Web Tokens (SD-CWT)", Work in
+              Progress, Internet-Draft, draft-ietf-spice-sd-cwt-08, 1
+              June 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-spice-sd-cwt-08>.
+
    [I-D.ietf-teep-architecture]
               Pei, M., Tschofenig, H., Thaler, D., and D. M. Wheeler,
               "Trusted Execution Environment Provisioning (TEEP)
@@ -1114,6 +1213,14 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               ietf-teep-architecture-19, 24 October 2022,
               <https://datatracker.ietf.org/doc/html/draft-ietf-teep-
               architecture-19>.
+
+   [I-D.ounsworth-rats-privacy-framework]
+              Ounsworth, M., Tschofenig, H., and G. Lehmann, "Privacy
+              Framework for Remote ATtestation procedureS", Work in
+              Progress, Internet-Draft, draft-ounsworth-rats-privacy-
+              framework-00, 18 June 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ounsworth-
+              rats-privacy-framework-00>.
 
    [I-D.rosomakho-tls-cert-update]
               Rosomakho, Y. and T. Reddy.K, "Certificate Update in TLS
@@ -1134,6 +1241,11 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               C., and M. Vij, "Integrating Remote Attestation with
               Transport Layer Security", January 2018,
               <https://arxiv.org/abs/1801.05863>.
+
+   [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
+              Key Derivation Function (HKDF)", RFC 5869,
+              DOI 10.17487/RFC5869, May 2010,
+              <https://www.rfc-editor.org/rfc/rfc5869>.
 
    [RFC6960]  Santesson, S., Myers, M., Ankney, R., Malpani, A.,
               Galperin, S., and C. Adams, "X.509 Internet Public Key
@@ -1168,7 +1280,34 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-04
+A.1.  draft-fossati-seat-early-attestation-06
+
+   *  Add a Security Considerations subsection on relay resistance,
+      showing that transcript binding (ClientHello...ServerHello) and
+      EKM binding offer equal relay resistance (see Section 8.1).
+
+   *  Expand Privacy Considerations to cover server attestation to
+      unauthenticated clients, with mitigations (selective disclosure
+      via SD-CWT, and the Passport model) (see Section 9.1).
+
+   *  Add an appendix with the design rationale for anchoring the binder
+      to the transcript rather than to an exporter secret (see
+      Appendix B).
+
+   *  Add an appendix noting that the ClientHello...ServerHello
+      transcript can be computed using existing TLS-stack APIs,
+      requiring no new interface (see Appendix C).
+
+   *  Clarify that HKDF-Expand-Label is the TLS 1.3 wrapper over HKDF-
+      Expand ([RFC5869]) and that its use does not modify the TLS
+      protocol or the key schedule.
+
+A.2.  draft-fossati-seat-early-attestation-05
+
+   *  Change extension model to a single remoteAttestation extension
+      that covers all handshake messages which need extending.
+
+A.3.  draft-fossati-seat-early-attestation-04
 
    *  Register the attestation_failed alert for Evidence verification
       failure after the attestation extension is processed; clarify
@@ -1184,7 +1323,7 @@ A.1.  draft-fossati-seat-early-attestation-04
 
    *  Replaced Derive-Secret with HKDF-Expand-Label
 
-A.2.  draft-fossati-seat-early-attestation-03
+A.4.  draft-fossati-seat-early-attestation-03
 
    *  Replace the Attestation message by an Attestation (certificate)
       extension, to bring this protocol within the requirements of the
@@ -1202,17 +1341,17 @@ A.2.  draft-fossati-seat-early-attestation-03
 
    *  Remove various outdated sections.
 
-A.3.  draft-fossati-seat-early-attestation-02
+A.5.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.4.  draft-fossati-seat-early-attestation-01
+A.6.  draft-fossati-seat-early-attestation-01
 
    (Submitted by mistake.)
 
-A.5.  draft-fossati-seat-early-attestation-00
+A.7.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
@@ -1246,6 +1385,39 @@ A.5.  draft-fossati-seat-early-attestation-00
       if reattestation is required per local policy)
 
    *  Added reattestation
+
+Appendix B.  Design Rationale: Why the Transcript and Not the Exporter
+
+   Section 8.1 establishes that binding to the ClientHello...ServerHello
+   transcript checkpoint and binding to an exported value (EKM) offers
+   two independent methods to provide equal relay resistance.  This
+   appendix discusses the rationale behind anchoring the attestation
+   binder to the transcript rather than to an exporter secret.
+
+   *  Attestation happens during the handshake.  When Evidence is
+      produced and bound as part of the handshake, EKM does not yet
+      exist: it is derived only after the handshake completes.  Evidence
+      produced during the handshake therefore cannot be anchored to EKM.
+
+   *  TLS 1.3 defines an early_exporter_secret (Section 7.5 of
+      [I-D.ietf-tls-rfc8446bis]), which is available earlier.  However,
+      it is only meaningful when a PSK is in use.  With no PSK, the
+      Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret
+      has no secret input; moreover, it is derived from the ClientHello
+      alone and carries no contribution from the server side of the
+      handshake.  It therefore does not provide the two-sided uniqueness
+      (Section 2) the binder requires.
+
+Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
+
+   The attestation binder is computed over Transcript-
+   Hash(ClientHello...ServerHello) (see Section 5.1).  Both messages are
+   already held by the TLS stack at the point attestation runs, so
+   computing the binder requires no change to the TLS protocol.
+   Additionally, TLS stacks typically expose handshake messages via
+   callback interfaces before the handshake completes; the application
+   can obtain ClientHello and ServerHello through these existing hooks
+   without any new protocol interface.
 
 Authors' Addresses
 
