@@ -726,7 +726,7 @@ TEE (see {{crypto-ops}} and {{tik-binding}}); the confidentiality of ClientHello
 and ServerHello is not required.
 
 Although `ClientHello` and `ServerHello` are visible to an on-path observer, an
-eavesdropper cannot replay them to complete a new TLS connection, as it does not know
+eavesdropper cannot reuse them to complete a new TLS connection, as it does not know
 the ephemeral private keys behind the key shares they carry. Nor can the client or 
 server reproduce an earlier transcript: each contributes fresh key-exchange material 
 to every handshake, so every connection yields a different transcript, and therefore a 
