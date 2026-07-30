@@ -65,6 +65,7 @@ author:
 normative:
   I-D.ietf-tls-rfc8446bis: tls13
   I-D.ietf-rats-msg-wrap: cmw
+  RFC5869: hkdf  
 
 informative:
   RFC6960: ocsp
@@ -73,6 +74,8 @@ informative:
   I-D.ietf-rats-eat: rats-eat
   I-D.ietf-rats-daa: rats-daa
   I-D.ietf-oauth-selective-disclosure-jwt: sd-jwt
+  I-D.ietf-spice-sd-cwt: sd-cwt  
+  I-D.ounsworth-rats-privacy-framework: rats-privacy  
   I-D.ietf-teep-architecture: teep-arch
   I-D.rosomakho-tls-cert-update: cert-update
   TPM1.2:
@@ -406,6 +409,8 @@ cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
 We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The "0" parameter denotes a byte string of `Hash.length` zeroes.
 
+`HKDF-Expand-Label` is the TLS 1.3 wrapper (Section 7.1 of {{-tls13}}) around the `HKDF-Expand` function defined in {{-hkdf}}; its use here does not modify the TLS protocol or the TLS key schedule.
+
 ### Verification
 
 Upon receipt of a `remoteAttestation` extension, the peer MUST compute the attestation binder.
@@ -675,7 +680,57 @@ If the server has chosen an `evidence` scheme for the client, the signed Evidenc
 
 # Security Considerations {#sec-cons}
 
-TBD.
+## Relay Resistance {#relay-resistance}
+
+A relay attack succeeds when Evidence produced in one TLS connection can be 
+presented by a different party in another TLS connection. Preventing it 
+requires that Evidence be bound to a value that is unique to the TLS connection 
+in which it is conveyed, so that Evidence generated in any one connection 
+cannot be replayed in any other.
+
+This mechanism meets that requirement by binding Evidence to the handshake
+transcript checkpoint `ClientHello...ServerHello` (see {{crypto-ops}}), a value
+that is unique to each connection. The binding does not rely on the application
+traffic secrets, nor on any value exported from the completed handshake such as
+the Exported Keying Material (EKM; Section 7.5 of {{-tls13}}). EKM is an equally
+valid per-connection anchor; the remainder of this section shows that binding to
+the transcript checkpoint and binding to EKM provide equivalent relay
+resistance.
+
+The two approaches differ only in which connection-unique value the Evidence is
+anchored to:
+
+* A post-handshake binding anchors Evidence to EKM, a value that becomes
+  available only after the handshake completes.
+* The mechanism in this document anchors Evidence to
+  `Transcript-Hash(ClientHello...ServerHello)`.
+
+Both anchors are unique per connection. The transcript checkpoint commits to
+both peers' fresh ephemeral key-exchange contributions, that is, the client's
+and server's `key_share` entries (whether (EC)DHE public keys or a PQC KEM
+public key and ciphertext), as well as `ClientHello.random` and
+`ServerHello.random`.
+
+Because each peer independently contributes fresh material, neither peer alone
+controls the transcript, and the resulting binder is unique to the specific
+connection (two-sided uniqueness).
+
+The two constructions therefore offer equal relay resistance. The rationale for
+anchoring to the transcript rather than to an exporter value is given in
+{{transcript-vs-exporter}}.
+
+The relay resistance of this mechanism does not depend on the transcript being secret. 
+It relies instead on the attestation binder, which is unique to the connection and 
+bound to the attester's TLS identity key, being carried in Evidence signed by the 
+TEE (see {{crypto-ops}} and {{tik-binding}}); the confidentiality of ClientHello 
+and ServerHello is not required.
+
+Although `ClientHello` and `ServerHello` are visible to an on-path observer, an
+eavesdropper cannot replay them to complete a new TLS connection, as it does not know
+the ephemeral private keys behind the key shares they carry. Nor can the client or 
+server reproduce an earlier transcript: each contributes fresh key-exchange material 
+to every handshake, so every connection yields a different transcript, and therefore a 
+different binder.
 
 ## Security Guarantees {#sec-guarantees}
 
@@ -714,7 +769,28 @@ The latter two also have the property of hiding the peer's identity from the RP.
 
 Note that the equivalent of OCSP "stapling" involves using a passport topology where the Verifier's involvement is unrelated to the TLS session.
 
-Due to the inherent asymmetry of the TLS protocol, if the Attester acts as the TLS server, a malicious TLS client could potentially retrieve sensitive information from attestation Evidence without the client's trustworthiness first being established by the server.
+## Server Attestation to Unauthenticated Clients {#server-attester-privacy}
+
+Due to the inherent asymmetry of the TLS handshake, when the Attester acts as the
+TLS server it produces attestation before the client has authenticated. As a
+result, any unauthenticated client that completes the handshake can read 
+the Claims carried in the server's Evidence, without its own trustworthiness first 
+being established by the server. The following considerations bound the impact of 
+this exposure and offer mitigations.
+
+* Selective disclosure: The server can limit what is revealed by disclosing only
+  a chosen subset of Claims. This document does not mandate disclosing any
+  sensitive Claim. When Evidence is carried as an EAT, selective-disclosure
+  mechanisms such as SD-CWT {{-sd-cwt}} (for COSE-based tokens) or SD-JWT
+  {{-sd-jwt}} (for JSON-based tokens) let the server decide which Claims to reveal.
+
+* Passport model: In the Passport topology (Section 5.1 of {{RFC9334}}), the
+  server can present a compact, Verifier-signed Attestation Result instead of 
+  the Evidence. The detailed Evidence stays with the Verifier and never reaches the
+  client, so the client learns only the appraisal outcome and whatever minimal
+  Claims the Attestation Result is configured to carry.
+
+See {{-rats-privacy}} for a broader treatment of privacy in the RATS context.
 
 # IANA Considerations
 
@@ -759,6 +835,23 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-06
+
+* Add a Security Considerations subsection on relay resistance, showing that
+  transcript binding (`ClientHello...ServerHello`) and EKM binding offer equal
+  relay resistance (see {{relay-resistance}}).
+* Expand Privacy Considerations to cover server attestation to unauthenticated
+  clients, with mitigations (incremental disclosure, selective disclosure via
+  SD-CWT, and the Passport model) (see {{server-attester-privacy}}).
+* Add an appendix with the design rationale for anchoring the binder to the
+  transcript rather than to an exporter secret (see {{transcript-vs-exporter}}).
+* Add an appendix noting that the `ClientHello...ServerHello` transcript can be
+  computed using existing TLS-stack APIs, requiring no new interface (see
+  {{transcript-apis}}).
+* Clarify that `HKDF-Expand-Label` is the TLS 1.3 wrapper over `HKDF-Expand`
+  ({{-hkdf}}) and that its use does not modify the TLS protocol or the key
+  schedule.
 
 ## draft-fossati-seat-early-attestation-05
 
@@ -811,4 +904,34 @@ The key changes include:
 - Added reattestation
 
 <!-- Start of Appendices -->
+
+# Design Rationale: Why the Transcript and Not the Exporter {#transcript-vs-exporter}
+
+{{relay-resistance}} establishes that binding to the
+`ClientHello...ServerHello` transcript checkpoint and binding to an exported
+value (EKM) offer equal relay resistance. This appendix discusses why this document
+anchors the attestation binder to the transcript rather than to an exporter
+secret.
+
+* Attestation happens during the handshake. When Evidence is produced and bound
+  as part of the handshake, EKM does not yet exist: it is derived only after the
+  handshake completes. Evidence produced during the handshake therefore cannot be
+  anchored to EKM.
+
+* TLS 1.3 defines an `early_exporter_secret` (Section 7.5 of {{-tls13}}), 
+  which is available earlier. However, it is only meaningful when a PSK is in use. 
+  With no PSK, the Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret 
+  has no secret input; moreover, it is derived from the ClientHello alone and 
+  carries no contribution from the server side of the handshake. It therefore does 
+  not provide the two-sided uniqueness the binder requires. 
+
+# Computing the Handshake Transcript with Existing TLS APIs {#transcript-apis}
+
+The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
+(see {{crypto-ops}}). Both messages are already held by the TLS stack at the point
+attestation runs, so computing the binder requires no change to the TLS
+protocol and no new TLS interface: existing implementation APIs already expose the
+handshake messages. For example, OpenSSL provides `SSL_CTX_set_msg_callback` and
+`SSL_CTX_set_client_hello_cb`, and BoringSSL provides `SSL_CTX_set_select_certificate_cb`. 
+
 
