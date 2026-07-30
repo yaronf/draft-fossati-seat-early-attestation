@@ -930,8 +930,8 @@ secret.
 The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
 (see {{crypto-ops}}). Both messages are already held by the TLS stack at the point
 attestation runs, so computing the binder requires no change to the TLS
-protocol and no new TLS interface: existing implementation APIs already expose the
-handshake messages. For example, OpenSSL provides `SSL_CTX_set_msg_callback` and
-`SSL_CTX_set_client_hello_cb`, and BoringSSL provides `SSL_CTX_set_select_certificate_cb`. 
+protocol.  Besides, TLS stacks typically expose handshake messages via callback
+interfaces before the handshake completes; the application can obtain ClientHello
+and ServerHello through these existing hooks without any new protocol interface.
 
 
