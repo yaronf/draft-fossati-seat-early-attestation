@@ -929,7 +929,7 @@ secret.
 The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
 (see {{crypto-ops}}). Both messages are already held by the TLS stack at the point
 attestation runs, so computing the binder requires no change to the TLS
-protocol.  Besides, TLS stacks typically expose handshake messages via callback
+protocol.  Additionally, TLS stacks typically expose handshake messages via callback
 interfaces before the handshake completes; the application can obtain ClientHello
 and ServerHello through these existing hooks without any new protocol interface.
 
