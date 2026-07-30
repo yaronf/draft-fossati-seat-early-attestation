@@ -917,7 +917,7 @@ secret.
   handshake completes. Evidence produced during the handshake therefore cannot be
   anchored to EKM.
 
-* TLS 1.3 defines an `early_exporter_secret` (Section 7.5 of {{-tls13}}),
+* TLS 1.3 defines an `early_exporter_secret` ({{Section 7.5 of -tls13}}),
   which is available earlier. However, it is only meaningful when a PSK is in use.
   With no PSK, the Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret
   has no secret input; moreover, it is derived from the ClientHello alone and
