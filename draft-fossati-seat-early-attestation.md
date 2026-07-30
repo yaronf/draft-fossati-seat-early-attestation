@@ -174,7 +174,7 @@ and the TLS connection is established.
 
 This document does not mandate any particular attestation technology.
 
-# Conventions and Terminology
+# Conventions and Terminology {#terminology}
 
 The reader is assumed to be familiar with the vocabulary and concepts defined in
 {{Section 4 of -rats-arch}}.
@@ -201,6 +201,9 @@ TIK-C-ID, TIK-S-ID:
 
 Attestation binder:
 : A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.
+
+Two-sided uniqueness:
+: The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore unique to the specific connection.
 
 <!-- -->
 
@@ -730,6 +733,9 @@ server reproduce an earlier transcript: each contributes fresh key-exchange mate
 to every handshake, so every connection yields a different transcript, and therefore a 
 different binder.
 
+The rationale for anchoring to the transcript rather than to an exporter value is
+given in {{transcript-vs-exporter}}.
+
 ## Security Guarantees {#sec-guarantees}
 
 We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
@@ -776,17 +782,12 @@ the Claims carried in the server's Evidence, without its own trustworthiness fir
 being established by the server. The following considerations bound the impact of 
 this exposure and offer mitigations.
 
-* Selective disclosure: The server can limit what is revealed by disclosing only
-  a chosen subset of Claims. This document does not mandate disclosing any
-  sensitive Claims. When Evidence is carried as an EAT, selective-disclosure
-  mechanisms such as SD-CWT {{-sd-cwt}} (for COSE-based tokens) or SD-JWT
-  {{-sd-jwt}} (for JSON-based tokens) let the server decide which Claims to reveal.
-
-* Passport model: In the Passport topology ({{Section 5.1 of -rats-arch}}), the
-  server presents a  Verifier-signed Attestation Results to the client instead of 
-  the Evidence. The Evidence Claims stays with the Verifier and never reaches the
-  client, so the client learns only the appraisal outcome and whatever minimal
-  Claims the Attestation Result is configured to carry.
+* Passport model with selective disclosure: In the Passport topology
+  ({{Section 5.1 of -rats-arch}}), the server presents a Verifier-signed
+  Attestation Result instead of the Evidence, so the Evidence never reaches the
+  client. As the signer, the Verifier can issue this result in
+  selectively-disclosable form (SD-CWT {{-sd-cwt}} or SD-JWT {{-sd-jwt}}), letting
+  the server reveal only a subset of Claims.
 
 See {{-rats-privacy}} for a broader treatment of privacy in the RATS context.
 
@@ -921,7 +922,7 @@ secret.
   With no PSK, the Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret 
   has no secret input; moreover, it is derived from the ClientHello alone and 
   carries no contribution from the server side of the handshake. It therefore does 
-  not provide the two-sided uniqueness the binder requires. 
+  not provide the two-sided uniqueness ({{terminology}}) the binder requires. 
 
 # Computing the Handshake Transcript with Existing TLS APIs {#transcript-apis}
 
