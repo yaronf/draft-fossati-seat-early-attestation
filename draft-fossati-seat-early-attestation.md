@@ -409,7 +409,7 @@ cipher suite hash function for the handshake ({{Section 7.1 of -tls13}}).
 
 We note that `HKDF-Expand-Label` is used to produce binding values rather than keying material. `HKDF-Extract` is not invoked, as there is no input key material to combine. The "0" parameter denotes a byte string of `Hash.length` zeroes.
 
-`HKDF-Expand-Label` is the TLS 1.3 wrapper (Section 7.1 of {{-tls13}}) around the `HKDF-Expand` function defined in {{-hkdf}}; its use here does not modify the TLS protocol or the TLS key schedule.
+`HKDF-Expand-Label` is defined in {{Section 7.1 of -tls13}}, which builds on the HKDF construction {{-hkdf}}; its use here does not modify the TLS protocol or the TLS key schedule.
 
 ### Verification
 
