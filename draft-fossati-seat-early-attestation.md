@@ -77,6 +77,7 @@ informative:
   I-D.ounsworth-rats-privacy-framework: rats-privacy  
   I-D.ietf-teep-architecture: teep-arch
   I-D.rosomakho-tls-cert-update: cert-update
+  RFC5869: hkdf  
   TPM1.2:
     target: https://trustedcomputinggroup.org/resource/tpm-main-specification/
     title: TPM Main Specification Level 2 Version 1.2, Revision 116
