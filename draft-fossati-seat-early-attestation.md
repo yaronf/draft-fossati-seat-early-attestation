@@ -909,7 +909,7 @@ The key changes include:
 
 {{relay-resistance}} establishes that binding to the
 `ClientHello...ServerHello` transcript checkpoint and binding to an exported
-value (EKM) offer equal relay resistance. This appendix discusses the rationale behind anchoring the 
+value (EKM) offers two independent methods to provide equal relay resistance. This appendix discusses the rationale behind anchoring the 
 attestation binder to the transcript rather than to an exporter
 secret.
 
