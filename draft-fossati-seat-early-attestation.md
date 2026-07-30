@@ -65,7 +65,6 @@ author:
 normative:
   I-D.ietf-tls-rfc8446bis: tls13
   I-D.ietf-rats-msg-wrap: cmw
-  RFC5869: hkdf  
 
 informative:
   RFC6960: ocsp
