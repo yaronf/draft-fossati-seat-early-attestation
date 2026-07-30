@@ -2585,7 +2585,7 @@ not provide the two-sided uniqueness (<a href="#terminology" class="auto interna
 <p id="appendix-C-1">The attestation binder is computed over <code>Transcript-Hash(ClientHello...ServerHello)</code>
 (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>). Both messages are already held by the TLS stack at the point
 attestation runs, so computing the binder requires no change to the TLS
-protocol.  Besides, TLS stacks typically expose handshake messages via callback
+protocol.  Additionally, TLS stacks typically expose handshake messages via callback
 interfaces before the handshake completes; the application can obtain ClientHello
 and ServerHello through these existing hooks without any new protocol interface.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 </section>

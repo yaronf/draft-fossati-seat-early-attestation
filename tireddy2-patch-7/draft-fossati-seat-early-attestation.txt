@@ -1414,10 +1414,10 @@ Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
    Hash(ClientHello...ServerHello) (see Section 5.1).  Both messages are
    already held by the TLS stack at the point attestation runs, so
    computing the binder requires no change to the TLS protocol.
-   Besides, TLS stacks typically expose handshake messages via callback
-   interfaces before the handshake completes; the application can obtain
-   ClientHello and ServerHello through these existing hooks without any
-   new protocol interface.
+   Additionally, TLS stacks typically expose handshake messages via
+   callback interfaces before the handshake completes; the application
+   can obtain ClientHello and ServerHello through these existing hooks
+   without any new protocol interface.
 
 Authors' Addresses
 
