@@ -780,7 +780,7 @@ this exposure and offer mitigations.
 
 * Selective disclosure: The server can limit what is revealed by disclosing only
   a chosen subset of Claims. This document does not mandate disclosing any
-  sensitive Claim. When Evidence is carried as an EAT, selective-disclosure
+  sensitive Claims. When Evidence is carried as an EAT, selective-disclosure
   mechanisms such as SD-CWT {{-sd-cwt}} (for COSE-based tokens) or SD-JWT
   {{-sd-jwt}} (for JSON-based tokens) let the server decide which Claims to reveal.
 
