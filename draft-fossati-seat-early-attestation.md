@@ -784,7 +784,7 @@ this exposure and offer mitigations.
   mechanisms such as SD-CWT {{-sd-cwt}} (for COSE-based tokens) or SD-JWT
   {{-sd-jwt}} (for JSON-based tokens) let the server decide which Claims to reveal.
 
-* Passport model: In the Passport topology (Section 5.1 of {{RFC9334}}), the
+* Passport model: In the Passport topology ({{Section 5.1 of -rats-arch}}), the
   server presents a  Verifier-signed Attestation Results to the client instead of 
   the Evidence. The Evidence Claims stays with the Verifier and never reaches the
   client, so the client learns only the appraisal outcome and whatever minimal
