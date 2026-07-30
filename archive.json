@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-16T02:25:10.744114+00:00",
+  "timestamp": "2026-07-30T02:08:51.806065+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5790,25 +5790,33 @@
       "id": "PR_kwDOQdsaoc7tjKaE",
       "title": "Clean up \"extensions\" text",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/66",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Also, update changelog.\r\n\r\nUnfortunately I started reading the abstract only after pressing the submit button :[",
       "createdAt": "2026-07-03T10:41:33Z",
-      "updatedAt": "2026-07-07T12:28:02Z",
+      "updatedAt": "2026-07-29T13:53:12Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "24967d4f47d5c1ceb611780be134f6c6d7af5dfa",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "extension-oops",
       "headRefOid": "c4cf2954bfc6b016422617e80a064905a1405916",
-      "closedAt": null,
+      "closedAt": "2026-07-29T13:53:11Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It seems Github has added the commit to `main`, but hasn't closed the PR, so closing it now. I'll rerun the deployment steps to get a fresh editor's draft.",
+          "createdAt": "2026-07-29T13:53:11Z",
+          "updatedAt": "2026-07-29T13:53:11Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOQdsaoc8AAAABE7GpVw",
