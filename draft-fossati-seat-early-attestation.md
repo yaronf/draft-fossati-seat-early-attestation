@@ -785,7 +785,7 @@ this exposure and offer mitigations.
   {{-sd-jwt}} (for JSON-based tokens) let the server decide which Claims to reveal.
 
 * Passport model: In the Passport topology (Section 5.1 of {{RFC9334}}), the
-  server can present a compact, Verifier-signed Attestation Result instead of 
+  server presents a  Verifier-signed Attestation Results to the client instead of 
   the Evidence. The detailed Evidence stays with the Verifier and never reaches the
   client, so the client learns only the appraisal outcome and whatever minimal
   Claims the Attestation Result is configured to carry.
