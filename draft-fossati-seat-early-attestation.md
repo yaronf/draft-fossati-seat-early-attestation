@@ -692,7 +692,7 @@ This mechanism meets that requirement by binding Evidence to the handshake
 transcript checkpoint `ClientHello...ServerHello` (see {{crypto-ops}}), a value
 that is unique to each connection. The binding does not rely on the application
 traffic secrets, nor on any value exported from the completed handshake such as
-the Exported Keying Material (EKM; Section 7.5 of {{-tls13}}). EKM is an equally
+the Exported Keying Material (EKM; {{Section 7.5 of -tls13}}). EKM is an equally
 valid per-connection anchor; the remainder of this section shows that binding to
 the transcript checkpoint and binding to EKM provide equivalent relay
 resistance.
