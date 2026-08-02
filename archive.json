@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-30T02:08:51.806065+00:00",
+  "timestamp": "2026-08-02T02:34:11.879019+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -5856,6 +5856,613 @@
           "createdAt": "2026-07-07T12:28:02Z",
           "updatedAt": "2026-07-07T12:28:02Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 68,
+      "id": "PR_kwDOQdsaoc74XsDz",
+      "title": "Address comments from the WG",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/68",
+      "state": "MERGED",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-07-30T06:29:56Z",
+      "updatedAt": "2026-07-31T13:32:05Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "ac17e1059ddacbf3c10c5e035af59a6c206508dc",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-7",
+      "headRefOid": "d73f0ef45a480bc0cfbf0ac86ea57b09425006b6",
+      "closedAt": "2026-07-30T13:13:34Z",
+      "mergedAt": "2026-07-30T13:13:34Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "695140d6b81c4783d2d0f7b6b73bd2027f06fc97"
+      },
+      "comments": [
+        {
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "body": "@thomas-fossati \r\n> Thinking out loud: to strengthen the argument, we could ask Nathanael to publish his analysis (e.g., on arXiv). That way, we can refer to it.\r\n\r\nI would be happy to do so, although that is further down the road. The updates here certainly look self-sufficient in the meantime. \r\n",
+          "createdAt": "2026-07-30T11:13:49Z",
+          "updatedAt": "2026-07-30T11:13:49Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxmiUQ",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:13:11Z",
+          "updatedAt": "2026-07-30T08:13:11Z",
+          "comments": [
+            {
+              "originalPosition": 101,
+              "body": "```suggestion\n  sensitive Claims. When Evidence is carried as an EAT, selective-disclosure\n```",
+              "createdAt": "2026-07-30T08:13:11Z",
+              "updatedAt": "2026-07-30T08:13:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxn6bw",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:16:21Z",
+          "updatedAt": "2026-07-30T08:16:21Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "```suggestion\n  server presents a  Verifier-signed Attestation Results to the client instead of \n```",
+              "createdAt": "2026-07-30T08:16:21Z",
+              "updatedAt": "2026-07-30T08:18:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxojKw",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:17:49Z",
+          "updatedAt": "2026-07-30T08:17:49Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "```suggestion\n  the Evidence. The Evidence Claims stays with the Verifier and never reaches the\n```",
+              "createdAt": "2026-07-30T08:17:49Z",
+              "updatedAt": "2026-07-30T08:17:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxqnKg",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:22:27Z",
+          "updatedAt": "2026-07-30T08:22:27Z",
+          "comments": [
+            {
+              "originalPosition": 146,
+              "body": "I would suggest making the language a bit clear. For example something like:\n\n``ClientHello...ServerHello` transcript checkpoint and binding to an exported value (EKM) offers two independent methods to provide equal relay resistance.",
+              "createdAt": "2026-07-30T08:22:27Z",
+              "updatedAt": "2026-07-30T08:22:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxq7qg",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:23:13Z",
+          "updatedAt": "2026-07-30T08:23:13Z",
+          "comments": [
+            {
+              "originalPosition": 147,
+              "body": "```suggestion\nvalue (EKM) offer equal relay resistance. This appendix discusses the rationale behind anchoring the \n```",
+              "createdAt": "2026-07-30T08:23:13Z",
+              "updatedAt": "2026-07-30T08:24:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxrkLw",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T08:24:37Z",
+          "updatedAt": "2026-07-30T08:24:37Z",
+          "comments": [
+            {
+              "originalPosition": 148,
+              "body": "```suggestion\nattestation binder to the transcript rather than to an exporter\n```",
+              "createdAt": "2026-07-30T08:24:37Z",
+              "updatedAt": "2026-07-30T08:24:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHxsWiQ",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "LGTM! I have left purely some typographical comments, but in general the change looks sensible to me!",
+          "createdAt": "2026-07-30T08:26:12Z",
+          "updatedAt": "2026-07-30T08:26:12Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHx7VSQ",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "great stuff, thanks!\n\nThinking out loud: to strengthen the argument, we could ask Nathanael to publish his analysis (e.g., on arXiv). That way, we can refer to it. ",
+          "createdAt": "2026-07-30T08:57:22Z",
+          "updatedAt": "2026-07-30T09:35:35Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "This can be moved to informative, I think.",
+              "createdAt": "2026-07-30T08:57:22Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "streamline a bit\n\n```suggestion\n`HKDF-Expand-Label` is defined in {{Section 7.1 of -tls13}}, which builds on the HKDF construction {{-hkdf}}; its use here does not modify the TLS protocol or the TLS key schedule.\n```\n\nPS: As a last resort we could use SHAKE to provide the XOF instead :-)\n",
+              "createdAt": "2026-07-30T09:01:49Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 77,
+              "body": "To avoid confusing the reader, I'd rather use \"reuse\" than \"replay\"\n\n```suggestion\neavesdropper cannot reuse them to complete a new TLS connection, as it does not know\n```",
+              "createdAt": "2026-07-30T09:05:23Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 161,
+              "body": "Just a suggetsion.\n\nThis is the second time that we have used the term.\nLines 714\u2013716 introduce it, but they are roughly 200 lines away, so it's likely that the reader has already lost the mental context.\nPerhaps we could add a definition to the glossary, e.g.:\n```\nTwo-sided uniqueness:\n: each peer independently contributes fresh nonces and\nkey-exchange material, so neither peer alone can determine\nthe transcript hash\n```\nor similar, and a back reference?",
+              "createdAt": "2026-07-30T09:08:20Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "more precise linking\n\n```suggestion\nthe Exported Keying Material (EKM; {{Section 7.5 of -tls13}}). EKM is an equally\n```\n\nBTW, the RPC has recently put together a fantastic page filled with kramdown-rfc delicacies: https://authors.ietf.org/en/rfcxml-markdown-syntax-tables",
+              "createdAt": "2026-07-30T09:10:35Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 68,
+              "body": "I would move _\"The rationale for anchoring to the transcript rather than to an exporter value is given in {{transcript-vs-exporter}}.\"_ to the end of this section, ocne the equivalency argument is completely articulated.\n\n```suggestion\nThe two constructions therefore offer equal relay resistance.\n```",
+              "createdAt": "2026-07-30T09:21:46Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "Prevention also crucially depends on the assumption that the TEE faithfully enforces the binder comparison defined in crypto-ops.\nMaybe worth stating it.",
+              "createdAt": "2026-07-30T09:24:34Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 170,
+              "body": "I know this is an appendix, but I don't think it's necessary to cite specific API names here.  We can be more general without weakening the argument.\n\n```suggestion\nattestation runs, so computing the binder requires no change to the TLS\nprotocol.  Besides, TLS stacks typically expose handshake messages via callback\ninterfaces before the handshake completes; the application can obtain ClientHello\nand ServerHello through these existing hooks without any new protocol interface.\n```",
+              "createdAt": "2026-07-30T09:29:19Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 105,
+              "body": "```suggestion\n* Passport model: In the Passport topology ({{Section 5.1 of -rats-arch}}), the\n```",
+              "createdAt": "2026-07-30T09:30:16Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            },
+            {
+              "originalPosition": 125,
+              "body": "I may be missing something, but what is \"incremental disclosure\"?",
+              "createdAt": "2026-07-30T09:31:15Z",
+              "updatedAt": "2026-07-30T09:35:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHySjKg",
+          "commit": {
+            "abbreviatedOid": "71b12ed"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T09:42:07Z",
+          "updatedAt": "2026-07-30T09:42:47Z",
+          "comments": [
+            {
+              "originalPosition": 147,
+              "body": "```suggestion\nvalue (EKM) offers two independent methods to provide equal relay resistance. This appendix discusses the rationale behind anchoring the \n```",
+              "createdAt": "2026-07-30T09:42:08Z",
+              "updatedAt": "2026-07-30T09:42:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHyWbGw",
+          "commit": {
+            "abbreviatedOid": "a13ccb6"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thank you for the patch!",
+          "createdAt": "2026-07-30T09:50:13Z",
+          "updatedAt": "2026-07-30T10:05:13Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "True, I guess `HKDF-Expand-Label` which we rely on comes from `tls13`.",
+              "createdAt": "2026-07-30T09:50:13Z",
+              "updatedAt": "2026-07-30T10:05:13Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "I don't think I follow the argument, is this about the split model?\r\n\r\n[TR] No, it is not specific to split model; A client or server could hand its Evidence to another entity that re-uses it in a different TLS connection, enabling relay.\r\n\r\nAs an alternative / additional requirement, I think it's worth highlighting that the Evidence is context-bound, in the sense that the claims in the Evidence token prove it was created for an aTLS stack using this binder definition. Otherwise, if you can trick the TEE into generating the same Evidence with the same binder, but through a different \"endpoint\", that also results in relay attacks.\r\n\r\n[TR] I think it is already discussed, if you think otherwise, please propose text. ",
+              "createdAt": "2026-07-30T09:58:51Z",
+              "updatedAt": "2026-07-30T10:42:38Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "I'm still not sure this is possible for evidence unless you have some out-of-band mechanism to encrypt the claims to a key that the Verifier has access to. Otherwise, the Verifier simply won't be able to check the signature on the evidence. Are you thinking here of a TEE that can produce SD-CWTs or SD-JWTs natively?",
+              "createdAt": "2026-07-30T10:03:28Z",
+              "updatedAt": "2026-07-30T10:05:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHyfg4Q",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:09:45Z",
+          "updatedAt": "2026-07-30T10:09:45Z",
+          "comments": [
+            {
+              "originalPosition": 125,
+              "body": "I meant incremental disclosure  as server presents its full certificate chain to any unauthenticated client. It is confusing removed it. ",
+              "createdAt": "2026-07-30T10:09:45Z",
+              "updatedAt": "2026-07-30T10:09:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHygXOg",
+          "commit": {
+            "abbreviatedOid": "a13ccb6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:11:27Z",
+          "updatedAt": "2026-07-30T10:13:07Z",
+          "comments": [
+            {
+              "originalPosition": 125,
+              "body": "```suggestion\n  clients, with mitigations (selective disclosure via\n```",
+              "createdAt": "2026-07-30T10:11:27Z",
+              "updatedAt": "2026-07-30T10:13:07Z"
+            },
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\n```",
+              "createdAt": "2026-07-30T10:12:30Z",
+              "updatedAt": "2026-07-30T10:13:07Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\n  I-D.rosomakho-tls-cert-update: cert-update\n  RFC5869: hkdf  \n```",
+              "createdAt": "2026-07-30T10:12:51Z",
+              "updatedAt": "2026-07-30T10:13:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHykK1A",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:18:30Z",
+          "updatedAt": "2026-07-30T10:18:30Z",
+          "comments": [
+            {
+              "originalPosition": 125,
+              "body": "Ah, thanks!  I thought it applied to evidence claims \ud83d\ude05 \r\nYeah, either remove it or expand the term somehow.",
+              "createdAt": "2026-07-30T10:18:30Z",
+              "updatedAt": "2026-07-30T10:18:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHyqIkw",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:32:19Z",
+          "updatedAt": "2026-07-30T10:32:19Z",
+          "comments": [
+            {
+              "originalPosition": 161,
+              "body": "Fixed. ",
+              "createdAt": "2026-07-30T10:32:19Z",
+              "updatedAt": "2026-07-30T10:32:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHyq6Dg",
+          "commit": {
+            "abbreviatedOid": "1f91870"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:33:53Z",
+          "updatedAt": "2026-07-30T10:33:53Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "Faithful comparison by the TEE baseline assumption for any challenge-bound attestation, it is applicable to all other drafts, LAMPS, ACME and SEAT post-handshake attestation.",
+              "createdAt": "2026-07-30T10:33:53Z",
+              "updatedAt": "2026-07-30T10:33:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHyrGfA",
+          "commit": {
+            "abbreviatedOid": "a13ccb6"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-30T10:34:17Z",
+          "updatedAt": "2026-07-30T10:34:17Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "I meant AR, fixed it. ",
+              "createdAt": "2026-07-30T10:34:17Z",
+              "updatedAt": "2026-07-30T10:34:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHy05Uw",
+          "commit": {
+            "abbreviatedOid": "64633e1"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-30T10:56:12Z",
+          "updatedAt": "2026-07-30T10:56:12Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABHy7HhQ",
+          "commit": {
+            "abbreviatedOid": "04f273b"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "\ud83d\udea2 it!\n\n(a couple of tiny fixes inlined)",
+          "createdAt": "2026-07-30T11:10:16Z",
+          "updatedAt": "2026-07-30T11:11:31Z",
+          "comments": [
+            {
+              "originalPosition": 178,
+              "body": "make it more bigwig-y :-)\n\n```suggestion\nprotocol.  Additionally, TLS stacks typically expose handshake messages via callback\n```",
+              "createdAt": "2026-07-30T11:10:16Z",
+              "updatedAt": "2026-07-30T11:11:31Z"
+            },
+            {
+              "originalPosition": 166,
+              "body": "```suggestion\n* TLS 1.3 defines an `early_exporter_secret` ({{Section 7.5 of -tls13}}),\n```",
+              "createdAt": "2026-07-30T11:11:03Z",
+              "updatedAt": "2026-07-30T11:11:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABH8-V6w",
+          "commit": {
+            "abbreviatedOid": "d73f0ef"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Apologies for submitting late. Only one comment but since what it applies to is central to the discussion, I suggest that we apply this change.",
+          "createdAt": "2026-07-31T12:59:37Z",
+          "updatedAt": "2026-07-31T13:09:09Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "Even randomness from one peer would be sufficient for \"unique to the specific connection\". So I suggest to reword:\n\n\n```suggestion\n: The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. In addition to this security property, the attestation binder derived from that transcript is unique to the specific connection.\n```",
+              "createdAt": "2026-07-31T12:59:37Z",
+              "updatedAt": "2026-07-31T13:09:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABH9FDBw",
+          "commit": {
+            "abbreviatedOid": "d73f0ef"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-31T13:15:47Z",
+          "updatedAt": "2026-07-31T13:15:48Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "> Even randomness from one peer would be sufficient for \"unique to the specific connection\". \r\n\r\nDo you mean when it comes to the TLS handshake nonces, or in general? Because I don't think that's true in general, unless it's specifically about the RP providing the randomness.\r\n\r\nEDIT: to elaborate, if the attester is the one providing the randomness, a MitM can forward that. Obviously, this doesn't apply if it doesn't also have access to the key exchange secret key, hence my question above.",
+              "createdAt": "2026-07-31T13:15:47Z",
+              "updatedAt": "2026-07-31T13:17:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABH9Hqqw",
+          "commit": {
+            "abbreviatedOid": "d73f0ef"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-31T13:21:35Z",
+          "updatedAt": "2026-07-31T13:21:36Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "What I mean is that the second sentence (as currently phrased) does not follow from the first one. If only one of the peer could be guaranteed to include honest randomness, the binder would be unique to the connection.\r\n\r\nAnother way to reword the second sentence is:\r\n\r\n> The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.\r\n\r\n",
+              "createdAt": "2026-07-31T13:21:35Z",
+              "updatedAt": "2026-07-31T13:21:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABH9MsAQ",
+          "commit": {
+            "abbreviatedOid": "d73f0ef"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-31T13:32:05Z",
+          "updatedAt": "2026-07-31T13:32:05Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "Ah, I see, thanks! That makes sense to me",
+              "createdAt": "2026-07-31T13:32:05Z",
+              "updatedAt": "2026-07-31T13:32:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 69,
+      "id": "PR_kwDOQdsaoc75WII9",
+      "title": "Address pending issues",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/69",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-08-01T09:11:52Z",
+      "updatedAt": "2026-08-01T12:20:01Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "695140d6b81c4783d2d0f7b6b73bd2027f06fc97",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-7",
+      "headRefOid": "a6464ff911ad541f59f57ecfe2d6b8fae6ff1c1d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABICj6tw",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Sounds good, thank you!",
+          "createdAt": "2026-08-01T11:01:24Z",
+          "updatedAt": "2026-08-01T11:01:24Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABICrBTA",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-01T12:20:01Z",
+          "updatedAt": "2026-08-01T12:20:01Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "This implies that it's only the client initiating. What about server-initiated reattestation?",
+              "createdAt": "2026-08-01T12:20:01Z",
+              "updatedAt": "2026-08-01T12:20:01Z"
+            }
+          ]
         }
       ]
     }
