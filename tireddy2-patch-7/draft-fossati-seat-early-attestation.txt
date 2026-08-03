@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 2 February 2027                                    Y. Deshpande
+Expires: 4 February 2027                                    Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                           1 August 2026
+                                                           3 August 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 February 2027.
+   This Internet-Draft will expire on 4 February 2027.
 
 Copyright Notice
 
@@ -740,6 +740,12 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    migrates application traffic to it before tearing down the old
    connection.
 
+   When the server is the attester and its Evidence needs refreshing,
+   the client signals the server and the client initiates the new
+   connection.  When the client is the attester and the server requires
+   fresh Evidence from it, the server signals the client, which then
+   initiates the new connection.
+
    This approach keeps the TLS protocol unchanged and avoids introducing
    post-handshake mechanisms.  Because the new connection is ready
    before the old one closes, there is no interval without a working
@@ -750,6 +756,17 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Note: Since it requires no changes to TLS, it can serve as a
    workaround while the WG determines which of the other options can be
    progressed.
+
+   Either peer's freshness policy can trigger a refresh, but the client
+   is always the party that establishes the new connection, since in TLS
+   only the client initiates connections.  When the server is the peer
+   requiring a refresh, it signals the client to reconnect.  This holds
+   whether the client or the server is the attester.
+
+   Because the new connection is ready before the old one closes, there
+   is no interval without a working connection, unlike tearing down the
+   old connection before establishing the new one.  This is a workaround
+   while the WG determines which of the other options can be progressed.
 
 5.4.5.  Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
