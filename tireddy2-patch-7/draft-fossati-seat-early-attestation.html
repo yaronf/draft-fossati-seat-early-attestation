@@ -1887,15 +1887,6 @@ transcript defined in Section 4.4 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" c
 <p id="section-5.4.4-2">When the server is the attester and its Evidence needs refreshing, the client signals the server and the client initiates the new connection. When the client is the attester and the server requires fresh Evidence from it, the server signals the client, which then initiates the new connection.<a href="#section-5.4.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.4-3">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Because the new connection is ready before the old one closes, there is no interval without a working connection, unlike tearing down the old connection before establishing the new one, at the cost of briefly maintaining two connections and application-level logic to coordinate the migration.<a href="#section-5.4.4-3" class="pilcrow">¶</a></p>
 <p id="section-5.4.4-4">Note: Since it requires no changes to TLS, it can serve as a workaround while the WG determines which of the other options can be progressed.<a href="#section-5.4.4-4" class="pilcrow">¶</a></p>
-<p id="section-5.4.4-5">Either peer's freshness policy can trigger a refresh, but the client is always
-the party that establishes the new connection, since in TLS only the client
-initiates connections. When the server is the peer requiring a refresh, it
-signals the client to reconnect. This holds whether the client or the server is
-the attester.<a href="#section-5.4.4-5" class="pilcrow">¶</a></p>
-<p id="section-5.4.4-6">Because the new connection is ready before the old one closes, there is no
-interval without a working connection, unlike tearing down the old connection
-before establishing the new one. This is a workaround while the WG determines
-which of the other options can be progressed.<a href="#section-5.4.4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-3-post-handshake-reattestation-using-certificateupdate">
