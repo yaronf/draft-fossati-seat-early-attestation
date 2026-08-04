@@ -739,7 +739,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Attestation Results as part of the handshake.
 
    This approach keeps the TLS protocol unchanged and avoids introducing
-   ost-handshake mechanisms.  Application-level mechanisms can be
+   post-handshake mechanisms.  Application-level mechanisms can be
    implemented to improve its usability, for example client and server
    signaling of the need for reattestation, and establishing the new
    connection before tearing down the old one (make-before-break) to
