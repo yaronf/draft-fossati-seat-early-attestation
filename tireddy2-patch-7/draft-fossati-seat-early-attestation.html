@@ -1056,7 +1056,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 4 February 2027</td>
+<td class="center">Expires 5 February 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-08-03" class="published">3 August 2026</time>
+<time datetime="2026-08-04" class="published">4 August 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-02-04">4 February 2027</time></dd>
+<dd class="expires"><time datetime="2027-02-05">5 February 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1145,7 @@ This extension has been designed to allow the peers to use any attestation techn
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 February 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 February 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1235,7 +1235,7 @@ This extension has been designed to allow the peers to use any attestation techn
                     <p id="section-toc.1-1.5.2.4.2.3.1"><a href="#section-5.4.3" class="auto internal xref">5.4.3</a>.  <a href="#name-option-2-no-reattestation-r" class="internal xref">Option 2: No Reattestation (Reconnect for Freshness)</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.4">
-                    <p id="section-toc.1-1.5.2.4.2.4.1"><a href="#section-5.4.4" class="auto internal xref">5.4.4</a>.  <a href="#name-option-2-no-reattestation-m" class="internal xref">Option 2: No Reattestation (Make-Before-Break)</a></p>
+                    <p id="section-toc.1-1.5.2.4.2.4.1"><a href="#section-5.4.4" class="auto internal xref">5.4.4</a>.  <a href="#name-option-2-no-reattestation-re" class="internal xref">Option 2: No Reattestation (Reconnect for Freshness)</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.5">
                     <p id="section-toc.1-1.5.2.4.2.5.1"><a href="#section-5.4.5" class="auto internal xref">5.4.5</a>.  <a href="#name-option-3-post-handshake-rea" class="internal xref">Option 3: Post-Handshake Reattestation Using CertificateUpdate</a></p>
@@ -1878,15 +1878,16 @@ transcript defined in Section 4.4 of <span>[<a href="#I-D.ietf-tls-rfc8446bis" c
 <p id="section-5.4.3-2">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.<a href="#section-5.4.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="option-2-no-reattestation-make-before-break">
+<div id="option-2-no-reattestation-reconnect-for-freshness-1">
 <section id="section-5.4.4">
-          <h4 id="name-option-2-no-reattestation-m">
-<a href="#section-5.4.4" class="section-number selfRef">5.4.4. </a><a href="#name-option-2-no-reattestation-m" class="section-name selfRef">Option 2: No Reattestation (Make-Before-Break)</a>
+          <h4 id="name-option-2-no-reattestation-re">
+<a href="#section-5.4.4" class="section-number selfRef">5.4.4. </a><a href="#name-option-2-no-reattestation-re" class="section-name selfRef">Option 2: No Reattestation (Reconnect for Freshness)</a>
           </h4>
-<p id="section-5.4.4-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection in parallel, exchanging fresh Evidence or Attestation Results as part of the handshake, and migrates application traffic to it before tearing down the old connection.<a href="#section-5.4.4-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.4-2">When the server is the attester and its Evidence needs refreshing, the client signals the server and the client initiates the new connection. When the client is the attester and the server requires fresh Evidence from it, the server signals the client, which then initiates the new connection.<a href="#section-5.4.4-2" class="pilcrow">¶</a></p>
-<p id="section-5.4.4-3">This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Because the new connection is ready before the old one closes, there is no interval without a working connection, unlike tearing down the old connection before establishing the new one, at the cost of briefly maintaining two connections and application-level logic to coordinate the migration.<a href="#section-5.4.4-3" class="pilcrow">¶</a></p>
-<p id="section-5.4.4-4">Note: Since it requires no changes to TLS, it can serve as a workaround while the WG determines which of the other options can be progressed.<a href="#section-5.4.4-4" class="pilcrow">¶</a></p>
+<p id="section-5.4.4-1">Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection, exchanging fresh Evidence or Attestation Results as part of the
+handshake.<a href="#section-5.4.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.4-2">This approach keeps the TLS protocol unchanged and avoids introducing ost-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for
+reattestation, and establishing the new connection before tearing down the old one (make-before-break) to avoid a gap in connectivity.<a href="#section-5.4.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.4-3">Note: This is a workaround while the WG determines which of the other options can be progressed.<a href="#section-5.4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="option-3-post-handshake-reattestation-using-certificateupdate">

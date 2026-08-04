@@ -5,13 +5,13 @@
 TLS                                                           Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 4 February 2027                                    Y. Deshpande
+Expires: 5 February 2027                                    Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                           3 August 2026
+                                                           4 August 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 February 2027.
+   This Internet-Draft will expire on 5 February 2027.
 
 Copyright Notice
 
@@ -107,7 +107,7 @@ Table of Contents
                Authentication
        5.4.2.  Option 1: Carrying Attestation in Extended Key Update
        5.4.3.  Option 2: No Reattestation (Reconnect for Freshness)
-       5.4.4.  Option 2: No Reattestation (Make-Before-Break)
+       5.4.4.  Option 2: No Reattestation (Reconnect for Freshness)
        5.4.5.  Option 3: Post-Handshake Reattestation Using
                CertificateUpdate
    6.  Negotiating This Protocol
@@ -731,31 +731,22 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    post-handshake mechanisms.  However, it will be disruptive for long-
    lived TLS connections.
 
-5.4.4.  Option 2: No Reattestation (Make-Before-Break)
+5.4.4.  Option 2: No Reattestation (Reconnect for Freshness)
 
    Another approach is to not support reattestation within an
    established TLS connection.  When fresh attestation is required, the
-   client establishes a new TLS connection in parallel, exchanging fresh
-   Evidence or Attestation Results as part of the handshake, and
-   migrates application traffic to it before tearing down the old
-   connection.
-
-   When the server is the attester and its Evidence needs refreshing,
-   the client signals the server and the client initiates the new
-   connection.  When the client is the attester and the server requires
-   fresh Evidence from it, the server signals the client, which then
-   initiates the new connection.
+   client establishes a new TLS connection, exchanging fresh Evidence or
+   Attestation Results as part of the handshake.
 
    This approach keeps the TLS protocol unchanged and avoids introducing
-   post-handshake mechanisms.  Because the new connection is ready
-   before the old one closes, there is no interval without a working
-   connection, unlike tearing down the old connection before
-   establishing the new one, at the cost of briefly maintaining two
-   connections and application-level logic to coordinate the migration.
+   ost-handshake mechanisms.  Application-level mechanisms can be
+   implemented to improve its usability, for example client and server
+   signaling of the need for reattestation, and establishing the new
+   connection before tearing down the old one (make-before-break) to
+   avoid a gap in connectivity.
 
-   Note: Since it requires no changes to TLS, it can serve as a
-   workaround while the WG determines which of the other options can be
-   progressed.
+   Note: This is a workaround while the WG determines which of the other
+   options can be progressed.
 
 5.4.5.  Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
