@@ -561,15 +561,15 @@ Another approach is to not support reattestation within an established TLS conne
 
 This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.
 
-### Option 2: No Reattestation (Make-Before-Break)
+### Option 2: No Reattestation (Reconnect for Freshness)
 
-Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection in parallel, exchanging fresh Evidence or Attestation Results as part of the handshake, and migrates application traffic to it before tearing down the old connection.
+Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection, exchanging fresh Evidence or Attestation Results as part of the
+handshake.
 
-When the server is the attester and its Evidence needs refreshing, the client signals the server and the client initiates the new connection. When the client is the attester and the server requires fresh Evidence from it, the server signals the client, which then initiates the new connection.
+This approach keeps the TLS protocol unchanged and avoids introducing ost-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for
+reattestation, and establishing the new connection before tearing down the old one (make-before-break) to avoid a gap in connectivity.
 
-This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Because the new connection is ready before the old one closes, there is no interval without a working connection, unlike tearing down the old connection before establishing the new one, at the cost of briefly maintaining two connections and application-level logic to coordinate the migration.
-
-Note: Since it requires no changes to TLS, it can serve as a workaround while the WG determines which of the other options can be progressed.
+Note: This is a workaround while the WG determines which of the other options can be progressed.
 
 ### Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
