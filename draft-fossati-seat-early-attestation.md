@@ -566,7 +566,7 @@ This approach keeps the TLS protocol unchanged and avoids introducing post-hands
 Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection, exchanging fresh Evidence or Attestation Results as part of the
 handshake.
 
-This approach keeps the TLS protocol unchanged and avoids introducing ost-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for
+This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for
 reattestation, and establishing the new connection before tearing down the old one (make-before-break) to avoid a gap in connectivity.
 
 Note: This is a workaround while the WG determines which of the other options can be progressed.
