@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-02T02:34:11.879019+00:00",
+  "timestamp": "2026-08-04T02:20:41.809813+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -6418,13 +6418,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-08-01T09:11:52Z",
-      "updatedAt": "2026-08-01T12:20:01Z",
+      "updatedAt": "2026-08-03T15:03:14Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "695140d6b81c4783d2d0f7b6b73bd2027f06fc97",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-7",
-      "headRefOid": "a6464ff911ad541f59f57ecfe2d6b8fae6ff1c1d",
+      "headRefOid": "884ef29bd30a5dc268b20174e5bae4850c18c2bd",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -6461,6 +6461,86 @@
               "body": "This implies that it's only the client initiating. What about server-initiated reattestation?",
               "createdAt": "2026-08-01T12:20:01Z",
               "updatedAt": "2026-08-01T12:20:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIMJATA",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-03T13:32:20Z",
+          "updatedAt": "2026-08-03T13:32:20Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Good point, added server-initiated re-attestation. ",
+              "createdAt": "2026-08-03T13:32:20Z",
+              "updatedAt": "2026-08-03T13:32:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIMygCQ",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-03T14:36:20Z",
+          "updatedAt": "2026-08-03T14:36:20Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "This is getting more and more complicated. Technically, we now have two \"Option 2\" subsections in this section.\r\n\r\nThe thing is, both of them are really the same, except for some application-level behavior which arguably is out of scope for our protocol.\r\n\r\nLastly, I'm not sure what we mean when we say that the server signals the need for attestation - how exactly?",
+              "createdAt": "2026-08-03T14:36:20Z",
+              "updatedAt": "2026-08-03T14:36:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIM7jDA",
+          "commit": {
+            "abbreviatedOid": "884ef29"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-03T14:51:14Z",
+          "updatedAt": "2026-08-03T14:51:18Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "> This is getting more and more complicated. Technically, we now have two \"Option 2\" subsections in this section.\n> \n> The thing is, both of them are really the same, except for some application-level behavior which arguably is out of scope for our protocol.\n\nYes and it is only a workaround. \n\n> \n> Lastly, I'm not sure what we mean when we say that the server signals the need for attestation - how exactly?\n\nIt will use application-layer message for the client to initiate make-before-break. \n",
+              "createdAt": "2026-08-03T14:51:15Z",
+              "updatedAt": "2026-08-03T14:51:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIND-7A",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-03T15:03:13Z",
+          "updatedAt": "2026-08-03T15:03:14Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "So I would suggest to go back to a single Option 2 subsection, and only add a short paragraph to say that application-level mechanisms can be implemented to improve its usability, e.g. client and server signaling of the need for re-attestation, connection caching and make-before-break.\r\n\r\nThen we don't need to dive into technical details that are IMHO premature now.",
+              "createdAt": "2026-08-03T15:03:13Z",
+              "updatedAt": "2026-08-03T15:03:14Z"
             }
           ]
         }
