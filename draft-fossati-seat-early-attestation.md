@@ -203,7 +203,7 @@ Attestation binder:
 : A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.
 
 Two-sided uniqueness:
-: The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore unique to the specific connection.
+: The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.
 
 <!-- -->
 
@@ -560,6 +560,16 @@ However, this approach tightly couples attestation to EKU, even though the two s
 Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.
 
 This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.
+
+### Option 2: No Reattestation (Reconnect for Freshness)
+
+Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection, exchanging fresh Evidence or Attestation Results as part of the
+handshake.
+
+This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for
+reattestation, and establishing the new connection before tearing down the old one (make-before-break) to avoid a gap in connectivity.
+
+Note: This is a workaround while the WG determines which of the other options can be progressed.
 
 ### Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
