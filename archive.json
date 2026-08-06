@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-04T02:20:41.809813+00:00",
+  "timestamp": "2026-08-06T02:23:15.327042+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -6411,24 +6411,26 @@
       "id": "PR_kwDOQdsaoc75WII9",
       "title": "Address pending issues",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/69",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-08-01T09:11:52Z",
-      "updatedAt": "2026-08-03T15:03:14Z",
+      "updatedAt": "2026-08-04T13:26:16Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "695140d6b81c4783d2d0f7b6b73bd2027f06fc97",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-7",
-      "headRefOid": "884ef29bd30a5dc268b20174e5bae4850c18c2bd",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6ab411d38bb9e63104a9fb94a158681377fb6580",
+      "closedAt": "2026-08-04T13:26:16Z",
+      "mergedAt": "2026-08-04T13:26:16Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "0415f0ec03c19f8b4b38bdd157f4ac9711608914"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6543,6 +6545,72 @@
               "updatedAt": "2026-08-03T15:03:14Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABISTD8w",
+          "commit": {
+            "abbreviatedOid": "a6464ff"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-04T05:45:52Z",
+          "updatedAt": "2026-08-04T05:45:52Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Agreed, simplified text. ",
+              "createdAt": "2026-08-04T05:45:52Z",
+              "updatedAt": "2026-08-04T05:45:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIVD2Iw",
+          "commit": {
+            "abbreviatedOid": "6bf4366"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-04T11:50:51Z",
+          "updatedAt": "2026-08-04T11:50:52Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\nThis approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. Application-level mechanisms can be implemented to improve its usability, for example client and server signaling of the need for\n```",
+              "createdAt": "2026-08-04T11:50:51Z",
+              "updatedAt": "2026-08-04T11:50:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIVEkbA",
+          "commit": {
+            "abbreviatedOid": "6ab411d"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-08-04T11:52:01Z",
+          "updatedAt": "2026-08-04T11:52:01Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABIVIK7w",
+          "commit": {
+            "abbreviatedOid": "6ab411d"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM!",
+          "createdAt": "2026-08-04T11:57:31Z",
+          "updatedAt": "2026-08-04T11:57:31Z",
+          "comments": []
         }
       ]
     }
