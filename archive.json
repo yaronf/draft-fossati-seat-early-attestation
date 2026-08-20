@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-06T02:23:15.327042+00:00",
+  "timestamp": "2026-08-20T01:04:54.175881+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -847,7 +847,7 @@
       "id": "I_kwDOQdsaoc7-WhiQ",
       "title": "RFC 8446 non-compliance: attestation Certificate extension has no corresponding ClientHello extension",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/52",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -859,9 +859,17 @@
       ],
       "body": "**Draft section:** \u00a74.1, \u00a76.1\n\nRFC 8446 \u00a74.2 requires that extensions appearing in the Certificate message correspond to the same extension type sent in ClientHello (server cert) or CertificateRequest (client cert). The draft uses `evidence_request` (a different type ID) in ClientHello to signal that the peer should include `attestation` in its Certificate. This violates the RFC's symmetric extension model.\n\n**Workaround in our implementation:** set the `ATTESTATION` bit in `sent_extensions` when writing `evidence_request`, pre-authorising it for the Certificate parser.\n\n**Proposed fix:** either assign `attestation` its own ClientHello/CertificateRequest extension, or explicitly carve out an exception to RFC 8446 \u00a74.2 in the draft text.",
       "createdAt": "2026-04-15T08:13:12Z",
-      "updatedAt": "2026-06-10T07:45:18Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-08-19T07:20:24Z",
+      "closedAt": "2026-08-19T07:20:24Z",
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Fixed by #65 and follow-ups. Same extension type in ClientHello, CertificateRequest, and Certificate per RFC 8446 Section 4.2/4.4.2.",
+          "createdAt": "2026-08-19T07:20:24Z",
+          "updatedAt": "2026-08-19T07:20:24Z"
+        }
+      ]
     },
     {
       "number": 53,
@@ -948,7 +956,7 @@
       "id": "I_kwDOQdsaoc8AAAABAzdmZg",
       "title": "Combined negotiation extensions",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/61",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -959,9 +967,17 @@
       ],
       "body": "We currently have a bunch of extensions for negotiating support in both directions. It would be good to only have one extension together. Below there's a possible solution to this.\n\n```\nenum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;\n\nstruct {\n    typeEncoding type_encoding;\n    select (EvidenceType.type_encoding) {\n        case CONTENT_FORMAT: uint16 content_format;\n        case MEDIA_TYPE: opaque media_type<0..2^16-1>;\n    };\n} EvidenceType;\n\nstruct {\n    opaque verifier_identity<0..2^16-1>;\n} VerifierIdentityType;\n\nenum { evidence(0), result(1), (255) } AttestationMechanism;\n\nstruct {\n    AttestationMechanism mechanism;\n    select (mechanism) {\n        case evidence: EvidenceType;\n        case result:   VerifierIdentityType;\n    } argument;\n} AttestationScheme;\n\nstruct {\n    select (Handshake.msg_type) {\n        case client_hello:\n            AttestationScheme server_verification_schemes<0..2^16-1>;\n            \n            AttestationScheme client_generation_schemes<0..2^16-1>;\n\n        case encrypted_extensions:\n            AttestationScheme selected_scheme;\n\n        case certificate_request:\n            AttestationScheme client_verification_schemes<1..2^16-1>;\n    };\n} RemoteAttestationExtension;\n```",
       "createdAt": "2026-04-29T08:17:52Z",
-      "updatedAt": "2026-06-10T07:44:57Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-08-19T07:20:23Z",
+      "closedAt": "2026-08-19T07:20:23Z",
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Fixed by #65 (merged). Single `remoteAttestation` negotiation extension in draft-06.",
+          "createdAt": "2026-08-19T07:20:22Z",
+          "updatedAt": "2026-08-19T07:20:22Z"
+        }
+      ]
     },
     {
       "number": 64,
@@ -1015,7 +1031,7 @@
       "labels": [],
       "body": "The attestation binders we define in the Cryptographic Operations section have a defined length of `Hash.length`. Attestation evidence APIs/ABIs tend to have their own requirements for size of input, generally 64 bytes.\n\nWe must define the padding mechanism - I'd suggest starting with the binder bytes and padding to expected length with 0s.\n\nI guess the question is what to do if the input length is smaller than the hash length - truncate? Seems risky.",
       "createdAt": "2026-07-15T08:54:49Z",
-      "updatedAt": "2026-07-15T10:05:05Z",
+      "updatedAt": "2026-08-19T07:51:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -1024,8 +1040,57 @@
           "body": "Even more concerning is the fact that the RP would not know the size, so it can't tell the verifier what to check for.\n\ncc @marianamass-arm",
           "createdAt": "2026-07-15T10:05:05Z",
           "updatedAt": "2026-07-15T10:05:05Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This can be done at the RA layer, by encoding what is done in the lead attester and the Verifier will understand what to expect. Needs to be standardised, though. New document is needed in RATS to define:\n\n* size of nonce\n* what function was used for the resizing",
+          "createdAt": "2026-08-19T07:51:22Z",
+          "updatedAt": "2026-08-19T07:51:22Z"
         }
       ]
+    },
+    {
+      "number": 70,
+      "id": "I_kwDOQdsaoc8AAAABNV9glg",
+      "title": "VerifierIdentityType content",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/70",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "At the moment there is no clear way to negotiate Verifier \"identity\" for passport model, the PoC that originated this feedback currently uses the pubKey used to verify ARs. Other options:\n\n* well-known API discovery URI for given Verifier\n* FQDN\n",
+      "createdAt": "2026-08-19T08:05:38Z",
+      "updatedAt": "2026-08-19T08:09:32Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We'll need two fields: one for address; one for type (how to use address)",
+          "createdAt": "2026-08-19T08:09:32Z",
+          "updatedAt": "2026-08-19T08:09:32Z"
+        }
+      ]
+    },
+    {
+      "number": 71,
+      "id": "I_kwDOQdsaoc8AAAABNWBGqw",
+      "title": "Clarify alerts use",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/71",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ionut-arm"
+      ],
+      "labels": [],
+      "body": "Some edge cases are currently not explicitly covered by TLS alerts. We don't necessarily need new ones, just to map clearly:\n\n[ ] Attester failed to generate evidence due to TokenProvider failure\n[ ] Verifier service failure\n[ ] A scheme was selected, but certificates contain no evidence/result\n[ ] Server returned a scheme which was not on the list\n[ ] Server returned result/evidence which does not match the selected scheme",
+      "createdAt": "2026-08-19T08:11:46Z",
+      "updatedAt": "2026-08-19T08:11:46Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
