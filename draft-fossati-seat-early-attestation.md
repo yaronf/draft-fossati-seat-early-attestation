@@ -7,7 +7,7 @@ category: std
 
 ipr: trust200902
 area: Security
-workgroup: TLS
+workgroup: SEAT
 keyword: [ attestation, RATS, TLS ]
 
 stand_alone: yes
@@ -77,6 +77,7 @@ informative:
   I-D.ounsworth-rats-privacy-framework: rats-privacy
   I-D.ietf-teep-architecture: teep-arch
   I-D.rosomakho-tls-cert-update: cert-update
+  I-D.reddy-seat-cc-workload-identity:
   RFC5869: hkdf
   TPM1.2:
     target: https://trustedcomputinggroup.org/resource/tpm-main-specification/
@@ -557,12 +558,6 @@ However, this approach tightly couples attestation to EKU, even though the two s
 
 ### Option 2: No Reattestation (Reconnect for Freshness)
 
-Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client and server terminate the existing TLS session and establish a new one, during which fresh Evidence or Attestation Results are exchanged as part of the handshake.
-
-This approach keeps the TLS protocol unchanged and avoids introducing post-handshake mechanisms. However, it will be disruptive for long-lived TLS connections.
-
-### Option 2: No Reattestation (Reconnect for Freshness)
-
 Another approach is to not support reattestation within an established TLS connection. When fresh attestation is required, the client establishes a new TLS connection, exchanging fresh Evidence or Attestation Results as part of the
 handshake.
 
@@ -745,6 +740,88 @@ different binder.
 
 The rationale for anchoring to the transcript rather than to an exporter value is
 given in {{transcript-vs-exporter}}.
+
+## Worked Example: Two Compromise Scenarios {#worked-example}
+
+The confidential-computing deployment model, key roles, and trust anchors used
+here are described in {{I-D.reddy-seat-cc-workload-identity}}. In summary, the 
+server generates a TLS authentication key (the TIK) inside the TEE. The TIK 
+public key is bound into the Evidence, which is signed by the Attestation Key 
+(AK) and appraised against the attestation root of trust (a third party, 
+in the role a certification authority plays in PKI). The client checks that 
+the public key in the end-entity certificate matches the TIK bound in the 
+Evidence and relies on CertificateVerify for proof of possession. Each handshake 
+also uses a fresh ephemeral (EC)DHE key share, carried in ClientHello/ServerHello, 
+from which the connection secrets are derived. This example applies to both Option A 
+and Option B of {{I-D.reddy-seat-cc-workload-identity}}.
+
+Handshake-secret compromise:
+Suppose an attacker obtains a connection's handshake secret (or the ephemeral
+private key from which it is derived). The attacker can then derive that
+connection's handshake traffic secrets and decrypt the handshake, including the
+Evidence carried in the encrypted `Certificate` message. This compromises the
+confidentiality of that single connection. It does not let the attacker replay
+the Evidence in a different TLS session: the Evidence is bound to this
+connection's `ClientHello...ServerHello` transcript and to the TIK, and any other
+TLS connection uses fresh key shares, yielding a different transcript and a different
+binder. The exposed Evidence therefore does not match any other connection and is
+rejected. Consistent with TLS 1.3 forward secrecy, the impact is confined to the
+compromised session. {{figure-relay-attempt}} illustrates this case.
+
+~~~~
+Legend:  CR = ClientHello.random    SR = ServerHello.random
+         cks = client key_share     sks = server key_share
+         T = Transcript-Hash(ClientHello...ServerHello)
+         E = Evidence signed by the TEE, bound to T
+
+   Client                     Server (genuine TEE)             Attacker
+      |                              |                            |
+      |== Connection 1 : Client <-> Server =======================|
+      |  CH_1 { CR_1, cks_1 } ------>|                            |
+      |<----- SH_1 { SR_1, sks_1 }   |                            |
+      |        T1 = Hash(CH_1..SH_1) |                            |
+      |<----- {Certificate: E}       |                            |
+      |        E bound to T1         |                            |
+      |                              |   attacker has obtained    |
+      |                              |   connection 1's handshake |
+      |                              |   secret: decrypts conn 1  |
+      |                              |   and reads Evidence E     |
+      |                              |                            |
+      |== Connection 2 : Client <-> Attacker (posing as server) ==|
+      |  CH_2 { CR_2, cks_2 } ----------------------------------->|
+      |     CR_2 != CR_1 , cks_2 != cks_1                         |
+      |     (client contributes fresh values; attacker            |
+      |      cannot control them)                                 |
+      |                                                           |
+      |<---------------------- SH_2 { SR_1, sks_1 }               |
+      |     attacker replays connection 1's server values         |
+      |     to try to reproduce T1                                |
+      |<-------------------- {Certificate: replayed E (bound T1)} |
+      |                                                           |
+      |  T2 = Hash(CH_2..SH_2)                                    |
+      |  CH_2 != CH_1  =>  T2 != T1                               |
+      |  client computes binder over T2 ;                         |
+      |  E is bound to T1  =>  binder mismatch                    |
+      |                                                           |
+      |<-------------------- >> attestation_failed <<             |
+      |                        handshake aborted                  |
+      |                                                           |
+~~~~
+{: #figure-relay-attempt title="Even having read the Evidence from connection 1, the attacker cannot reproduce connection 1's transcript on connection 2: the client contributes fresh randomness and key share, so the binder does not match and the handshake is aborted"}
+
+TLS authentication key export:
+Suppose instead the attacker obtains the TIK private key and imports it 
+into another attested platform. That platform produces genuine Evidence bound 
+to the imported key, and the attacker completes its own handshake with it. 
+Channel binding does not prevent this: it is not relay or replay of 
+Evidence across connections, but use of an exported key on a platform that attests it. 
+Preventing it requires assurance that the TIK was generated locally within the 
+attested environment and cannot be exported from it. This key-provenance property is 
+addressed in the key-provenance section of {{I-D.reddy-seat-cc-workload-identity}}, and 
+applies equally to intra-handshake and post-handshake attestation.
+
+A summary of the security properties this mechanism provides is given in
+{{security-properties-summary}}.
 
 ## Security Guarantees {#sec-guarantees}
 
@@ -942,5 +1019,51 @@ attestation runs, so computing the binder requires no change to the TLS
 protocol.  Additionally, TLS stacks typically expose handshake messages via callback
 interfaces before the handshake completes; the application can obtain ClientHello
 and ServerHello through these existing hooks without any new protocol interface.
+
+# Summary of Security Properties {#security-properties-summary}
+
+This appendix summarizes the security properties relevant to binding attestation
+to the TLS handshake.
+
+Transcript integrity and cryptographic binding:
+While a MiTM can intercept the TLS handshake and replay arbitrary messages
+(including fake key shares, copied certificates, or spoofed Evidence), it cannot
+complete the TLS connection. The TLS peer's private key signs the handshake
+transcript via CertificateVerify. Because substituting key shares alters that
+transcript, a MiTM lacking the peer's private key cannot produce a valid
+signature over the tampered transcript or derive the correct Finished MAC, so the
+peer rejects the connection.
+
+Explicit key confirmation:
+Although the Certificate message is evaluated before the Finished MAC, TLS 1.3
+enforces explicit key confirmation via the Finished MAC over the complete
+handshake transcript before the connection is established. No application data is
+exchanged until key confirmation succeeds, so a failed confirmation aborts the
+connection regardless of the earlier Certificate and Evidence processing.
+
+TLS connection uniqueness and replay resistance:
+As established in {{relay-resistance}}, TLS 1.3 generates fresh ephemeral key
+shares for every connection, and the signed attestation Evidence is bound, via
+the handshake transcript, to the connection's ephemeral key shares. The Evidence also
+binds the attester's public key used in the end-entity certificate for
+authentication ({{tik-binding}}). Evidence is therefore bound to a single
+connection and to the identity key used in that handshake: an attacker cannot
+replay Evidence from a past connection, because the key share in the new handshake
+will not match the key bound in the old Evidence.
+
+Forward secrecy:
+Forward secrecy is inherited from TLS 1.3 and is not a property added by this
+mechanism. Because TLS 1.3 mandates ephemeral key exchange, compromise of a
+long-term authentication key does not compromise past session keys: an attacker
+cannot recompute past shared secrets or tamper with past encrypted handshake 
+transcripts.
+
+Hardware-enforced execution isolation:
+This property is provided by the platform, not by this mechanism. When the target 
+environment runs only measured, appraised code, isolation prevents an attacker 
+from running arbitrary code inside it to make the TEE attest a key that was not 
+generated locally within the environment and could be exported from it. Its strength 
+depends on the platform's isolation and measurement assurances (see {{sec-guarantees}}), 
+which are the subject of work in the RATS working group.
 
 
