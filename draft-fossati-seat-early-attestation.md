@@ -747,8 +747,8 @@ The confidential-computing deployment model, key roles, and trust anchors used
 here are described in {{I-D.reddy-seat-cc-workload-identity}}. In summary, the 
 server generates a TLS authentication key (the TIK) inside the TEE. The TIK 
 public key is bound into the Evidence, which is signed by the Attestation Key 
-(AK) and appraised against the attestation root of trust (a third party, 
-in the role a certification authority plays in PKI). The client checks that 
+(AK) and appraised against the attestation root of trust. This root of trust is a 
+third party that plays the role a certification authority plays in PKI. The client checks that 
 the public key in the end-entity certificate matches the TIK bound in the 
 Evidence and relies on CertificateVerify for proof of possession. Each handshake 
 also uses a fresh ephemeral (EC)DHE key share, carried in ClientHello/ServerHello, 
