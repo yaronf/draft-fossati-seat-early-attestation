@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-20T01:04:54.175881+00:00",
+  "timestamp": "2026-08-27T07:18:06.755015+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -6676,6 +6676,93 @@
           "createdAt": "2026-08-04T11:57:31Z",
           "updatedAt": "2026-08-04T11:57:31Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 72,
+      "id": "PR_kwDOQdsaoc8AAAABA68N2A",
+      "title": "Address security issues raised in the WG",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/72",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-08-25T10:19:50Z",
+      "updatedAt": "2026-08-26T07:14:29Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "0415f0ec03c19f8b4b38bdd157f4ac9711608914",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-8",
+      "headRefOid": "c63592e7888f4e8e4bad4a611321cfdd3720ba20",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABKx1YPA",
+          "commit": {
+            "abbreviatedOid": "6fa49a8"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "nice!",
+          "createdAt": "2026-08-25T11:23:49Z",
+          "updatedAt": "2026-08-25T11:24:13Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I am slightly confused by the placement of the parentheses.\nCould the parenthetical be turned into a standalone sentence?",
+              "createdAt": "2026-08-25T11:23:49Z",
+              "updatedAt": "2026-08-25T11:24:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABKx7M5w",
+          "commit": {
+            "abbreviatedOid": "6fa49a8"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-25T11:35:53Z",
+          "updatedAt": "2026-08-25T11:35:53Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "> I am slightly confused by the placement of the parentheses. Could the parenthetical be turned into a standalone sentence?\r\n\r\nSure, I can modify the text to say:\r\n(AK) and appraised against the attestation root of trust. This root of trust is a third party that plays the role a certification authority plays in PKI.",
+              "createdAt": "2026-08-25T11:35:53Z",
+              "updatedAt": "2026-08-25T11:35:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABK6ws1Q",
+          "commit": {
+            "abbreviatedOid": "6fa49a8"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-08-26T07:13:58Z",
+          "updatedAt": "2026-08-26T07:13:58Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Fixed. ",
+              "createdAt": "2026-08-26T07:13:58Z",
+              "updatedAt": "2026-08-26T07:13:59Z"
+            }
+          ]
         }
       ]
     }
