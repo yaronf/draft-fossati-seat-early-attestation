@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-27T07:18:06.755015+00:00",
+  "timestamp": "2026-09-03T02:56:50.041173+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -6691,7 +6691,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-08-25T10:19:50Z",
-      "updatedAt": "2026-08-26T07:14:29Z",
+      "updatedAt": "2026-09-02T13:55:54Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "0415f0ec03c19f8b4b38bdd157f4ac9711608914",
@@ -6761,6 +6761,66 @@
               "body": "Fixed. ",
               "createdAt": "2026-08-26T07:13:58Z",
               "updatedAt": "2026-08-26T07:13:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABL1H1ow",
+          "commit": {
+            "abbreviatedOid": "c63592e"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thanks! Looks good overall, I'm just confused when it comes to the key importing attack",
+          "createdAt": "2026-09-02T11:15:57Z",
+          "updatedAt": "2026-09-02T11:22:29Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "I'm not sure what the attack described here is. If I understand correctly:\n\n* attacker generates key K outside of TEE\n* attacker imports key K into TEE\n* client connects to TEE to perform aTLS\n  * TEE generates valid evidence for the aTLS connection, including key binding\n  * client accepts evidence and PoP in CV\n  * connection is started, protected by traffic secrets kept in the TEE\n* ???\n\nThis last step is what I don't understand. What could the attacker do if we reach this last step and it also has key K outside of the TEE? Or is one of the previous steps wrong?\n\nNote that the attacker _can't_ do the following:\n\n* attacker generates key K outside of TEE\n* attacker imports key K into TEE\n* client connects to attacker outside of TEE to perform aTLS\n  * attacker connects to TEE to get evidence\n  * TEE generates evidence for the connection to the attacker\n  * attacker relays the evidence from the TEE to the client, and signs CV with the key it has outside of TEE\n\n... because the evidence from the TEE will be bound to the connection between attacker and TEE.",
+              "createdAt": "2026-09-02T11:15:57Z",
+              "updatedAt": "2026-09-02T11:22:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABL2msug",
+          "commit": {
+            "abbreviatedOid": "c63592e"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-02T13:44:07Z",
+          "updatedAt": "2026-09-02T13:44:07Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "> I'm not sure what the attack described here is. If I understand correctly:\r\n> \r\n> * attacker generates key K outside of TEE\r\n\r\nI think the assumption here is that the attacker holds a TIK that has been snatched from another TEE and can transplant it into this TEE.\r\nThe other premise is that this TEE allows importing external keys.\r\nThe implication is that the impersonation attack is successful.\r\n\r\nIf instead this TEE doesn\u2019t allow import (key-attributes & local) and the other TEE didn\u2019t allow export (key-attributes & no-export), then a verifier could be convinced that the appraised attester is not vulnerable to this specific attack by looking at the reported key-attributes.\r\n",
+              "createdAt": "2026-09-02T13:44:07Z",
+              "updatedAt": "2026-09-02T13:44:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABL2warQ",
+          "commit": {
+            "abbreviatedOid": "c63592e"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-02T13:55:33Z",
+          "updatedAt": "2026-09-02T13:55:54Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "Ahh, I see, thank you. Yeah, I guess that's defeated by having some guarantee, somewhere, about the acceptable key lifecycle operations for this TEE.\n\nI'm still not sure how the key would be attested (or how we convey its lifecycle properties) alongside the evidence needed for this TLS handshake, but that's an issue for another PR. ",
+              "createdAt": "2026-09-02T13:55:33Z",
+              "updatedAt": "2026-09-02T13:55:54Z"
             }
           ]
         }
