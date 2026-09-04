@@ -817,7 +817,7 @@ Legend:  CR = ClientHello.random    SR = ServerHello.random
 ## Key Substitution Resistance {#key-substitution-resistance}
 
 A peer may hold an authentication private key that was generated and 
-protected within an attested environment, but has since been compromised 
+protected within an  attesting environment, but has since been compromised 
 via a side-channel attack and imported into a second, genuine attested 
 platform. That second platform, now the Target Environment being appraised, 
 produces Evidence bound to the imported key, and the attacker 
