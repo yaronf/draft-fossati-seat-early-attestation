@@ -480,9 +480,9 @@ Alternatively, in deployments where the Verifier is not co-located with the Rely
 supply the Verifier with the hash of the TIK public key. The Verifier then compares this value with the TIK
 public key hash included in the Evidence. If the values do not match, the attestation MUST be considered invalid.
 
-Without this binding, a non-TEE TLS endpoint can obtain Evidence from a separate TLS endpoint that genuinely runs
-inside a TEE and relay that Evidence to the relying party while executing the TLS handshake itself. If the
-Evidence only attests that a TLS stack is running in a TEE, the relying party cannot determine whether the
+Without this binding, a non-Attesting-Environment TLS endpoint can obtain Evidence from a separate TLS endpoint that runs
+inside an Attesting Environment and relay that Evidence to the relying party while executing the TLS handshake itself. If the
+Evidence only attests that a TLS stack is running in an Attesting Environment, the relying party cannot determine whether the
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.
 
@@ -768,9 +768,9 @@ compromised session. {{figure-relay-attempt}} illustrates this case.
 Legend:  CR = ClientHello.random    SR = ServerHello.random
          cks = client key_share     sks = server key_share
          T = Transcript-Hash(ClientHello...ServerHello)
-         E = Evidence signed by the TEE, bound to T
+         E = Evidence signed by the Attesting Environment, bound to T
 
-   Client                     Server (genuine TEE)             Attacker
+   Client                     Server                        Attacker
       |                              |                            |
       |== Connection 1 : Client <-> Server =======================|
       |  CH_1 { CR_1, cks_1 } ------>|                            |
@@ -810,11 +810,9 @@ Legend:  CR = ClientHello.random    SR = ServerHello.random
 A peer may hold an authentication private key that was generated and 
 protected within an Attesting Environment, but has since been compromised 
 via a side-channel attack and imported into a second Attesting Environment. 
-That second Attesting Environment may then produce Evidence asserting the 
-key was generated within it, even though it was not. Channel binding as 
-defined in {{relay-resistance}} does not prevent this, since it is not 
-relay or replay of Evidence across connections, but an incorrect claim 
-about a key's origin.
+Channel binding as defined in {{relay-resistance}} does not prevent this, 
+since it is not relay or replay of Evidence across connections, but 
+Evidence from an Attesting Environment vouching for a key it did not generate.
 
 Preventing this requires Evidence to assert that the TIK was generated within
 the Attesting Environment, has never existed outside it, and is non-exportable,
@@ -839,7 +837,7 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 ## Reattestation Freshness {#reattestation-freshness}
 
-As currently defined in {{crypto-ops}}, the attestation binder is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. Under this definition, an attester -- whether malicious or due to an incorrect implementation -- could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
+As currently defined in {{crypto-ops}}, the attestation binder is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. Under this definition, an attester, whether malicious or due to an incorrect implementation, could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
 
 This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.4 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
 
