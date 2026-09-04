@@ -827,7 +827,7 @@ Evidence across connections, but genuine Evidence from a genuine TEE
 vouching for a key it did not generate.
 
 Preventing this requires Evidence to assert that the TIK was generated within
-the attested environment, has never existed outside it, and is non-exportable,
+the attesting environment, has never existed outside it, and is non-exportable,
 not merely that it is currently protected. {{I-D.reddy-rats-key-binding}}
 defines this key-provenance property via the `local` and `never-extractable`
 key-attributes conveyed alongside the Subject Public Key, and it applies
