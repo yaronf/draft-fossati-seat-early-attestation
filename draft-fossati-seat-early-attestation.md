@@ -78,7 +78,6 @@ informative:
   I-D.ietf-teep-architecture: teep-arch
   I-D.rosomakho-tls-cert-update: cert-update
   I-D.ietf-tls-extended-key-update: eku
-  I-D.reddy-seat-cc-workload-identity:
   I-D.reddy-rats-key-binding:
   RFC5869: hkdf
   TPM1.2:
@@ -599,7 +598,7 @@ The identifier needs to be stable across the lifetime of the connection (potenti
 
 ## Negotiation Integrity {#negotiation-integrity}
 
-The `remoteAttestation` extension is covered by the TLS 1.3 handshake transcript. Tampering with it changes that transcript, causing CertificateVerify to fail. Negotiation downgrade is therefore already detected by TLS 1.3's existing transcript integrity.
+Evidence is carried in the `Certificate` message, so the protocol only applies to certificate-based authentication; CertificateVerify is therefore always present. The `remoteAttestation` extension is covered by the TLS 1.3 handshake transcript, and CertificateVerify signs that transcript up to and including Certificate. Tampering with the extension changes that transcript, causing CertificateVerify to fail. Negotiation downgrade is therefore already detected by TLS 1.3's existing transcript integrity.
 
 # TLS Client and Server Handshake Behavior {#behavior}
 
@@ -749,17 +748,9 @@ given in {{transcript-vs-exporter}}.
 
 ### Worked Example: Relay Attempt Under Handshake-Secret Compromise {#worked-example-relay}
 
-The confidential-computing deployment model, key roles, and trust anchors used
-here are described in {{I-D.reddy-seat-cc-workload-identity}}. In summary, the 
-server generates a TLS authentication key (the TIK) inside the TEE. The TIK 
-public key is bound into the Evidence, which is signed by the Attestation Key 
-(AK) and appraised against the attestation root of trust. This root of trust is a 
-third party that plays the role a certification authority plays in PKI. The client checks that 
-the public key in the end-entity certificate matches the TIK bound in the 
-Evidence and relies on CertificateVerify for proof of possession. Each handshake 
-also uses a fresh ephemeral (EC)DHE key share, carried in ClientHello/ServerHello, 
-from which the connection secrets are derived. This example applies to both Option A 
-and Option B of {{I-D.reddy-seat-cc-workload-identity}}.
+The server holds a TLS authentication key (the TIK), certified by a CA. The client truststore has the CA and verifies the end-entity certificate chains to it. The client checks that the public key in the end-entity certificate matches the TIK and relies on CertificateVerify for proof of possession. Each handshake also uses a fresh ephemeral (EC)DHE key share, carried in ClientHello/ServerHello, from which the connection secrets are derived.
+
+<cref>This example is deliberately generic; it will be updated in future revisions based on the outcome of confidential-computing-specific discussions.</cref>
 
 Suppose an attacker obtains a connection's handshake secret (or the ephemeral
 private key from which it is derived). The attacker can then derive that
@@ -817,21 +808,23 @@ Legend:  CR = ClientHello.random    SR = ServerHello.random
 ## Key Substitution Resistance {#key-substitution-resistance}
 
 A peer may hold an authentication private key that was generated and 
-protected within an  attesting environment, but has since been compromised 
-via a side-channel attack and imported into a second, genuine attested 
-platform. That second platform, now the Target Environment being appraised, 
-produces Evidence bound to the imported key, and the attacker 
-completes its own handshake using it. Channel binding as defined in 
-{{relay-resistance}} does not prevent this: it is not relay or replay of 
-Evidence across connections, but genuine Evidence from a genuine TEE 
-vouching for a key it did not generate.
+protected within an Attesting Environment, but has since been compromised 
+via a side-channel attack and imported into a second Attesting Environment. 
+That second Attesting Environment may then produce Evidence asserting the 
+key was generated within it, even though it was not. Channel binding as 
+defined in {{relay-resistance}} does not prevent this, since it is not 
+relay or replay of Evidence across connections, but an incorrect claim 
+about a key's origin.
 
 Preventing this requires Evidence to assert that the TIK was generated within
-the attesting environment, has never existed outside it, and is non-exportable,
+the Attesting Environment, has never existed outside it, and is non-exportable,
 not merely that it is currently protected. {{I-D.reddy-rats-key-binding}}
 defines this key-provenance property via the `local` and `never-extractable`
 key-attributes conveyed alongside the Subject Public Key, and it applies
-equally to intra-handshake and post-handshake attestation.
+equally to intra-handshake and post-handshake attestation. These attributes
+are therefore only as trustworthy as that environment itself, as established
+by appraisal against applicable reference values and endorsements and by the
+trust anchor for the Attestation Key ({{RFC9334}}).
 
 A summary of the security properties this mechanism provides is given in
 {{security-properties-summary}}.
@@ -846,9 +839,9 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 ## Reattestation Freshness {#reattestation-freshness}
 
-The attestation binder defined in {{crypto-ops}} is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. An attester, whether malicious or due to an incorrect implementation, could therefore resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
+As currently defined in {{crypto-ops}}, the attestation binder is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. Under this definition, an attester -- whether malicious or due to an incorrect implementation -- could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
 
-Post-handshake client reattestation (see {{reattestation}}) needs a freshness mechanism for the same reason: {{reattestation}} notes the binder can be derived from the post-handshake authentication transcript ({{Section 4.4 of -tls13}}).
+This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.4 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
 
 ## Security Guarantees {#sec-guarantees}
 
@@ -863,10 +856,11 @@ These properties may be explicitly promised ("attested") by the platform, or the
 
 ## Freshness Guarantees {#freshness-guarantees}
 
-Evidence appraised at handshake time reflects the Target Environment's state at that moment. Two cases can cause that appraisal to go stale without the Relying Party being aware:
+Evidence appraised at handshake time reflects the Target Environment's state at that moment. Three cases can cause that appraisal to go stale without the Relying Party being aware:
 
 * The connection remains open and continues to carry data after the Target Environment's state has changed and no reattestation has occurred.
 * A subsequent connection uses session resumption, inheriting the original connection's assurance without a new attestation exchange.
+* Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
 The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state instead sets a validity period for an appraisal and requests attestation once that period elapses, using one of the mechanisms in {{reattestation}}. A resumed connection inherits the original appraisal's validity period rather than getting a new one.
 
@@ -954,12 +948,15 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 ## draft-fossati-seat-early-attestation-07 
 
-- Added "Worked Example: Two Compromise Scenarios"
-- Re-anchored the TIK-export/re-hosting scenario in {{key-substitution-resistance}} to the key-provenance mechanism (`local`/`never-extractable` key-attributes) defined in {{I-D.reddy-rats-key-binding}}, replacing the prior generic reference to {{I-D.reddy-seat-cc-workload-identity}}.
-- Added {{pcs}}, addressing Post-Compromise Security for Evidence sent later on a connection whose handshake secret was compromised, referencing {{I-D.ietf-tls-extended-key-update}}.
-- Added {{reattestation-freshness}}, addressing replay of stale Evidence within a single connection across reattestation exchanges.
-- Filled in {{freshness-guarantees}} (previously a TODO placeholder), addressing staleness on long-lived and resumed connections.
-- Added {{negotiation-integrity}}, noting that RA negotiation downgrade is already detected via TLS 1.3 transcript integrity (CertificateVerify).
+- Added relay resistance and key substitution resistance into separate sections.
+- Added {{pcs}} (Post-Compromise Security via EKU).
+- Added {{reattestation-freshness}}.
+- Filled in {{freshness-guarantees}} (was a TODO).
+- Added {{negotiation-integrity}}.
+- Adopted RFC 9334 terminology (Attesting Environment).
+- Scoped {{negotiation-integrity}} to certificate-based auth; corrected to CertificateVerify.
+- Reframed {{reattestation-freshness}}.
+
 
 ## draft-fossati-seat-early-attestation-06
 
