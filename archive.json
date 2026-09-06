@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-03T02:56:50.041173+00:00",
+  "timestamp": "2026-09-06T02:56:10.909302+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -6684,24 +6684,26 @@
       "id": "PR_kwDOQdsaoc8AAAABA68N2A",
       "title": "Address security issues raised in the WG",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/72",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-08-25T10:19:50Z",
-      "updatedAt": "2026-09-02T13:55:54Z",
+      "updatedAt": "2026-09-03T07:59:38Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "0415f0ec03c19f8b4b38bdd157f4ac9711608914",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-8",
       "headRefOid": "c63592e7888f4e8e4bad4a611321cfdd3720ba20",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-09-03T07:59:38Z",
+      "mergedAt": "2026-09-03T07:59:37Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "3a26fdeba6d71ad5c5f27279efd533b0f82d07b7"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6821,6 +6823,258 @@
               "body": "Ahh, I see, thank you. Yeah, I guess that's defeated by having some guarantee, somewhere, about the acceptable key lifecycle operations for this TEE.\n\nI'm still not sure how the key would be attested (or how we convey its lifecycle properties) alongside the evidence needed for this TLS handshake, but that's an issue for another PR. ",
               "createdAt": "2026-09-02T13:55:33Z",
               "updatedAt": "2026-09-02T13:55:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABL_Fijg",
+          "commit": {
+            "abbreviatedOid": "c63592e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-03T07:59:20Z",
+          "updatedAt": "2026-09-03T07:59:20Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "https://github.com/tireddy2/draft-reddy-rats-key-binding/blob/main/draft-reddy-rats-key-binding.md#key-substitution-attack-illustration, covers this gap, detecting re-hosting needs claims that the key was generated within the environment, never existed outside it and is non-exportable. I will address this is a separate PR. ",
+              "createdAt": "2026-09-03T07:59:20Z",
+              "updatedAt": "2026-09-03T07:59:20Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 73,
+      "id": "PR_kwDOQdsaoc8AAAABCCre3g",
+      "title": "Add pending threat vectors",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/73",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-09-03T10:50:13Z",
+      "updatedAt": "2026-09-04T07:57:44Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "3a26fdeba6d71ad5c5f27279efd533b0f82d07b7",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-9",
+      "headRefOid": "e091410bc11971b0392bf7ac7e6f6723eb3241ae",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> General nits but looks good to me!\r\n\r\nuse the term as defined in RFC 9334 as Attesting Environment!",
+          "createdAt": "2026-09-03T13:44:04Z",
+          "updatedAt": "2026-09-03T13:44:04Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMCPT7A",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-03T13:39:54Z",
+          "updatedAt": "2026-09-03T13:39:55Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "```suggestion\nprotected within an  attesting environment, but has since been compromised \n```",
+              "createdAt": "2026-09-03T13:39:54Z",
+              "updatedAt": "2026-09-03T13:39:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMCRNAQ",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-03T13:42:15Z",
+          "updatedAt": "2026-09-03T13:42:15Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "```suggestion\nthe attesting environment, has never existed outside it, and is non-exportable,\n```",
+              "createdAt": "2026-09-03T13:42:15Z",
+              "updatedAt": "2026-09-03T13:42:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMCSaDQ",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "General nits but looks good to me!",
+          "createdAt": "2026-09-03T13:43:29Z",
+          "updatedAt": "2026-09-03T13:43:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMDCDtg",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-09-03T14:55:26Z",
+          "updatedAt": "2026-09-03T15:07:04Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "CertificateVerify or Finished?",
+              "createdAt": "2026-09-03T14:55:26Z",
+              "updatedAt": "2026-09-03T15:07:04Z"
+            },
+            {
+              "originalPosition": 62,
+              "body": "However when a TEE vouches for a key it did not generate, this indicates that the TEE does not meet its expected security guarantees.\n\nNote that this paragraph and the next are complicated by the existence of clusters where private keys actually do need to be shared.",
+              "createdAt": "2026-09-03T14:59:24Z",
+              "updatedAt": "2026-09-03T15:07:04Z"
+            },
+            {
+              "originalPosition": 80,
+              "body": "Be careful with this wording: it can be argued that EKU does not provide this property under the Internet attack model.",
+              "createdAt": "2026-09-03T15:02:10Z",
+              "updatedAt": "2026-09-03T15:07:04Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "Wait, this assumes a specific re-attestation solution which AFAIK we don't have yet. Maybe we'll come up with a solution that refreshes the binder?",
+              "createdAt": "2026-09-03T15:03:54Z",
+              "updatedAt": "2026-09-03T15:07:04Z"
+            },
+            {
+              "originalPosition": 101,
+              "body": "And a third case, this text assumes \"appraisal\" is the moment the evidence is signed. But it really is the combination of measurements+signature. So the 3rd case is that the measurements are stale (e.g. they were taken at boot time and never updated) and keep being signed as if they're still fresh.",
+              "createdAt": "2026-09-03T15:06:53Z",
+              "updatedAt": "2026-09-03T15:07:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMJKbwA",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-04T06:30:38Z",
+          "updatedAt": "2026-09-04T06:30:39Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "In our draft, Evidence is carried only in the Certificate message, so the protocol only applies to certificate-based handshakes; CertificateVerify is therefore always present. The remoteAttestation extension is covered by the TLS 1.3 handshake transcript, and CertificateVerify signs that transcript up to and including Certificate. You may want to look into https://datatracker.ietf.org/doc/html/rfc9846#section-4.5. ",
+              "createdAt": "2026-09-04T06:30:38Z",
+              "updatedAt": "2026-09-04T06:30:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMJUN6Q",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-04T06:48:05Z",
+          "updatedAt": "2026-09-04T06:48:05Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "Good point, key-sharing across a cluster needs its own SEAT usecase writeup first and discussion in the WG.\r\nDeployments needing HA can use a keyless-SSL-style architecture (https://www.cloudflare.com/en-in/application-services/products/ssl/keyless-ssl/) instead, where the TIK stays in one Attesting Environment and others proxy the signing operation. That keeps this section's key-provenance property intact.",
+              "createdAt": "2026-09-04T06:48:05Z",
+              "updatedAt": "2026-09-04T06:48:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMJXA-A",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-04T06:54:31Z",
+          "updatedAt": "2026-09-04T06:54:31Z",
+          "comments": [
+            {
+              "originalPosition": 80,
+              "body": "As per the definition of PCA: the adversary is temporary, obtaining the traffic keys once rather than persistently controlling the TLS section. If protection against an MiTM who can also interfere with the EKU exchange itself is required, that needs Post-Handshake Authentication or Exported Authenticators on top of EKU, it is already discussed in draft-ietf-tls-extended-key-update.",
+              "createdAt": "2026-09-04T06:54:31Z",
+              "updatedAt": "2026-09-04T06:54:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMJXzcg",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-04T06:56:21Z",
+          "updatedAt": "2026-09-04T06:56:22Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "Agreed, will update text. ",
+              "createdAt": "2026-09-04T06:56:21Z",
+              "updatedAt": "2026-09-04T06:56:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABMJnwzA",
+          "commit": {
+            "abbreviatedOid": "27cd893"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-04T07:31:36Z",
+          "updatedAt": "2026-09-04T07:31:36Z",
+          "comments": [
+            {
+              "originalPosition": 101,
+              "body": "Updated draft. ",
+              "createdAt": "2026-09-04T07:31:36Z",
+              "updatedAt": "2026-09-04T07:31:36Z"
             }
           ]
         }
