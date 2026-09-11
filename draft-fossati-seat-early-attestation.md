@@ -598,7 +598,7 @@ The identifier needs to be stable across the lifetime of the connection (potenti
 
 ## Negotiation Integrity {#negotiation-integrity}
 
-Evidence is carried in the `Certificate` message, so the protocol only applies to certificate-based authentication; CertificateVerify is therefore always present. The `remoteAttestation` extension is covered by the TLS 1.3 handshake transcript, and CertificateVerify signs that transcript up to and including Certificate. Tampering with the extension changes that transcript, causing CertificateVerify to fail. Negotiation downgrade is therefore already detected by TLS 1.3's existing transcript integrity.
+The `remoteAttestation` extension is negotiated by both peers. Finished is computed and verified by both peers over the complete handshake transcript. Tampering with the extension changes that transcript, causing Finished to fail. Negotiation downgrade is therefore already detected by TLS 1.3's existing transcript integrity.
 
 # TLS Client and Server Handshake Behavior {#behavior}
 
