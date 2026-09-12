@@ -829,7 +829,7 @@ A summary of the security properties this mechanism provides is given in
 
 ## Evidence Confidentiality After Compromise {#pcs}
 
-The relay-resistance analysis in {{relay-resistance}} shows that Evidence exposed by a handshake-secret compromise cannot be replayed on a different connection. It says nothing about Evidence sent later on that same connection.
+The relay-resistance analysis in {{relay-resistance}} shows that Evidence exposed by a handshake-secret compromise cannot be relayed on a different connection. It says nothing about Evidence sent later on that same connection.
 
 Suppose an attacker obtains a connection's handshake secret, as in {{worked-example-relay}}, and new Evidence is subsequently carried on that same connection (see {{reattestation}}). If that Evidence is protected under a compromised handshake secret, the attacker decrypts it too.
 
