@@ -480,9 +480,9 @@ Alternatively, in deployments where the Verifier is not co-located with the Rely
 supply the Verifier with the hash of the TIK public key. The Verifier then compares this value with the TIK
 public key hash included in the Evidence. If the values do not match, the attestation MUST be considered invalid.
 
-Without this binding, a non-Attesting-Environment TLS endpoint can obtain Evidence from a separate TLS endpoint that runs
-inside an Attesting Environment and relay that Evidence to the relying party while executing the TLS handshake itself. If the
-Evidence only attests that a TLS stack is running in an Attesting Environment, the relying party cannot determine whether the
+Without this binding, a non-Target-Environment TLS endpoint can obtain Evidence from a separate TLS endpoint that runs
+inside a Target Environment and relay that Evidence to the relying party while executing the TLS handshake itself. If the
+Evidence only attests that a TLS stack is running in a Target Environment, the relying party cannot determine whether the
 attested TLS stack is the one that actually performed the handshake. Binding the Evidence to the TIK public key
 prevents this relay attack.
 
