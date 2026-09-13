@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-06T02:56:10.909302+00:00",
+  "timestamp": "2026-09-13T03:09:31.077537+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1062,7 +1062,7 @@
       "labels": [],
       "body": "At the moment there is no clear way to negotiate Verifier \"identity\" for passport model, the PoC that originated this feedback currently uses the pubKey used to verify ARs. Other options:\n\n* well-known API discovery URI for given Verifier\n* FQDN\n",
       "createdAt": "2026-08-19T08:05:38Z",
-      "updatedAt": "2026-08-19T08:09:32Z",
+      "updatedAt": "2026-09-11T13:08:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -1071,6 +1071,13 @@
           "body": "We'll need two fields: one for address; one for type (how to use address)",
           "createdAt": "2026-08-19T08:09:32Z",
           "updatedAt": "2026-08-19T08:09:32Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is a dupe of #3 , but we'll resolve that in the way describe above.",
+          "createdAt": "2026-09-11T13:08:35Z",
+          "updatedAt": "2026-09-11T13:08:35Z"
         }
       ]
     },
@@ -1086,9 +1093,9 @@
         "ionut-arm"
       ],
       "labels": [],
-      "body": "Some edge cases are currently not explicitly covered by TLS alerts. We don't necessarily need new ones, just to map clearly:\n\n[ ] Attester failed to generate evidence due to TokenProvider failure\n[ ] Verifier service failure\n[ ] A scheme was selected, but certificates contain no evidence/result\n[ ] Server returned a scheme which was not on the list\n[ ] Server returned result/evidence which does not match the selected scheme",
+      "body": "Some edge cases are currently not explicitly covered by TLS alerts. We don't necessarily need new ones, just to map clearly:\n\n* [ ] Attester failed to generate evidence due to TokenProvider failure\n* [ ] Verifier service failure\n* [ ] A scheme was selected, but certificates contain no evidence/result\n* [ ] Server returned a scheme which was not on the list\n* [ ] Server returned result/evidence which does not match the selected scheme",
       "createdAt": "2026-08-19T08:11:46Z",
-      "updatedAt": "2026-08-19T08:11:46Z",
+      "updatedAt": "2026-09-11T13:05:28Z",
       "closedAt": null,
       "comments": []
     }
@@ -6853,24 +6860,26 @@
       "id": "PR_kwDOQdsaoc8AAAABCCre3g",
       "title": "Add pending threat vectors",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/73",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-09-03T10:50:13Z",
-      "updatedAt": "2026-09-04T07:57:44Z",
+      "updatedAt": "2026-09-12T13:44:35Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "3a26fdeba6d71ad5c5f27279efd533b0f82d07b7",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-9",
-      "headRefOid": "e091410bc11971b0392bf7ac7e6f6723eb3241ae",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6d74a392c18c26afcf17e755d627464c0567c39a",
+      "closedAt": "2026-09-12T13:44:35Z",
+      "mergedAt": "2026-09-12T13:44:35Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "5880dc62034dd413652b57d05097691555cf92b6"
+      },
       "comments": [
         {
           "author": "yogeshbdeshpande",
@@ -7077,6 +7086,123 @@
               "updatedAt": "2026-09-04T07:31:36Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABNAycwg",
+          "commit": {
+            "abbreviatedOid": "e091410"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-09-10T14:14:30Z",
+          "updatedAt": "2026-09-10T14:28:44Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "I think the focus of the \"negotiation\" section is wrong. Yes this is cert-based auth, but the certificate may be on one side only, while negotiation is sent by both peers. The focus here should be on Finished rather than Cert/CertVerify.",
+              "createdAt": "2026-09-10T14:14:30Z",
+              "updatedAt": "2026-09-10T14:28:44Z"
+            },
+            {
+              "originalPosition": 105,
+              "body": "I recently had the same discussion with Ionut: the words \"never extractable\" need to be softened to allow for TIK sharing among different cluster members. Apparently this is functionality that's normally provided by HSMs, I'm not sure about TEEs.\n\nHaving said that, I'm not sure this is critical for the current version of the draft.",
+              "createdAt": "2026-09-10T14:20:32Z",
+              "updatedAt": "2026-09-10T14:28:44Z"
+            },
+            {
+              "originalPosition": 80,
+              "body": "Just for the record, I disagree with your definition. The breach of the traffic keys is a one-time event indeed. But per the standard attack model, the adversary is *always* capable of MITM attacks. It just happens to be the same adversary who breached your traffic keys.",
+              "createdAt": "2026-09-10T14:26:45Z",
+              "updatedAt": "2026-09-10T14:28:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABNJ8ZWA",
+          "commit": {
+            "abbreviatedOid": "e091410"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-11T10:47:15Z",
+          "updatedAt": "2026-09-11T10:47:16Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Agreed, updated draft. ",
+              "createdAt": "2026-09-11T10:47:16Z",
+              "updatedAt": "2026-09-11T10:47:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABNJ-XvA",
+          "commit": {
+            "abbreviatedOid": "e091410"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-11T10:51:07Z",
+          "updatedAt": "2026-09-11T10:51:07Z",
+          "comments": [
+            {
+              "originalPosition": 105,
+              "body": "Yes, HA in HSMs and TEEs requires more discussion. If there is any change that would like me to do this section, let me know; otherwise I will go ahead and publish the draft.",
+              "createdAt": "2026-09-11T10:51:07Z",
+              "updatedAt": "2026-09-11T10:51:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABNKJQ-A",
+          "commit": {
+            "abbreviatedOid": "f8b2e75"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-11T11:14:34Z",
+          "updatedAt": "2026-09-11T11:23:58Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "I think this should say `Target Environment`, as that's the one the evidence is about.\n```suggestion\nWithout this binding, a non-Target-Environment TLS endpoint can obtain Evidence from a separate TLS endpoint that runs\ninside a Target Environment and relay that Evidence to the relying party while executing the TLS handshake itself. If the\nEvidence only attests that a TLS stack is running in a Target Environment, the relying party cannot determine whether the\n```",
+              "createdAt": "2026-09-11T11:14:35Z",
+              "updatedAt": "2026-09-11T11:23:58Z"
+            },
+            {
+              "originalPosition": 112,
+              "body": "I'd lean towards keeping the terms consistent. I agree that \"relaying\" evidence (mechanically) means replaying them at a different time or in a different connection, but since we have different attacks to worry about (relay breaks connection binding, replay breaks freshness) it seems worth keeping the wording separated.\n\n```suggestion\nThe relay-resistance analysis in {{relay-resistance}} shows that Evidence exposed by a handshake-secret compromise cannot be relayed on a different connection. It says nothing about Evidence sent later on that same connection.\n```",
+              "createdAt": "2026-09-11T11:17:18Z",
+              "updatedAt": "2026-09-11T11:23:58Z"
+            },
+            {
+              "originalPosition": 80,
+              "body": "Yaron - do you mean that the adversary (under the internet threat model) is _always_ capable of faking signatures and/or encrypting/decrypting/authenticating the exchanged messages?",
+              "createdAt": "2026-09-11T11:20:20Z",
+              "updatedAt": "2026-09-11T11:23:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABNL2QiA",
+          "commit": {
+            "abbreviatedOid": "f8b2e75"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-11T14:27:23Z",
+          "updatedAt": "2026-09-11T14:27:23Z",
+          "comments": []
         }
       ]
     }
