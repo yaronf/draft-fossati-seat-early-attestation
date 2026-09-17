@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-13T03:09:31.077537+00:00",
+  "timestamp": "2026-09-17T03:25:48.503330+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -67,6 +67,11 @@
       "name": "Pre-05",
       "description": "",
       "color": "0db74d"
+    },
+    {
+      "name": "pre-07",
+      "description": "",
+      "color": "673c32"
     }
   ],
   "issues": [
@@ -617,14 +622,25 @@
       "author": "burgerdev",
       "authorAssociation": "NONE",
       "assignees": [
-        "thomas-fossati"
+        "thomas-fossati",
+        "ionut-arm"
       ],
-      "labels": [],
+      "labels": [
+        "pre-07"
+      ],
       "body": "The draft currently lists these advantages of intra-handshake:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L165-L169\n\nMaybe it's a question of definitions, but I don't think this holds up in practice. There are several steps for producing and verifying evidence that don't sound like they can be solved with \"At most, some configuration\":\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L374-L375\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L330-L334\n\nI guess these need to be implemented as callbacks to _some_ application code, since the TLS stack can't really know how to get or verify evidence by itself?\n\nI would appreciate:\n\n1. A section with API considerations (similar to https://www.rfc-editor.org/rfc/rfc9261#name-api-considerations).\n2. A review of the above advantages based on those suggested APIs.",
       "createdAt": "2026-01-26T08:47:19Z",
-      "updatedAt": "2026-02-11T08:46:43Z",
+      "updatedAt": "2026-09-16T07:46:45Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This could be an appendix describing:\n* emerging standardisation efforts\n* our experience from our prototyping",
+          "createdAt": "2026-09-16T07:45:42Z",
+          "updatedAt": "2026-09-16T07:45:42Z"
+        }
+      ]
     },
     {
       "number": 38,
@@ -640,9 +656,17 @@
       "labels": [],
       "body": "The draft currently requires the TIK to be TEE-protected:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L182-L185\n\nI understand the goal of the draft is to provide an attested TLS _session_. We already know from the post-handshake work that a trustworthy attested TLS session can be established with a long-term key that's not protected by a TEE. Why do we need it for intra-handshake?\n\nThe reason why this is important is that some flavours of TEEs are short-lived: confidential containers come to mind. It's probably infeasible to let all containers first do an ACME step (or similar) to get a certificate for their ephemeral key.",
       "createdAt": "2026-01-26T08:55:22Z",
-      "updatedAt": "2026-02-11T08:43:41Z",
+      "updatedAt": "2026-09-16T08:17:17Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@burgerdev - is this assuming that the identity key is long term, has a PKI cert, and will be imported for use by each workload, or accessed somehow from within the TEE?",
+          "createdAt": "2026-09-16T08:17:17Z",
+          "updatedAt": "2026-09-16T08:17:17Z"
+        }
+      ]
     },
     {
       "number": 39,
