@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-17T03:25:48.503330+00:00",
+  "timestamp": "2026-09-20T03:24:42.114512+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -630,7 +630,7 @@
       ],
       "body": "The draft currently lists these advantages of intra-handshake:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L165-L169\n\nMaybe it's a question of definitions, but I don't think this holds up in practice. There are several steps for producing and verifying evidence that don't sound like they can be solved with \"At most, some configuration\":\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L374-L375\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L330-L334\n\nI guess these need to be implemented as callbacks to _some_ application code, since the TLS stack can't really know how to get or verify evidence by itself?\n\nI would appreciate:\n\n1. A section with API considerations (similar to https://www.rfc-editor.org/rfc/rfc9261#name-api-considerations).\n2. A review of the above advantages based on those suggested APIs.",
       "createdAt": "2026-01-26T08:47:19Z",
-      "updatedAt": "2026-09-16T07:46:45Z",
+      "updatedAt": "2026-09-18T13:43:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -639,6 +639,13 @@
           "body": "This could be an appendix describing:\n* emerging standardisation efforts\n* our experience from our prototyping",
           "createdAt": "2026-09-16T07:45:42Z",
           "updatedAt": "2026-09-16T07:45:42Z"
+        },
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "@ionut-arm: I think the [`AttestationGenerator`](https://github.com/tls-attestation/attestation-exported-authenticators/blob/e30acd7e7fcc52fbdadc444601a0b70c6525d739/src/attestation/mod.rs#L43-L46) and [`AttestationValidator`](https://github.com/tls-attestation/attestation-exported-authenticators/blob/e30acd7e7fcc52fbdadc444601a0b70c6525d739/src/attestation/mod.rs#L103-L107) structs from the expat impl are a good example of how the API could look like. That strongly suggests that it's not only configuration that needs to be provided on the application-level, though. What were your experiences while prototyping?",
+          "createdAt": "2026-09-18T13:43:32Z",
+          "updatedAt": "2026-09-18T13:43:32Z"
         }
       ]
     },
@@ -656,7 +663,7 @@
       "labels": [],
       "body": "The draft currently requires the TIK to be TEE-protected:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L182-L185\n\nI understand the goal of the draft is to provide an attested TLS _session_. We already know from the post-handshake work that a trustworthy attested TLS session can be established with a long-term key that's not protected by a TEE. Why do we need it for intra-handshake?\n\nThe reason why this is important is that some flavours of TEEs are short-lived: confidential containers come to mind. It's probably infeasible to let all containers first do an ACME step (or similar) to get a certificate for their ephemeral key.",
       "createdAt": "2026-01-26T08:55:22Z",
-      "updatedAt": "2026-09-16T08:17:17Z",
+      "updatedAt": "2026-09-18T13:17:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -665,6 +672,13 @@
           "body": "@burgerdev - is this assuming that the identity key is long term, has a PKI cert, and will be imported for use by each workload, or accessed somehow from within the TEE?",
           "createdAt": "2026-09-16T08:17:17Z",
           "updatedAt": "2026-09-16T08:17:17Z"
+        },
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "@ionut-arm: yes, the use case is identical to https://github.com/ietf-wg-seat/draft-ietf-seat-use-cases/pull/56, and I believe it to be related to the \"split deployment\" use case (which I can't find a reference for right now - maybe it was only on list). \n\nIntuitively, ephemeral Diffie-Hellman should suffice to not require the TIK to be secret.  ",
+          "createdAt": "2026-09-18T13:17:33Z",
+          "updatedAt": "2026-09-18T13:17:33Z"
         }
       ]
     },
