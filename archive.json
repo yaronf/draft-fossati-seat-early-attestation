@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-20T03:24:42.114512+00:00",
+  "timestamp": "2026-09-24T03:09:23.977566+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -985,9 +985,17 @@
       "labels": [],
       "body": "Derivation should follow the main document. Specifically, hash the public key to allow for longer public keys.",
       "createdAt": "2026-04-24T16:43:59Z",
-      "updatedAt": "2026-04-24T16:43:59Z",
+      "updatedAt": "2026-09-22T16:09:55Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "body": "Two data points for this issue, and one observation, from running Section 5.1.1 as written on a live SEV-SNP guest.\n\n**1. Section 8.4 reproduces with the draft's own binder.** I computed `s_attest_binder` exactly as 5.1.1 defines it \u2014 `tls13 ` label space, the suite's hash (TLS_AES_256_GCM_SHA384), `Hash(ClientHello..ServerHello)` from the recorded wire, the server's SPKI \u2014 on both ends of one TLS 1.3 connection to a GCP SEV-SNP guest, and had the guest emit two AMD-signed reports in that connection, both binding it. The two reports carry byte-identical `REPORT_DATA` and differ only in the randomised signature. Under the 5.1.2 appraisal the round-0 report is accepted when round 1 is requested. Raw reports, the recorded ClientHello/ServerHello, and the run transcript: [`evidence/reattest-20260922T140735Z/`](https://github.com/nikolaichuk7/hatls/tree/v0.3.0/evidence/reattest-20260922T140735Z). The HKDF-Expand-Label used is checked against the RFC 8448 trace byte for byte ([`tests/test_transcript.py`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/tests/test_transcript.py)).\n\n**2. The same thing in ProVerif.** A model of a three-round reattestation with the binder held constant for the connection: the prover finds the trace in which the Evidence emitted at round 0 is accepted at round 1, same session, same exporter. With the binder chained per round, the query holds, injectively, against an attacker who is the TLS peer of both ends and whose own TEE signs anything. Both models and the output: [`formal/`](https://github.com/nikolaichuk7/hatls/tree/v0.3.0/formal), `results/proverif-20260922.txt`.\n\n**3. An observation on the fix 8.4 sketches.** A fresh, exchange-specific binder closes the replay, but which source it comes from decides whether the *sequence* of reattestations is also verifiable:\n\n- With Extended Key Update (Option 1), a binder derived after each update inherits order from the key schedule itself \u2014 `main_secret_N+1` and `transcript_hash_N+1` are functions of generation N (draft-ietf-tls-extended-key-update, Fig. 7). Nothing more is needed \u2014 though, for what it is worth, as of today I find no implementation of Extended Key Update in OpenSSL 3.6.4 (headers or libssl), nor in the sources of BoringSSL, wolfSSL, rustls or Go's crypto/tls (s2n, Mbed TLS and GnuTLS not checked), so Option 1 has no running code to measure against yet.\n- With post-handshake authentication (5.4.1) or CertificateUpdate (Option 3), each exchange's transcript is `ClientHello..client Finished + CertificateRequest` (RFC 8446 \u00a74.4), so two reattestations are each fresh but say nothing about which came first, and a Relying Party keeping a record of appraisals (8.6 asks it to bound validity) cannot commit to their order.\n\nIf order matters for the second family, one line gives it without changing the inputs: `binder_{n+1} = HKDF-Expand-Label(attest_base, \"reattestation\", Hash(binder_n || context_{n+1}), Hash.length)`, with `binder_0` the 5.1.1 binder and `context_{n+1}` that exchange's context (`certificate_request_context` in 5.4.1). The Relying Party recomputes it from its own record of `binder_n` and the exchange's context; the attester cannot present round *n*'s Evidence at *n+1* or skip a round. That is what the chained model above proves and what the hardware run above exercises.\n\nHappy to turn any of this into text for 8.4 if it is useful; otherwise it is just data for the issue.\n",
+          "createdAt": "2026-09-22T16:09:55Z",
+          "updatedAt": "2026-09-22T16:09:55Z"
+        }
+      ]
     },
     {
       "number": 61,
@@ -1134,6 +1142,38 @@
       "body": "Some edge cases are currently not explicitly covered by TLS alerts. We don't necessarily need new ones, just to map clearly:\n\n* [ ] Attester failed to generate evidence due to TokenProvider failure\n* [ ] Verifier service failure\n* [ ] A scheme was selected, but certificates contain no evidence/result\n* [ ] Server returned a scheme which was not on the list\n* [ ] Server returned result/evidence which does not match the selected scheme",
       "createdAt": "2026-08-19T08:11:46Z",
       "updatedAt": "2026-09-11T13:05:28Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 74,
+      "id": "I_kwDOQdsaoc8AAAABSlZoKA",
+      "title": "Section 5.1.1: with a HelloRetryRequest, \"Hash(ClientHello...ServerHello)\" has four readings that give four binders",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/74",
+      "state": "OPEN",
+      "author": "nikolaichuk7",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 5.1.1 derives the binder from `Hash(ClientHello...ServerHello)`. When a HelloRetryRequest occurs, RFC 8446 \u00a74.4.1 says the transcript is not the messages as sent: ClientHello1 is replaced by a synthetic `message_hash` message. The draft does not mention HelloRetryRequest or `message_hash` (0 occurrences in -07), so an implementer has at least four defensible readings:\n\n| reading | transcript input |\n|---|---|\n| (a) retry ignored | `CH1 \u2016 SH` |\n| (b) messages as sent | `CH1 \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (c) RFC 8446 \u00a74.4.1 | `message_hash(CH1) \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (d) \"the\" ClientHello is the second | `CH2 \u2016 SH` |\n\nI ran real TLS 1.3 handshakes through a HelloRetryRequest (a server restricted to P-384 answering a default client's X25519 key share \u2014 the ordinary shape of a group migration) and computed the 5.1.1 binder under each reading, with an HKDF-Expand-Label checked byte-for-byte against the RFC 8448 trace. **Four distinct binders in 200 of 200 runs**; with agreeing groups there is no retry and the readings coincide. Reproduction, in-process and without network: [`examples/hrr_binder.py`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/hrr_binder.py), output in [`docs/hrr-binder-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/hrr-binder-run.txt).\n\nWhy implementations will actually diverge: Appendix C sends implementers to \"callback interfaces\" that expose the handshake messages \u2014 which naturally yields (a) or (b) \u2014 while an implementation that asks its stack for the transcript hash at ServerHello gets (c). Both followed the document. And \u00a75.1.2 makes a binder mismatch a fatal `attestation_failed` alert, so two conforming peers that read one sentence differently do not merely fail to connect: each reports the other as failing attestation.\n\nA second-order point: under reading (a) the binder commits to the key_share the client *withdrew*, so \u00a78.1's stated basis for two-sided uniqueness \u2014 the client's and server's key_share entries \u2014 is not what the binder covers. Uniqueness survives through the two randoms; the justification does not.\n\nIn fairness: 5.1.1 cites \u00a74.4.1, which may be intended to import the HRR rule. The text does not say so, it writes `Hash()` rather than `Transcript-Hash()`, and Appendix C points the other way.\n\n**Smallest fix.** State the transcript normatively by reference \u2014 \"Transcript-Hash(ClientHello1, ..., ServerHello) as defined in Section 4.4.1 of [RFC 8446], including the HelloRetryRequest substitution\" \u2014 and adjust Appendix C so that it directs implementers to the stack's transcript rather than to concatenating observed messages.\n",
+      "createdAt": "2026-09-22T16:09:47Z",
+      "updatedAt": "2026-09-22T16:09:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 75,
+      "id": "I_kwDOQdsaoc8AAAABSlZqxg",
+      "title": "A resumed handshake has no Certificate message to carry the extension; the only MUST about resumption is in the document history",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/75",
+      "state": "OPEN",
+      "author": "nikolaichuk7",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.1 places the `remoteAttestation` extension in the first CertificateEntry of the Certificate message. A resumed TLS 1.3 handshake contains no Certificate message.\n\nMeasured with `openssl s_server -msg` (OpenSSL 3.6.4), two consecutive connections to one server:\n\n```\nconnection 1 (full):     ServerHello, EncryptedExtensions, Certificate, CertificateVerify, Finished, NewSessionTicket\nconnection 2 (resumed):  ServerHello, EncryptedExtensions, Finished, [EndOfEarlyData], NewSessionTicket\nCertificate messages:    1 in the full handshake, 0 in the resumed one\n```\n\nWith `-early_data` on the resumed connection the client reports `Early data was accepted`: the application request was delivered in the client's first flight, before the server had sent any handshake message in that connection. Reproduction, local only: [`examples/resumption.sh`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/resumption.sh), output in [`docs/resumption-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/resumption-run.txt).\n\nWhere the document currently stands on this:\n\n- \u00a78.6 (body) says a resumed connection \"inherit[s] the original connection's assurance\" and \"inherits the original appraisal's validity period\" \u2014 descriptive, and it presumes the exchange can exist there.\n- The only normative statement \u2014 \"resumption MUST be rejected if reattestation is required per local policy\" \u2014 is in Appendix A, the document history, as a note on what an earlier revision added. An implementer reading the body will not find it.\n- Early data / 0-RTT is not mentioned.\n\n**Smallest fix.** Either move that MUST into the body (Section 7 or 8.6) and add the same for early data, or give the extension a carrier that exists in a resumed handshake \u2014 EncryptedExtensions is sent in both \u2014 with the binder defined over the resumed handshake's own transcript. (expat handles this by forbidding NewSessionTicket and 0-RTT on attested connections, \u00a77.2 there; the same rule would fit here.)\n",
+      "createdAt": "2026-09-22T16:09:51Z",
+      "updatedAt": "2026-09-22T16:09:51Z",
       "closedAt": null,
       "comments": []
     }
