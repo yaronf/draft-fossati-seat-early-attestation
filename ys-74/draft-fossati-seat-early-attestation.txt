@@ -2,16 +2,16 @@
 
 
 
-TLS                                                           Y. Sheffer
+SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 5 February 2027                                    Y. Deshpande
+Expires: 3 April 2027                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                           4 August 2026
+                                                       30 September 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 February 2027.
+   This Internet-Draft will expire on 3 April 2027.
 
 Copyright Notice
 
@@ -107,10 +107,10 @@ Table of Contents
                Authentication
        5.4.2.  Option 1: Carrying Attestation in Extended Key Update
        5.4.3.  Option 2: No Reattestation (Reconnect for Freshness)
-       5.4.4.  Option 2: No Reattestation (Reconnect for Freshness)
-       5.4.5.  Option 3: Post-Handshake Reattestation Using
+       5.4.4.  Option 3: Post-Handshake Reattestation Using
                CertificateUpdate
    6.  Negotiating This Protocol
+     6.1.  Negotiation Integrity
    7.  TLS Client and Server Handshake Behavior
      7.1.  Client Hello
      7.2.  Server Hello
@@ -118,8 +118,13 @@ Table of Contents
      7.4.  Following Server Hello
    8.  Security Considerations
      8.1.  Relay Resistance
-     8.2.  Security Guarantees
-     8.3.  Freshness Guarantees
+       8.1.1.  Worked Example: Relay Attempt Under Handshake-Secret
+               Compromise
+     8.2.  Key Substitution Resistance
+     8.3.  Evidence Confidentiality After Compromise
+     8.4.  Reattestation Freshness
+     8.5.  Security Guarantees
+     8.6.  Freshness Guarantees
    9.  Privacy Considerations
      9.1.  Server Attestation to Unauthenticated Clients
    10. IANA Considerations
@@ -130,17 +135,19 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-06
-     A.2.  draft-fossati-seat-early-attestation-05
-     A.3.  draft-fossati-seat-early-attestation-04
-     A.4.  draft-fossati-seat-early-attestation-03
-     A.5.  draft-fossati-seat-early-attestation-02
-     A.6.  draft-fossati-seat-early-attestation-01
-     A.7.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-07
+     A.2.  draft-fossati-seat-early-attestation-06
+     A.3.  draft-fossati-seat-early-attestation-05
+     A.4.  draft-fossati-seat-early-attestation-04
+     A.5.  draft-fossati-seat-early-attestation-03
+     A.6.  draft-fossati-seat-early-attestation-02
+     A.7.  draft-fossati-seat-early-attestation-01
+     A.8.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale: Why the Transcript and Not the
            Exporter
    Appendix C.  Computing the Handshake Transcript with Existing TLS
            APIs
+   Appendix D.  Summary of Security Properties
    Authors' Addresses
 
 1.  Introduction
@@ -343,7 +350,7 @@ Table of Contents
    are ever passed between the Client or Server TLS stack and its
    Attestation Service.  While the two types of implementations offer
    identical functionality, their security properties often differ, see
-   Section 8.2 for more details.
+   Section 8.5 for more details.
 
 4.1.  Remote Attestation Extension
 
@@ -472,10 +479,17 @@ Table of Contents
    Section 4.4.1 and 7.1 of [I-D.ietf-tls-rfc8446bis].
 
    Both peers derive a single attestation base from the same transcript
-   checkpoint, ClientHello...ServerHello.
+   checkpoint through ServerHello.
+
+   The transcript MUST be computed as Transcript-Hash through
+   ServerHello, as defined in Section 4.4.1 of
+   [I-D.ietf-tls-rfc8446bis].  When the handshake includes a
+   HelloRetryRequest, the first ClientHello is not hashed as sent; the
+   transcript uses the synthetic message_hash message specified in that
+   section instead.
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
-                                Hash(ClientHello...ServerHello), Hash.length)
+                    Transcript-Hash(ClientHello...ServerHello), Hash.length)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     Hash(TLS_Client_Public_Key), Hash.length)
@@ -597,19 +611,20 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Evidence.  If the values do not match, the attestation MUST be
    considered invalid.
 
-   Without this binding, a non-TEE TLS endpoint can obtain Evidence from
-   a separate TLS endpoint that genuinely runs inside a TEE and relay
-   that Evidence to the relying party while executing the TLS handshake
-   itself.  If the Evidence only attests that a TLS stack is running in
-   a TEE, the relying party cannot determine whether the attested TLS
-   stack is the one that actually performed the handshake.  Binding the
-   Evidence to the TIK public key prevents this relay attack.
+   Without this binding, a non-Target-Environment TLS endpoint can
+   obtain Evidence from a separate TLS endpoint that runs inside a
+   Target Environment and relay that Evidence to the relying party while
+   executing the TLS handshake itself.  If the Evidence only attests
+   that a TLS stack is running in a Target Environment, the relying
+   party cannot determine whether the attested TLS stack is the one that
+   actually performed the handshake.  Binding the Evidence to the TIK
+   public key prevents this relay attack.
 
    The proposed binding ensures that the relying party does not
    establish a TLS session with a TLS endpoint whose TIK is not
    generated and controlled by the TEE.  It does not - in and of itself
    - ensure security of the TLS stack when the stack is outside the TEE,
-   and see Section 8.2 for a further discussion.
+   and see Section 8.5 for a further discussion.
 
 5.3.  The TLS Stack's Interface to the TEE
 
@@ -723,18 +738,6 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
    Another approach is to not support reattestation within an
    established TLS connection.  When fresh attestation is required, the
-   client and server terminate the existing TLS session and establish a
-   new one, during which fresh Evidence or Attestation Results are
-   exchanged as part of the handshake.
-
-   This approach keeps the TLS protocol unchanged and avoids introducing
-   post-handshake mechanisms.  However, it will be disruptive for long-
-   lived TLS connections.
-
-5.4.4.  Option 2: No Reattestation (Reconnect for Freshness)
-
-   Another approach is to not support reattestation within an
-   established TLS connection.  When fresh attestation is required, the
    client establishes a new TLS connection, exchanging fresh Evidence or
    Attestation Results as part of the handshake.
 
@@ -748,7 +751,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Note: This is a workaround while the WG determines which of the other
    options can be progressed.
 
-5.4.5.  Option 3: Post-Handshake Reattestation Using CertificateUpdate
+5.4.4.  Option 3: Post-Handshake Reattestation Using CertificateUpdate
 
    In this design, reattestation is supported using the
    CertificateUpdate message defined in [I-D.rosomakho-tls-cert-update].
@@ -800,6 +803,15 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Verifier instance.  The identifier needs to be stable across the
    lifetime of the connection (potentially across Verifier credential
    rotation), for example a subjectAltName.
+
+6.1.  Negotiation Integrity
+
+   The remoteAttestation extension is negotiated by both peers.
+   Finished is computed and verified by both peers over the complete
+   handshake transcript.  Tampering with the extension changes that
+   transcript, causing Finished to fail.  Negotiation downgrade is
+   therefore already detected by TLS 1.3's existing transcript
+   integrity.
 
 7.  TLS Client and Server Handshake Behavior
 
@@ -972,9 +984,12 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
    Both anchors are unique per connection.  The transcript checkpoint
    commits to both peers' fresh ephemeral key-exchange contributions,
-   that is, the client's and server's key_share entries (whether (EC)DHE
-   public keys or a PQC KEM public key and ciphertext), as well as
-   ClientHello.random and ServerHello.random.
+   that is, the client's and server's key_share entries in the
+   transcript (whether (EC)DHE public keys or a PQC KEM public key and
+   ciphertext), as well as ClientHello.random and ServerHello.random.
+   After a HelloRetryRequest, these are the values from the updated
+   ClientHello and the ServerHello, as included in Transcript-Hash
+   (Section 4.4.1 of [I-D.ietf-tls-rfc8446bis]).
 
    Because each peer independently contributes fresh material, neither
    peer alone controls the transcript, and the resulting binder is
@@ -1000,7 +1015,139 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    The rationale for anchoring to the transcript rather than to an
    exporter value is given in Appendix B.
 
-8.2.  Security Guarantees
+8.1.1.  Worked Example: Relay Attempt Under Handshake-Secret Compromise
+
+   The server holds a TLS authentication key (the TIK), certified by a
+   CA.  The client truststore has the CA and verifies the end-entity
+   certificate chains to it.  The client checks that the public key in
+   the end-entity certificate matches the TIK and relies on
+   CertificateVerify for proof of possession.  Each handshake also uses
+   a fresh ephemeral (EC)DHE key share, carried in ClientHello/
+   ServerHello, from which the connection secrets are derived.
+
+
+   // This example is deliberately generic; it will be updated in future
+   // revisions based on the outcome of confidential-computing-specific
+   // discussions.
+
+   Suppose an attacker obtains a connection's handshake secret (or the
+   ephemeral private key from which it is derived).  The attacker can
+   then derive that connection's handshake traffic secrets and decrypt
+   the handshake, including the Evidence carried in the encrypted
+   Certificate message.  This compromises the confidentiality of that
+   single connection.  It does not let the attacker replay the Evidence
+   in a different TLS session: the Evidence is bound to this
+   connection's ClientHello...ServerHello transcript and to the TIK, and
+   any other TLS connection uses fresh key shares, yielding a different
+   transcript and a different binder.  The exposed Evidence therefore
+   does not match any other connection and is rejected.  Consistent with
+   TLS 1.3 forward secrecy, the impact is confined to the compromised
+   session.  Figure 4 illustrates this case.
+
+   Legend:  CR = ClientHello.random    SR = ServerHello.random
+            cks = client key_share     sks = server key_share
+            T = Transcript-Hash(ClientHello...ServerHello)
+            E = Evidence signed by the Attesting Environment, bound to T
+
+      Client                     Server                        Attacker
+         |                              |                            |
+         |== Connection 1 : Client <-> Server =======================|
+         |  CH_1 { CR_1, cks_1 } ------>|                            |
+         |<----- SH_1 { SR_1, sks_1 }   |                            |
+         |        T1 = Hash(CH_1..SH_1) |                            |
+         |<----- {Certificate: E}       |                            |
+         |        E bound to T1         |                            |
+         |                              |   attacker has obtained    |
+         |                              |   connection 1's handshake |
+         |                              |   secret: decrypts conn 1  |
+         |                              |   and reads Evidence E     |
+         |                              |                            |
+         |== Connection 2 : Client <-> Attacker (posing as server) ==|
+         |  CH_2 { CR_2, cks_2 } ----------------------------------->|
+         |     CR_2 != CR_1 , cks_2 != cks_1                         |
+         |     (client contributes fresh values; attacker            |
+         |      cannot control them)                                 |
+         |                                                           |
+         |<---------------------- SH_2 { SR_1, sks_1 }               |
+         |     attacker replays connection 1's server values         |
+         |     to try to reproduce T1                                |
+         |<-------------------- {Certificate: replayed E (bound T1)} |
+         |                                                           |
+         |  T2 = Hash(CH_2..SH_2)                                    |
+         |  CH_2 != CH_1  =>  T2 != T1                               |
+         |  client computes binder over T2 ;                         |
+         |  E is bound to T1  =>  binder mismatch                    |
+         |                                                           |
+         |<-------------------- >> attestation_failed <<             |
+         |                        handshake aborted                  |
+         |                                                           |
+
+       Figure 4: Even having read the Evidence from connection 1, the
+     attacker cannot reproduce connection 1's transcript on connection
+      2: the client contributes fresh randomness and key share, so the
+             binder does not match and the handshake is aborted
+
+8.2.  Key Substitution Resistance
+
+   A peer may hold an authentication private key that was generated and
+   protected within an Attesting Environment, but has since been
+   compromised via a side-channel attack and imported into a second
+   Attesting Environment.  Channel binding as defined in Section 8.1
+   does not prevent this, since it is not relay or replay of Evidence
+   across connections, but Evidence from an Attesting Environment
+   vouching for a key it did not generate.
+
+   Preventing this requires Evidence to assert that the TIK was
+   generated within the Attesting Environment, has never existed outside
+   it, and is non-exportable, not merely that it is currently protected.
+   [I-D.reddy-rats-key-binding] defines this key-provenance property via
+   the local and never-extractable key-attributes conveyed alongside the
+   Subject Public Key, and it applies equally to intra-handshake and
+   post-handshake attestation.  These attributes are therefore only as
+   trustworthy as that environment itself, as established by appraisal
+   against applicable reference values and endorsements and by the trust
+   anchor for the Attestation Key ([RFC9334]).
+
+   A summary of the security properties this mechanism provides is given
+   in Appendix D.
+
+8.3.  Evidence Confidentiality After Compromise
+
+   The relay-resistance analysis in Section 8.1 shows that Evidence
+   exposed by a handshake-secret compromise cannot be relayed on a
+   different connection.  It says nothing about Evidence sent later on
+   that same connection.
+
+   Suppose an attacker obtains a connection's handshake secret, as in
+   Section 8.1.1, and new Evidence is subsequently carried on that same
+   connection (see Section 5.4).  If that Evidence is protected under a
+   compromised handshake secret, the attacker decrypts it too.
+
+   Preventing this requires Post-Compromise Security (PCS): new Evidence
+   is sent only after the connection has moved to fresh traffic secrets,
+   independent of the compromised one.
+   [I-D.ietf-tls-extended-key-update] provides this via Extended Key
+   Update (EKU).
+
+8.4.  Reattestation Freshness
+
+   As currently defined in Section 5.1, the attestation binder is
+   derived once from the connection's ClientHello..ServerHello
+   checkpoint and does not change for the lifetime of the connection.
+   Under this definition, an attester, whether malicious or due to an
+   incorrect implementation, could resend Evidence generated earlier in
+   the connection in response to a later reattestation request, since
+   the binder still matches and the Relying Party has no way to
+   distinguish it from fresh Evidence.
+
+   This is not an inherent limitation of reattestation, only of the
+   binder as specified here: a future design that derives a fresh,
+   exchange-specific binder for each reattestation, for example from the
+   post-handshake authentication transcript (Section 4.4 of
+   [I-D.ietf-tls-rfc8446bis]) noted in Section 5.4 would close this gap.
+   The mechanism will be defined in future revisions.
+
+8.5.  Security Guarantees
 
    We note that as a pure cryptographic protocol, attested TLS as-is
    only guarantees that the Identity Key is known by the TEE.  A number
@@ -1021,11 +1168,32 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    source code, reproducible builds, formal verification etc.  The exact
    mechanisms are out of scope of this document.
 
-8.3.  Freshness Guarantees
+8.6.  Freshness Guarantees
 
+   Evidence appraised at handshake time reflects the Target
+   Environment's state at that moment.  Three cases can cause that
+   appraisal to go stale without the Relying Party being aware:
 
-   // TODO: Discuss freshness guarantees provided by the Attestation
-   // Binder.  Differences between Background Check and Passport mode.
+   *  The connection remains open and continues to carry data after the
+      Target Environment's state has changed and no reattestation has
+      occurred.
+
+   *  A subsequent connection uses session resumption, inheriting the
+      original connection's assurance without a new attestation
+      exchange.
+
+   *  Some Claims describe configuration state that can change at
+      runtime without a reboot.  If the Attesting Environment does not
+      re-collect such a Claim before each attestation, it keeps
+      asserting a stale value even after reattestation.
+
+   The Relying Party cannot observe the Target Environment directly and
+   so has no way to detect that its state has changed.  A Relying Party
+   that needs assurance about current state instead sets a validity
+   period for an appraisal and requests attestation once that period
+   elapses, using one of the mechanisms in Section 5.4.  A resumed
+   connection inherits the original appraisal's validity period rather
+   than getting a new one.
 
 9.  Privacy Considerations
 
@@ -1135,6 +1303,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 11.  Acknowledgements
 
+   We would like to thank Serhii Nikolaichuk for his implementation and
+   review of this document.
+
    We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig
    for their contributions to earlier versions of this document.
 
@@ -1233,6 +1404,14 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               <https://datatracker.ietf.org/doc/html/draft-ietf-teep-
               architecture-19>.
 
+   [I-D.ietf-tls-extended-key-update]
+              Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
+              Rosomakho, "Extended Key Update for Transport Layer
+              Security (TLS) 1.3", Work in Progress, Internet-Draft,
+              draft-ietf-tls-extended-key-update-13, 4 July 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              extended-key-update-13>.
+
    [I-D.ounsworth-rats-privacy-framework]
               Ounsworth, M., Tschofenig, H., and G. Lehmann, "Privacy
               Framework for Remote ATtestation procedureS", Work in
@@ -1240,6 +1419,14 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               framework-00, 18 June 2026,
               <https://datatracker.ietf.org/doc/html/draft-ounsworth-
               rats-privacy-framework-00>.
+
+   [I-D.reddy-rats-key-binding]
+              Reddy.K, T., Tschofenig, H., Fossati, T., Mihalcea, I.,
+              and H. Birkholz, "Key Attestation for Entity Attestation
+              Tokens (EAT)", Work in Progress, Internet-Draft, draft-
+              reddy-rats-key-binding-02, 15 August 2026,
+              <https://datatracker.ietf.org/doc/html/draft-reddy-rats-
+              key-binding-02>.
 
    [I-D.rosomakho-tls-cert-update]
               Rosomakho, Y. and T. Reddy.K, "Certificate Update in TLS
@@ -1299,7 +1486,27 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-06
+A.1.  draft-fossati-seat-early-attestation-07
+
+   *  Added relay resistance and key substitution resistance into
+      separate sections.
+
+   *  Added Section 8.3 (Post-Compromise Security via EKU).
+
+   *  Added Section 8.4.
+
+   *  Filled in Section 8.6 (was a TODO).
+
+   *  Added Section 6.1.
+
+   *  Adopted RFC 9334 terminology (Attesting Environment).
+
+   *  Scoped Section 6.1 to certificate-based auth; corrected to
+      CertificateVerify.
+
+   *  Reframed Section 8.4.
+
+A.2.  draft-fossati-seat-early-attestation-06
 
    *  Add a Security Considerations subsection on relay resistance,
       showing that transcript binding (ClientHello...ServerHello) and
@@ -1321,12 +1528,12 @@ A.1.  draft-fossati-seat-early-attestation-06
       Expand ([RFC5869]) and that its use does not modify the TLS
       protocol or the key schedule.
 
-A.2.  draft-fossati-seat-early-attestation-05
+A.3.  draft-fossati-seat-early-attestation-05
 
    *  Change extension model to a single remoteAttestation extension
       that covers all handshake messages which need extending.
 
-A.3.  draft-fossati-seat-early-attestation-04
+A.4.  draft-fossati-seat-early-attestation-04
 
    *  Register the attestation_failed alert for Evidence verification
       failure after the attestation extension is processed; clarify
@@ -1342,7 +1549,7 @@ A.3.  draft-fossati-seat-early-attestation-04
 
    *  Replaced Derive-Secret with HKDF-Expand-Label
 
-A.4.  draft-fossati-seat-early-attestation-03
+A.5.  draft-fossati-seat-early-attestation-03
 
    *  Replace the Attestation message by an Attestation (certificate)
       extension, to bring this protocol within the requirements of the
@@ -1360,17 +1567,17 @@ A.4.  draft-fossati-seat-early-attestation-03
 
    *  Remove various outdated sections.
 
-A.5.  draft-fossati-seat-early-attestation-02
+A.6.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.6.  draft-fossati-seat-early-attestation-01
+A.7.  draft-fossati-seat-early-attestation-01
 
    (Submitted by mistake.)
 
-A.7.  draft-fossati-seat-early-attestation-00
+A.8.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
@@ -1430,13 +1637,64 @@ Appendix B.  Design Rationale: Why the Transcript and Not the Exporter
 Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
 
    The attestation binder is computed over Transcript-
-   Hash(ClientHello...ServerHello) (see Section 5.1).  Both messages are
-   already held by the TLS stack at the point attestation runs, so
-   computing the binder requires no change to the TLS protocol.
-   Additionally, TLS stacks typically expose handshake messages via
-   callback interfaces before the handshake completes; the application
-   can obtain ClientHello and ServerHello through these existing hooks
-   without any new protocol interface.
+   Hash(ClientHello...ServerHello) (see Section 5.1), using the
+   transcript hash defined in Section 4.4.1 of [I-D.ietf-tls-rfc8446bis]
+   (including HelloRetryRequest handling).  Implementations MUST obtain
+   this value from the TLS stack's handshake transcript hash at the
+   ServerHello checkpoint, or from an API guaranteed to be equivalent to
+   that transcript hash.  Reconstructing the transcript by concatenating
+   handshake messages observed through application callbacks is not
+   sufficient, because it does not apply the message_hash substitution
+   after a HelloRetryRequest.
+
+Appendix D.  Summary of Security Properties
+
+   This appendix summarizes the security properties relevant to binding
+   attestation to the TLS handshake.
+
+   Transcript integrity and cryptographic binding: While a MiTM can
+   intercept the TLS handshake and replay arbitrary messages (including
+   fake key shares, copied certificates, or spoofed Evidence), it cannot
+   complete the TLS connection.  The TLS peer's private key signs the
+   handshake transcript via CertificateVerify.  Because substituting key
+   shares alters that transcript, a MiTM lacking the peer's private key
+   cannot produce a valid signature over the tampered transcript or
+   derive the correct Finished MAC, so the peer rejects the connection.
+
+   Explicit key confirmation: Although the Certificate message is
+   evaluated before the Finished MAC, TLS 1.3 enforces explicit key
+   confirmation via the Finished MAC over the complete handshake
+   transcript before the connection is established.  No application data
+   is exchanged until key confirmation succeeds, so a failed
+   confirmation aborts the connection regardless of the earlier
+   Certificate and Evidence processing.
+
+   TLS connection uniqueness and replay resistance: As established in
+   Section 8.1, TLS 1.3 generates fresh ephemeral key shares for every
+   connection, and the signed attestation Evidence is bound, via the
+   handshake transcript, to the connection's ephemeral key shares.  The
+   Evidence also binds the attester's public key used in the end-entity
+   certificate for authentication (Section 5.2).  Evidence is therefore
+   bound to a single connection and to the identity key used in that
+   handshake: an attacker cannot replay Evidence from a past connection,
+   because the key share in the new handshake will not match the key
+   bound in the old Evidence.
+
+   Forward secrecy: Forward secrecy is inherited from TLS 1.3 and is not
+   a property added by this mechanism.  Because TLS 1.3 mandates
+   ephemeral key exchange, compromise of a long-term authentication key
+   does not compromise past session keys: an attacker cannot recompute
+   past shared secrets or tamper with past encrypted handshake
+   transcripts.
+
+   Hardware-enforced execution isolation: This property is provided by
+   the platform, not by this mechanism.  When the target environment
+   runs only measured, appraised code, isolation prevents an attacker
+   from running arbitrary code inside it to make the TEE attest a key
+   that was not generated locally within the environment and could be
+   exported from it.  Its strength depends on the platform's isolation
+   and measurement assurances (see Section 8.5), which are the subject
+   of work in the RATS working group.
 
 Authors' Addresses
 
