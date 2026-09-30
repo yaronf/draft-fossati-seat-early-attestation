@@ -395,12 +395,18 @@ The attestation binder is computed using primitives
 defined in {{Sections 4.1 and 7.1 of -tls13}}.
 
 Both peers derive a single attestation base from the same transcript
-checkpoint, `ClientHello...ServerHello`.
+checkpoint through ServerHello.
+
+The transcript MUST be computed as `Transcript-Hash` through ServerHello,
+as defined in Section 4.4.1 of {{-tls13}}.  When the handshake includes
+a HelloRetryRequest, the first ClientHello is not hashed as sent; the
+transcript uses the synthetic `message_hash` message specified in that
+section instead.
 
 ~~~
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
-                                Hash(ClientHello...ServerHello), Hash.length)
+                    Transcript-Hash(ClientHello...ServerHello), Hash.length)
 
 c_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
                                     Hash(TLS_Client_Public_Key), Hash.length)
@@ -720,9 +726,11 @@ anchored to:
 
 Both anchors are unique per connection. The transcript checkpoint commits to
 both peers' fresh ephemeral key-exchange contributions, that is, the client's
-and server's `key_share` entries (whether (EC)DHE public keys or a PQC KEM
-public key and ciphertext), as well as `ClientHello.random` and
-`ServerHello.random`.
+and server's `key_share` entries in the transcript (whether (EC)DHE public keys
+or a PQC KEM public key and ciphertext), as well as `ClientHello.random` and
+`ServerHello.random`.  After a HelloRetryRequest, these are the values from the
+updated ClientHello and the ServerHello, as included in `Transcript-Hash`
+({{Section 4.4.1 of -tls13}}).
 
 Because each peer independently contributes fresh material, neither peer alone
 controls the transcript, and the resulting binder is unique to the specific
@@ -807,11 +815,11 @@ Legend:  CR = ClientHello.random    SR = ServerHello.random
 
 ## Key Substitution Resistance {#key-substitution-resistance}
 
-A peer may hold an authentication private key that was generated and 
-protected within an Attesting Environment, but has since been compromised 
-via a side-channel attack and imported into a second Attesting Environment. 
-Channel binding as defined in {{relay-resistance}} does not prevent this, 
-since it is not relay or replay of Evidence across connections, but 
+A peer may hold an authentication private key that was generated and
+protected within an Attesting Environment, but has since been compromised
+via a side-channel attack and imported into a second Attesting Environment.
+Channel binding as defined in {{relay-resistance}} does not prevent this,
+since it is not relay or replay of Evidence across connections, but
 Evidence from an Attesting Environment vouching for a key it did not generate.
 
 Preventing this requires Evidence to assert that the TIK was generated within
@@ -938,13 +946,15 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 
 # Acknowledgements {#acknowledgements}
 
+We would like to thank Serhii Nikolaichuk for his implementation and review of this document.
+
 We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their contributions to earlier versions of this document.
 
 --- back
 
 # Document History {#document-history}
 
-## draft-fossati-seat-early-attestation-07 
+## draft-fossati-seat-early-attestation-07
 
 - Added relay resistance and key substitution resistance into separate sections.
 - Added {{pcs}} (Post-Compromise Security via EKU).
@@ -1048,11 +1058,13 @@ secret.
 # Computing the Handshake Transcript with Existing TLS APIs {#transcript-apis}
 
 The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
-(see {{crypto-ops}}). Both messages are already held by the TLS stack at the point
-attestation runs, so computing the binder requires no change to the TLS
-protocol.  Additionally, TLS stacks typically expose handshake messages via callback
-interfaces before the handshake completes; the application can obtain ClientHello
-and ServerHello through these existing hooks without any new protocol interface.
+(see {{crypto-ops}}), using the transcript hash defined in Section 4.4.1 of
+{{-tls13}} (including HelloRetryRequest handling).  Implementations MUST obtain
+this value from the TLS stack's handshake transcript hash at the ServerHello
+checkpoint, or from an API guaranteed to be equivalent to that transcript hash.
+Reconstructing the transcript by concatenating handshake messages observed
+through application callbacks is not sufficient, because it does not apply the
+`message_hash` substitution after a HelloRetryRequest.
 
 # Summary of Security Properties {#security-properties-summary}
 
@@ -1089,15 +1101,15 @@ Forward secrecy:
 Forward secrecy is inherited from TLS 1.3 and is not a property added by this
 mechanism. Because TLS 1.3 mandates ephemeral key exchange, compromise of a
 long-term authentication key does not compromise past session keys: an attacker
-cannot recompute past shared secrets or tamper with past encrypted handshake 
+cannot recompute past shared secrets or tamper with past encrypted handshake
 transcripts.
 
 Hardware-enforced execution isolation:
-This property is provided by the platform, not by this mechanism. When the target 
-environment runs only measured, appraised code, isolation prevents an attacker 
-from running arbitrary code inside it to make the TEE attest a key that was not 
-generated locally within the environment and could be exported from it. Its strength 
-depends on the platform's isolation and measurement assurances (see {{sec-guarantees}}), 
+This property is provided by the platform, not by this mechanism. When the target
+environment runs only measured, appraised code, isolation prevents an attacker
+from running arbitrary code inside it to make the TEE attest a key that was not
+generated locally within the environment and could be exported from it. Its strength
+depends on the platform's isolation and measurement assurances (see {{sec-guarantees}}),
 which are the subject of work in the RATS working group.
 
 
