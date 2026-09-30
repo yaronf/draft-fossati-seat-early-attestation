@@ -714,7 +714,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Results.
 
    The attestation binder can be derived from the post-handshake
-   authentication transcript defined in Section 4.1 of [RFC9846].
+   authentication transcript defined in Section 4.5 of [RFC9846].
 
    This mechanism allows a server to request updated attestation from
    the client.  However, TLS currently does not define a mechanism for
@@ -1140,7 +1140,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    This is not an inherent limitation of reattestation, only of the
    binder as specified here: a future design that derives a fresh,
    exchange-specific binder for each reattestation, for example from the
-   post-handshake authentication transcript (Section 4.1 of [RFC9846])
+   post-handshake authentication transcript (Section 4.5 of [RFC9846])
    noted in Section 5.4 would close this gap.  The mechanism will be
    defined in future revisions.
 
@@ -1633,13 +1633,16 @@ Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
    The attestation binder is computed over Transcript-
    Hash(ClientHello...ServerHello) (see Section 5.1), using the
    transcript hash defined in Section 4.1 of [RFC9846] (including
-   HelloRetryRequest handling).  Implementations MUST obtain this value
-   from the TLS stack's handshake transcript hash at the ServerHello
-   checkpoint, or from an API guaranteed to be equivalent to that
-   transcript hash.  Reconstructing the transcript by concatenating
-   handshake messages observed through application callbacks is not
-   sufficient, because it does not apply the message_hash substitution
-   after a HelloRetryRequest.
+   HelloRetryRequest handling).
+
+   Where the TLS stack exposes its handshake transcript hash at the
+   ServerHello checkpoint, implementations use that value.
+
+   Where it exposes only the handshake messages, for example through a
+   message callback, the transcript can be rebuilt from them; the
+   message_hash substitution MUST then be applied after a
+   HelloRetryRequest, because concatenating the messages as sent does
+   not give the transcript hash.
 
 Appendix D.  Summary of Security Properties
 

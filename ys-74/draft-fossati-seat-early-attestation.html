@@ -1883,7 +1883,7 @@ all be measured and reported as part of the platform's remote attestation.<a hre
 <p id="section-5.4.1-1">Post-handshake client authentication defined in <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.7.2" class="relref">Section 4.7.2</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span> can
 be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a <code>CertificateRequest</code> message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (<code>Certificate</code>, <code>CertificateVerify</code>, and <code>Finished</code>). If attestation has been negotiated for the TLS connection, the client includes the <code>remoteAttestation</code> extension in the <code>Certificate</code> message carrying updated Evidence or Attestation Results.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-2">The attestation binder can be derived from the post-handshake authentication
-transcript defined in <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
+transcript defined in <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.5" class="relref">Section 4.5</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-3">This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2233,7 +2233,7 @@ trust anchor for the Attestation Key (<span>[<a href="#RFC9334" class="cite xref
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-reattestation-freshness" class="section-name selfRef">Reattestation Freshness</a>
         </h3>
 <p id="section-8.4-1">As currently defined in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, the attestation binder is derived once from the connection's <code>ClientHello..ServerHello</code> checkpoint and does not change for the lifetime of the connection. Under this definition, an attester, whether malicious or due to an incorrect implementation, could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>) noted in <a href="#reattestation" class="auto internal xref">Section 5.4</a> would close this gap. The mechanism will be defined in future revisions.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.5" class="relref">Section 4.5</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>) noted in <a href="#reattestation" class="auto internal xref">Section 5.4</a> would close this gap. The mechanism will be defined in future revisions.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-guarantees">
@@ -2789,12 +2789,13 @@ not provide the two-sided uniqueness (<a href="#terminology" class="auto interna
       </h2>
 <p id="appendix-C-1">The attestation binder is computed over <code>Transcript-Hash(ClientHello...ServerHello)</code>
 (see <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>), using the transcript hash defined in <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>
-(including HelloRetryRequest handling).  Implementations <span class="bcp14">MUST</span> obtain
-this value from the TLS stack's handshake transcript hash at the ServerHello
-checkpoint, or from an API guaranteed to be equivalent to that transcript hash.
-Reconstructing the transcript by concatenating handshake messages observed
-through application callbacks is not sufficient, because it does not apply the
-<code>message_hash</code> substitution after a HelloRetryRequest.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+(including HelloRetryRequest handling).<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2">Where the TLS stack exposes its handshake transcript hash at the ServerHello
+checkpoint, implementations use that value.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
+<p id="appendix-C-3">Where it exposes only the handshake messages, for example through a message
+callback, the transcript can be rebuilt from them; the <code>message_hash</code>
+substitution <span class="bcp14">MUST</span> then be applied after a HelloRetryRequest, because
+concatenating the messages as sent does not give the transcript hash.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-properties-summary">
