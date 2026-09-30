@@ -354,9 +354,9 @@ Table of Contents
 
 4.1.  Remote Attestation Extension
 
-   As defined in Section 4.4.2 of [I-D.ietf-tls-rfc8446bis], the TLS
-   Certificate message contains a certificate_list, which is a sequence
-   of CertificateEntry structures.
+   As defined in Section 4.5.1 of [RFC9846], the TLS Certificate message
+   contains a certificate_list, which is a sequence of CertificateEntry
+   structures.
 
    When attestation is negotiated via the extension defined in this
    document, the remoteAttestation extension defined in this document
@@ -373,11 +373,11 @@ Table of Contents
    defined in [I-D.ietf-rats-msg-wrap].
 
    The remoteAttestation extension structure is defined in Figure 1.  As
-   per Section 4.2 of [I-D.ietf-tls-rfc8446bis], a single extension is
-   used across the entire handshake.  The extension is used in
-   ClientHello, EncryptedExtensions, and CertificateRequest messages for
-   protocol negotiation (see Section 6).  The extension is used in
-   Certificate messages for carrying attestation credentials.
+   per Section 4.3 of [RFC9846], a single extension is used across the
+   entire handshake.  The extension is used in ClientHello,
+   EncryptedExtensions, and CertificateRequest messages for protocol
+   negotiation (see Section 6).  The extension is used in Certificate
+   messages for carrying attestation credentials.
 
        enum { CONTENT_FORMAT(0), MEDIA_TYPE(1) } typeEncoding;
 
@@ -476,17 +476,16 @@ Table of Contents
 5.1.1.  Attestation Binder Definition
 
    The attestation binder is computed using primitives defined in
-   Section 4.4.1 and 7.1 of [I-D.ietf-tls-rfc8446bis].
+   Sections 4.1 and 7.1 of [RFC9846].
 
    Both peers derive a single attestation base from the same transcript
    checkpoint through ServerHello.
 
    The transcript MUST be computed as Transcript-Hash through
-   ServerHello, as defined in Section 4.4.1 of
-   [I-D.ietf-tls-rfc8446bis].  When the handshake includes a
-   HelloRetryRequest, the first ClientHello is not hashed as sent; the
-   transcript uses the synthetic message_hash message specified in that
-   section instead.
+   ServerHello, as defined in Section 4.1 of [RFC9846].  When the
+   handshake includes a HelloRetryRequest, the first ClientHello is not
+   hashed as sent; the transcript uses the synthetic message_hash
+   message specified in that section instead.
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
                     Transcript-Hash(ClientHello...ServerHello), Hash.length)
@@ -499,17 +498,16 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    TLS_Client_Public_Key and TLS_Server_Public_Key denote the DER-
    encoded SubjectPublicKeyInfo of the peer's end-entity certificate.
    Hash is the cipher suite hash function for the handshake (Section 7.1
-   of [I-D.ietf-tls-rfc8446bis]).
+   of [RFC9846]).
 
    We note that HKDF-Expand-Label is used to produce binding values
    rather than keying material.  HKDF-Extract is not invoked, as there
    is no input key material to combine.  The "0" parameter denotes a
    byte string of Hash.length zeroes.
 
-   HKDF-Expand-Label is defined in Section 7.1 of
-   [I-D.ietf-tls-rfc8446bis], which builds on the HKDF construction
-   [RFC5869]; its use here does not modify the TLS protocol or the TLS
-   key schedule.
+   HKDF-Expand-Label is defined in Section 7.1 of [RFC9846], which
+   builds on the HKDF construction [RFC5869]; its use here does not
+   modify the TLS protocol or the TLS key schedule.
 
 5.1.2.  Verification
 
@@ -704,11 +702,11 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 5.4.1.  Post-Handshake Reattestation Using Client Authentication
 
-   Post-handshake client authentication defined in Section 4.6.2 of
-   [I-D.ietf-tls-rfc8446bis] can be used to obtain updated attestation
-   Evidence or Attestation Results from the TLS client.  In this case,
-   the TLS server sends a CertificateRequest message after the TLS
-   handshake authentication.  The client responds with the standard TLS
+   Post-handshake client authentication defined in Section 4.7.2 of
+   [RFC9846] can be used to obtain updated attestation Evidence or
+   Attestation Results from the TLS client.  In this case, the TLS
+   server sends a CertificateRequest message after the TLS handshake
+   authentication.  The client responds with the standard TLS
    authentication messages (Certificate, CertificateVerify, and
    Finished).  If attestation has been negotiated for the TLS
    connection, the client includes the remoteAttestation extension in
@@ -716,8 +714,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Results.
 
    The attestation binder can be derived from the post-handshake
-   authentication transcript defined in Section 4.4 of
-   [I-D.ietf-tls-rfc8446bis].
+   authentication transcript defined in Section 4.1 of [RFC9846].
 
    This mechanism allows a server to request updated attestation from
    the client.  However, TLS currently does not define a mechanism for
@@ -968,10 +965,10 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Section 5.1), a value that is unique to each connection.  The binding
    does not rely on the application traffic secrets, nor on any value
    exported from the completed handshake such as the Exported Keying
-   Material (EKM; Section 7.5 of [I-D.ietf-tls-rfc8446bis]).  EKM is an
-   equally valid per-connection anchor; the remainder of this section
-   shows that binding to the transcript checkpoint and binding to EKM
-   provide equivalent relay resistance.
+   Material (EKM; Section 7.5 of [RFC9846]).  EKM is an equally valid
+   per-connection anchor; the remainder of this section shows that
+   binding to the transcript checkpoint and binding to EKM provide
+   equivalent relay resistance.
 
    The two approaches differ only in which connection-unique value the
    Evidence is anchored to:
@@ -989,7 +986,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    ciphertext), as well as ClientHello.random and ServerHello.random.
    After a HelloRetryRequest, these are the values from the updated
    ClientHello and the ServerHello, as included in Transcript-Hash
-   (Section 4.4.1 of [I-D.ietf-tls-rfc8446bis]).
+   (Section 4.1 of [RFC9846]).
 
    Because each peer independently contributes fresh material, neither
    peer alone controls the transcript, and the resulting binder is
@@ -1143,9 +1140,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    This is not an inherent limitation of reattestation, only of the
    binder as specified here: a future design that derives a fresh,
    exchange-specific binder for each reattestation, for example from the
-   post-handshake authentication transcript (Section 4.4 of
-   [I-D.ietf-tls-rfc8446bis]) noted in Section 5.4 would close this gap.
-   The mechanism will be defined in future revisions.
+   post-handshake authentication transcript (Section 4.1 of [RFC9846])
+   noted in Section 5.4 would close this gap.  The mechanism will be
+   defined in future revisions.
 
 8.5.  Security Guarantees
 
@@ -1320,13 +1317,6 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               11 December 2025, <https://datatracker.ietf.org/doc/html/
               draft-ietf-rats-msg-wrap-23>.
 
-   [I-D.ietf-tls-rfc8446bis]
-              Rescorla, E., "The Transport Layer Security (TLS) Protocol
-              Version 1.3", Work in Progress, Internet-Draft, draft-
-              ietf-tls-rfc8446bis-14, 13 September 2025,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              rfc8446bis-14>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -1335,6 +1325,10 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC9846]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 9846, DOI 10.17487/RFC9846, July 2026,
+              <https://www.rfc-editor.org/rfc/rfc9846>.
 
 12.2.  Informative References
 
@@ -1626,23 +1620,23 @@ Appendix B.  Design Rationale: Why the Transcript and Not the Exporter
       produced during the handshake therefore cannot be anchored to EKM.
 
    *  TLS 1.3 defines an early_exporter_secret (Section 7.5 of
-      [I-D.ietf-tls-rfc8446bis]), which is available earlier.  However,
-      it is only meaningful when a PSK is in use.  With no PSK, the
-      Early Secret is HKDF-Extract(0, 0), so the early_exporter_secret
-      has no secret input; moreover, it is derived from the ClientHello
-      alone and carries no contribution from the server side of the
-      handshake.  It therefore does not provide the two-sided uniqueness
-      (Section 2) the binder requires.
+      [RFC9846]), which is available earlier.  However, it is only
+      meaningful when a PSK is in use.  With no PSK, the Early Secret is
+      HKDF-Extract(0, 0), so the early_exporter_secret has no secret
+      input; moreover, it is derived from the ClientHello alone and
+      carries no contribution from the server side of the handshake.  It
+      therefore does not provide the two-sided uniqueness (Section 2)
+      the binder requires.
 
 Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
 
    The attestation binder is computed over Transcript-
    Hash(ClientHello...ServerHello) (see Section 5.1), using the
-   transcript hash defined in Section 4.4.1 of [I-D.ietf-tls-rfc8446bis]
-   (including HelloRetryRequest handling).  Implementations MUST obtain
-   this value from the TLS stack's handshake transcript hash at the
-   ServerHello checkpoint, or from an API guaranteed to be equivalent to
-   that transcript hash.  Reconstructing the transcript by concatenating
+   transcript hash defined in Section 4.1 of [RFC9846] (including
+   HelloRetryRequest handling).  Implementations MUST obtain this value
+   from the TLS stack's handshake transcript hash at the ServerHello
+   checkpoint, or from an API guaranteed to be equivalent to that
+   transcript hash.  Reconstructing the transcript by concatenating
    handshake messages observed through application callbacks is not
    sufficient, because it does not apply the message_hash substitution
    after a HelloRetryRequest.
