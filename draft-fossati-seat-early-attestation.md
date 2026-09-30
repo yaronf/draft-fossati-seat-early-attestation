@@ -63,7 +63,7 @@ author:
        email: k.tirumaleswar_reddy@nokia.com
 
 normative:
-  I-D.ietf-tls-rfc8446bis: tls13
+  RFC9846: tls13
   I-D.ietf-rats-msg-wrap: cmw
 
 informative:
@@ -282,7 +282,7 @@ their security properties often differ, see {{sec-guarantees}} for more details.
 
 ## Remote Attestation Extension {#remote-attestation-extension-section}
 
-As defined in Section 4.4.2 of {{-tls13}}, the TLS `Certificate` message
+As defined in {{Section 4.5.1 of -tls13}}, the TLS `Certificate` message
 contains a `certificate_list`, which is a sequence of `CertificateEntry`
 structures.
 
@@ -299,7 +299,7 @@ receiver MUST abort the handshake with a fatal `illegal_parameter` alert.
 This message carries a CMW (Conceptual Message Wrapper) payload as defined in {{-cmw}}.
 
 The `remoteAttestation` extension structure is defined in {{figure-remote-attestation-extension}}.
-As per {{Section 4.2 of -tls13}}, a single extension is used across the entire handshake.
+As per {{Section 4.3 of -tls13}}, a single extension is used across the entire handshake.
 The extension is used in ClientHello, EncryptedExtensions, and CertificateRequest messages for protocol negotiation (see {{negotiating-protocol}}).
 The extension is used in Certificate messages for carrying attestation credentials.
 
@@ -392,7 +392,7 @@ as well as binding to the attester's TLS public key.
 ### Attestation Binder Definition
 
 The attestation binder is computed using primitives
-defined in Section 4.4.1 and&nbsp;7.1 of {{-tls13}}.
+defined in {{Sections 4.1 and 7.1 of -tls13}}.
 
 Both peers derive a single attestation base from the same transcript
 checkpoint, `ClientHello...ServerHello`.
@@ -543,11 +543,11 @@ Attestation Evidence or Attestation Results may become stale over time. For long
 
 ### Post-Handshake Reattestation Using Client Authentication
 
-Post-handshake client authentication defined in {{Section 4.6.2 of -tls13}} can
+Post-handshake client authentication defined in {{Section 4.7.2 of -tls13}} can
 be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `remoteAttestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
 
 The attestation binder can be derived from the post-handshake authentication
-transcript defined in Section 4.4 of {{-tls13}}.
+transcript defined in {{Section 4.1 of -tls13}}.
 
 This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.
 
@@ -839,7 +839,7 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 As currently defined in {{crypto-ops}}, the attestation binder is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. Under this definition, an attester, whether malicious or due to an incorrect implementation, could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
 
-This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.4 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
+This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.1 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
 
 ## Security Guarantees {#sec-guarantees}
 
