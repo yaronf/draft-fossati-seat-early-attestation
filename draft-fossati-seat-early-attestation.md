@@ -282,7 +282,7 @@ their security properties often differ, see {{sec-guarantees}} for more details.
 
 ## Remote Attestation Extension {#remote-attestation-extension-section}
 
-As defined in Section 4.5.1 of {{-tls13}}, the TLS `Certificate` message
+As defined in {{Section 4.5.1 of -tls13}}, the TLS `Certificate` message
 contains a `certificate_list`, which is a sequence of `CertificateEntry`
 structures.
 
@@ -392,7 +392,7 @@ as well as binding to the attester's TLS public key.
 ### Attestation Binder Definition
 
 The attestation binder is computed using primitives
-defined in Section 4.1 and&nbsp;7.1 of {{-tls13}}.
+defined in {{Sections 4.1 and 7.1 of -tls13}}.
 
 Both peers derive a single attestation base from the same transcript
 checkpoint, `ClientHello...ServerHello`.
@@ -547,7 +547,7 @@ Post-handshake client authentication defined in {{Section 4.7.2 of -tls13}} can
 be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `remoteAttestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
 
 The attestation binder can be derived from the post-handshake authentication
-transcript defined in Section 4.1 of {{-tls13}}.
+transcript defined in {{Section 4.1 of -tls13}}.
 
 This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.
 
