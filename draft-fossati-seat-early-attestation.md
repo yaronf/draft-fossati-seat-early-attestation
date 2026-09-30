@@ -398,7 +398,7 @@ Both peers derive a single attestation base from the same transcript
 checkpoint through ServerHello.
 
 The transcript MUST be computed as `Transcript-Hash` through ServerHello,
-as defined in Section 4.4.1 of {{-tls13}}.  When the handshake includes
+as defined in {{Section 4.1 of -tls13}}.  When the handshake includes
 a HelloRetryRequest, the first ClientHello is not hashed as sent; the
 transcript uses the synthetic `message_hash` message specified in that
 section instead.
@@ -730,7 +730,7 @@ and server's `key_share` entries in the transcript (whether (EC)DHE public keys
 or a PQC KEM public key and ciphertext), as well as `ClientHello.random` and
 `ServerHello.random`.  After a HelloRetryRequest, these are the values from the
 updated ClientHello and the ServerHello, as included in `Transcript-Hash`
-({{Section 4.4.1 of -tls13}}).
+({{Section 4.1 of -tls13}}).
 
 Because each peer independently contributes fresh material, neither peer alone
 controls the transcript, and the resulting binder is unique to the specific
@@ -1058,8 +1058,8 @@ secret.
 # Computing the Handshake Transcript with Existing TLS APIs {#transcript-apis}
 
 The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
-(see {{crypto-ops}}), using the transcript hash defined in Section 4.4.1 of
-{{-tls13}} (including HelloRetryRequest handling).  Implementations MUST obtain
+(see {{crypto-ops}}), using the transcript hash defined in {{Section 4.1 of -tls13}}
+(including HelloRetryRequest handling).  Implementations MUST obtain
 this value from the TLS stack's handshake transcript hash at the ServerHello
 checkpoint, or from an API guaranteed to be equivalent to that transcript hash.
 Reconstructing the transcript by concatenating handshake messages observed
