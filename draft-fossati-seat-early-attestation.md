@@ -553,7 +553,7 @@ Post-handshake client authentication defined in {{Section 4.7.2 of -tls13}} can
 be used to obtain updated attestation Evidence or Attestation Results from the TLS client. In this case, the TLS server sends a `CertificateRequest` message after the TLS handshake authentication. The client responds with the standard TLS authentication messages (`Certificate`, `CertificateVerify`, and `Finished`). If attestation has been negotiated for the TLS connection, the client includes the `remoteAttestation` extension in the `Certificate` message carrying updated Evidence or Attestation Results.
 
 The attestation binder can be derived from the post-handshake authentication
-transcript defined in {{Section 4.1 of -tls13}}.
+transcript defined in {{Section 4.5 of -tls13}}.
 
 This mechanism allows a server to request updated attestation from the client. However, TLS currently does not define a mechanism for post-handshake server authentication. To address this limitation, the subsequent sections discuss design options for handling attestation freshness.
 
@@ -847,7 +847,7 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 As currently defined in {{crypto-ops}}, the attestation binder is derived once from the connection's `ClientHello..ServerHello` checkpoint and does not change for the lifetime of the connection. Under this definition, an attester, whether malicious or due to an incorrect implementation, could resend Evidence generated earlier in the connection in response to a later reattestation request, since the binder still matches and the Relying Party has no way to distinguish it from fresh Evidence.
 
-This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.1 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
+This is not an inherent limitation of reattestation, only of the binder as specified here: a future design that derives a fresh, exchange-specific binder for each reattestation, for example from the post-handshake authentication transcript ({{Section 4.5 of -tls13}}) noted in {{reattestation}} would close this gap. The mechanism will be defined in future revisions.
 
 ## Security Guarantees {#sec-guarantees}
 
@@ -1059,12 +1059,15 @@ secret.
 
 The attestation binder is computed over `Transcript-Hash(ClientHello...ServerHello)`
 (see {{crypto-ops}}), using the transcript hash defined in {{Section 4.1 of -tls13}}
-(including HelloRetryRequest handling).  Implementations MUST obtain
-this value from the TLS stack's handshake transcript hash at the ServerHello
-checkpoint, or from an API guaranteed to be equivalent to that transcript hash.
-Reconstructing the transcript by concatenating handshake messages observed
-through application callbacks is not sufficient, because it does not apply the
-`message_hash` substitution after a HelloRetryRequest.
+(including HelloRetryRequest handling).
+
+Where the TLS stack exposes its handshake transcript hash at the ServerHello
+checkpoint, implementations use that value.
+
+Where it exposes only the handshake messages, for example through a message
+callback, the transcript can be rebuilt from them; the `message_hash`
+substitution MUST then be applied after a HelloRetryRequest, because
+concatenating the messages as sent does not give the transcript hash.
 
 # Summary of Security Properties {#security-properties-summary}
 
