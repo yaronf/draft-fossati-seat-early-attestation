@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-24T03:09:23.977566+00:00",
+  "timestamp": "2026-10-01T04:09:49.765374+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1153,11 +1153,13 @@
       "state": "OPEN",
       "author": "nikolaichuk7",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "yaronf"
+      ],
       "labels": [],
       "body": "Section 5.1.1 derives the binder from `Hash(ClientHello...ServerHello)`. When a HelloRetryRequest occurs, RFC 8446 \u00a74.4.1 says the transcript is not the messages as sent: ClientHello1 is replaced by a synthetic `message_hash` message. The draft does not mention HelloRetryRequest or `message_hash` (0 occurrences in -07), so an implementer has at least four defensible readings:\n\n| reading | transcript input |\n|---|---|\n| (a) retry ignored | `CH1 \u2016 SH` |\n| (b) messages as sent | `CH1 \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (c) RFC 8446 \u00a74.4.1 | `message_hash(CH1) \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (d) \"the\" ClientHello is the second | `CH2 \u2016 SH` |\n\nI ran real TLS 1.3 handshakes through a HelloRetryRequest (a server restricted to P-384 answering a default client's X25519 key share \u2014 the ordinary shape of a group migration) and computed the 5.1.1 binder under each reading, with an HKDF-Expand-Label checked byte-for-byte against the RFC 8448 trace. **Four distinct binders in 200 of 200 runs**; with agreeing groups there is no retry and the readings coincide. Reproduction, in-process and without network: [`examples/hrr_binder.py`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/hrr_binder.py), output in [`docs/hrr-binder-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/hrr-binder-run.txt).\n\nWhy implementations will actually diverge: Appendix C sends implementers to \"callback interfaces\" that expose the handshake messages \u2014 which naturally yields (a) or (b) \u2014 while an implementation that asks its stack for the transcript hash at ServerHello gets (c). Both followed the document. And \u00a75.1.2 makes a binder mismatch a fatal `attestation_failed` alert, so two conforming peers that read one sentence differently do not merely fail to connect: each reports the other as failing attestation.\n\nA second-order point: under reading (a) the binder commits to the key_share the client *withdrew*, so \u00a78.1's stated basis for two-sided uniqueness \u2014 the client's and server's key_share entries \u2014 is not what the binder covers. Uniqueness survives through the two randoms; the justification does not.\n\nIn fairness: 5.1.1 cites \u00a74.4.1, which may be intended to import the HRR rule. The text does not say so, it writes `Hash()` rather than `Transcript-Hash()`, and Appendix C points the other way.\n\n**Smallest fix.** State the transcript normatively by reference \u2014 \"Transcript-Hash(ClientHello1, ..., ServerHello) as defined in Section 4.4.1 of [RFC 8446], including the HelloRetryRequest substitution\" \u2014 and adjust Appendix C so that it directs implementers to the stack's transcript rather than to concatenating observed messages.\n",
       "createdAt": "2026-09-22T16:09:47Z",
-      "updatedAt": "2026-09-22T16:09:47Z",
+      "updatedAt": "2026-09-30T08:12:35Z",
       "closedAt": null,
       "comments": []
     },
@@ -1175,6 +1177,22 @@
       "createdAt": "2026-09-22T16:09:51Z",
       "updatedAt": "2026-09-22T16:09:51Z",
       "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 76,
+      "id": "I_kwDOQdsaoc8AAAABUJo89Q",
+      "title": "Update TLS 1.3 reference from -bis to RFC 9846 (section numbers)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/76",
+      "state": "CLOSED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "RFC 9846 (July 2026) obsoletes RFC 8446 and is the published form of the TLS 1.3 republication. This draft normatively cites TLS 1.3 via `I-D.ietf-tls-rfc8446bis` (`{{-tls13}}`), not via [RFC8446] directly.\n\n**Task:** Replace the bibliography entry with [RFC9846] and update every `{{Section \u2026 of -tls13}}` (and any prose that names a section) to match **RFC 9846**\u2019s table of contents.\n\n**Section numbers \u2014 not a prior mistake against `-bis`:** Through late `-bis` drafts (e.g. bis-14), the handshake chapter kept the **same section numbering as RFC 8446** (e.g. Transcript Hash at **4.4.1**, Certificate at **4.4.2**, Extensions at **4.2**, post-handshake auth at **4.6.2**). Our inline section refs matched what `{{-tls13}}` pointed at while the bib was still `-bis`.\n\n**What changed in RFC 9846:** The finished RFC **restructured** handshake \u00a74. Transcript Hash is now **4.1**, Certificate **4.5.1**, Extensions **4.3**, post-handshake auth **4.7.2**, etc. After switching the bib to RFC 9846, keeping the old numbers would be wrong; update refs in the same change as the bib.\n\n**Notes:**\n\n- Wire format and the TLS 1.3 version number are unchanged; this is a reference and section-number maintenance pass.\n- Related to #74 (transcript / HelloRetryRequest): any new text that cites \u201cSection 4.4.1\u201d is correct for `-bis` on branches that have not yet taken this update; after this issue, use **Section 4.1** of RFC 9846 for Transcript Hash. Coordinate merge order with PR #77 if both land close together.",
+      "createdAt": "2026-09-30T13:30:12Z",
+      "updatedAt": "2026-09-30T17:13:02Z",
+      "closedAt": "2026-09-30T17:13:02Z",
       "comments": []
     }
   ],
@@ -7281,6 +7299,128 @@
           "createdAt": "2026-09-11T14:27:23Z",
           "updatedAt": "2026-09-11T14:27:23Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 77,
+      "id": "PR_kwDOQdsaoc8AAAABF6Dg_g",
+      "title": "Define attestation binder transcript for HelloRetryRequest",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/77",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n- Normatively define the attestation binder input as `Transcript-Hash(ClientHello...ServerHello)` per TLS 1.3 Section 4.4.1, including HelloRetryRequest `message_hash` substitution (#74).\n- Update {{transcript-apis}} to require the TLS stack transcript hash rather than reconstructing messages from callbacks.\n- Clarify {{relay-resistance}} key_share wording after HelloRetryRequest (updated ClientHello).\n- Remove trailing whitespace that was failing `lint-whitespace` on main.\n- Acknowledge Serhii Nikolaichuk.\n\nRelated: #76 (future RFC 9846 reference update).\n\nFixes #74\n\n## Test plan\n- [x] `make` and `make lint` pass locally\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-09-30T13:51:39Z",
+      "updatedAt": "2026-09-30T17:25:00Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "25f180fbff942ce40ea481a67f14749bfe14270f",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-74",
+      "headRefOid": "b932ca79451baaa9c9fff4c6d6f44b7edfbf3f77",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "body": "Thank you, Yaron, also for the acknowledgement. This resolves #74: the text now selects reading (c).\n\nI checked that reading against the stack itself. A TLS 1.3 stack commits to its transcript in the Finished messages, so I decrypted both flights with the key-log secrets and recomputed each Finished over a transcript rebuilt from the captured messages, under each of the four readings. After a HelloRetryRequest, both Finished verify under (c) and under none of the other three, in 200 of 200 handshakes (OpenSSL 3.0.13): [`examples/hrr_finished_check.py`](https://github.com/nikolaichuk7/hatls/blob/5aaf0f83bcbbd3a9c6486dfe27106e9f71a0ac99/examples/hrr_finished_check.py), output in [`docs/hrr-finished-check-run.txt`](https://github.com/nikolaichuk7/hatls/blob/5aaf0f83bcbbd3a9c6486dfe27106e9f71a0ac99/docs/hrr-finished-check-run.txt).\n\nOne note on the appendix, from the implementation side; my suggestion in #74 was too loose here. OpenSSL's public API has no call that returns the handshake hash: it gives the handshake messages, the Finished values and the key log. An implementation on top of it has to rebuild the transcript from the messages, and the run above shows that this gives the stack's value once the `message_hash` substitution is applied. As written, the appendix reads as if that were not allowed. A possible wording for its last two sentences:\n\n> Where the TLS stack exposes its handshake transcript hash at the ServerHello checkpoint, implementations use that value. Where it exposes only the handshake messages, for example through a message callback, the transcript can be rebuilt from them; the `message_hash` substitution MUST then be applied after a HelloRetryRequest, because concatenating the messages as sent does not give the transcript hash.\n\nOn the section numbers: as you note in #76, the citations of Section 4.4.1 added here have to follow the switch to RFC 9846. There are three (5.1.1, 8.1 and the appendix), and the two branches merge without a conflict, so nothing will flag them. I checked the rest of #78's remap against RFC 9846 and get the same numbers, except for the two citations of Section 4.4, where I get 4.5: the Handshake Context of post-handshake authentication is defined by the table in that section, while 4.1 has the hash itself.\n",
+          "createdAt": "2026-09-30T14:34:11Z",
+          "updatedAt": "2026-09-30T14:34:11Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQAmsog",
+          "commit": {
+            "abbreviatedOid": "67da7c6"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "thanks!",
+          "createdAt": "2026-09-30T16:52:30Z",
+          "updatedAt": "2026-09-30T16:54:31Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\nas defined in {{Section 4.4.1 of -tls13}}.  When the handshake includes\n```",
+              "createdAt": "2026-09-30T16:52:30Z",
+              "updatedAt": "2026-09-30T16:54:31Z"
+            },
+            {
+              "originalPosition": 80,
+              "body": "```suggestion\n(see {{crypto-ops}}), using the transcript hash defined in {{Section 4.4.1 of\n-tls13}} (including HelloRetryRequest handling).  Implementations MUST obtain\n```",
+              "createdAt": "2026-09-30T16:54:11Z",
+              "updatedAt": "2026-09-30T16:54:31Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 78,
+      "id": "PR_kwDOQdsaoc8AAAABF6KbSg",
+      "title": "Update TLS 1.3 reference to RFC 9846",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/78",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #76\n\n## Summary\n- Replace normative `I-D.ietf-tls-rfc8446bis` with RFC 9846 for `{{-tls13}}`.\n- Update handshake section citations to match RFC 9846\u2019s table of contents (e.g. Transcript Hash 4.4.1 \u2192 4.1, Certificate 4.4.2 \u2192 4.5.1, Extensions 4.2 \u2192 4.3, post-handshake auth 4.6.2 \u2192 4.7.2); \u00a77.1 and \u00a77.5 unchanged.\n\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-09-30T14:01:38Z",
+      "updatedAt": "2026-09-30T17:13:01Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "5880dc62034dd413652b57d05097691555cf92b6",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-76",
+      "headRefOid": "c1a2955456c1536ac1489e11acba78560dc99cdb",
+      "closedAt": "2026-09-30T17:13:01Z",
+      "mergedAt": "2026-09-30T17:13:01Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "25f180fbff942ce40ea481a67f14749bfe14270f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQAo8tQ",
+          "commit": {
+            "abbreviatedOid": "e45b605"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-30T16:56:08Z",
+          "updatedAt": "2026-09-30T16:58:08Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\nAs defined in {{Section 4.5.1 of -tls13}}, the TLS `Certificate` message\n```",
+              "createdAt": "2026-09-30T16:56:08Z",
+              "updatedAt": "2026-09-30T16:58:08Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\ndefined in {{Sections 4.1 and 7.1 of -tls13}}.\n```",
+              "createdAt": "2026-09-30T16:56:41Z",
+              "updatedAt": "2026-09-30T16:58:08Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "```suggestion\ntranscript defined in {{Section 4.1 of -tls13}}.\n```",
+              "createdAt": "2026-09-30T16:56:58Z",
+              "updatedAt": "2026-09-30T16:58:08Z"
+            }
+          ]
         }
       ]
     }
