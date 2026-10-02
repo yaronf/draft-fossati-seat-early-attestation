@@ -1870,7 +1870,8 @@ all be measured and reported as part of the platform's remote attestation.<a hre
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-reattestation" class="section-name selfRef">Reattestation</a>
         </h3>
 <p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence or Attestation Results to reassess the trustworthiness of the peer.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<p id="section-5.4-2">Reattestation uses Extended Key Update (EKU) <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>. This document defines two new <code>ExtendedKeyUpdate</code> subtypes:<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.4-2">Similarly to the initial handshake, Early Attestation implements reattestation at the TLS layer.
+To do that, the protocol uses the Extended Key Update (EKU) <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span> extension. This document defines two new <code>ExtendedKeyUpdate</code> subtypes:<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.4-3.1">
             <p id="section-5.4-3.1.1"><code>attestation_update</code>: carries a <code>cmw_payload</code> as defined in <a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>.<a href="#section-5.4-3.1.1" class="pilcrow">¶</a></p>

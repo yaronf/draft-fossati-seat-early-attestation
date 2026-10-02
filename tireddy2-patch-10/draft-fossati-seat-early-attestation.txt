@@ -698,9 +698,10 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    Evidence or Attestation Results to reassess the trustworthiness of
    the peer.
 
-   Reattestation uses Extended Key Update (EKU)
-   [I-D.ietf-tls-extended-key-update].  This document defines two new
-   ExtendedKeyUpdate subtypes:
+   Similarly to the initial handshake, Early Attestation implements
+   reattestation at the TLS layer.  To do that, the protocol uses the
+   Extended Key Update (EKU) [I-D.ietf-tls-extended-key-update]
+   extension.  This document defines two new ExtendedKeyUpdate subtypes:
 
    *  attestation_update: carries a cmw_payload as defined in
       Section 4.1.
