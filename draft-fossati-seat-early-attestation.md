@@ -546,7 +546,8 @@ all be measured and reported as part of the platform's remote attestation.
 
 Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence or Attestation Results to reassess the trustworthiness of the peer.
 
-Reattestation uses Extended Key Update (EKU) {{-eku}}. This document defines two new `ExtendedKeyUpdate` subtypes:
+Similarly to the initial handshake, Early Attestation implements reattestation at the TLS layer.
+To do that, the protocol uses the Extended Key Update (EKU) {{-eku}} extension. This document defines two new `ExtendedKeyUpdate` subtypes:
 
 * `attestation_update`: carries a `cmw_payload` as defined in {{remote-attestation-extension-section}}.
 * `attestation_update_response`: carries the relying party's appraisal outcome, success or failure.
