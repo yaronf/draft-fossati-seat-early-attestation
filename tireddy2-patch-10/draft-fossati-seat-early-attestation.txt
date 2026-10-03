@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 5 April 2027                                       Y. Deshpande
+Expires: 6 April 2027                                       Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          2 October 2026
+                                                          3 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 April 2027.
+   This Internet-Draft will expire on 6 April 2027.
 
 Copyright Notice
 
@@ -117,9 +117,8 @@ Table of Contents
      8.2.  Key Substitution Resistance
      8.3.  Evidence Confidentiality After Compromise
      8.4.  Reattestation Freshness
-     8.5.  Divergent Key State Detection
-     8.6.  Security Guarantees
-     8.7.  Freshness Guarantees
+     8.5.  Security Guarantees
+     8.6.  Freshness Guarantees
    9.  Privacy Considerations
      9.1.  Server Attestation to Unauthenticated Clients
    10. IANA Considerations
@@ -348,7 +347,7 @@ Table of Contents
    are ever passed between the Client or Server TLS stack and its
    Attestation Service.  While the two types of implementations offer
    identical functionality, their security properties often differ, see
-   Section 8.6 for more details.
+   Section 8.5 for more details.
 
 4.1.  Remote Attestation Extension
 
@@ -620,7 +619,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    establish a TLS session with a TLS endpoint whose TIK is not
    generated and controlled by the TEE.  It does not - in and of itself
    - ensure security of the TLS stack when the stack is outside the TEE,
-   and see Section 8.6 for a further discussion.
+   and see Section 8.5 for a further discussion.
 
 5.3.  The TLS Stack's Interface to the TEE
 
@@ -699,23 +698,25 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    the peer.
 
    Similarly to the initial handshake, Early Attestation implements
-   reattestation at the TLS layer.  To do that, the protocol uses the
-   Extended Key Update (EKU) [I-D.ietf-tls-extended-key-update]
-   extension.  This document defines two new ExtendedKeyUpdate subtypes:
+   reattestation at the TLS layer, using Extended Key Update (EKU)
+   [I-D.ietf-tls-extended-key-update].  This document defines a new
+   ExtendedKeyUpdate subtype, attestation_update, which carries a
+   cmw_payload as defined in Section 4.1.
 
-   *  attestation_update: carries a cmw_payload as defined in
-      Section 4.1.
+   A peer that attested in the handshake sends attestation_update using
+   the scheme chosen in the handshake.
 
-   *  attestation_update_response: carries the relying party's appraisal
-      outcome, success or failure.
+   The attester sends attestation_update after the EKU exchange
+   completes (Section 10.2 of [I-D.ietf-tls-extended-key-update]),
+   protected under the generation N+1 application traffic secrets.
+   After the EKU exchange completes, the relying party expects
+   attestation_update as the next handshake message from the attester.
+   If it receives any other handshake message, or none within a locally
+   configured time, it aborts with a fatal attestation_required alert.
+   If appraisal fails, it aborts with a fatal attestation_failed alert,
+   as in Section 5.1.  No message is sent on success.
 
-   A peer that attested in the handshake attests after each EKU
-   exchange, using the scheme chosen in the handshake.  The relying
-   party replies with attestation_update_response.
-
-   The attestation_update message is sent only after the EKU exchange
-   completes, protected under the generation N+1 application traffic
-   secrets.  Its binder is derived as in Section 5.1, with Transcript-
+   The binder is derived as in Section 5.1, with Transcript-
    Hash(ClientHello...ServerHello) replaced by transcript_hash_N+1
    (Section 7 of [I-D.ietf-tls-extended-key-update]):
 
@@ -1108,24 +1109,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    an earlier generation does not match the current binder and is
    rejected.
 
-8.5.  Divergent Key State Detection
-
-   EKU alone does not confirm that both peers derived the same
-   generation N+1 secrets (Section 11 of
-   [I-D.ietf-tls-extended-key-update]).  An active attacker holding
-   compromised traffic keys can substitute EKU key shares, causing the
-   peers to compute different transcript_hash_N+1 values.
-
-   For evidence schemes, reattestation detects this.  The attester's
-   binder is derived from its own transcript_hash_N+1 and carried in
-   Evidence signed by the Attesting Environment.  The relying party
-   derives the binder from its own transcript_hash_N+1.  If the values
-   differ, the binders do not match and reattestation fails.
-
-   For result schemes, this holds only if the Attestation Results carry
-   the binder.
-
-8.6.  Security Guarantees
+8.5.  Security Guarantees
 
    We note that as a pure cryptographic protocol, attested TLS as-is
    only guarantees that the Identity Key is known by the TEE.  A number
@@ -1146,7 +1130,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    source code, reproducible builds, formal verification etc.  The exact
    mechanisms are out of scope of this document.
 
-8.7.  Freshness Guarantees
+8.6.  Freshness Guarantees
 
    Evidence appraised at handshake time reflects the Target
    Environment's state at that moment.  Three cases can cause that
@@ -1457,9 +1441,10 @@ Appendix A.  Document History
 A.1.  draft-fossati-seat-early-attestation-08
 
    *  Defined reattestation using Extended Key Update; removed other
-      reattestation options.
+      reattestation options.  Appraisal failure is signalled with the
+      attestation_failed alert.
 
-   *  Added Section 8.5 and Appendix C.
+   *  Added Appendix C.
 
 A.2.  draft-fossati-seat-early-attestation-07
 
@@ -1470,7 +1455,7 @@ A.2.  draft-fossati-seat-early-attestation-07
 
    *  Added Section 8.4.
 
-   *  Filled in Section 8.7 (was a TODO).
+   *  Filled in Section 8.6 (was a TODO).
 
    *  Added Section 6.1.
 
@@ -1683,7 +1668,7 @@ Appendix E.  Summary of Security Properties
    from running arbitrary code inside it to make the TEE attest a key
    that was not generated locally within the environment and could be
    exported from it.  Its strength depends on the platform's isolation
-   and measurement assurances (see Section 8.6), which are the subject
+   and measurement assurances (see Section 8.5), which are the subject
    of work in the RATS working group.
 
 Authors' Addresses
