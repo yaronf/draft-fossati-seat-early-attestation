@@ -546,17 +546,28 @@ all be measured and reported as part of the platform's remote attestation.
 
 Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence or Attestation Results to reassess the trustworthiness of the peer.
 
-Similarly to the initial handshake, Early Attestation implements reattestation at the TLS layer.
-To do that, the protocol uses the Extended Key Update (EKU) {{-eku}} extension. This document defines two new `ExtendedKeyUpdate` subtypes:
+Similarly to the initial handshake, Early Attestation implements
+reattestation at the TLS layer, using Extended Key Update (EKU)
+{{-eku}}. This document defines a new `ExtendedKeyUpdate` subtype,
+`attestation_update`, which carries a `cmw_payload` as defined in
+{{remote-attestation-extension-section}}.
 
-* `attestation_update`: carries a `cmw_payload` as defined in {{remote-attestation-extension-section}}.
-* `attestation_update_response`: carries the relying party's appraisal outcome, success or failure.
+A peer that attested in the handshake sends `attestation_update`
+using the scheme chosen in the handshake.
 
-A peer that attested in the handshake attests after each EKU
-exchange, using the scheme chosen in the handshake. The relying
-party replies with `attestation_update_response`.
+The attester sends `attestation_update` after the EKU exchange
+completes ({{Section 10.2 of -eku}}), protected under the generation
+N+1 application traffic secrets. After the EKU exchange completes,
+the relying party expects `attestation_update` as the next handshake
+message from the attester. If it receives any other handshake
+message, or none within a locally configured time, it aborts with a
+fatal `attestation_required` alert. If appraisal fails, it aborts
+with a fatal `attestation_failed` alert, as in {{crypto-ops}}. No
+message is sent on success.
 
-The `attestation_update` message is sent only after the EKU exchange completes, protected under the generation N+1 application traffic secrets. Its binder is derived as in {{crypto-ops}}, with `Transcript-Hash(ClientHello...ServerHello)` replaced by `transcript_hash_N+1` ({{Section 7 of -eku}}):
+The binder is derived as in {{crypto-ops}}, with
+`Transcript-Hash(ClientHello...ServerHello)` replaced by
+`transcript_hash_N+1` ({{Section 7 of -eku}}):
 
 ~~~
 attest_base_N+1 = HKDF-Expand-Label(0, "attestation base",
@@ -840,22 +851,6 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 Each reattestation is bound to `transcript_hash_N+1` of the EKU exchange that precedes it (see {{reattestation}}). Evidence generated for an earlier generation does not match the current binder and is rejected.
 
-## Divergent Key State Detection {#divergent-key-state}
-
-EKU alone does not confirm that both peers derived the same
-generation N+1 secrets ({{Section 11 of -eku}}). An active attacker
-holding compromised traffic keys can substitute EKU key shares,
-causing the peers to compute different `transcript_hash_N+1` values.
-
-For `evidence` schemes, reattestation detects this. The attester's
-binder is derived from its own `transcript_hash_N+1` and carried in
-Evidence signed by the Attesting Environment. The relying party
-derives the binder from its own `transcript_hash_N+1`. If the values
-differ, the binders do not match and reattestation fails.
-
-For `result` schemes, this holds only if the Attestation Results
-carry the binder.
-
 ## Security Guarantees {#sec-guarantees}
 
 We note that as a pure cryptographic protocol, attested TLS as-is only guarantees that the Identity Key is known by the TEE. A number of additional guarantees must be provided by the platform and/or the TLS stack,
@@ -963,8 +958,8 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 ## draft-fossati-seat-early-attestation-08
 
-- Defined reattestation using Extended Key Update; removed other reattestation options.
-- Added {{divergent-key-state}} and {{why-eku}}.
+- Defined reattestation using Extended Key Update; removed other reattestation options. Appraisal failure is signalled with the `attestation_failed` alert.
+- Added {{why-eku}}.
 
 ## draft-fossati-seat-early-attestation-07
 
