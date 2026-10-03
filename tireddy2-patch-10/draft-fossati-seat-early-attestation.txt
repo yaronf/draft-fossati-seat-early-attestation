@@ -1596,7 +1596,7 @@ Appendix B.  Design Rationale: Why the Transcript and Not the Exporter
 
 Appendix C.  Design Rationale: Why Extended Key Update for Reattestation
 
-   *  Post-handshake authentication (Section 4.6.2 of [RFC9846]) is
+   *  Post-handshake authentication (Section 4.7.2 of [RFC9846]) is
       client-only.  TLS has no post-handshake server authentication.
 
    *  Reattestation without a key update sends Evidence under traffic
