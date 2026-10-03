@@ -1064,7 +1064,7 @@ secret.
 
 # Design Rationale: Why Extended Key Update for Reattestation {#why-eku}
 
-* Post-handshake authentication ({{Section 4.6.2 of -tls13}}) is
+* Post-handshake authentication ({{Section 4.7.2 of -tls13}}) is
   client-only. TLS has no post-handshake server authentication.
 * Reattestation without a key update sends Evidence under traffic
   secrets that may be compromised ({{pcs}}). EKU moves the connection
