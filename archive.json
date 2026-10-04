@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-01T04:09:49.765374+00:00",
+  "timestamp": "2026-10-04T04:18:53.536270+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1150,7 +1150,7 @@
       "id": "I_kwDOQdsaoc8AAAABSlZoKA",
       "title": "Section 5.1.1: with a HelloRetryRequest, \"Hash(ClientHello...ServerHello)\" has four readings that give four binders",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/74",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nikolaichuk7",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1159,8 +1159,8 @@
       "labels": [],
       "body": "Section 5.1.1 derives the binder from `Hash(ClientHello...ServerHello)`. When a HelloRetryRequest occurs, RFC 8446 \u00a74.4.1 says the transcript is not the messages as sent: ClientHello1 is replaced by a synthetic `message_hash` message. The draft does not mention HelloRetryRequest or `message_hash` (0 occurrences in -07), so an implementer has at least four defensible readings:\n\n| reading | transcript input |\n|---|---|\n| (a) retry ignored | `CH1 \u2016 SH` |\n| (b) messages as sent | `CH1 \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (c) RFC 8446 \u00a74.4.1 | `message_hash(CH1) \u2016 HRR \u2016 CH2 \u2016 SH` |\n| (d) \"the\" ClientHello is the second | `CH2 \u2016 SH` |\n\nI ran real TLS 1.3 handshakes through a HelloRetryRequest (a server restricted to P-384 answering a default client's X25519 key share \u2014 the ordinary shape of a group migration) and computed the 5.1.1 binder under each reading, with an HKDF-Expand-Label checked byte-for-byte against the RFC 8448 trace. **Four distinct binders in 200 of 200 runs**; with agreeing groups there is no retry and the readings coincide. Reproduction, in-process and without network: [`examples/hrr_binder.py`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/hrr_binder.py), output in [`docs/hrr-binder-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/hrr-binder-run.txt).\n\nWhy implementations will actually diverge: Appendix C sends implementers to \"callback interfaces\" that expose the handshake messages \u2014 which naturally yields (a) or (b) \u2014 while an implementation that asks its stack for the transcript hash at ServerHello gets (c). Both followed the document. And \u00a75.1.2 makes a binder mismatch a fatal `attestation_failed` alert, so two conforming peers that read one sentence differently do not merely fail to connect: each reports the other as failing attestation.\n\nA second-order point: under reading (a) the binder commits to the key_share the client *withdrew*, so \u00a78.1's stated basis for two-sided uniqueness \u2014 the client's and server's key_share entries \u2014 is not what the binder covers. Uniqueness survives through the two randoms; the justification does not.\n\nIn fairness: 5.1.1 cites \u00a74.4.1, which may be intended to import the HRR rule. The text does not say so, it writes `Hash()` rather than `Transcript-Hash()`, and Appendix C points the other way.\n\n**Smallest fix.** State the transcript normatively by reference \u2014 \"Transcript-Hash(ClientHello1, ..., ServerHello) as defined in Section 4.4.1 of [RFC 8446], including the HelloRetryRequest substitution\" \u2014 and adjust Appendix C so that it directs implementers to the stack's transcript rather than to concatenating observed messages.\n",
       "createdAt": "2026-09-22T16:09:47Z",
-      "updatedAt": "2026-09-30T08:12:35Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-01T06:05:28Z",
+      "closedAt": "2026-10-01T06:05:28Z",
       "comments": []
     },
     {
@@ -7307,24 +7307,26 @@
       "id": "PR_kwDOQdsaoc8AAAABF6Dg_g",
       "title": "Define attestation binder transcript for HelloRetryRequest",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/77",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "## Summary\n- Normatively define the attestation binder input as `Transcript-Hash(ClientHello...ServerHello)` per TLS 1.3 Section 4.4.1, including HelloRetryRequest `message_hash` substitution (#74).\n- Update {{transcript-apis}} to require the TLS stack transcript hash rather than reconstructing messages from callbacks.\n- Clarify {{relay-resistance}} key_share wording after HelloRetryRequest (updated ClientHello).\n- Remove trailing whitespace that was failing `lint-whitespace` on main.\n- Acknowledge Serhii Nikolaichuk.\n\nRelated: #76 (future RFC 9846 reference update).\n\nFixes #74\n\n## Test plan\n- [x] `make` and `make lint` pass locally\n\nMade with [Cursor](https://cursor.com)",
       "createdAt": "2026-09-30T13:51:39Z",
-      "updatedAt": "2026-09-30T17:25:00Z",
+      "updatedAt": "2026-10-01T06:05:28Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "25f180fbff942ce40ea481a67f14749bfe14270f",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "ys-74",
       "headRefOid": "b932ca79451baaa9c9fff4c6d6f44b7edfbf3f77",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-10-01T06:05:27Z",
+      "mergedAt": "2026-10-01T06:05:27Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff"
+      },
       "comments": [
         {
           "author": "nikolaichuk7",
@@ -7360,6 +7362,19 @@
               "updatedAt": "2026-09-30T16:54:31Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQGgvEA",
+          "commit": {
+            "abbreviatedOid": "b932ca7"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-01T06:04:26Z",
+          "updatedAt": "2026-10-01T06:04:26Z",
+          "comments": []
         }
       ]
     },
@@ -7419,6 +7434,321 @@
               "body": "```suggestion\ntranscript defined in {{Section 4.1 of -tls13}}.\n```",
               "createdAt": "2026-09-30T16:56:58Z",
               "updatedAt": "2026-09-30T16:58:08Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 79,
+      "id": "PR_kwDOQdsaoc8AAAABGOojbg",
+      "title": "Address re-attestation issue",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/79",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-10-02T05:17:02Z",
+      "updatedAt": "2026-10-03T21:54:29Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "tireddy2-patch-10",
+      "headRefOid": "d096e2fa02fbbceb2e8b2fd623928c31d4b0f9c1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQUrTKg",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-10-02T09:44:24Z",
+          "updatedAt": "2026-10-02T10:05:56Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\nSimilarly to the initial handshake, Early Attestation implements reattestation at the TLS layer.\nTo do that, the protocol uses the Extended Key Update (EKU) {{-eku}} extension. This document defines two new `ExtendedKeyUpdate` subtypes:\n```",
+              "createdAt": "2026-10-02T09:44:24Z",
+              "updatedAt": "2026-10-02T10:05:56Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "I'm not sure this is even required. If the update is successful, fine. Otherwise send an alert.",
+              "createdAt": "2026-10-02T09:47:24Z",
+              "updatedAt": "2026-10-02T10:05:56Z"
+            },
+            {
+              "originalPosition": 40,
+              "body": "From a state machine point of view, this is difficult: how do I know when to expect an attestation messages, i.e. when to drop the connection because attestation has not been sent?\n\nFrom a state machine perspective, I would rather interleave attestation messages with EKU (e.g. after key_update_request/key_update_response, once both peers can compute transcript_hash_N+1 / Main Secret N+1, and before or alongside key_update_finish)",
+              "createdAt": "2026-10-02T09:53:07Z",
+              "updatedAt": "2026-10-02T10:05:56Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "I think this is the right binder.",
+              "createdAt": "2026-10-02T09:59:02Z",
+              "updatedAt": "2026-10-02T10:05:56Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "I suggest to drop this section for now, because it reads as speculative/apologetic.\n\nIn fact we might want to check with Nathanael if the fact that our binder includes the public key mitigates the lack of authentication in EKU that causes this problem in the first place.",
+              "createdAt": "2026-10-02T10:04:53Z",
+              "updatedAt": "2026-10-02T10:05:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQXOF_Q",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-02T14:35:36Z",
+          "updatedAt": "2026-10-02T14:35:37Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "sure, alert works. ",
+              "createdAt": "2026-10-02T14:35:36Z",
+              "updatedAt": "2026-10-02T14:35:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQXRQlw",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-02T14:40:41Z",
+          "updatedAt": "2026-10-02T14:40:42Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Interleaving attestation with the EKU messages would change the EKU state machine, which a new  ExtendedKeyUpdate subtype should not do.\r\n\r\nInstead, attestation_update is sent after EKU completes, so the EKU state machine is unchanged. After EKU is complete, the next handshake message from an attesting peer MUST be attestation_update; anything else, or a timeout, aborts.",
+              "createdAt": "2026-10-02T14:40:41Z",
+              "updatedAt": "2026-10-02T14:40:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQXURBA",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-02T14:45:33Z",
+          "updatedAt": "2026-10-02T14:45:34Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "sure, I can remove it. ",
+              "createdAt": "2026-10-02T14:45:33Z",
+              "updatedAt": "2026-10-02T14:45:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQYkWsA",
+          "commit": {
+            "abbreviatedOid": "8d18141"
+          },
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-02T16:55:00Z",
+          "updatedAt": "2026-10-02T16:55:00Z",
+          "comments": [
+            {
+              "originalPosition": 131,
+              "body": "Nit: post-handshake authentication is Section 4.7.2 of RFC 9846 (4.6.2 was RFC 8446's numbering; 4.6 is now End of Early Data, with no subsections). The old text had 4.7.2.",
+              "createdAt": "2026-10-02T16:55:00Z",
+              "updatedAt": "2026-10-02T16:55:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQapH_g",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-02T20:43:10Z",
+          "updatedAt": "2026-10-02T20:43:10Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "IMO this is a tradeoff. EKU does not say normatively that a new subtype (in our case, combined with prior negotiation of the Attestation extensions) must not change the state machine. So it's either a simpler change to the EKU state machine, which is what I'm proposing; otherwise we need to define a whole new state machine (complete with arbitrary timeouts) for this extra round.\r\n\r\nAnd to clarify, the interleaved option keeps the CMWs and your binder as-is. Granted the CMWs would still be encrypted under N keys, but that's fine, essentially no different from the initial handshake.",
+              "createdAt": "2026-10-02T20:43:10Z",
+              "updatedAt": "2026-10-02T20:43:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQd1shg",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T09:27:50Z",
+          "updatedAt": "2026-10-03T09:27:50Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "We use EKU so that new Evidence is sent under keys an earlier compromise cannot reach. If the CMW is sent under Generation N keys, an attacker who compromised N reads it. The initial handshake has no earlier keys to compromise, so it is not the same case.\r\n\r\nThe binder needs transcript_hash_N+1, which the initiator has only once key_update_response arrives. In DTLS, key_update_response may be lost, so the responder knows the initiator has it only when key_update_finish arrives. The responder's CMW therefore has to wait for key_update_finish anyway, which is the point where EKU completes at the responder. Sending after EKU completes gives the same timing for both peers and leaves EKU unchanged. A timeout for a missing message is needed in both designs. Interleaving does not remove the need for a timeout: in either design, the relying party must abort if the CMW never arrives.",
+              "createdAt": "2026-10-03T09:27:50Z",
+              "updatedAt": "2026-10-03T09:27:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQd39sg",
+          "commit": {
+            "abbreviatedOid": "8d18141"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T09:34:08Z",
+          "updatedAt": "2026-10-03T09:34:08Z",
+          "comments": [
+            {
+              "originalPosition": 131,
+              "body": "Thanks, fixed. ",
+              "createdAt": "2026-10-03T09:34:08Z",
+              "updatedAt": "2026-10-03T09:34:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQeQOvQ",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T11:03:54Z",
+          "updatedAt": "2026-10-03T11:03:54Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Not exactly. To your first point, since the CMW is vulnerable to MITM in any implementation of this draft, I think it's a mistake to constrain the protocol because of the lower risk of PCS.\r\n\r\nAlso, the CMW can be generated speculatively as soon as the responder has N+1 and before Finish. Worst case it would have to be generated again. Of course it can only be validated and trusted after Finish. With this design, you do NOT need to add a timeout, because the CMW is expected before Finish, and so only the regular Finish timeout applies.",
+              "createdAt": "2026-10-03T11:03:54Z",
+              "updatedAt": "2026-10-03T11:03:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQe33KA",
+          "commit": {
+            "abbreviatedOid": "d096e2f"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T13:46:52Z",
+          "updatedAt": "2026-10-03T14:17:44Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "Not sure I follow,  is your intent to define `attestation_update` in a subsequent PR? Or is this mention sufficient to define it? I was expecting a more precise definition somewhere. I can see from the preview on Yaron's comments that it was included here before.",
+              "createdAt": "2026-10-03T13:46:52Z",
+              "updatedAt": "2026-10-03T14:17:44Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "```suggestion\nA peer that attested in the handshake MUST send `attestation_update`\n```\nis this what you meant?",
+              "createdAt": "2026-10-03T13:47:28Z",
+              "updatedAt": "2026-10-03T14:17:44Z"
+            },
+            {
+              "originalPosition": 40,
+              "body": "Just so I understand the argument, Yaron, your intention is for the exchange to look like this:\r\n```\r\n    [EKU(key_update_request)]N       -------->\r\n                                     <--------  [EKU(key_update_response)]N\r\n                                     <--------  [EKU(attestation_update(N+1)]N\r\n    [EKU(attestation_update(N+1)]N   -------->\r\n    [EKU(key_update_finish)]N        -------->\r\n```",
+              "createdAt": "2026-10-03T14:16:30Z",
+              "updatedAt": "2026-10-03T14:17:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQfMfYw",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T15:19:38Z",
+          "updatedAt": "2026-10-03T15:19:38Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "@ionut-arm Yes.",
+              "createdAt": "2026-10-03T15:19:38Z",
+              "updatedAt": "2026-10-03T15:19:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQgNDvg",
+          "commit": {
+            "abbreviatedOid": "d096e2f"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-03T19:57:00Z",
+          "updatedAt": "2026-10-03T21:54:29Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "Actually, I think we need to be more prescriptive about how and why things are (or are not) optional. Can any party initiate and go through EKU without also attesting? Or are key update and attestation tied at the hip from now on?",
+              "createdAt": "2026-10-03T19:57:00Z",
+              "updatedAt": "2026-10-03T21:54:29Z"
+            },
+            {
+              "originalPosition": 40,
+              "body": "Hmm...\r\n\r\n> it's either a simpler change to the EKU state machine\r\n\r\nNot sure it's a simple(r) change. For example, the flow above cannot currently happen with EKU unless you go and rewrite the EKU draft itself to allow a new subtype message to sit in-between response and send-key update (see step 3 in Section 5 of EKU). Similarly, step 4 mandates that Finish is not deferred after receiving response.\r\n\r\nYou _could_ keep the key changes and send the attestation messages encrypted with the new keys as Yaron says (initiator sends its attestation after Finish, as per key transition requirements mentioned above), but that would only be an optimisation for TLS, not DTLS (again because of the required key change sequence). And since the initiator attestation message is again after Finish, you still need to define the bounded wait.\r\n\r\nThat being said, EKU currently says \"Both initiator and responder MUST encrypt their ExtendedKeyUpdate messages using the old keys.\" which obviously includes subtype messages, so with this and the step 3 referenced above, it makes for a messy picture. I think the \"old keys\" sentence has to be relaxed regardless.\r\n\r\nI'm still trying to wrap my head around the implications of an active attacker that might have the old secrets.",
+              "createdAt": "2026-10-03T21:52:07Z",
+              "updatedAt": "2026-10-03T21:54:29Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "Also, add appraisal to the stack: how does the success / failure of EKU relate to appraisal? Do we wait for appraisal or just receipt of the CMW(s)?",
+              "createdAt": "2026-10-03T21:54:24Z",
+              "updatedAt": "2026-10-03T21:54:29Z"
             }
           ]
         }
