@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-04T04:18:53.536270+00:00",
+  "timestamp": "2026-10-06T04:52:41.470552+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -630,7 +630,7 @@
       ],
       "body": "The draft currently lists these advantages of intra-handshake:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L165-L169\n\nMaybe it's a question of definitions, but I don't think this holds up in practice. There are several steps for producing and verifying evidence that don't sound like they can be solved with \"At most, some configuration\":\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L374-L375\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L330-L334\n\nI guess these need to be implemented as callbacks to _some_ application code, since the TLS stack can't really know how to get or verify evidence by itself?\n\nI would appreciate:\n\n1. A section with API considerations (similar to https://www.rfc-editor.org/rfc/rfc9261#name-api-considerations).\n2. A review of the above advantages based on those suggested APIs.",
       "createdAt": "2026-01-26T08:47:19Z",
-      "updatedAt": "2026-09-18T13:43:32Z",
+      "updatedAt": "2026-10-05T21:13:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -646,6 +646,13 @@
           "body": "@ionut-arm: I think the [`AttestationGenerator`](https://github.com/tls-attestation/attestation-exported-authenticators/blob/e30acd7e7fcc52fbdadc444601a0b70c6525d739/src/attestation/mod.rs#L43-L46) and [`AttestationValidator`](https://github.com/tls-attestation/attestation-exported-authenticators/blob/e30acd7e7fcc52fbdadc444601a0b70c6525d739/src/attestation/mod.rs#L103-L107) structs from the expat impl are a good example of how the API could look like. That strongly suggests that it's not only configuration that needs to be provided on the application-level, though. What were your experiences while prototyping?",
           "createdAt": "2026-09-18T13:43:32Z",
           "updatedAt": "2026-09-18T13:43:32Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi @burgerdev ! Yes, I (roughly) agree that what's normally understood as config is not all the app would need to provide. Our experience was to observe this gap as well, between what the networking stack can do with standard interfaces, and what it has to do in a configurable way. Here are some examples of more complex code that needs to be somehow called from the aTLS implementation:\n\n* get evidence from platform\n* get evidence appraised by configured verifier\n* appraise attestation result\n\nHowever, depending on how the industry moves, these could become standardised themselves in the future. For example, we used Veraison tooling for all of these, to hide the complexity between some generic calls. We used [ratsd](https://github.com/veraison/ratsd) for evidence, and the \"well-known\" discovery APIs of the Veraison verifier services for verifier interaction. Our appraisal was fairly limited indeed.\n\nFrom my perspective, it seems unlikely to get wide adoption if everything needs to be platform-specific, so it's likely things will converge. I have hopes for [RARe](https://datatracker.ietf.org/doc/draft-fossati-rats-rare/).",
+          "createdAt": "2026-10-05T21:13:38Z",
+          "updatedAt": "2026-10-05T21:13:38Z"
         }
       ]
     },
@@ -663,7 +670,7 @@
       "labels": [],
       "body": "The draft currently requires the TIK to be TEE-protected:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L182-L185\n\nI understand the goal of the draft is to provide an attested TLS _session_. We already know from the post-handshake work that a trustworthy attested TLS session can be established with a long-term key that's not protected by a TEE. Why do we need it for intra-handshake?\n\nThe reason why this is important is that some flavours of TEEs are short-lived: confidential containers come to mind. It's probably infeasible to let all containers first do an ACME step (or similar) to get a certificate for their ephemeral key.",
       "createdAt": "2026-01-26T08:55:22Z",
-      "updatedAt": "2026-09-18T13:17:33Z",
+      "updatedAt": "2026-10-05T21:23:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -679,6 +686,13 @@
           "body": "@ionut-arm: yes, the use case is identical to https://github.com/ietf-wg-seat/draft-ietf-seat-use-cases/pull/56, and I believe it to be related to the \"split deployment\" use case (which I can't find a reference for right now - maybe it was only on list). \n\nIntuitively, ephemeral Diffie-Hellman should suffice to not require the TIK to be secret.  ",
           "createdAt": "2026-09-18T13:17:33Z",
           "updatedAt": "2026-09-18T13:17:33Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To me this seems like a RP policy issue, no? As long as the attester can verifiably provide info about how its identity key is produced and stored, the RP can make an informed decision. I agree with you about the context around this.\n\nI think we've made changes to how TIK is defined, but the way the draft is currently written prevents this sort of use-case. I don't think we're wed to this limitation, but for now it seems prudent to keep the security requirements tighter, and relax them in the future if need be. @tireddy2 might have stronger opinions on identity key protection.",
+          "createdAt": "2026-10-05T21:23:31Z",
+          "updatedAt": "2026-10-05T21:23:31Z"
         }
       ]
     },
@@ -696,7 +710,7 @@
       "labels": [],
       "body": "It's somewhat implict in the draft that the CMW needs to contain certain items and needs to be signed. For example, the draft says both:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L262-L265\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L273-L276\n\nTo me, this implies that the binder is not included into the actual evidence, but somehow passed alongside it. (Otherwise, how could the AR be cached?)\n\nIt would be helpful if the draft was more specific about:\n\n1. How to construct the binder.\n2. How (whether) the binder needs to be tied to the evidence and laid out in the CMW.\n3. What requirements apply to the CMW signature.",
       "createdAt": "2026-01-26T09:12:10Z",
-      "updatedAt": "2026-06-01T09:40:36Z",
+      "updatedAt": "2026-10-05T21:52:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -712,6 +726,20 @@
           "body": "Hey @ionut-arm,\n\npoints 1-3 are indeed resolved, thanks! However, now I believe there is a contradiction between:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/c8d1105d176d0c4bac87eafb245aa8ab1695cf11/draft-fossati-seat-early-attestation.md?plain=1#L275-L278\n\nand \n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/c8d1105d176d0c4bac87eafb245aa8ab1695cf11/draft-fossati-seat-early-attestation.md?plain=1#L395-L406\n\nEither the attestation results can be cached and used for more than one session, or they are generated for each session, but surely not both? I'd say that cutting the two paragraphs from *Attestation Extensions* would be justified.\n\nCheers, Markus ",
           "createdAt": "2026-06-01T07:39:31Z",
           "updatedAt": "2026-06-01T07:39:31Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "A bit late, but: I think the intent is to let the Passport model focus on performance, hence allowing caching. But yes, I agree, the [Verification section](https://www.sheffer.org/draft-fossati-seat-early-attestation/draft-fossati-seat-early-attestation.html#name-verification) is over-eager to assume binding is present. I think the expected outcome is that we'll rewrite that to make it clear that section is only relevant for evidence appraisal.\n\n@yaronf @thomas-fossati @tireddy2 - thoughts?",
+          "createdAt": "2026-10-05T21:40:49Z",
+          "updatedAt": "2026-10-05T21:40:49Z"
+        },
+        {
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "body": "Some numbers for the performance side, in case they help with the rewrite. We measured how long confidential VMs take to produce fresh Evidence when each session gets a new hardware report (the binder in REPORT_DATA), on fresh VMs, 200 requests in a row:\n\n- AWS SEV-SNP (c6a.large): about 7 ms each, no stall.\n- GCP SEV-SNP (n2d): about 8 ms, but exactly every tenth request waits about 10.2 s (five of the Linux guest driver's 2 s retries), so about one report per second; the same in six runs since September 26.\n- GCP TDX (c3): about 39 ms, no stall.\n- Azure SEV-SNP (DCasv5, paravisor): a vTPM quote with a nonce takes about 45 ms; a new hardware report carrying the guest's data comes about every 2 s.\n\nSo per-session Evidence costs anywhere from milliseconds to seconds depending on the cloud. Attesting once and caching, or signing per-session values with an attested key, avoids that cost. Method, limits and raw data: https://github.com/nikolaichuk7/tacra-est/blob/ca4de514996c0e78ddba75b602508ca238ddbc74/docs/REPORT-RATE.md\n",
+          "createdAt": "2026-10-05T21:52:46Z",
+          "updatedAt": "2026-10-05T21:52:46Z"
         }
       ]
     },
@@ -7451,7 +7479,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-02T05:17:02Z",
-      "updatedAt": "2026-10-03T21:54:29Z",
+      "updatedAt": "2026-10-05T05:43:25Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
@@ -7749,6 +7777,206 @@
               "body": "Also, add appraisal to the stack: how does the success / failure of EKU relate to appraisal? Do we wait for appraisal or just receipt of the CMW(s)?",
               "createdAt": "2026-10-03T21:54:24Z",
               "updatedAt": "2026-10-03T21:54:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQiFMzQ",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T05:18:57Z",
+          "updatedAt": "2026-10-04T05:18:57Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Thanks Yaron, Ionut. I prefer to keep attestation after EKU completes:\r\n\r\na) The proposed flow requires changing the EKU state machine (Section 5, steps 3 and 4). An attestation_update cannot be interleaved as a reply to key_update_response.\r\nb) Requiring the CMW before Finish delays the key update until Evidence is generated. Key update should not wait on attestation.\r\nc) In DTLS, key_update_response may be lost. key_update_finish acts as the ACK and confirms the initiator has completed the key update. Until then, the responder cannot treat N+1 as established.\r\nd) Since the attestation subtype is sent after EKU completes, it is protected under the current (N+1) keys, so the EKU \"old keys\" requirement is not affected.",
+              "createdAt": "2026-10-04T05:18:57Z",
+              "updatedAt": "2026-10-04T05:18:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQiFhaA",
+          "commit": {
+            "abbreviatedOid": "d096e2f"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T05:21:37Z",
+          "updatedAt": "2026-10-04T05:21:37Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "This PR is a strawman to agree that reattestation uses a fresh binder (transcript_hash_N+1). The attestation_update definition and the message sequence diagram will be added in a separate PR.",
+              "createdAt": "2026-10-04T05:21:37Z",
+              "updatedAt": "2026-10-04T05:21:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQiG8OA",
+          "commit": {
+            "abbreviatedOid": "d096e2f"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T05:33:08Z",
+          "updatedAt": "2026-10-04T05:33:08Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "Good points.\r\n\r\nIf attestation is negotiated, EKU and attestation are tied: every EKU is followed by attestation. Without that negotiation, EKU operates on its own.\r\nEKU success or failure is governed by EKU alone. The attestation outcome reflects appraisal of the CMW, not just its receipt. On appraisal failure, the peer sends an alert and terminates the connection",
+              "createdAt": "2026-10-04T05:33:08Z",
+              "updatedAt": "2026-10-04T05:33:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQiyRXg",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T09:09:41Z",
+          "updatedAt": "2026-10-04T09:09:41Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "The problem with this approach is that it's the opposite of what we're doing for the initial handshake. In the initial handshake, once Finished is done, the application knows that everything is ready to use (and the handshake absolutely does wait on attestation). With your proposal, the Finish is accepted, the traffic keys are rolled, but the connection is not yet fully ready.",
+              "createdAt": "2026-10-04T09:09:41Z",
+              "updatedAt": "2026-10-04T09:09:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQiyfpA",
+          "commit": {
+            "abbreviatedOid": "d096e2f"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T09:11:10Z",
+          "updatedAt": "2026-10-04T09:11:10Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "Please don't. Let's decide the whole thing with one PR.",
+              "createdAt": "2026-10-04T09:11:10Z",
+              "updatedAt": "2026-10-04T09:11:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQk5rTQ",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T17:49:11Z",
+          "updatedAt": "2026-10-04T17:49:11Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "> a) The proposed flow requires changing the EKU state machine (Section 5, steps 3 and 4). An attestation_update cannot be interleaved as a reply to key_update_response.\r\n\r\nyes\r\n\r\n> b) Requiring the CMW before Finish delays the key update until Evidence is generated. Key update should not wait on attestation.\r\n\r\nhmm, the initial hs already waits on attestation -- this is, I think, one of the main value propositions of -early.  so to give up the invariant that keys are rolled == peer is attested is not great.\r\n\r\n> c) In DTLS, key_update_response may be lost. key_update_finish acts as the ACK and confirms the initiator has completed the key update. Until then, the responder cannot treat N+1 as established.\r\n\r\nyes\r\n\r\n> d) Since the attestation subtype is sent after EKU completes, it is protected under the current (N+1) keys, so the EKU \"old keys\" requirement is not affected.\r\n\r\nI think I agree with Ionut's comment above that the rule needs to be relaxed anyway.\r\n\r\nIt would be great if we could change EKU to fit our case.  If that's not possible, the only way I can see of reconciling this with the \"early invariant\" is to mark N+1 as _tentative_ until the RP confirms that the attestation update is successful.  Until that point, one can't accept any application data under N+1 (i.e., => alert and abort).\r\nThe slight inconvenient I see are that:\r\n1) it would be a new state; and\r\n2) we would probably need a new API to signal \"keys rolled but not ready\".\r\nHowever, EKU could provide that by adding a generic \"hold\" hook that extensions could plug into, couldn't it?",
+              "createdAt": "2026-10-04T17:49:11Z",
+              "updatedAt": "2026-10-04T17:49:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQk8J4Q",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T18:03:32Z",
+          "updatedAt": "2026-10-04T18:03:32Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "After reading the EKU state machine again, a slight tweak to the message sequence that @ionut-arm listed.\r\n\r\n```\r\n    [EKU(key_update_request)]N       -------->\r\n                                     <--------  [EKU(attestation_update(N+1)]N\r\n                                     <--------  [EKU(key_update_response)]N\r\n    [EKU(attestation_update(N+1)]N   -------->\r\n    [EKU(key_update_finish)]N        -------->\r\n```\r\n\r\nAttestation goes first in both flights, which means that traffic secrets can be rolled over per the EKU spec.",
+              "createdAt": "2026-10-04T18:03:32Z",
+              "updatedAt": "2026-10-04T18:03:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQlVHsg",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T19:45:22Z",
+          "updatedAt": "2026-10-04T19:45:22Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "that may actually work, depending on what \"unexpected message subtype\" means in the EKU-13:\r\n\r\n```\r\n   A TLS peer which receives a ExtendedKeyUpdate with an unexpected\r\n   message subtype [...]\r\n```\r\n\r\nIf \"unexpected\" means a subtype it doesn't know, or also a known subtype that arrives in the wrong state.  If the former we should be ok.\r\n",
+              "createdAt": "2026-10-04T19:45:22Z",
+              "updatedAt": "2026-10-04T19:45:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQlpwvA",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-04T20:59:04Z",
+          "updatedAt": "2026-10-04T20:59:04Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "@thomas-fossati On a connection that had RA in the handshake there should be no situation where `attestation_update` is unknown. And `attestation_update` should not be used on a connection that had no RA in handshake. I would think we're safe?\r\n\r\n> hmm, the initial hs already waits on attestation -- this is, I think, one of the main value propositions of -early. so to give up the invariant that keys are rolled == peer is attested is not great.\r\n\r\nIndeed, thinking about it more, the RP should not send any data before the appraisal is done anyway.",
+              "createdAt": "2026-10-04T20:59:04Z",
+              "updatedAt": "2026-10-04T20:59:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABQnuiCg",
+          "commit": {
+            "abbreviatedOid": "74de314"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-05T05:43:25Z",
+          "updatedAt": "2026-10-05T05:43:25Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Reattestation differs from the initial handshake. In the initial handshake there is no prior trust, so the connection is not usable until attestation succeeds. Reattestation is an extension to EKU on a connection that is already attested and in use. Finish completes the key update as defined by EKU, and the attestation subtype follows it. The connection remains trusted on the basis of the last successful attestation until reattestation succeeds or fails with an alert.\r\n\r\nWe can discuss further in our meeting this week. ",
+              "createdAt": "2026-10-05T05:43:25Z",
+              "updatedAt": "2026-10-05T05:43:25Z"
             }
           ]
         }
