@@ -204,6 +204,9 @@ TIK-C-ID, TIK-S-ID:
 Attestation binder:
 : A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.
 
+Appraisal validity period:
+: A local policy interval during which a Relying Party treats a prior appraisal of a peer's attestation Evidence or Attestation Results as sufficient for authorization without a new attestation exchange on the wire.
+
 Two-sided uniqueness:
 : The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.
 
@@ -577,6 +580,16 @@ Note: This is a workaround while the WG determines which of the other options ca
 
 In this design, reattestation is supported using the `CertificateUpdate` message defined in {{-cert-update}}. Under this approach, the attester sends a `CertificateUpdate` message carrying a new `Certificate` message with updated attestation information. The refreshed attestation is bound to the existing TLS session using post-handshake TLS context.
 
+## Session Resumption and Early Data {#session-resumption}
+
+Session resumption is supported. A resumed handshake does not exchange new attestation Evidence or Attestation Results. The Relying Party continues to rely on the appraisal it performed when attestation was last verified on a full handshake (or updated by reattestation on the connection that established the resumption PSK, when {{reattestation}} applies). The Relying Party MAY proceed without a new attestation exchange only while that appraisal remains within its appraisal validity period.
+
+When issuing a `NewSessionTicket`, the server MUST NOT offer a `ticket_lifetime` longer than the remaining attestation validity the server is willing to accept for resumed sessions under its local policy. When accepting a resumption handshake, the Relying Party MUST reject the connection if local policy treats the attestation as no longer valid (for example because the ticket age exceeds the configured appraisal validity period).
+
+An initial TLS connection that uses this protocol MUST authenticate with certificates and MUST exchange attestation as in {{figure-overview}}. Establishing an initial connection with a pre-shared key alone, without that certificate-based attestation exchange, is not supported. Session resumption using a PSK derived from a prior full handshake is described above and is not an initial connection.
+
+Early data (0-RTT) on a resumed connection MAY be accepted when the same appraisal validity period has not expired, because the Relying Party's authorization decision is unchanged from the connection that issued the resumption PSK. Accepting early data does not require a new attestation binder for the resumed handshake transcript.
+
 # Negotiating This Protocol {#negotiating-protocol}
 
 This section defines the TLS extension used to negotiate the use of attestation in the TLS handshake.
@@ -865,10 +878,10 @@ These properties may be explicitly promised ("attested") by the platform, or the
 Evidence appraised at handshake time reflects the Target Environment's state at that moment. Three cases can cause that appraisal to go stale without the Relying Party being aware:
 
 * The connection remains open and continues to carry data after the Target Environment's state has changed and no reattestation has occurred.
-* A subsequent connection uses session resumption, inheriting the original connection's assurance without a new attestation exchange.
+* A subsequent connection uses session resumption without a new `Certificate` message carrying attestation (see {{session-resumption}}).
 * Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
-The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state instead sets a validity period for an appraisal and requests attestation once that period elapses, using one of the mechanisms in {{reattestation}}. A resumed connection inherits the original appraisal's validity period rather than getting a new one.
+The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets an appraisal validity period and requests attestation once that period elapses, using one of the mechanisms in {{reattestation}}.
 
 # Privacy Considerations {#priv-cons}
 
@@ -953,6 +966,11 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-08
+
+- Added {{session-resumption}}: ticket lifetime vs appraisal validity, no PSK-only initial handshake, early data.
+- Defined appraisal validity period in {{terminology}}.
 
 ## draft-fossati-seat-early-attestation-07
 
