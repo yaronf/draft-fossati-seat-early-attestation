@@ -908,6 +908,41 @@ this exposure and offer mitigations.
 
 See {{-rats-privacy}} for a broader treatment of privacy in the RATS context.
 
+## No Expectation of Privacy for Attestation Credentials
+
+This document does not provide confidentiality or privacy for attestation
+credentials (i.e., Evidence and Attestation Results) with respect to the peer
+or to the network.  Specifically:
+
+* Attestation credentials are carried in the handshake and are available to the
+  peer, whether or not that peer has authenticated.
+* Attestation credentials are encrypted under the handshake traffic keys, so a
+  passive on-path attacker cannot read them, unless the handshake secret is
+  compromised ({{pcs}}).  An active on-path attacker, however, can complete the
+  handshake as a client and obtain the server's credential, because a server
+  attests before the client authenticates.
+* The same holds for post-handshake attestation ({{reattestation}}): the client
+  need not authenticate to obtain the server's new attestation credential,
+  which may differ from the one exchanged in the initial handshake.
+
+Authenticating the peer does not by itself solve the problem: an authenticated
+peer can still disclose the Claims it receives.
+Deployments should not assume Claims remain confidential, and should send only
+Claims that are acceptable to disclose to any party able to complete (or
+observe) the handshake.
+
+Attesters that need to convey privacy-sensitive Claims should limit what the
+peer acting as RP learns.  The extreme case is to hide all the Claims: the
+credential is encrypted to its intended consumer (for example, the Verifier
+when the RP only forwards Evidence), independently of the TLS handshake keys,
+using a public key that the sender learns out of band ({{Section 4.2 of
+-rats-privacy}}).  Less extreme cases reveal only the Claims that the RP's
+policy needs, using minimization, selective disclosure, or zero-knowledge
+proofs ({{Sections 4.3, 4.4 and 4.5 of -rats-privacy}}). In both cases the
+protection can be applied in either direction.  Encrypting to a key learned out
+of band requires work to define how such a key is published and bound to the
+intended recipient, which is out of scope for this document.
+
 # IANA Considerations
 
 ## TLS Extensions
