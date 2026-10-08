@@ -918,9 +918,11 @@ or to the network.  Specifically:
   peer, whether or not that peer has authenticated.
 * Attestation credentials are encrypted under the handshake traffic keys, so a
   passive on-path attacker cannot read them, unless the handshake secret is
-  compromised ({{pcs}}).  An active on-path attacker, however, can complete the
-  handshake as a client and obtain the server's credential, because a server
-  attests before the client authenticates.
+  compromised ({{pcs}}).  An active on-path attacker, however, can obtain the
+  server's credential, because a server attests before the client
+  authenticates.  It can either complete the handshake as a client, or
+  interpose itself in the key exchange, in which case the handshake fails, but
+  only after the credential has been exposed.
 * The same holds for post-handshake attestation ({{reattestation}}): the client
   need not authenticate to obtain the server's new attestation credential,
   which may differ from the one exchanged in the initial handshake.
