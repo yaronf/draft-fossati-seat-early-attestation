@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-06T04:52:41.470552+00:00",
+  "timestamp": "2026-10-08T04:30:49.674646+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1199,13 +1199,23 @@
       "state": "OPEN",
       "author": "nikolaichuk7",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "yaronf"
+      ],
       "labels": [],
       "body": "Section 4.1 places the `remoteAttestation` extension in the first CertificateEntry of the Certificate message. A resumed TLS 1.3 handshake contains no Certificate message.\n\nMeasured with `openssl s_server -msg` (OpenSSL 3.6.4), two consecutive connections to one server:\n\n```\nconnection 1 (full):     ServerHello, EncryptedExtensions, Certificate, CertificateVerify, Finished, NewSessionTicket\nconnection 2 (resumed):  ServerHello, EncryptedExtensions, Finished, [EndOfEarlyData], NewSessionTicket\nCertificate messages:    1 in the full handshake, 0 in the resumed one\n```\n\nWith `-early_data` on the resumed connection the client reports `Early data was accepted`: the application request was delivered in the client's first flight, before the server had sent any handshake message in that connection. Reproduction, local only: [`examples/resumption.sh`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/resumption.sh), output in [`docs/resumption-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/resumption-run.txt).\n\nWhere the document currently stands on this:\n\n- \u00a78.6 (body) says a resumed connection \"inherit[s] the original connection's assurance\" and \"inherits the original appraisal's validity period\" \u2014 descriptive, and it presumes the exchange can exist there.\n- The only normative statement \u2014 \"resumption MUST be rejected if reattestation is required per local policy\" \u2014 is in Appendix A, the document history, as a note on what an earlier revision added. An implementer reading the body will not find it.\n- Early data / 0-RTT is not mentioned.\n\n**Smallest fix.** Either move that MUST into the body (Section 7 or 8.6) and add the same for early data, or give the extension a carrier that exists in a resumed handshake \u2014 EncryptedExtensions is sent in both \u2014 with the binder defined over the resumed handshake's own transcript. (expat handles this by forbidding NewSessionTicket and 0-RTT on attested connections, \u00a77.2 there; the same rule would fit here.)\n",
       "createdAt": "2026-09-22T16:09:51Z",
-      "updatedAt": "2026-09-22T16:09:51Z",
+      "updatedAt": "2026-10-07T07:49:34Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Address for initial HS and for reattestation once merged.",
+          "createdAt": "2026-10-07T07:49:33Z",
+          "updatedAt": "2026-10-07T07:49:33Z"
+        }
+      ]
     },
     {
       "number": 76,
@@ -1221,6 +1231,24 @@
       "createdAt": "2026-09-30T13:30:12Z",
       "updatedAt": "2026-09-30T17:13:02Z",
       "closedAt": "2026-09-30T17:13:02Z",
+      "comments": []
+    },
+    {
+      "number": 80,
+      "id": "I_kwDOQdsaoc8AAAABVjkCEQ",
+      "title": "Evidence privacy",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/80",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "thomas-fossati"
+      ],
+      "labels": [],
+      "body": "Clarify that there's no expectation of privacy: the Evidence is available to an unauth client, to a server, and to a MITM.\n\nCite potential solutions such as Sec. 4.2 of https://datatracker.ietf.org/doc/draft-ounsworth-rats-privacy-framework/ or older solutions.\n\nBTW this is also true for Post-HS, because the client never needs to authenticate.",
+      "createdAt": "2026-10-07T08:02:22Z",
+      "updatedAt": "2026-10-07T08:03:34Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -7981,6 +8009,40 @@
           ]
         }
       ]
+    },
+    {
+      "number": 81,
+      "id": "PR_kwDOQdsaoc8AAAABHFQn5A",
+      "title": "Session resumption, ticket lifetime, and early data (#75)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/81",
+      "state": "CLOSED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n- Add {{session-resumption}}: resumed handshakes carry no Certificate-attestation; RP relies on prior appraisal within a local appraisal validity period.\n- Require `ticket_lifetime` not to exceed attestation validity the server will accept on resume.\n- State that PSK-only initial handshakes (no cert attestation exchange) are not supported.\n- Allow 0-RTT on resume when appraisal validity has not expired; define appraisal validity period in {{terminology}}.\n- Refresh {{freshness-guarantees}} wording (remove \u201cinherit assurance\u201d framing).\n\nRelated #75. Further text on re-attestation and tickets will follow after re-attestation lands.\n\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-10-07T08:50:39Z",
+      "updatedAt": "2026-10-07T08:53:11Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-75",
+      "headRefOid": "69c4017ee68a39aa86ae7141efa30caeb642c9c8",
+      "closedAt": "2026-10-07T08:53:11Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Closing: draft text needs review in Cursor before a PR.",
+          "createdAt": "2026-10-07T08:53:11Z",
+          "updatedAt": "2026-10-07T08:53:11Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
