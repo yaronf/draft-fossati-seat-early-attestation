@@ -1265,9 +1265,11 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    *  Attestation credentials are encrypted under the handshake traffic
       keys, so a passive on-path attacker cannot read them, unless the
       handshake secret is compromised (Section 8.3).  An active on-path
-      attacker, however, can complete the handshake as a client and
-      obtain the server's credential, because a server attests before
-      the client authenticates.
+      attacker, however, can obtain the server's credential, because a
+      server attests before the client authenticates.  It can either
+      complete the handshake as a client, or interpose itself in the key
+      exchange, in which case the handshake fails, but only after the
+      credential has been exposed.
 
    *  The same holds for post-handshake attestation (Section 5.4): the
       client need not authenticate to obtain the server's new

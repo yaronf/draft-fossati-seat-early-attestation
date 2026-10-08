@@ -2355,9 +2355,11 @@ peer, whether or not that peer has authenticated.<a href="#section-9.2-2.1.1" cl
           <li class="normal" id="section-9.2-2.2">
             <p id="section-9.2-2.2.1">Attestation credentials are encrypted under the handshake traffic keys, so a
 passive on-path attacker cannot read them, unless the handshake secret is
-compromised (<a href="#pcs" class="auto internal xref">Section 8.3</a>).  An active on-path attacker, however, can complete the
-handshake as a client and obtain the server's credential, because a server
-attests before the client authenticates.<a href="#section-9.2-2.2.1" class="pilcrow">¶</a></p>
+compromised (<a href="#pcs" class="auto internal xref">Section 8.3</a>).  An active on-path attacker, however, can obtain the
+server's credential, because a server attests before the client
+authenticates.  It can either complete the handshake as a client, or
+interpose itself in the key exchange, in which case the handshake fails, but
+only after the credential has been exposed.<a href="#section-9.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-9.2-2.3">
             <p id="section-9.2-2.3.1">The same holds for post-handshake attestation (<a href="#reattestation" class="auto internal xref">Section 5.4</a>): the client
