@@ -552,18 +552,69 @@ reattestation at the TLS layer, using Extended Key Update (EKU)
 `attestation_update`, which carries a `cmw_payload` as defined in
 {{remote-attestation-extension-section}}.
 
-A peer that attested in the handshake sends `attestation_update`
-using the scheme chosen in the handshake.
+A peer that attested in the handshake MUST send `attestation_update`
+after each EKU exchange, using the scheme chosen in the handshake.
+
+~~~
+enum {
+    /* key_update_request(0), key_update_response(1),
+       key_update_finish(2) defined in {{-eku}} */
+    attestation_update(TBD4),
+    (255)
+} ExtendedKeyUpdateType;
+
+struct {
+    ExtendedKeyUpdateType eku_type;
+    select (eku_type) {
+        /* cases defined in {{-eku}} */
+        case attestation_update: {
+            opaque cmw_payload<1..2^24-1>;
+        }
+    };
+} ExtendedKeyUpdate;
+~~~
+
+~~~
+Initiator                                        Responder
+
+[EKU(key_update_request)]N      -------->
+                                <--------  [EKU(key_update_response)]N
+[EKU(key_update_finish)]N       -------->
+                 (EKU complete, N+1 in use)
+[EKU(attestation_update)]N+1    -------->
+                                <--------  [EKU(attestation_update)]N+1
+~~~
+{: #figure-reattestation title="Reattestation after EKU (DTLS ACKs omitted)"}
 
 The attester sends `attestation_update` after the EKU exchange
-completes ({{Section 10.2 of -eku}}), protected under the generation
-N+1 application traffic secrets. After the EKU exchange completes,
+completes ({{Sections 5 and 6 of -eku}}), under the N+1 application
+traffic secrets, not the old keys ({{Section 7 of -eku}}).
+After the EKU exchange completes,
 the relying party expects `attestation_update` as the next handshake
 message from the attester. If it receives any other handshake
-message, or none within a locally configured time, it aborts with a
-fatal `attestation_required` alert. If appraisal fails, it aborts
+message, it aborts with a fatal `attestation_required` alert.
+If `attestation_update` does not arrive within a locally configured
+time, the relying party aborts with a fatal `attestation_required`
+alert. If appraisal fails, it aborts
 with a fatal `attestation_failed` alert, as in {{crypto-ops}}. No
 message is sent on success.
+
+A peer that receives `attestation_update` from a peer that did not
+attest in the handshake, or before the EKU exchange completes, MUST
+abort with an `unexpected_message` alert.
+
+Reattestation does not block application data. Until the relying
+party completes appraisal of `attestation_update` or aborts with an
+alert, it continues to rely on the outcome of the previous
+successful appraisal.
+
+While reattestation is in progress, a peer MUST NOT initiate another
+EKU exchange or post-handshake client authentication
+({{Section 4.7.2 of -tls13}}). Reattestation completes at the
+attester when it sends `attestation_update` (TLS) or receives the
+ACK for it (DTLS), and at the relying party when appraisal
+completes. A peer that receives such a message MUST abort with an
+`unexpected_message` alert.
 
 The binder is derived as in {{crypto-ops}}, with
 `Transcript-Hash(ClientHello...ServerHello)` replaced by
@@ -946,6 +997,17 @@ subregistry of the "Transport Layer Security (TLS) Parameters" registry
 - Reference: [This document]
 - Comment:
 
+## TLS ExtendedKeyUpdate Message Subtypes
+
+IANA is requested to add the following entry to the "TLS
+ExtendedKeyUpdate Message Subtypes" registry established by
+{{-eku}}:
+
+- Value: TBD4
+- Description: attestation_update
+- DTLS-OK: Y
+- Reference: [This document]
+
 # Acknowledgements {#acknowledgements}
 
 We would like to thank Serhii Nikolaichuk for his implementation and review of this document.
@@ -955,6 +1017,10 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 --- back
 
 # Document History {#document-history}
+
+## draft-fossati-seat-early-attestation-09
+
+- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 
 ## draft-fossati-seat-early-attestation-08
 
