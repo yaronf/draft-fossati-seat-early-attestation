@@ -989,6 +989,10 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
+## draft-fossati-seat-early-attestation-08
+
+- Added a Privacy Considerations subsection stating that there is no expectation of privacy for attestation credentials, and pointing to possible mitigations ({{-rats-privacy}}) (#80).
+
 ## draft-fossati-seat-early-attestation-07
 
 - Added relay resistance and key substitution resistance into separate sections.
