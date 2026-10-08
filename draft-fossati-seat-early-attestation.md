@@ -552,13 +552,17 @@ reattestation at the TLS layer, using Extended Key Update (EKU)
 `attestation_update`, which carries a `cmw_payload` as defined in
 {{remote-attestation-extension-section}}.
 
-A peer that attested in the handshake MUST send `attestation_update`
-after each EKU exchange, using the scheme chosen in the handshake.
+Either peer MAY initiate EKU per its own policy. Each completed EKU
+exchange triggers reattestation: a peer that attested in the
+handshake MUST send `attestation_update`, using the scheme chosen in
+the handshake. A peer that did not attest during the handshake does
+not send `attestation_update`.
+
+This document extends `ExtendedKeyUpdateType` and `ExtendedKeyUpdate`
+({{Section 4 of -eku}}) as follows:
 
 ~~~
 enum {
-    /* key_update_request(0), key_update_response(1),
-       key_update_finish(2) defined in {{-eku}} */
     attestation_update(TBD4),
     (255)
 } ExtendedKeyUpdateType;
@@ -566,7 +570,6 @@ enum {
 struct {
     ExtendedKeyUpdateType eku_type;
     select (eku_type) {
-        /* cases defined in {{-eku}} */
         case attestation_update: {
             opaque cmw_payload<1..2^24-1>;
         }
@@ -593,9 +596,9 @@ After the EKU exchange completes,
 the relying party expects `attestation_update` as the next handshake
 message from the attester. If it receives any other handshake
 message, it aborts with a fatal `attestation_required` alert.
-If `attestation_update` does not arrive within a locally configured
-time, the relying party aborts with a fatal `attestation_required`
-alert. If appraisal fails, it aborts
+Each relying party sets a timeout, per local policy, for receiving
+`attestation_update`. On expiry, it aborts with a fatal
+`attestation_required` alert. If appraisal fails, it aborts
 with a fatal `attestation_failed` alert, as in {{crypto-ops}}. No
 message is sent on success.
 
