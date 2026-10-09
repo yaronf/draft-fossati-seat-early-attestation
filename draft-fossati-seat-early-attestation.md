@@ -622,7 +622,9 @@ EKU exchange or post-handshake client authentication
 ({{Section 4.7.2 of -tls13}}). Reattestation completes at the
 attester when it sends `attestation_update` (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
-completes. A peer that receives such a message MUST abort with an
+completes. If both peers are attesting, reattestation completes
+after both independent exchanges have completed. A peer that
+receives such a message MUST abort with an
 `unexpected_message` alert.
 
 The binder is derived as in {{crypto-ops}}, with
