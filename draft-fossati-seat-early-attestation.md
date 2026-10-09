@@ -555,8 +555,8 @@ reattestation at the TLS layer, using Extended Key Update (EKU)
 Either peer MAY initiate EKU per its own policy. Each completed EKU
 exchange triggers reattestation: a peer that attested in the
 handshake MUST send `attestation_update`, using the scheme chosen in
-the handshake. A peer that did not attest during the handshake does
-not send `attestation_update`.
+the handshake. A peer that did not attest during the handshake MUST
+NOT send `attestation_update`.
 
 Each peer waits for `attestation_update` only from a peer that
 attested in the handshake. The two `attestation_update` messages are
