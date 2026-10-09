@@ -558,6 +558,10 @@ handshake MUST send `attestation_update`, using the scheme chosen in
 the handshake. A peer that did not attest during the handshake does
 not send `attestation_update`.
 
+Each peer waits for `attestation_update` only from a peer that
+attested in the handshake. The two `attestation_update` messages are
+independent; no order between them is required.
+
 This document extends `ExtendedKeyUpdateType` and `ExtendedKeyUpdate`
 ({{Section 4 of -eku}}) as follows:
 
@@ -584,8 +588,10 @@ Initiator                                        Responder
                                 <--------  [EKU(key_update_response)]N
 [EKU(key_update_finish)]N       -------->
                  (EKU complete, N+1 in use)
-[EKU(attestation_update)]N+1    -------->
-                                <--------  [EKU(attestation_update)]N+1
+[EKU(attestation_update)]N+1*   -------->
+                                <--------  [EKU(attestation_update)]N+1*
+
+* Sent only by a peer that attested in the handshake.
 ~~~
 {: #figure-reattestation title="Reattestation after EKU (DTLS ACKs omitted)"}
 
