@@ -1056,7 +1056,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 11 April 2027</td>
+<td class="center">Expires 12 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg {
 <dd class="internet-draft">draft-fossati-seat-early-attestation-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-08" class="published">8 October 2026</time>
+<time datetime="2026-10-09" class="published">9 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-11">11 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-12">12 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1145,7 @@ This extension has been designed to allow the peers to use any attestation techn
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1883,9 +1883,12 @@ exchange triggers reattestation: a peer that attested in the
 handshake <span class="bcp14">MUST</span> send <code>attestation_update</code>, using the scheme chosen in
 the handshake. A peer that did not attest during the handshake does
 not send <code>attestation_update</code>.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
-<p id="section-5.4-4">This document extends <code>ExtendedKeyUpdateType</code> and <code>ExtendedKeyUpdate</code>
-(<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>) as follows:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4-5">
+<p id="section-5.4-4">Each peer waits for <code>attestation_update</code> only from a peer that
+attested in the handshake. The two <code>attestation_update</code> messages are
+independent; no order between them is required.<a href="#section-5.4-4" class="pilcrow">¶</a></p>
+<p id="section-5.4-5">This document extends <code>ExtendedKeyUpdateType</code> and <code>ExtendedKeyUpdate</code>
+(<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>) as follows:<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4-6">
 <pre>
 enum {
     attestation_update(TBD4),
@@ -1900,11 +1903,11 @@ struct {
         }
     };
 } ExtendedKeyUpdate;
-</pre><a href="#section-5.4-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.4-6" class="pilcrow">¶</a>
 </div>
 <span id="name-reattestation-after-eku-dtl"></span><div id="_figure-reattestation">
 <figure id="figure-3">
-          <div class="alignLeft art-text artwork" id="section-5.4-6.1">
+          <div class="alignLeft art-text artwork" id="section-5.4-7.1">
 <pre>
 Initiator                                        Responder
 
@@ -1912,15 +1915,17 @@ Initiator                                        Responder
                                 &lt;--------  [EKU(key_update_response)]N
 [EKU(key_update_finish)]N       --------&gt;
                  (EKU complete, N+1 in use)
-[EKU(attestation_update)]N+1    --------&gt;
-                                &lt;--------  [EKU(attestation_update)]N+1
+[EKU(attestation_update)]N+1*   --------&gt;
+                                &lt;--------  [EKU(attestation_update)]N+1*
+
+* Sent only by a peer that attested in the handshake.
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-reattestation-after-eku-dtl" class="selfRef">Reattestation after EKU (DTLS ACKs omitted)</a>
           </figcaption></figure>
 </div>
-<p id="section-5.4-7">The attester sends <code>attestation_update</code> after the EKU exchange
+<p id="section-5.4-8">The attester sends <code>attestation_update</code> after the EKU exchange
 completes (Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-5" class="relref">5</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-6" class="relref">6</a> of <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>), under the N+1 application
 traffic secrets, not the old keys (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>).
 After the EKU exchange completes,
@@ -1931,25 +1936,25 @@ Each relying party sets a timeout, per local policy, for receiving
 <code>attestation_update</code>. On expiry, it aborts with a fatal
 <code>attestation_required</code> alert. If appraisal fails, it aborts
 with a fatal <code>attestation_failed</code> alert, as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>. No
-message is sent on success.<a href="#section-5.4-7" class="pilcrow">¶</a></p>
-<p id="section-5.4-8">A peer that receives <code>attestation_update</code> from a peer that did not
+message is sent on success.<a href="#section-5.4-8" class="pilcrow">¶</a></p>
+<p id="section-5.4-9">A peer that receives <code>attestation_update</code> from a peer that did not
 attest in the handshake, or before the EKU exchange completes, <span class="bcp14">MUST</span>
-abort with an <code>unexpected_message</code> alert.<a href="#section-5.4-8" class="pilcrow">¶</a></p>
-<p id="section-5.4-9">Reattestation does not block application data. Until the relying
+abort with an <code>unexpected_message</code> alert.<a href="#section-5.4-9" class="pilcrow">¶</a></p>
+<p id="section-5.4-10">Reattestation does not block application data. Until the relying
 party completes appraisal of <code>attestation_update</code> or aborts with an
 alert, it continues to rely on the outcome of the previous
-successful appraisal.<a href="#section-5.4-9" class="pilcrow">¶</a></p>
-<p id="section-5.4-10">While reattestation is in progress, a peer <span class="bcp14">MUST NOT</span> initiate another
+successful appraisal.<a href="#section-5.4-10" class="pilcrow">¶</a></p>
+<p id="section-5.4-11">While reattestation is in progress, a peer <span class="bcp14">MUST NOT</span> initiate another
 EKU exchange or post-handshake client authentication
 (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.7.2" class="relref">Section 4.7.2</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>). Reattestation completes at the
 attester when it sends <code>attestation_update</code> (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
 completes. A peer that receives such a message <span class="bcp14">MUST</span> abort with an
-<code>unexpected_message</code> alert.<a href="#section-5.4-10" class="pilcrow">¶</a></p>
-<p id="section-5.4-11">The binder is derived as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
+<code>unexpected_message</code> alert.<a href="#section-5.4-11" class="pilcrow">¶</a></p>
+<p id="section-5.4-12">The binder is derived as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
 <code>Transcript-Hash(ClientHello...ServerHello)</code> replaced by
-<code>transcript_hash_N+1</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>):<a href="#section-5.4-11" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4-12">
+<code>transcript_hash_N+1</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>):<a href="#section-5.4-12" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4-13">
 <pre>
 attest_base_N+1 = HKDF-Expand-Label(0, "attestation base",
                       transcript_hash_N+1, Hash.length)
@@ -1958,9 +1963,9 @@ c_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
                       Hash(TLS_Client_Public_Key), Hash.length)
 s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
                       Hash(TLS_Server_Public_Key), Hash.length)
-</pre><a href="#section-5.4-12" class="pilcrow">¶</a>
+</pre><a href="#section-5.4-13" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-13"><code>transcript_hash_N+1</code> covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.<a href="#section-5.4-13" class="pilcrow">¶</a></p>
+<p id="section-5.4-14"><code>transcript_hash_N+1</code> covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.<a href="#section-5.4-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
