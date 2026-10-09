@@ -1927,11 +1927,9 @@ Initiator                                        Responder
 <p id="section-5.4-8">The attester sends <code>attestation_update</code> after the EKU exchange
 completes (Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-5" class="relref">5</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-6" class="relref">6</a> of <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>), under the N+1 application
 traffic secrets, not the old keys (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>).
-After the EKU exchange completes,
-the relying party expects <code>attestation_update</code> as the next handshake
-message from the attester. If it receives any other handshake
-message, it aborts with a fatal <code>attestation_required</code> alert.
-Each relying party sets a timeout, per local policy, for receiving
+After the EKU exchange completes, the relying party expects
+<code>attestation_update</code> from the attester. Each relying party sets a
+timeout, per local policy, for receiving
 <code>attestation_update</code>. On expiry, it aborts with a fatal
 <code>attestation_required</code> alert. If appraisal fails, it aborts
 with a fatal <code>attestation_failed</code> alert, as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>. No

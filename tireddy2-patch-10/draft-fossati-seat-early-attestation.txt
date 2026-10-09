@@ -749,11 +749,9 @@ Initiator                                        Responder
    completes (Sections 5 and 6 of [I-D.ietf-tls-extended-key-update]),
    under the N+1 application traffic secrets, not the old keys
    (Section 7 of [I-D.ietf-tls-extended-key-update]).  After the EKU
-   exchange completes, the relying party expects attestation_update as
-   the next handshake message from the attester.  If it receives any
-   other handshake message, it aborts with a fatal attestation_required
-   alert.  Each relying party sets a timeout, per local policy, for
-   receiving attestation_update.  On expiry, it aborts with a fatal
+   exchange completes, the relying party expects attestation_update from
+   the attester.  Each relying party sets a timeout, per local policy,
+   for receiving attestation_update.  On expiry, it aborts with a fatal
    attestation_required alert.  If appraisal fails, it aborts with a
    fatal attestation_failed alert, as in Section 5.1.  No message is
    sent on success.
