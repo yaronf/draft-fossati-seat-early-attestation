@@ -771,8 +771,10 @@ Initiator                                        Responder
    EKU exchange or post-handshake client authentication (Section 4.7.2
    of [RFC9846]).  Reattestation completes at the attester when it sends
    attestation_update (TLS) or receives the ACK for it (DTLS), and at
-   the relying party when appraisal completes.  A peer that receives
-   such a message MUST abort with an unexpected_message alert.
+   the relying party when appraisal completes.  If both peers are
+   attesting, reattestation completes after both independent exchanges
+   have completed.  A peer that receives such a message MUST abort with
+   an unexpected_message alert.
 
    The binder is derived as in Section 5.1, with Transcript-
    Hash(ClientHello...ServerHello) replaced by transcript_hash_N+1

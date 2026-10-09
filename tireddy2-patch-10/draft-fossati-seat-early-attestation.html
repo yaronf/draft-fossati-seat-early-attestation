@@ -1948,7 +1948,9 @@ EKU exchange or post-handshake client authentication
 (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.7.2" class="relref">Section 4.7.2</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>). Reattestation completes at the
 attester when it sends <code>attestation_update</code> (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
-completes. A peer that receives such a message <span class="bcp14">MUST</span> abort with an
+completes. If both peers are attesting, reattestation completes
+after both independent exchanges have completed. A peer that
+receives such a message <span class="bcp14">MUST</span> abort with an
 <code>unexpected_message</code> alert.<a href="#section-5.4-11" class="pilcrow">¶</a></p>
 <p id="section-5.4-12">The binder is derived as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
 <code>Transcript-Hash(ClientHello...ServerHello)</code> replaced by
