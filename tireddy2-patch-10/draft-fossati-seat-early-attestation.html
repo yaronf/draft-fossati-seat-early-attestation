@@ -1877,7 +1877,8 @@ all be measured and reported as part of the platform's remote attestation.<a hre
 reattestation at the TLS layer, using Extended Key Update (EKU)
 <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>. This document defines a new <code>ExtendedKeyUpdate</code> subtype,
 <code>attestation_update</code>, which carries a <code>cmw_payload</code> as defined in
-<a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+<a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>. Reattestation is available
+only when EKU is also negotiated.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4-3">Either peer <span class="bcp14">MAY</span> initiate EKU per its own policy. Each completed EKU
 exchange triggers reattestation: a peer that attested in the
 handshake <span class="bcp14">MUST</span> send <code>attestation_update</code>, using the scheme chosen in
@@ -1947,9 +1948,13 @@ EKU exchange or post-handshake client authentication
 attester when it sends <code>attestation_update</code> (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
 completes. If both peers are attesting, reattestation completes
-after both independent exchanges have completed. A peer that
-receives such a message <span class="bcp14">MUST</span> abort with an
-<code>unexpected_message</code> alert.<a href="#section-5.4-11" class="pilcrow">¶</a></p>
+after both independent exchanges have completed. A relying party
+that receives <code>key_update_request</code> or <code>CertificateRequest</code> before
+its appraisal completes defers its response until appraisal
+completes (Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-5" class="relref">5</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-6" class="relref">6</a> of <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>, <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.7.2" class="relref">Section 4.7.2</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>).
+An attester that receives <code>key_update_request</code> or
+<code>CertificateRequest</code> before it has sent <code>attestation_update</code> <span class="bcp14">MUST</span>
+abort with an <code>unexpected_message</code> alert.<a href="#section-5.4-11" class="pilcrow">¶</a></p>
 <p id="section-5.4-12">The binder is derived as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
 <code>Transcript-Hash(ClientHello...ServerHello)</code> replaced by
 <code>transcript_hash_N+1</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>):<a href="#section-5.4-12" class="pilcrow">¶</a></p>

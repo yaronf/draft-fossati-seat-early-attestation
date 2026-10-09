@@ -703,7 +703,8 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    reattestation at the TLS layer, using Extended Key Update (EKU)
    [I-D.ietf-tls-extended-key-update].  This document defines a new
    ExtendedKeyUpdate subtype, attestation_update, which carries a
-   cmw_payload as defined in Section 4.1.
+   cmw_payload as defined in Section 4.1.  Reattestation is available
+   only when EKU is also negotiated.
 
    Either peer MAY initiate EKU per its own policy.  Each completed EKU
    exchange triggers reattestation: a peer that attested in the
@@ -771,8 +772,13 @@ Initiator                                        Responder
    attestation_update (TLS) or receives the ACK for it (DTLS), and at
    the relying party when appraisal completes.  If both peers are
    attesting, reattestation completes after both independent exchanges
-   have completed.  A peer that receives such a message MUST abort with
-   an unexpected_message alert.
+   have completed.  A relying party that receives key_update_request or
+   CertificateRequest before its appraisal completes defers its response
+   until appraisal completes (Sections 5 and 6 of
+   [I-D.ietf-tls-extended-key-update], Section 4.7.2 of [RFC9846]).  An
+   attester that receives key_update_request or CertificateRequest
+   before it has sent attestation_update MUST abort with an
+   unexpected_message alert.
 
    The binder is derived as in Section 5.1, with Transcript-
    Hash(ClientHello...ServerHello) replaced by transcript_hash_N+1
