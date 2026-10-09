@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 11 April 2027                                      Y. Deshpande
+Expires: 12 April 2027                                      Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          8 October 2026
+                                                          9 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 April 2027.
+   This Internet-Draft will expire on 12 April 2027.
 
 Copyright Notice
 
@@ -541,7 +541,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    // Possibly as a (new) conceptual message (CM) within a collection.
    // This would provide the Verifier whatever information it cannot
    // compute on its own, while not forcing the TLS stack to parse the
-   // Evidence.
+   // Evidence.  The same conveyance is needed when the Evidence is
+   // encrypted to the Verifier and the RP cannot read it (see
+   // {{attcreds-privacy}}).
 
 5.1.3.  Security Properties
 
@@ -1274,7 +1276,11 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    *  The same holds for post-handshake attestation (Section 5.4): the
       client need not authenticate to obtain the server's new
       attestation credential, which may differ from the one exchanged in
-      the initial handshake.
+      the initial handshake.  Moreover, an active attacker holding the
+      current traffic keys can substitute the key shares of an Extended
+      Key Update (Section 8.3) and obtain the new credential.  The
+      binder mismatch is detected, but only after the credential has
+      been exposed.
 
    Authenticating the peer does not by itself solve the problem: an
    authenticated peer can still disclose the Claims it receives.
@@ -1283,15 +1289,18 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    complete (or observe) the handshake.
 
    Attesters that need to convey privacy-sensitive Claims should limit
-   what the peer acting as RP learns.  The extreme case is to hide all
-   the Claims: the credential is encrypted to its intended consumer (for
-   example, the Verifier when the RP only forwards Evidence),
+   what the peer acting as RP learns.  For Evidence, the extreme case is
+   to hide all the Claims: the Evidence is encrypted to the Verifier,
    independently of the TLS handshake keys, using a public key that the
-   sender learns out of band (Section 4.2 of
-   [I-D.ounsworth-rats-privacy-framework]).  Less extreme cases reveal
-   only the Claims that the RP's policy needs, using minimization,
-   selective disclosure, or zero-knowledge proofs (Sections 4.3, 4.4 and
-   4.5 of [I-D.ounsworth-rats-privacy-framework]).  In both cases the
+   Attester learns out of band (Section 4.2 of
+   [I-D.ounsworth-rats-privacy-framework]).  If the RP cannot read the
+   Evidence, it cannot check the binder or the TIK hash itself: it
+   conveys them to the Verifier, and checks that the signed Attestation
+   Results carry the matching values.  For Attestation Results, the
+   Verifier can reveal only the Claims that the RP's policy needs, using
+   minimization, selective disclosure, or zero-knowledge proofs
+   (Sections 4.3, 4.4 and 4.5 of
+   [I-D.ounsworth-rats-privacy-framework]).  In both cases the
    protection can be applied in either direction.  Encrypting to a key
    learned out of band requires work to define how such a key is
    published and bound to the intended recipient, which is out of scope
