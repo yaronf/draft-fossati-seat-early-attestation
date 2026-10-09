@@ -446,7 +446,9 @@ attestation as invalid.
 <cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
 as a (new) conceptual message (CM) within a collection. This would provide
 the Verifier whatever information it cannot compute on its own, while
-not forcing the TLS stack to parse the Evidence.</cref>
+not forcing the TLS stack to parse the Evidence.  The same conveyance is needed
+when the Evidence is encrypted to the Verifier and the RP cannot read it
+(see {{attcreds-privacy}}).</cref>
 
 ### Security Properties
 
@@ -908,7 +910,7 @@ this exposure and offer mitigations.
 
 See {{-rats-privacy}} for a broader treatment of privacy in the RATS context.
 
-## No Expectation of Privacy for Attestation Credentials
+## No Expectation of Privacy for Attestation Credentials {#attcreds-privacy}
 
 This document does not provide confidentiality or privacy for attestation
 credentials (i.e., Evidence and Attestation Results) with respect to the peer
@@ -925,7 +927,10 @@ or to the network.  Specifically:
   only after the credential has been exposed.
 * The same holds for post-handshake attestation ({{reattestation}}): the client
   need not authenticate to obtain the server's new attestation credential,
-  which may differ from the one exchanged in the initial handshake.
+  which may differ from the one exchanged in the initial handshake.  Moreover,
+  an active attacker holding the current traffic keys can substitute the key
+  shares of an Extended Key Update ({{pcs}}) and obtain the new credential.  The
+  binder mismatch is detected, but only after the credential has been exposed.
 
 Authenticating the peer does not by itself solve the problem: an authenticated
 peer can still disclose the Claims it receives.
@@ -934,16 +939,18 @@ Claims that are acceptable to disclose to any party able to complete (or
 observe) the handshake.
 
 Attesters that need to convey privacy-sensitive Claims should limit what the
-peer acting as RP learns.  The extreme case is to hide all the Claims: the
-credential is encrypted to its intended consumer (for example, the Verifier
-when the RP only forwards Evidence), independently of the TLS handshake keys,
-using a public key that the sender learns out of band ({{Section 4.2 of
--rats-privacy}}).  Less extreme cases reveal only the Claims that the RP's
-policy needs, using minimization, selective disclosure, or zero-knowledge
-proofs ({{Sections 4.3, 4.4 and 4.5 of -rats-privacy}}). In both cases the
-protection can be applied in either direction.  Encrypting to a key learned out
-of band requires work to define how such a key is published and bound to the
-intended recipient, which is out of scope for this document.
+peer acting as RP learns.  For Evidence, the extreme case is to hide all the
+Claims: the Evidence is encrypted to the Verifier, independently of the TLS
+handshake keys, using a public key that the Attester learns out of band
+({{Section 4.2 of -rats-privacy}}).  If the RP cannot read the Evidence, it
+cannot check the binder or the TIK hash itself: it conveys them to the
+Verifier, and checks that the signed Attestation Results carry the matching
+values.  For Attestation Results, the Verifier can reveal only the Claims that
+the RP's policy needs, using minimization, selective disclosure, or
+zero-knowledge proofs ({{Sections 4.3, 4.4 and 4.5 of -rats-privacy}}).  In
+both cases the protection can be applied in either direction.  Encrypting to a
+key learned out of band requires work to define how such a key is published and
+bound to the intended recipient, which is out of scope for this document.
 
 # IANA Considerations
 
