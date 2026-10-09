@@ -550,7 +550,8 @@ Similarly to the initial handshake, Early Attestation implements
 reattestation at the TLS layer, using Extended Key Update (EKU)
 {{-eku}}. This document defines a new `ExtendedKeyUpdate` subtype,
 `attestation_update`, which carries a `cmw_payload` as defined in
-{{remote-attestation-extension-section}}.
+{{remote-attestation-extension-section}}. Reattestation is available
+only when EKU is also negotiated.
 
 Either peer MAY initiate EKU per its own policy. Each completed EKU
 exchange triggers reattestation: a peer that attested in the
@@ -621,9 +622,13 @@ EKU exchange or post-handshake client authentication
 attester when it sends `attestation_update` (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
 completes. If both peers are attesting, reattestation completes
-after both independent exchanges have completed. A peer that
-receives such a message MUST abort with an
-`unexpected_message` alert.
+after both independent exchanges have completed. A relying party
+that receives `key_update_request` or `CertificateRequest` before
+its appraisal completes defers its response until appraisal
+completes ({{Sections 5 and 6 of -eku}}, {{Section 4.7.2 of -tls13}}).
+An attester that receives `key_update_request` or
+`CertificateRequest` before it has sent `attestation_update` MUST
+abort with an `unexpected_message` alert.
 
 The binder is derived as in {{crypto-ops}}, with
 `Transcript-Hash(ClientHello...ServerHello)` replaced by
