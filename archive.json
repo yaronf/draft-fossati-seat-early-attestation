@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-08T04:30:49.674646+00:00",
+  "timestamp": "2026-10-11T04:00:13.143370+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -7507,18 +7507,33 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-02T05:17:02Z",
-      "updatedAt": "2026-10-05T05:43:25Z",
+      "updatedAt": "2026-10-10T17:59:38Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-10",
-      "headRefOid": "d096e2fa02fbbceb2e8b2fd623928c31d4b0f9c1",
+      "headRefOid": "621f74f576f87243757bc246d3380da1bf166959",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This may be obvious, but probably worth stating it explicitly anyway: attestation negotiated without EKU means no reattestation.",
+          "createdAt": "2026-10-09T11:26:50Z",
+          "updatedAt": "2026-10-09T11:26:50Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This may be obvious, but probably worth stating it explicitly anyway: attestation negotiated without EKU means no reattestation.\r\n\r\nAdded: reattestation is available only when EKU is also negotiated.",
+          "createdAt": "2026-10-09T12:00:30Z",
+          "updatedAt": "2026-10-09T12:00:30Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOQdsaoc8AAAABQUrTKg",
@@ -8007,6 +8022,908 @@
               "updatedAt": "2026-10-05T05:43:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRRTMSQ",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T08:41:22Z",
+          "updatedAt": "2026-10-08T08:41:22Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "Updated. ",
+              "createdAt": "2026-10-08T08:41:22Z",
+              "updatedAt": "2026-10-08T08:41:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRSkCvQ",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-10-08T10:37:07Z",
+          "updatedAt": "2026-10-08T11:59:02Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "You just added one!",
+              "createdAt": "2026-10-08T10:37:07Z",
+              "updatedAt": "2026-10-08T11:59:02Z"
+            },
+            {
+              "originalPosition": 73,
+              "body": "Say something about each peer is able to initiate, per its own policy.\n\nAlso, often one of the peers does not attest. Do we allow for an empty message?",
+              "createdAt": "2026-10-08T10:40:28Z",
+              "updatedAt": "2026-10-08T11:59:02Z"
+            },
+            {
+              "originalPosition": 104,
+              "body": "Both peers MUST establish a timeout to ensure the exchange completes.",
+              "createdAt": "2026-10-08T11:26:29Z",
+              "updatedAt": "2026-10-08T11:59:02Z"
+            },
+            {
+              "originalPosition": 116,
+              "body": "Please verify and mention that each transcript includes the previous round's reattestation messages, otherwise we could get divergence (multiple parallel connections).",
+              "createdAt": "2026-10-08T11:29:59Z",
+              "updatedAt": "2026-10-08T11:59:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRT8YwQ",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T12:42:37Z",
+          "updatedAt": "2026-10-08T12:42:38Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "Can it be a locally configured timeout? Or is that included in what you mean?",
+              "createdAt": "2026-10-08T12:42:37Z",
+              "updatedAt": "2026-10-08T12:42:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUCU5Q",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T12:50:31Z",
+          "updatedAt": "2026-10-08T12:50:31Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "No idea. I think it's \"per local policy\", i.e. left to the implementation.",
+              "createdAt": "2026-10-08T12:50:31Z",
+              "updatedAt": "2026-10-08T12:50:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUdWig",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T13:23:55Z",
+          "updatedAt": "2026-10-08T13:23:55Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "Fixed. The enum and struct now list only attestation_update.",
+              "createdAt": "2026-10-08T13:23:55Z",
+              "updatedAt": "2026-10-08T13:23:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUd4fw",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T13:24:32Z",
+          "updatedAt": "2026-10-08T13:24:33Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "EKU is the trigger. Either peer initiates EKU per its own policy, and each peer that attested in the handshake sends attestation_update after it. A peer that did not attest sends nothing, so no empty message.",
+              "createdAt": "2026-10-08T13:24:32Z",
+              "updatedAt": "2026-10-08T13:24:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUeOWw",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T13:24:56Z",
+          "updatedAt": "2026-10-08T13:24:57Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "Added. Each relying party sets a timeout per local policy for receiving attestation_update.",
+              "createdAt": "2026-10-08T13:24:57Z",
+              "updatedAt": "2026-10-08T13:24:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUfkvA",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T13:26:31Z",
+          "updatedAt": "2026-10-08T13:26:31Z",
+          "comments": [
+            {
+              "originalPosition": 116,
+              "body": "transcript_hash_N+1 (see Section 7 of EKU) covers the initial handshake and all prior EKU request/response pairs, not attestation_update. Including it would change the EKU key schedule, which we want to avoid. It is not needed: the chain to the initial handshake makes each binder unique per connection, and attestation_update is integrity protected under the N+1 keys.\r\n\r\n",
+              "createdAt": "2026-10-08T13:26:31Z",
+              "updatedAt": "2026-10-08T13:26:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRU7dig",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:00:22Z",
+          "updatedAt": "2026-10-08T14:00:23Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "```suggestion\n`transcript_hash_N+1` covers the initial handshake, all prior EKU exchanges (including prior reattestation payloads), and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.\n```",
+              "createdAt": "2026-10-08T14:00:22Z",
+              "updatedAt": "2026-10-08T14:00:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRU-c1A",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:03:54Z",
+          "updatedAt": "2026-10-08T14:03:54Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "No, that doesn't work. Suppose C initiates EKU but it's also C that needs to send Evidence. It will never get a response from S and the round trip would not complete. What am I missing?",
+              "createdAt": "2026-10-08T14:03:54Z",
+              "updatedAt": "2026-10-08T14:03:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRVBRxQ",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:07:10Z",
+          "updatedAt": "2026-10-08T14:07:11Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "Unless you're saying that both C and S decide *independently* to send att_update. But that's very different from the normal TLS state management.",
+              "createdAt": "2026-10-08T14:07:11Z",
+              "updatedAt": "2026-10-08T14:07:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRVMABw",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:19:22Z",
+          "updatedAt": "2026-10-08T14:19:22Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "To clarify what I'm proposing:\n\nLet's make it a strict request/response after EKU (initiator attestation_update, then responder attestation_update), every time. If a peer has nothing to offer this round, send empty cmw_payload\u2014not \u201csend nothing.\u201d Empty is unrelated to appraisal (failure still = alert).\n\nThat keeps one state machine and covers one-sided attestation without special cases.",
+              "createdAt": "2026-10-08T14:19:22Z",
+              "updatedAt": "2026-10-08T14:19:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRVWlKA",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:30:24Z",
+          "updatedAt": "2026-10-08T14:30:25Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "transcript_hash_N+1 is derived immediately after EKU completes, any update to transcript_hash_N+1 is out of scope of this draft and SEAT. ",
+              "createdAt": "2026-10-08T14:30:24Z",
+              "updatedAt": "2026-10-08T14:30:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRVgouA",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T14:41:42Z",
+          "updatedAt": "2026-10-08T14:41:42Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "There is no round trip to complete. EKU completes on its own; attestation_update is a one-way message, like NewSessionTicket or KeyUpdate) in TLS 1.3. Each attesting peer sends it after EKU, independent of who initiated. The relying party alerts on failure, as in the initial handshake, and its timeout covers a missing message.",
+              "createdAt": "2026-10-08T14:41:42Z",
+              "updatedAt": "2026-10-08T14:41:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRVzaZQ",
+          "commit": {
+            "abbreviatedOid": "dc096c1"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T15:03:32Z",
+          "updatedAt": "2026-10-08T15:03:32Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "Of course. The question is if by default, *all* handshake messages are covered. If so then the previous round's reattestation round trip would be covered, too. If not, I think we have a problem.",
+              "createdAt": "2026-10-08T15:03:32Z",
+              "updatedAt": "2026-10-08T15:03:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRV_ypg",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T15:16:16Z",
+          "updatedAt": "2026-10-08T15:16:17Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "OK \u2014 one-way / independent sends is workable. Please make the draft match that: the figure should not always show both attestation_updates (mark the second optional, or add a one-attester case), and say explicitly that each peer waits only for a peer that attested in the handshake, with no required send order between the two.\r\n\r\nIn addition, we need to ensure that these messages are somehow covered by the binder, and the fact that they are now sent in undefined order does not make it easier.",
+              "createdAt": "2026-10-08T15:16:16Z",
+              "updatedAt": "2026-10-08T15:16:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRZE8DQ",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T19:54:19Z",
+          "updatedAt": "2026-10-08T19:54:19Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "On second thought, I agree that neither the transcript hash nor the binder need to bind to the att_update messages. Thus one way messages don't cause any issue.\r\n\r\nThe first part of my previous comment still holds: the draft (and especially the diagram) need to clarify this behavior.",
+              "createdAt": "2026-10-08T19:54:19Z",
+              "updatedAt": "2026-10-08T19:54:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRcx_SA",
+          "commit": {
+            "abbreviatedOid": "3bad39e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T05:17:11Z",
+          "updatedAt": "2026-10-09T05:17:11Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "No. EKU's transcript covers only key_update_request and key_update_response. As you note on the other thread, binding attestation_update is not needed. \r\n\r\nI checked the following security properties: \r\n\r\n1. Freshness: each binder is derived from transcript_hash_N+1, which chains to the initial handshake and includes fresh EKU key shares, so it is unique per connection and generation.\r\n2. Integrity: attestation_update is protected under the N+1 traffic keys, which are derived from transcript_hash_N+1.\r\n3. Replay: an earlier attestation_update is bound to an older transcript hash, so its binder fails.\r\n4. Order: each attestation_update binds only to transcript_hash_N+1 and its sender's public key (c_ or s_ binder), so the two messages are independent of each other.\r\n5. MiTM: An attacker holding the N keys can substitute key shares, so the peers derive different transcript_hash_N+1 values. The binder in attestation_update comes from the attester's transcript_hash_N+1 and is signed by the Attesting Environment; the relying party computes it from its own. A substitution causes a binder mismatch and attestation_failed.\r\n",
+              "createdAt": "2026-10-09T05:17:11Z",
+              "updatedAt": "2026-10-09T05:17:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRekryg",
+          "commit": {
+            "abbreviatedOid": "b16ca8b"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thank you, Tiru!",
+          "createdAt": "2026-10-09T08:50:48Z",
+          "updatedAt": "2026-10-09T09:07:09Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "```suggestion\nthe handshake. A peer that did not attest during the handshake MUST\nNOT send `attestation_update`.\n```",
+              "createdAt": "2026-10-09T08:50:48Z",
+              "updatedAt": "2026-10-09T09:07:09Z"
+            },
+            {
+              "originalPosition": 94,
+              "body": "> After the EKU exchange completes, the relying party expects `attestation_update` as the next handshake message from the attester.\n\nI agree with this, but is there some resolution as to what happens if multiple EKU extensions ask for the same thing?",
+              "createdAt": "2026-10-09T08:55:07Z",
+              "updatedAt": "2026-10-09T09:07:09Z"
+            },
+            {
+              "originalPosition": 117,
+              "body": "This omits the mutual attestation case, where the first attester to send would assume reattestation finished sooner. Proposed change below.\n```suggestion\nWhile reattestation is in progress, a peer MUST NOT initiate another\nEKU exchange or post-handshake client authentication\n({{Section 4.7.2 of -tls13}}). Reattestation completes at the\nattester when it sends `attestation_update` (TLS) or receives the\nACK for it (DTLS), and at the relying party when appraisal\ncompletes. If both peers are attesting, reattestation completes\nafter both independent exchanges have completed. A peer that\nreceives such a message MUST abort with an\n`unexpected_message` alert.\n```",
+              "createdAt": "2026-10-09T09:01:14Z",
+              "updatedAt": "2026-10-09T09:07:09Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "Note that, because reattestation is done immediately after EKU (so before any other authentication step takes place), an attacker that has the keys for N can take over the connection, perform EKU + reattestation, and get the new Evidence, since the attester would not know it's not talking to the original peer. Even the attestation step doesn't help, because order is not mandated, so the attacker can wait and never send any Evidence.",
+              "createdAt": "2026-10-09T09:06:02Z",
+              "updatedAt": "2026-10-09T09:07:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRfDQXQ",
+          "commit": {
+            "abbreviatedOid": "b16ca8b"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T09:39:22Z",
+          "updatedAt": "2026-10-09T09:39:22Z",
+          "comments": [
+            {
+              "originalPosition": 145,
+              "body": "Evidence confidentiality is not a goal. Any peer, even an authenticated one, can disclose the Claims (see [PR #82](https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/82)). The relying party detects the substitution via the binder check.",
+              "createdAt": "2026-10-09T09:39:22Z",
+              "updatedAt": "2026-10-09T09:39:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRfDwxQ",
+          "commit": {
+            "abbreviatedOid": "b16ca8b"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T09:40:15Z",
+          "updatedAt": "2026-10-09T09:40:15Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Good point, how about something like:\r\n\r\nAfter the EKU exchange completes, the relying party expects `attestation_update` from the attester. Each relying party sets a timeout, per local policy, for receiving `attestation_update`.",
+              "createdAt": "2026-10-09T09:40:15Z",
+              "updatedAt": "2026-10-09T09:40:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRfHN3w",
+          "commit": {
+            "abbreviatedOid": "b16ca8b"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T09:46:03Z",
+          "updatedAt": "2026-10-09T09:46:03Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Sure, that sounds good!",
+              "createdAt": "2026-10-09T09:46:03Z",
+              "updatedAt": "2026-10-09T09:46:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRfTspg",
+          "commit": {
+            "abbreviatedOid": "b16ca8b"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T10:07:07Z",
+          "updatedAt": "2026-10-09T10:07:07Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Fixed. ",
+              "createdAt": "2026-10-09T10:07:07Z",
+              "updatedAt": "2026-10-09T10:07:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRffZRQ",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-09T10:27:39Z",
+          "updatedAt": "2026-10-09T10:27:39Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRf6GEg",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:12:49Z",
+          "updatedAt": "2026-10-09T11:12:49Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "At L606-607, we state that success is silent and evaluated unilaterally; therefore, the attester does not know whether the RP has completed the end-to-end RA flow or is still waiting for the attestation result from the verifier.  Now, imagine that the attester starts a new re-attestation while in this indefinite state.  Would this not abort the connection with an `unexpected_message` alert?",
+              "createdAt": "2026-10-09T11:12:49Z",
+              "updatedAt": "2026-10-09T11:27:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRf6bwA",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:13:22Z",
+          "updatedAt": "2026-10-09T11:13:22Z",
+          "comments": [
+            {
+              "originalPosition": 116,
+              "body": "can you clarify what message is intended in _\"such a message\"_?",
+              "createdAt": "2026-10-09T11:13:22Z",
+              "updatedAt": "2026-10-09T11:13:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRf8xgg",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:17:40Z",
+          "updatedAt": "2026-10-09T11:17:40Z",
+          "comments": [
+            {
+              "originalPosition": 91,
+              "body": "I am confused.  Section 5 of eku-13 says:\n\n> _\"Both initiator and responder MUST encrypt their ExtendedKeyUpdate messages using the old keys.\"_",
+              "createdAt": "2026-10-09T11:17:40Z",
+              "updatedAt": "2026-10-09T11:17:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRf_Mlg",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:21:59Z",
+          "updatedAt": "2026-10-09T11:21:59Z",
+          "comments": [
+            {
+              "originalPosition": 96,
+              "body": "maybe worth minting a different codepoint (e.g., `attestation_expected`) rather than overloading the one used for negotiation failure.",
+              "createdAt": "2026-10-09T11:21:59Z",
+              "updatedAt": "2026-10-09T11:28:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgCzaw",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "some more comments inline",
+          "createdAt": "2026-10-09T11:28:33Z",
+          "updatedAt": "2026-10-09T11:28:33Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgNVgQ",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:47:09Z",
+          "updatedAt": "2026-10-09T11:47:09Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "Good catch. The relying party now defers its response to key_update_request or CertificateRequest until appraisal completes; both EKU (Sections 5 and 6) and TLS 1.3 (Section 4.7.2) allow the response to be delayed.",
+              "createdAt": "2026-10-09T11:47:09Z",
+              "updatedAt": "2026-10-09T11:47:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgTuZw",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:57:09Z",
+          "updatedAt": "2026-10-09T11:57:10Z",
+          "comments": [
+            {
+              "originalPosition": 116,
+              "body": "Clarified: the messages are key_update_request and CertificateRequest. The relying party defers its response until appraisal completes; the attester aborts with unexpected_message if it receives one before sending attestation_update.",
+              "createdAt": "2026-10-09T11:57:09Z",
+              "updatedAt": "2026-10-09T11:57:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgUkeA",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T11:58:41Z",
+          "updatedAt": "2026-10-09T11:58:41Z",
+          "comments": [
+            {
+              "originalPosition": 96,
+              "body": "I'd prefer to reuse attestation_required: in both cases the peer requires attestation and does not receive it.",
+              "createdAt": "2026-10-09T11:58:41Z",
+              "updatedAt": "2026-10-09T11:58:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgVbJw",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T12:00:08Z",
+          "updatedAt": "2026-10-09T12:00:08Z",
+          "comments": [
+            {
+              "originalPosition": 96,
+              "body": "WFM, the context in which they appear is sufficiently far apart.",
+              "createdAt": "2026-10-09T12:00:08Z",
+              "updatedAt": "2026-10-09T12:00:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgYAcQ",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T12:04:32Z",
+          "updatedAt": "2026-10-09T12:04:33Z",
+          "comments": [
+            {
+              "originalPosition": 91,
+              "body": "That rule applies to the subtypes EKU defines. New subtypes define their own processing; this draft specifies that attestation_update is sent after EKU completes, under the N+1 keys.",
+              "createdAt": "2026-10-09T12:04:33Z",
+              "updatedAt": "2026-10-09T12:04:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRgvvpg",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T12:42:14Z",
+          "updatedAt": "2026-10-09T12:42:14Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "A number for this timeout, from measurements on today's hosts.\n\nThe report that carries the N+1 binder cannot be requested before the EKU exchange is underway: the binder is derived from\n`transcript_hash_N+1`, which includes `key_update_response` (Section 7 of EKU). So on every reattestation the hardware report\nsits between the end of the EKU exchange and the appraisal.\n\nWhat a fresh report costs the attester, measured on fresh VMs, 200 back-to-back requests each carrying a distinct 64-byte value\n(method, limits and raw data: [REPORT-RATE.md](https://github.com/nikolaichuk7/tacra-est/blob/ca4de514996c0e78ddba75b602508ca238ddbc74/docs/REPORT-RATE.md),\n[RUNTIME-COST.md](https://github.com/nikolaichuk7/hatls/blob/2a5c92a/docs/RUNTIME-COST.md)):\n\n- AWS SEV-SNP (c6a.large): about 7 ms, no stall in 200.\n- GCP SEV-SNP (n2d): about 8 ms, but the host throttles the guest to about ten reports per 10.3 s: every tenth request waits 10.2 s\n  (the Linux guest driver retrying a VMM_BUSY answer every 2 s). Sustained, about one report per second; the same in all seven runs\n  since 22 September.\n- GCP TDX (c3): about 39 ms, no stall.\n- Azure SEV-SNP (DCasv5, paravisor): a vTPM quote with the value about 45 ms; a hardware report that carries the value about every 2 s.\n\nWhat that does to the text as it stands:\n\n- An attester with many connections (a server) can reattest about one connection per second on GCP SEV-SNP. If K connections\n  complete their EKU in the same window, the last reattestation finishes about K seconds later, and the connection that meets the\n  stall holds the \"MUST NOT initiate another EKU exchange\" state of line 619 for 10 s. Line 619 holds the other peer as well while the report is pending, and with the deferral added in\n  621f74f the relying party's appraisal time, including the cold KDS fetch below, also delays the attester's next\n  `key_update_request`.\n- So the timeout has a floor set by the attester's platform and its load, which the relying party cannot see. A policy of a few\n  seconds aborts every tenth reattestation on GCP SEV-SNP with `attestation_required`.\n- The relying party's side has a floor of its own: appraising a report with a warm VCEK took 5.5 ms in our runs, but a cold fetch of\n  the chip's VCEK from AMD's KDS took 0.5 s and 7.4 s in two consecutive attempts, so the first appraisal of a chip can exceed a\n  short timeout by itself.\n\nWould it help to say that the timeout covers the attester's report cadence and the relying party's appraisal, including a cold\ncertificate fetch, and that an attester with many connections should spread its reattestations? If numbers with concurrent\nconnections on the three platforms would be useful for the text, I can run that.\n",
+              "createdAt": "2026-10-09T12:42:14Z",
+              "updatedAt": "2026-10-09T12:45:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRg8EPw",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T13:01:33Z",
+          "updatedAt": "2026-10-09T13:01:34Z",
+          "comments": [
+            {
+              "originalPosition": 91,
+              "body": "Tiru, could you please spell that out in the EKU draft?",
+              "createdAt": "2026-10-09T13:01:34Z",
+              "updatedAt": "2026-10-09T13:01:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRoZwZA",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T07:45:54Z",
+          "updatedAt": "2026-10-10T07:45:55Z",
+          "comments": [
+            {
+              "originalPosition": 91,
+              "body": "when the draft is adopted, raise an issue and I will update the EKU daft. ",
+              "createdAt": "2026-10-10T07:45:54Z",
+              "updatedAt": "2026-10-10T07:45:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRodf2w",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T08:01:09Z",
+          "updatedAt": "2026-10-10T08:01:09Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "I propose to add following text:\r\n\r\nEvidence generation time varies by platform and load, and some\r\nplatforms rate-limit it. The relying party cannot observe this, so\r\nits timeout needs to be long enough to cover it. An attester with\r\nmany connections can reduce the delay by spreading its EKU exchanges\r\nover time or, as EKU responder, by deferring `key_update_response`\r\nunder load ({{Sections 5 and 6 of -eku}}).\r\n\r\n\r\nPlatform numbers change over time, so I'd keep them out of the draft.",
+              "createdAt": "2026-10-10T08:01:09Z",
+              "updatedAt": "2026-10-10T08:01:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRpCe0g",
+          "commit": {
+            "abbreviatedOid": "621f74f"
+          },
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T11:56:26Z",
+          "updatedAt": "2026-10-10T11:56:26Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Thanks, Tiru, that text covers it. One word I would add: the timeout has to cover the attester's worst case, not its typical time.\nIn our runs the median is under 50 ms on every platform, while every tenth report on GCP SEV-SNP waits 10 s and the Azure path that\ncarries the value takes 2 s each time, so a timeout tuned to the typical case fails on exactly the requests the rate limit delays.\nAgreed that the numbers stay out of the draft; they stay in the two linked reports, dated, for implementers.\n",
+              "createdAt": "2026-10-10T11:56:26Z",
+              "updatedAt": "2026-10-10T11:56:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRpQ94A",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T13:19:45Z",
+          "updatedAt": "2026-10-10T13:19:45Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Good point, modified text as follows :\r\n\r\nEvidence generation time varies by platform and load, and some platforms rate-limit it. The relying party knows the attester's platform type from the Evidence appraised in the handshake, and can set its timeout to that platform's worst-case generation time, not its typical time. An attester with many connections can reduce the delay by spreading its EKU exchanges over time or, as EKU responder, by deferring `key_update_response` under load\r\n({{Sections 5 and 6 of -eku}}).",
+              "createdAt": "2026-10-10T13:19:45Z",
+              "updatedAt": "2026-10-10T13:19:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRpVdeg",
+          "commit": {
+            "abbreviatedOid": "621f74f"
+          },
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T13:48:42Z",
+          "updatedAt": "2026-10-10T13:48:43Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Thanks. One correction on the mechanism, from the same runs: the worst case is the host's, not the TEE type's. The same SEV-SNP report costs 7 ms with no stall in 200 requests on AWS and 10 s on every tenth request on GCP, because the throttle is the host's policy, and the Evidence names the TEE, not the host's rate limit or the attester's load. So the relying party cannot derive the worst case from the platform type, and your first version had this right (\"the relying party cannot observe this\"); a possible wording: \"The relying party learns the TEE type from the Evidence appraised in the handshake, but not the host's rate limits or the attester's load, so its timeout has to cover the worst case it is prepared to wait for, not the platform's typical time.\"\n",
+              "createdAt": "2026-10-10T13:48:42Z",
+              "updatedAt": "2026-10-10T13:48:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRqJyTQ",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T17:08:57Z",
+          "updatedAt": "2026-10-10T17:08:58Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Perhaps we could add a \"timeout hint\" in the extension negotiation.",
+              "createdAt": "2026-10-10T17:08:57Z",
+              "updatedAt": "2026-10-10T17:08:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRqLEyA",
+          "commit": {
+            "abbreviatedOid": "621f74f"
+          },
+          "author": "nikolaichuk7",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T17:14:36Z",
+          "updatedAt": "2026-10-10T17:14:36Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "A hint can be measured rather than configured: in our runs the guest sees its own stall (the report request simply returns after 10 s), and the probe that measured it is a standard-library script run inside the VM, so an attester can learn its worst case at startup and send it. Two things follow for the text: the hint arrives in the negotiation, before any Evidence, so it is a claim the relying party caps by local policy; and it is per host and load, not per TEE type, so it is the attester's to measure, not a table's to look up. If the hint goes in, I can re-run the probe on the three clouds to show what a measured hint looks like in practice.\n",
+              "createdAt": "2026-10-10T17:14:36Z",
+              "updatedAt": "2026-10-10T17:14:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRqVb4g",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-10T17:59:37Z",
+          "updatedAt": "2026-10-10T17:59:38Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "If the tenant knows the CSP/TEE onto which it has been deployed -- which, in most cases, does not seem like an impossible thing -- it can provide an informed figure to the peer.\r\nNote that the tenant has an incentive in providing the peer with with a sensible hint.",
+              "createdAt": "2026-10-10T17:59:38Z",
+              "updatedAt": "2026-10-10T17:59:38Z"
+            }
+          ]
         }
       ]
     },
@@ -8043,6 +8960,158 @@
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 82,
+      "id": "PR_kwDOQdsaoc8AAAABHU91MQ",
+      "title": "more privacy considerations on attestation credential's claims",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/82",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix #80",
+      "createdAt": "2026-10-08T12:22:32Z",
+      "updatedAt": "2026-10-09T10:05:38Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "priv++",
+      "headRefOid": "7659400917d148e3f567c07a8cc0fd2e0cede993",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRUHdWA",
+          "commit": {
+            "abbreviatedOid": "2a5255e"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-10-08T12:57:07Z",
+          "updatedAt": "2026-10-08T12:59:32Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Alternatively, it can MITM the Diffie Hellman exchange, in which case it can read the Evidence but cannot complete the handshake successfully.",
+              "createdAt": "2026-10-08T12:57:07Z",
+              "updatedAt": "2026-10-08T12:59:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRY8Aig",
+          "commit": {
+            "abbreviatedOid": "2a5255e"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-08T19:39:54Z",
+          "updatedAt": "2026-10-08T19:39:55Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "see [6253eb4](https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/82/commits/6253eb482063d6a035ddf6c936f09d0f68748334)",
+              "createdAt": "2026-10-08T19:39:55Z",
+              "updatedAt": "2026-10-08T19:39:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRZKBNw",
+          "commit": {
+            "abbreviatedOid": "6253eb4"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-08T20:02:26Z",
+          "updatedAt": "2026-10-08T20:02:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRc4pZA",
+          "commit": {
+            "abbreviatedOid": "6253eb4"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T05:34:44Z",
+          "updatedAt": "2026-10-09T05:39:40Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "If Evidence is encrypted to the Verifier, the RP cannot check the binder or TIK hash locally. RP must convey both to the Verifier.",
+              "createdAt": "2026-10-09T05:34:44Z",
+              "updatedAt": "2026-10-09T05:39:40Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "Another scenario: An active attacker holding the generation N keys can substitute the EKU key shares and obtain the new attestation_update. The binder mismatch is detected, but only after the credential is exposed.",
+              "createdAt": "2026-10-09T05:37:12Z",
+              "updatedAt": "2026-10-09T05:39:40Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "Sections 4.3 to 4.5 of {{-rats-privacy}} (minimization, selective disclosure, ZKP) apply to Attestation Results, not Evidence.",
+              "createdAt": "2026-10-09T05:39:33Z",
+              "updatedAt": "2026-10-09T05:39:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRdOwhA",
+          "commit": {
+            "abbreviatedOid": "6253eb4"
+          },
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T06:21:01Z",
+          "updatedAt": "2026-10-09T06:21:01Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "> If Evidence is encrypted to the Verifier, the RP cannot check the binder or TIK hash locally. RP must convey both to the Verifier.\n\nI do want to note that the RP can do exactly that of course, following receipt of the signed AR they get back from the Verifier. \n\nWhile I haven't converted my symbolic analysis work from my experimental repo to the baseline SEAT community models (yet), I can still share that in my modelling approach, the RP is configured to check both the \"sbv\" (session binder value, aka ch..sh checkpoint + TIK hash) *and* cross-check the calculated hash of the opaque Evidence the RP relayed to Verifier by the Attester. \n\nIterated another way, in my current model, the RP expects that the signed AR to have both a matching hash for the encrypted Evidence blob *and* the Session Binder Value in the signed Claims in order to proceed through the rest of the protocol--even under selective or partial disclosure of other claims. \n\nWhile I can say such an approach is sufficient to prevent relay attacks or Evidence substitution while preserving privacy, I can't say quite yet if both are strictly necessary together (based on formal verification results). I'll need to write specific queries to double check. But thought I would share the datapoint, given the current comment. \n\n--\n\nhttps://github.com/nathanaelritz/dual-pop-atls-conveyance-models/blob/main/models/intra/intra-background-check/tls-lib-simple.pvl#L898\n\nhttps://github.com/nathanaelritz/dual-pop-atls-conveyance-models/blob/main/models/intra/intra-background-check/tls-lib-simple.pvl#L892",
+              "createdAt": "2026-10-09T06:21:01Z",
+              "updatedAt": "2026-10-09T06:24:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRfQHHw",
+          "commit": {
+            "abbreviatedOid": "6253eb4"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T10:00:55Z",
+          "updatedAt": "2026-10-09T10:00:56Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "thanks Nathanael.  I'll leave this out for the moment.  When you have the queries we can update.",
+              "createdAt": "2026-10-09T10:00:55Z",
+              "updatedAt": "2026-10-09T10:00:56Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
