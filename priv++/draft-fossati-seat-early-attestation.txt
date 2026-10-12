@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 12 April 2027                                      Y. Deshpande
+Expires: 15 April 2027                                      Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                          9 October 2026
+                                                         12 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 April 2027.
+   This Internet-Draft will expire on 15 April 2027.
 
 Copyright Notice
 
@@ -103,12 +103,6 @@ Table of Contents
      5.2.  Binding the TIK to the TEE
      5.3.  The TLS Stack's Interface to the TEE
      5.4.  Reattestation
-       5.4.1.  Post-Handshake Reattestation Using Client
-               Authentication
-       5.4.2.  Option 1: Carrying Attestation in Extended Key Update
-       5.4.3.  Option 2: No Reattestation (Reconnect for Freshness)
-       5.4.4.  Option 3: Post-Handshake Reattestation Using
-               CertificateUpdate
    6.  Negotiating This Protocol
      6.1.  Negotiation Integrity
    7.  TLS Client and Server Handshake Behavior
@@ -131,6 +125,7 @@ Table of Contents
    10. IANA Considerations
      10.1.  TLS Extensions
      10.2.  TLS Alerts
+     10.3.  TLS ExtendedKeyUpdate Message Subtypes
    11. Acknowledgements
    12. References
      12.1.  Normative References
@@ -147,9 +142,11 @@ Table of Contents
      A.9.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale: Why the Transcript and Not the
            Exporter
-   Appendix C.  Computing the Handshake Transcript with Existing TLS
+   Appendix C.  Design Rationale: Why Extended Key Update for
+           Reattestation
+   Appendix D.  Computing the Handshake Transcript with Existing TLS
            APIs
-   Appendix D.  Summary of Security Properties
+   Appendix E.  Summary of Security Properties
    Authors' Addresses
 
 1.  Introduction
@@ -700,66 +697,106 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 5.4.  Reattestation
 
    Attestation Evidence or Attestation Results may become stale over
-   time.  For long-lived TLS connections, a relying party may require
-   updated assurance that the peer continues to operate in a trustworthy
-   state.
+   time.  For long-lived TLS connections, a relying party may need fresh
+   Evidence or Attestation Results to reassess the trustworthiness of
+   the peer.
 
-5.4.1.  Post-Handshake Reattestation Using Client Authentication
+   Similarly to the initial handshake, Early Attestation implements
+   reattestation at the TLS layer, using Extended Key Update (EKU)
+   [I-D.ietf-tls-extended-key-update].  This document defines a new
+   ExtendedKeyUpdate subtype, attestation_update, which carries a
+   cmw_payload as defined in Section 4.1.  Reattestation is available
+   only when EKU is also negotiated.
 
-   Post-handshake client authentication defined in Section 4.7.2 of
-   [RFC9846] can be used to obtain updated attestation Evidence or
-   Attestation Results from the TLS client.  In this case, the TLS
-   server sends a CertificateRequest message after the TLS handshake
-   authentication.  The client responds with the standard TLS
-   authentication messages (Certificate, CertificateVerify, and
-   Finished).  If attestation has been negotiated for the TLS
-   connection, the client includes the remoteAttestation extension in
-   the Certificate message carrying updated Evidence or Attestation
-   Results.
+   Either peer MAY initiate EKU per its own policy.  Each completed EKU
+   exchange triggers reattestation: a peer that attested in the
+   handshake MUST send attestation_update, using the scheme chosen in
+   the handshake.  A peer that did not attest during the handshake MUST
+   NOT send attestation_update.
 
-   The attestation binder can be derived from the post-handshake
-   authentication transcript defined in Section 4.5 of [RFC9846].
+   Each peer waits for attestation_update only from a peer that attested
+   in the handshake.  The two attestation_update messages are
+   independent; no order between them is required.
 
-   This mechanism allows a server to request updated attestation from
-   the client.  However, TLS currently does not define a mechanism for
-   post-handshake server authentication.  To address this limitation,
-   the subsequent sections discuss design options for handling
-   attestation freshness.
+   This document extends ExtendedKeyUpdateType and ExtendedKeyUpdate
+   (Section 4 of [I-D.ietf-tls-extended-key-update]) as follows:
 
-5.4.2.  Option 1: Carrying Attestation in Extended Key Update
+   enum {
+       attestation_update(TBD4),
+       (255)
+   } ExtendedKeyUpdateType;
 
-   One possible approach is to extend the Extended Key Update (EKU)
-   mechanism by introducing a new ExtendedKeyUpdate message subtype to
-   carry attestation Evidence or Attestation Results.
+   struct {
+       ExtendedKeyUpdateType eku_type;
+       select (eku_type) {
+           case attestation_update: {
+               opaque cmw_payload<1..2^24-1>;
+           }
+       };
+   } ExtendedKeyUpdate;
 
-   However, this approach tightly couples attestation to EKU, even
-   though the two serve different purposes.
+Initiator                                        Responder
 
-5.4.3.  Option 2: No Reattestation (Reconnect for Freshness)
+[EKU(key_update_request)]N      -------->
+                                <--------  [EKU(key_update_response)]N
+[EKU(key_update_finish)]N       -------->
+                 (EKU complete, N+1 in use)
+[EKU(attestation_update)]N+1*   -------->
+                                <--------  [EKU(attestation_update)]N+1*
 
-   Another approach is to not support reattestation within an
-   established TLS connection.  When fresh attestation is required, the
-   client establishes a new TLS connection, exchanging fresh Evidence or
-   Attestation Results as part of the handshake.
+* Sent only by a peer that attested in the handshake.
 
-   This approach keeps the TLS protocol unchanged and avoids introducing
-   post-handshake mechanisms.  Application-level mechanisms can be
-   implemented to improve its usability, for example client and server
-   signaling of the need for reattestation, and establishing the new
-   connection before tearing down the old one (make-before-break) to
-   avoid a gap in connectivity.
+        Figure 3: Reattestation after EKU (DTLS ACKs omitted)
 
-   Note: This is a workaround while the WG determines which of the other
-   options can be progressed.
+   The attester sends attestation_update after the EKU exchange
+   completes (Sections 5 and 6 of [I-D.ietf-tls-extended-key-update]),
+   under the N+1 application traffic secrets, not the old keys
+   (Section 7 of [I-D.ietf-tls-extended-key-update]).  After the EKU
+   exchange completes, the relying party expects attestation_update from
+   the attester.  Each relying party sets a timeout, per local policy,
+   for receiving attestation_update.  On expiry, it aborts with a fatal
+   attestation_required alert.  If appraisal fails, it aborts with a
+   fatal attestation_failed alert, as in Section 5.1.  No message is
+   sent on success.
 
-5.4.4.  Option 3: Post-Handshake Reattestation Using CertificateUpdate
+   A peer that receives attestation_update from a peer that did not
+   attest in the handshake, or before the EKU exchange completes, MUST
+   abort with an unexpected_message alert.
 
-   In this design, reattestation is supported using the
-   CertificateUpdate message defined in [I-D.rosomakho-tls-cert-update].
-   Under this approach, the attester sends a CertificateUpdate message
-   carrying a new Certificate message with updated attestation
-   information.  The refreshed attestation is bound to the existing TLS
-   session using post-handshake TLS context.
+   Reattestation does not block application data.  Until the relying
+   party completes appraisal of attestation_update or aborts with an
+   alert, it continues to rely on the outcome of the previous successful
+   appraisal.
+
+   While reattestation is in progress, a peer MUST NOT initiate another
+   EKU exchange or post-handshake client authentication (Section 4.7.2
+   of [RFC9846]).  Reattestation completes at the attester when it sends
+   attestation_update (TLS) or receives the ACK for it (DTLS), and at
+   the relying party when appraisal completes.  If both peers are
+   attesting, reattestation completes after both independent exchanges
+   have completed.  A relying party that receives key_update_request or
+   CertificateRequest before its appraisal completes defers its response
+   until appraisal completes (Sections 5 and 6 of
+   [I-D.ietf-tls-extended-key-update], Section 4.7.2 of [RFC9846]).  An
+   attester that receives key_update_request or CertificateRequest
+   before it has sent attestation_update MUST abort with an
+   unexpected_message alert.
+
+   The binder is derived as in Section 5.1, with Transcript-
+   Hash(ClientHello...ServerHello) replaced by transcript_hash_N+1
+   (Section 7 of [I-D.ietf-tls-extended-key-update]):
+
+ attest_base_N+1 = HKDF-Expand-Label(0, "attestation base",
+                       transcript_hash_N+1, Hash.length)
+
+ c_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
+                       Hash(TLS_Client_Public_Key), Hash.length)
+ s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
+                       Hash(TLS_Server_Public_Key), Hash.length)
+
+   transcript_hash_N+1 covers the initial handshake, all prior EKU
+   exchanges, and the key shares of the current exchange.  Each
+   reattestation therefore uses a fresh binder.
 
 6.  Negotiating This Protocol
 
@@ -816,7 +853,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
 7.  TLS Client and Server Handshake Behavior
 
-   The high-level message exchange in Figure 3 shows the
+   The high-level message exchange in Figure 4 shows the
    remoteAttestation extension added to the ClientHello, the
    EncryptedExtensions, the CertificateRequest, and the Certificate
    messages.
@@ -848,7 +885,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
        v {Finished}              -------->
          [Application Data]      <------->  [Application Data]
 
-              Figure 3: Early Attestation Handshake Overview
+              Figure 4: Early Attestation Handshake Overview
 
 7.1.  Client Hello
 
@@ -1043,7 +1080,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    transcript and a different binder.  The exposed Evidence therefore
    does not match any other connection and is rejected.  Consistent with
    TLS 1.3 forward secrecy, the impact is confined to the compromised
-   session.  Figure 4 illustrates this case.
+   session.  Figure 5 illustrates this case.
 
    Legend:  CR = ClientHello.random    SR = ServerHello.random
             cks = client key_share     sks = server key_share
@@ -1083,7 +1120,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
          |                        handshake aborted                  |
          |                                                           |
 
-       Figure 4: Even having read the Evidence from connection 1, the
+       Figure 5: Even having read the Evidence from connection 1, the
      attacker cannot reproduce connection 1's transcript on connection
       2: the client contributes fresh randomness and key share, so the
              binder does not match and the handshake is aborted
@@ -1110,7 +1147,7 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    anchor for the Attestation Key ([RFC9334]).
 
    A summary of the security properties this mechanism provides is given
-   in Appendix D.
+   in Appendix E.
 
 8.3.  Evidence Confidentiality After Compromise
 
@@ -1128,25 +1165,15 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    is sent only after the connection has moved to fresh traffic secrets,
    independent of the compromised one.
    [I-D.ietf-tls-extended-key-update] provides this via Extended Key
-   Update (EKU).
+   Update (EKU).  Reattestation (Section 5.4) sends new Evidence only
+   after EKU completes.
 
 8.4.  Reattestation Freshness
 
-   As currently defined in Section 5.1, the attestation binder is
-   derived once from the connection's ClientHello..ServerHello
-   checkpoint and does not change for the lifetime of the connection.
-   Under this definition, an attester, whether malicious or due to an
-   incorrect implementation, could resend Evidence generated earlier in
-   the connection in response to a later reattestation request, since
-   the binder still matches and the Relying Party has no way to
-   distinguish it from fresh Evidence.
-
-   This is not an inherent limitation of reattestation, only of the
-   binder as specified here: a future design that derives a fresh,
-   exchange-specific binder for each reattestation, for example from the
-   post-handshake authentication transcript (Section 4.5 of [RFC9846])
-   noted in Section 5.4 would close this gap.  The mechanism will be
-   defined in future revisions.
+   Each reattestation is bound to transcript_hash_N+1 of the EKU
+   exchange that precedes it (see Section 5.4).  Evidence generated for
+   an earlier generation does not match the current binder and is
+   rejected.
 
 8.5.  Security Guarantees
 
@@ -1192,9 +1219,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    so has no way to detect that its state has changed.  A Relying Party
    that needs assurance about current state instead sets a validity
    period for an appraisal and requests attestation once that period
-   elapses, using one of the mechanisms in Section 5.4.  A resumed
-   connection inherits the original appraisal's validity period rather
-   than getting a new one.
+   elapses, using the mechanism in Section 5.4.  A resumed connection
+   inherits the original appraisal's validity period rather than getting
+   a new one.
 
 9.  Privacy Considerations
 
@@ -1353,6 +1380,20 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
    *  Comment:
 
+10.3.  TLS ExtendedKeyUpdate Message Subtypes
+
+   IANA is requested to add the following entry to the "TLS
+   ExtendedKeyUpdate Message Subtypes" registry established by
+   [I-D.ietf-tls-extended-key-update]:
+
+   *  Value: TBD4
+
+   *  Description: attestation_update
+
+   *  DTLS-OK: Y
+
+   *  Reference: [This document]
+
 11.  Acknowledgements
 
    We would like to thank Serhii Nikolaichuk for his implementation and
@@ -1371,6 +1412,14 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               in Progress, Internet-Draft, draft-ietf-rats-msg-wrap-23,
               11 December 2025, <https://datatracker.ietf.org/doc/html/
               draft-ietf-rats-msg-wrap-23>.
+
+   [I-D.ietf-tls-extended-key-update]
+              Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
+              Rosomakho, "Extended Key Update for Transport Layer
+              Security (TLS) 1.3", Work in Progress, Internet-Draft,
+              draft-ietf-tls-extended-key-update-13, 4 July 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              extended-key-update-13>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1453,14 +1502,6 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               <https://datatracker.ietf.org/doc/html/draft-ietf-teep-
               architecture-19>.
 
-   [I-D.ietf-tls-extended-key-update]
-              Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
-              Rosomakho, "Extended Key Update for Transport Layer
-              Security (TLS) 1.3", Work in Progress, Internet-Draft,
-              draft-ietf-tls-extended-key-update-13, 4 July 2026,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              extended-key-update-13>.
-
    [I-D.ounsworth-rats-privacy-framework]
               Ounsworth, M., Tschofenig, H., and G. Lehmann, "Privacy
               Framework for Remote ATtestation procedureS", Work in
@@ -1476,13 +1517,6 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
               reddy-rats-key-binding-02, 15 August 2026,
               <https://datatracker.ietf.org/doc/html/draft-reddy-rats-
               key-binding-02>.
-
-   [I-D.rosomakho-tls-cert-update]
-              Rosomakho, Y. and T. Reddy.K, "Certificate Update in TLS
-              1.3", Work in Progress, Internet-Draft, draft-rosomakho-
-              tls-cert-update-02, 18 June 2026,
-              <https://datatracker.ietf.org/doc/html/draft-rosomakho-
-              tls-cert-update-02>.
 
    [iana-content-formats]
               IANA, "CoAP Content-Formats",
@@ -1542,6 +1576,15 @@ A.1.  draft-fossati-seat-early-attestation-08
       to possible mitigations ([I-D.ounsworth-rats-privacy-framework])
       (#80).
 
+   *  Defined attestation_update wire format and message flow;
+      reattestation does not block application data.
+
+   *  Defined reattestation using Extended Key Update; removed other
+      reattestation options.  Appraisal failure is signalled with the
+      attestation_failed alert.
+
+   *  Added Appendix C.
+
 A.2.  draft-fossati-seat-early-attestation-07
 
    *  Added relay resistance and key substitution resistance into
@@ -1578,7 +1621,7 @@ A.3.  draft-fossati-seat-early-attestation-06
 
    *  Add an appendix noting that the ClientHello...ServerHello
       transcript can be computed using existing TLS-stack APIs,
-      requiring no new interface (see Appendix C).
+      requiring no new interface (see Appendix D).
 
    *  Clarify that HKDF-Expand-Label is the TLS 1.3 wrapper over HKDF-
       Expand ([RFC5869]) and that its use does not modify the TLS
@@ -1690,7 +1733,19 @@ Appendix B.  Design Rationale: Why the Transcript and Not the Exporter
       therefore does not provide the two-sided uniqueness (Section 2)
       the binder requires.
 
-Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
+Appendix C.  Design Rationale: Why Extended Key Update for Reattestation
+
+   *  Post-handshake authentication (Section 4.7.2 of [RFC9846]) is
+      client-only.  TLS has no post-handshake server authentication.
+
+   *  Reattestation without a key update sends Evidence under traffic
+      secrets that may be compromised (Section 8.3).  EKU moves the
+      connection to fresh secrets first.
+
+   *  Exported Authenticators operate at the application layer, while
+      this document keeps attestation within TLS.
+
+Appendix D.  Computing the Handshake Transcript with Existing TLS APIs
 
    The attestation binder is computed over Transcript-
    Hash(ClientHello...ServerHello) (see Section 5.1), using the
@@ -1706,7 +1761,7 @@ Appendix C.  Computing the Handshake Transcript with Existing TLS APIs
    HelloRetryRequest, because concatenating the messages as sent does
    not give the transcript hash.
 
-Appendix D.  Summary of Security Properties
+Appendix E.  Summary of Security Properties
 
    This appendix summarizes the security properties relevant to binding
    attestation to the TLS handshake.
