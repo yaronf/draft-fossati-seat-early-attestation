@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-11T04:00:13.143370+00:00",
+  "timestamp": "2026-10-13T05:29:04.024972+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1004,7 +1004,7 @@
       "id": "I_kwDOQdsaoc8AAAABAcAwFQ",
       "title": "Reattestation binder",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/60",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -1013,8 +1013,8 @@
       "labels": [],
       "body": "Derivation should follow the main document. Specifically, hash the public key to allow for longer public keys.",
       "createdAt": "2026-04-24T16:43:59Z",
-      "updatedAt": "2026-09-22T16:09:55Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-12T09:48:53Z",
+      "closedAt": "2026-10-12T09:48:53Z",
       "comments": [
         {
           "author": "nikolaichuk7",
@@ -1022,6 +1022,13 @@
           "body": "Two data points for this issue, and one observation, from running Section 5.1.1 as written on a live SEV-SNP guest.\n\n**1. Section 8.4 reproduces with the draft's own binder.** I computed `s_attest_binder` exactly as 5.1.1 defines it \u2014 `tls13 ` label space, the suite's hash (TLS_AES_256_GCM_SHA384), `Hash(ClientHello..ServerHello)` from the recorded wire, the server's SPKI \u2014 on both ends of one TLS 1.3 connection to a GCP SEV-SNP guest, and had the guest emit two AMD-signed reports in that connection, both binding it. The two reports carry byte-identical `REPORT_DATA` and differ only in the randomised signature. Under the 5.1.2 appraisal the round-0 report is accepted when round 1 is requested. Raw reports, the recorded ClientHello/ServerHello, and the run transcript: [`evidence/reattest-20260922T140735Z/`](https://github.com/nikolaichuk7/hatls/tree/v0.3.0/evidence/reattest-20260922T140735Z). The HKDF-Expand-Label used is checked against the RFC 8448 trace byte for byte ([`tests/test_transcript.py`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/tests/test_transcript.py)).\n\n**2. The same thing in ProVerif.** A model of a three-round reattestation with the binder held constant for the connection: the prover finds the trace in which the Evidence emitted at round 0 is accepted at round 1, same session, same exporter. With the binder chained per round, the query holds, injectively, against an attacker who is the TLS peer of both ends and whose own TEE signs anything. Both models and the output: [`formal/`](https://github.com/nikolaichuk7/hatls/tree/v0.3.0/formal), `results/proverif-20260922.txt`.\n\n**3. An observation on the fix 8.4 sketches.** A fresh, exchange-specific binder closes the replay, but which source it comes from decides whether the *sequence* of reattestations is also verifiable:\n\n- With Extended Key Update (Option 1), a binder derived after each update inherits order from the key schedule itself \u2014 `main_secret_N+1` and `transcript_hash_N+1` are functions of generation N (draft-ietf-tls-extended-key-update, Fig. 7). Nothing more is needed \u2014 though, for what it is worth, as of today I find no implementation of Extended Key Update in OpenSSL 3.6.4 (headers or libssl), nor in the sources of BoringSSL, wolfSSL, rustls or Go's crypto/tls (s2n, Mbed TLS and GnuTLS not checked), so Option 1 has no running code to measure against yet.\n- With post-handshake authentication (5.4.1) or CertificateUpdate (Option 3), each exchange's transcript is `ClientHello..client Finished + CertificateRequest` (RFC 8446 \u00a74.4), so two reattestations are each fresh but say nothing about which came first, and a Relying Party keeping a record of appraisals (8.6 asks it to bound validity) cannot commit to their order.\n\nIf order matters for the second family, one line gives it without changing the inputs: `binder_{n+1} = HKDF-Expand-Label(attest_base, \"reattestation\", Hash(binder_n || context_{n+1}), Hash.length)`, with `binder_0` the 5.1.1 binder and `context_{n+1}` that exchange's context (`certificate_request_context` in 5.4.1). The Relying Party recomputes it from its own record of `binder_n` and the exchange's context; the attester cannot present round *n*'s Evidence at *n+1* or skip a round. That is what the chained model above proves and what the hardware run above exercises.\n\nHappy to turn any of this into text for 8.4 if it is useful; otherwise it is just data for the issue.\n",
           "createdAt": "2026-09-22T16:09:55Z",
           "updatedAt": "2026-09-22T16:09:55Z"
+        },
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/79 ",
+          "createdAt": "2026-10-12T09:48:53Z",
+          "updatedAt": "2026-10-12T09:48:53Z"
         }
       ]
     },
@@ -1248,6 +1255,22 @@
       "body": "Clarify that there's no expectation of privacy: the Evidence is available to an unauth client, to a server, and to a MITM.\n\nCite potential solutions such as Sec. 4.2 of https://datatracker.ietf.org/doc/draft-ounsworth-rats-privacy-framework/ or older solutions.\n\nBTW this is also true for Post-HS, because the client never needs to authenticate.",
       "createdAt": "2026-10-07T08:02:22Z",
       "updatedAt": "2026-10-07T08:03:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 83,
+      "id": "I_kwDOQdsaoc8AAAABWmcV7Q",
+      "title": "Attester-provided timeout hint for Evidence generation",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/83",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Evidence generation time varies by host and load and cannot be observed by the relying party (PR #79 discussion). It affects both the initial handshake, where Evidence is generated after ServerHello and delays the attester's Certificate message, and reattestation, where the relying party times out waiting for attestation_update.\n\nProposal: the attester advertises a timeout hint in the remoteAttestation extension negotiation.\n\nOpen questions:\n- Where the hint is carried (ClientHello for a client attester, EncryptedExtensions for a server attester).\n- The hint is an unverified claim, fixed at handshake time; the relying party caps it by local policy.\n- Measured by the attester at startup vs. configured by the tenant.",
+      "createdAt": "2026-10-12T09:46:10Z",
+      "updatedAt": "2026-10-12T09:46:10Z",
       "closedAt": null,
       "comments": []
     }
@@ -7500,24 +7523,26 @@
       "id": "PR_kwDOQdsaoc8AAAABGOojbg",
       "title": "Address re-attestation issue",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/79",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-10-02T05:17:02Z",
-      "updatedAt": "2026-10-10T17:59:38Z",
+      "updatedAt": "2026-10-12T12:56:28Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "tireddy2-patch-10",
       "headRefOid": "621f74f576f87243757bc246d3380da1bf166959",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-10-12T09:46:47Z",
+      "mergedAt": "2026-10-12T09:46:47Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d"
+      },
       "comments": [
         {
           "author": "thomas-fossati",
@@ -8924,6 +8949,46 @@
               "updatedAt": "2026-10-10T17:59:38Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABRywZPw",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-12T09:46:37Z",
+          "updatedAt": "2026-10-12T09:46:37Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "I raised a separate issue https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/83 to track it. ",
+              "createdAt": "2026-10-12T09:46:37Z",
+              "updatedAt": "2026-10-12T09:46:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABR0tD6Q",
+          "commit": {
+            "abbreviatedOid": "5f6e0b3"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-12T12:56:27Z",
+          "updatedAt": "2026-10-12T12:56:27Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "thanks!",
+              "createdAt": "2026-10-12T12:56:27Z",
+              "updatedAt": "2026-10-12T12:56:28Z"
+            }
+          ]
         }
       ]
     },
@@ -8973,13 +9038,13 @@
       "labels": [],
       "body": "Fix #80",
       "createdAt": "2026-10-08T12:22:32Z",
-      "updatedAt": "2026-10-09T10:05:38Z",
+      "updatedAt": "2026-10-12T12:48:51Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "5d461df4bb41b6786f404a0ba25ef95a6ad0c6ff",
+      "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "priv++",
-      "headRefOid": "7659400917d148e3f567c07a8cc0fd2e0cede993",
+      "headRefOid": "bce56daa5190c01a7c01856979ddb91a9be8e663",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
