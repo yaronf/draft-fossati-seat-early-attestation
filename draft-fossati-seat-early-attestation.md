@@ -1045,19 +1045,13 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
-## draft-fossati-seat-early-attestation-10
-
-- Added {{session-resumption}}: ticket lifetime vs appraisal validity, no PSK-only initial handshake, early data.
-- Defined appraisal validity period in {{terminology}}.
-
-## draft-fossati-seat-early-attestation-09
-
-- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
-
 ## draft-fossati-seat-early-attestation-08
 
 - Defined reattestation using Extended Key Update; removed other reattestation options. Appraisal failure is signalled with the `attestation_failed` alert.
+- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Added {{why-eku}}.
+- Added {{session-resumption}}: ticket lifetime vs appraisal validity, no PSK-only initial handshake, early data.
+- Defined appraisal validity period in {{terminology}}.
 
 ## draft-fossati-seat-early-attestation-07
 
