@@ -233,12 +233,6 @@ Table of Contents
       It is used for binding attestation Evidence to a specific TLS
       handshake and for providing freshness.
 
-   Appraisal validity period:
-      A local policy interval during which a Relying Party treats a
-      prior appraisal of a peer's attestation Evidence or Attestation
-      Results as sufficient for authorization without a new attestation
-      exchange on the wire.
-
    Two-sided uniqueness:
       The property that each peer independently contributes fresh nonces
       and key-exchange material to the handshake, so that neither peer
@@ -1234,10 +1228,11 @@ Initiator                                        Responder
 
    The Relying Party cannot observe the Target Environment directly and
    so has no way to detect that its state has changed.  A Relying Party
-   that needs assurance about current state sets an appraisal validity
-   period and requests attestation once that period elapses, using the
-   mechanism in Section 5.4.  Session resumption is not used to carry
-   forward an appraisal to a new connection (see Section 5.5).
+   that needs assurance about current state applies local policy for how
+   long an appraisal remains acceptable and requests attestation once
+   that interval elapses, using the mechanism in Section 5.4.  Session
+   resumption is not used to carry forward an appraisal to a new
+   connection (see Section 5.5).
 
 9.  Privacy Considerations
 
@@ -1547,8 +1542,6 @@ A.1.  draft-fossati-seat-early-attestation-08
 
    *  Added Section 5.5: session resumption (and early data) not
       supported since it conflicts with EKU.
-
-   *  Defined appraisal validity period in Section 2.
 
 A.2.  draft-fossati-seat-early-attestation-07
 

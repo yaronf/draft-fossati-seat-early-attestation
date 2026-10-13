@@ -1441,14 +1441,9 @@ protection properties of the TIK. The TIK <span class="bcp14">MUST</span> be the
           <p id="section-2-3.10.1">A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.<a href="#section-2-3.10.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-2-3.11">Appraisal validity period:</dt>
+<dt id="section-2-3.11">Two-sided uniqueness:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.12">
-          <p id="section-2-3.12.1">A local policy interval during which a Relying Party treats a prior appraisal of a peer's attestation Evidence or Attestation Results as sufficient for authorization without a new attestation exchange on the wire.<a href="#section-2-3.12.1" class="pilcrow">¶</a></p>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-2-3.13">Two-sided uniqueness:</dt>
-        <dd style="margin-left: 1.5em" id="section-2-3.14">
-          <p id="section-2-3.14.1">The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.<a href="#section-2-3.14.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.12.1">The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.<a href="#section-2-3.12.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -2348,7 +2343,7 @@ and the overall security level depends on their existence and quality of assuran
             <p id="section-8.6-2.2.1">Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.<a href="#section-8.6-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.6-3">The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets an appraisal validity period and requests attestation once that period elapses, using the mechanism in <a href="#reattestation" class="auto internal xref">Section 5.4</a>. Session resumption is not used to carry forward an appraisal to a new connection (see <a href="#session-resumption" class="auto internal xref">Section 5.5</a>).<a href="#section-8.6-3" class="pilcrow">¶</a></p>
+<p id="section-8.6-3">The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state applies local policy for how long an appraisal remains acceptable and requests attestation once that interval elapses, using the mechanism in <a href="#reattestation" class="auto internal xref">Section 5.4</a>. Session resumption is not used to carry forward an appraisal to a new connection (see <a href="#session-resumption" class="auto internal xref">Section 5.5</a>).<a href="#section-8.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2670,9 +2665,6 @@ ExtendedKeyUpdate Message Subtypes" registry established by
 </li>
           <li class="normal" id="appendix-A.1-1.4">
             <p id="appendix-A.1-1.4.1">Added <a href="#session-resumption" class="auto internal xref">Section 5.5</a>: session resumption (and early data) not supported since it conflicts with EKU.<a href="#appendix-A.1-1.4.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="appendix-A.1-1.5">
-            <p id="appendix-A.1-1.5.1">Defined appraisal validity period in <a href="#terminology" class="auto internal xref">Section 2</a>.<a href="#appendix-A.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
