@@ -145,7 +145,7 @@ informative:
 The TLS handshake protocol allows authentication of one or both peers using static, long-term credentials.
 In some cases, it is also desirable to ensure that the peer runtime environment is in a secure state.
 Such an assurance can be achieved using remote attestation which is a process by which an entity produces Evidence about itself that another party can use to appraise whether that entity is found in a secure state.
-This document describes a TLS extension that enables the negotiation and binding of the TLS authentication key to a remote attestation session.
+This document describes a TLS extension that enables the negotiation of remote attestation and binds the TLS authentication key to the attested platform state.
 This enables an entity capable of producing attestation Evidence, such as a confidential workload running in a Trusted Execution Environment (TEE), or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This extension has been designed to allow the peers to use any attestation technology, in any remote attestation topology, and to use them mutually.
 
@@ -154,7 +154,8 @@ This extension has been designed to allow the peers to use any attestation techn
 #  Introduction
 
 Remote Attestation (RA) {{-rats-arch}} is the process by which an entity produces evidence about itself that another party can use to evaluate the trustworthiness of that entity.
-This document describes an extension to the TLS handshake that enables the binding of the TLS connection and its authentication key to a remote attestation session.
+This document describes an extension to the TLS handshake that binds the TLS authentication key to the attested platform state.
+In the Background Check Model, it also binds Evidence to the TLS connection.
 This enables an attester, such as a confidential workload running in a Trusted Execution Environment (TEE) {{-teep-arch}}, or an IoT device that is trying to authenticate itself to a network access point, to present a more comprehensive set of security metrics to its peer.
 This, in turn, allows for the implementation of authorization policies at the relying parties that are based on stronger security signals.
 
@@ -216,10 +217,8 @@ The basic functional goal is to link the authenticated key exchange of TLS with 
 The requirement is that the attester can provide Evidence containing the security status of both the signing key and the platform that is hosting it.
 The associated security goal is to obtain such binding so that no replay, relay or splicing from an adversary is possible.
 
-The protocol's security relies on the verifiable binding between the TLS Identity Key, the
-specific TLS session
-and the platform state through attestation Evidence or Attestation Results conveyed
-in the CMW (Conceptual Message Wrapper) {{-cmw}} payload.
+The protocol's security relies on the verifiable binding between the TLS Identity Key and the platform state through attestation Evidence or Attestation Results conveyed in the CMW (Conceptual Message Wrapper) {{-cmw}} payload.
+In the Background Check Model, Evidence is additionally bound to the specific TLS connection.
 
 ## Authentication vs. Attestation
 
@@ -251,7 +250,7 @@ security properties is still required.
 As typical with new features in TLS, the client indicates support for the new extension in the ClientHello message.
 The newly introduced extension allows attestation Evidence or Attestation Results to be exchanged.
 Freshness of the exchanged Evidence is guaranteed through an Attestation Binder mechanism (see {{crypto-ops}}) when the Background Check Model is in use.
-In the Passport Model, freshness expectations are more relaxed and are governed by the lifetime of the signed Attestation Results.
+In the Passport Model, freshness is governed by the Relying Party's policy for the signed Attestation Results, including their validity period.
 
 When the extension is successfully negotiated, attestation Evidence or Attestation Results are conveyed in a `remoteAttestation` extension (see {{remote-attestation-extension-section}}).
 The CMW payload in the Attestation extension contains the attestation Evidence or Attestation Results encoded according to {{-cmw}}.
@@ -268,14 +267,16 @@ CertificateVerify message remains unchanged from baseline TLS.
 When using the Passport Model, the remote Attestation Results obtained by the
 attester from its trusted Verifier can be cached and used for any number of
 subsequent TLS handshakes, as long as the freshness policy requirements are
-satisfied.
+satisfied. Attestation Results are bound to the TIK, but not to an individual
+TLS connection.
 
 This protocol supports both monolithic and split implementations. In a monolithic
 implementation, the TLS stack is completely embedded within the TEE. In a split
 implementation, the TLS stack is located outside the TEE, but any private keys
 (and in particular, the TIK) only exist within the TEE. In order to support
-both options, only the TIK's identity, its public component and a short generated binder are ever
-passed between the Client or Server TLS stack and its Attestation Service.
+both options, only the TIK's identity and public component, plus a short generated
+binder when producing Evidence, are passed between the Client or Server TLS
+stack and its Attestation Service.
 While the two types of implementations offer identical functionality,
 their security properties often differ, see {{sec-guarantees}} for more details.
 
@@ -352,10 +353,11 @@ Both JSON and CBOR serializations are allowed in CMW, with the emitter choosing
 which serialization to use.
 
 The CMW payload MUST contain attestation Evidence (in Background Check Model) or Attestation Results (in Passport Model) that binds the TLS Identity Key (TIK) to the platform and workload state.
-The TEE's signature over the Evidence within the CMW MUST include a binder ensuring that the attestation is associated with this particular TLS connection, as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for server attester).
+In the Background Check Model, the TEE's signature over the Evidence within the CMW MUST include a binder ensuring that the Evidence is associated with this particular TLS connection, as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for server attester).
+In the Passport Model, the Verifier-signed Attestation Results MUST identify the attested TIK public key (TIK-C or TIK-S). They MUST NOT be bound to the TLS connection in which they are presented.
 
-This binding ensures that the attested key is the one used in the TLS handshake
-and provides freshness guarantees through derivation from both peers' randomness.
+The TIK binding ensures that the attested key is the one used in the TLS handshake.
+For Evidence, the binder additionally provides freshness through derivation from both peers' randomness.
 See {{crypto-ops}} for details.
 
 # Use of Attestation in the TLS Handshake
@@ -369,8 +371,9 @@ modes of operation are allowed when used with TLS, namely:
 - TLS client and server mutually attest towards each other.
 
 As noted, each peer's attestation is carried in the `remoteAttestation` extension within
-that peer's Certificate message. This section describes how the attestation
-is produced, bound to the TLS handshake and verified by the recipient.
+that peer's Certificate message. This section describes how Evidence is bound to
+the TLS handshake, how Attestation Results are bound to the TIK, and how each is
+verified by the recipient.
 
 ## Cryptographic Operations {#crypto-ops}
 
@@ -380,9 +383,9 @@ Evidence across different TLS connections, and ensures that attestation Evidence
 presented during a handshake corresponds to the authenticated
 TLS session in which it is conveyed.
 
-The attestation Evidence or Attestation Results are generated by a TEE and
-signed using an attestation key. The signed Evidence includes
-inputs originating from different trust domains.
+The attestation Evidence is generated by a TEE and signed using an attestation key.
+In the Passport Model, a Verifier appraises the Evidence and signs the Attestation
+Results. The signed Evidence includes inputs originating from different trust domains.
 
 The attestation binder is provided by the TLS stack and serves as a
 nonce that ensures freshness and binding to a specific TLS handshake,
@@ -423,24 +426,30 @@ We note that `HKDF-Expand-Label` is used to produce binding values rather than k
 
 ### Verification
 
-Upon receipt of a `remoteAttestation` extension, the peer MUST compute the attestation binder.
+Upon receipt of a `remoteAttestation` extension carrying Evidence, the peer MUST compute the attestation binder.
 
-If the peer's Evidence is rejected (binder mismatch, failed Evidence appraisal, or malformed CMW),
+If the peer's attestation is rejected (binder mismatch for Evidence, failed appraisal, or malformed CMW),
 the receiver MUST send an `attestation_failed` fatal alert and abort the handshake
 (see {{tls-alerts}}).
 
-Depending on the architecture (see also {{stack-tee-interface}}), either the peer verifies
-the binding or else it delegates this responsibility to an external Verifier.
+For Evidence, depending on the architecture (see also {{stack-tee-interface}}), either the peer verifies
+the binder or else it delegates this responsibility to an external Verifier.
 
 * In the former case, the peer MUST compare the computed binder value to the attestation binder
-included in the
-signed Evidence or signed Attestation Results. If the values do not match, the peer MUST treat the
+included in the signed Evidence. If the values do not match, the peer MUST treat the
 attestation as invalid.
 
 * In the latter case, the RP MUST convey the binder to the
 Verifier. The Verifier MUST appraise that the conveyed binder is identical to the one that was signed
-in the Evidence or Attestation Results. If appraisal fails, the receiver MUST treat the
+in the Evidence. If appraisal fails, the receiver MUST treat the
 attestation as invalid.
+
+For Attestation Results, the Relying Party MUST appraise the Verifier's signature
+and the Results against its local policy, including the Results' freshness and
+the Verifier's identity. It MUST check that the TIK public key identified by the
+signed Results matches the public key in the peer's TLS end-entity certificate.
+The Relying Party MUST NOT require an attestation binder in Attestation Results.
+TLS CertificateVerify proves possession of the matching TIK in this handshake.
 
 <cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
 as a (new) conceptual message (CM) within a collection. This would provide
@@ -457,6 +466,11 @@ following security properties:
 * Relay protection: Evidence obtained from one TLS connection cannot be
   successfully presented in a different TLS connection, even in the presence of
   a MiTM attacker.
+
+In the Passport Model, presenting the same Attestation Results in multiple
+connections is intentional. The Relying Party checks their signed TIK binding
+against the TLS certificate and appraises their freshness for each connection.
+CertificateVerify proves possession of that TIK in each handshake.
 
 In typical deployments where the TLS handshake executes outside the TEE, a
 compromised host can execute the TLS handshake in the rich operating system and
@@ -478,12 +492,20 @@ This risk is particularly relevant in split deployments, where the TLS stack doe
 
 To address this, the signed Evidence MUST include an Attestation Binder generated using the hash of the TIK public key (TIK_pub_hash) (see {{crypto-ops}}).
 
-The Relying Party MUST compute the hash of the TIK public key extracted from the TLS end-entity certificate using
+For Evidence, the Relying Party MUST compute the hash of the TIK public key extracted from the TLS end-entity certificate using
 the same hash algorithm and verify that it matches the TIK_pub_hash included in the Evidence. Successful
 verification binds the attestation Evidence to the TLS identity used for authentication. This verification is performed by the Relying Party, as the Verifier may not be co-located with the Relying Party and may not have access to the TLS handshake or the TLS end-entity certificate, consistent with the RATS architecture.
 Alternatively, in deployments where the Verifier is not co-located with the Relying Party, the Relying Party MAY
 supply the Verifier with the hash of the TIK public key. The Verifier then compares this value with the TIK
 public key hash included in the Evidence. If the values do not match, the attestation MUST be considered invalid.
+
+For Attestation Results, the Verifier MUST include the attested TIK public key or
+its hash among the signed claims. The Relying Party MUST compare this claim
+with the public key in the TLS end-entity certificate, hashing the latter with
+the algorithm identified by the Results when needed. A mismatch MUST cause the
+attestation to be considered invalid. This key binding remains valid when the
+same Attestation Results are presented in a later TLS handshake using the same
+TIK, subject to the Relying Party's freshness policy.
 
 Without this binding, a non-Target-Environment TLS endpoint can obtain Evidence from a separate TLS endpoint that runs
 inside a Target Environment and relay that Evidence to the relying party while executing the TLS handshake itself. If the
@@ -496,8 +518,12 @@ outside the TEE, and see {{sec-guarantees}} for a further discussion.
 
 ## The TLS Stack's Interface to the TEE {#stack-tee-interface}
 
-When the TEE signs the Evidence or Attestation Results, it also binds them to the TLS Identity public key and the TLS
-session. TEE implementations differ, and some only allow a single user-provided challenge value to be added to the Evidence with no associated checks.
+When the TEE signs Evidence for the Background Check Model, it binds the Evidence
+to the TLS Identity public key and the TLS session. For the Passport Model, the
+Verifier signs Attestation Results that identify the attested TIK public key;
+the TEE does not bind these Results to the TLS session. TEE implementations
+differ, and some only allow a single user-provided challenge value to be added
+to the Evidence with no associated checks.
 
 Architecturally we propose to add a thin shim between the traditional TLS stack and the TEE
 as shown in {{figure-tls-tee-interface}}. Implementations will choose whether to incorporate
@@ -512,9 +538,9 @@ the shim can be added to the TLS stack.
 |                                                    |        |
 +------+---------------------------------------------+        |
        |                         ^                            |
-       | Transcript hash         | CMW (Signed                |
-       |                         |      Evidence/AR;          |
-       | TIK public key hash     |      Nonce)                |
+       | Transcript hash         | CMW (Signed Evidence       |
+       | (Evidence only)         |      or cached AR)         |
+       | TIK public key hash     |                            |
        v                         |                            |
 +--------------------------------+-------------------+        |
 |                                                    |   Measured &
@@ -522,7 +548,7 @@ the shim can be added to the TLS stack.
 |                                                    |   Components
 +------+---------------------------------------------+        |
        |                         ^                            |
-       | Nonce                   | Signed Evidence/AR         |
+       | Nonce (Evidence only)   | Signed Evidence            |
        v                         |                            |
 +--------------------------------+-------------------+        |
 |                                                    |        |
@@ -544,24 +570,27 @@ all be measured and reported as part of the platform's remote attestation.
 
 ## Reattestation {#reattestation}
 
-Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence or Attestation Results to reassess the trustworthiness of the peer.
+Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence to reassess the trustworthiness of the peer in the Background Check Model. In the Passport Model, the Relying Party applies its freshness policy to the Attestation Results independently of EKU. An EKU exchange does not renew their validity or trigger their replacement.
 
 Similarly to the initial handshake, Early Attestation implements
-reattestation at the TLS layer, using Extended Key Update (EKU)
+Evidence-based reattestation at the TLS layer, using Extended Key Update (EKU)
 {{-eku}}. This document defines a new `ExtendedKeyUpdate` subtype,
 `attestation_update`, which carries a `cmw_payload` as defined in
-{{remote-attestation-extension-section}}. Reattestation is available
-only when EKU is also negotiated.
+{{remote-attestation-extension-section}}. Evidence-based reattestation is available
+only when EKU is also negotiated. This document does not define post-handshake
+renewal of Attestation Results in the Passport Model.
 
 Either peer MAY initiate EKU per its own policy. Each completed EKU
-exchange triggers reattestation: a peer that attested in the
-handshake MUST send `attestation_update`, using the scheme chosen in
-the handshake. A peer that did not attest during the handshake MUST
-NOT send `attestation_update`.
+exchange triggers reattestation only for a peer that negotiated an
+`evidence` scheme in the handshake. Such a peer MUST send
+`attestation_update` containing fresh Evidence of the type chosen in
+the handshake. A peer that negotiated a `result` scheme, or did not
+attest during the handshake, MUST NOT send `attestation_update`.
 
 Each peer waits for `attestation_update` only from a peer that
-attested in the handshake. The two `attestation_update` messages are
-independent; no order between them is required.
+negotiated an `evidence` scheme in the handshake. If both peers
+negotiated `evidence` schemes, the two `attestation_update` messages
+are independent; no order between them is required.
 
 This document extends `ExtendedKeyUpdateType` and `ExtendedKeyUpdate`
 ({{Section 4 of -eku}}) as follows:
@@ -592,15 +621,15 @@ Initiator                                        Responder
 [EKU(attestation_update)]N+1*   -------->
                                 <--------  [EKU(attestation_update)]N+1*
 
-* Sent only by a peer that attested in the handshake.
+* Sent only by a peer that negotiated an Evidence scheme in the handshake.
 ~~~
 {: #figure-reattestation title="Reattestation after EKU (DTLS ACKs omitted)"}
 
-The attester sends `attestation_update` after the EKU exchange
+An Evidence attester sends `attestation_update` after the EKU exchange
 completes ({{Sections 5 and 6 of -eku}}), under the N+1 application
 traffic secrets, not the old keys ({{Section 7 of -eku}}).
-After the EKU exchange completes, the relying party expects
-`attestation_update` from the attester. Each relying party sets a
+After the EKU exchange completes, a relying party expects
+`attestation_update` only from an Evidence attester. Such a relying party sets a
 timeout, per local policy, for receiving
 `attestation_update`. On expiry, it aborts with a fatal
 `attestation_required` alert. If appraisal fails, it aborts
@@ -608,8 +637,8 @@ with a fatal `attestation_failed` alert, as in {{crypto-ops}}. No
 message is sent on success.
 
 A peer that receives `attestation_update` from a peer that did not
-attest in the handshake, or before the EKU exchange completes, MUST
-abort with an `unexpected_message` alert.
+negotiate an `evidence` scheme in the handshake, or before the EKU
+exchange completes, MUST abort with an `unexpected_message` alert.
 
 Reattestation does not block application data. Until the relying
 party completes appraisal of `attestation_update` or aborts with an
@@ -621,7 +650,7 @@ EKU exchange or post-handshake client authentication
 ({{Section 4.7.2 of -tls13}}). Reattestation completes at the
 attester when it sends `attestation_update` (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
-completes. If both peers are attesting, reattestation completes
+completes. If both peers are Evidence attesters, reattestation completes
 after both independent exchanges have completed. A relying party
 that receives `key_update_request` or `CertificateRequest` before
 its appraisal completes defers its response until appraisal
@@ -630,7 +659,7 @@ An attester that receives `key_update_request` or
 `CertificateRequest` before it has sent `attestation_update` MUST
 abort with an `unexpected_message` alert.
 
-The binder is derived as in {{crypto-ops}}, with
+For Evidence, the binder is derived as in {{crypto-ops}}, with
 `Transcript-Hash(ClientHello...ServerHello)` replaced by
 `transcript_hash_N+1` ({{Section 7 of -eku}}):
 
@@ -644,7 +673,7 @@ s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
                       Hash(TLS_Server_Public_Key), Hash.length)
 ~~~
 
-`transcript_hash_N+1` covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.
+`transcript_hash_N+1` covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each Evidence-based reattestation therefore uses a fresh binder. Attestation Results are not bound to this transcript hash and are not updated by EKU.
 
 # Negotiating This Protocol {#negotiating-protocol}
 
@@ -914,7 +943,7 @@ Preventing this requires Post-Compromise Security (PCS): new Evidence is sent on
 
 ## Reattestation Freshness {#reattestation-freshness}
 
-Each reattestation is bound to `transcript_hash_N+1` of the EKU exchange that precedes it (see {{reattestation}}). Evidence generated for an earlier generation does not match the current binder and is rejected.
+Each Evidence-based reattestation is bound to `transcript_hash_N+1` of the EKU exchange that precedes it (see {{reattestation}}). Evidence generated for an earlier generation does not match the current binder and is rejected. In the Passport Model, EKU does not refresh the Attestation Results or change their validity period. The Relying Party continues to appraise their freshness under its local policy, regardless of whether EKU occurs.
 
 ## Security Guarantees {#sec-guarantees}
 
@@ -935,7 +964,7 @@ Evidence appraised at handshake time reflects the Target Environment's state at 
 * A subsequent connection uses session resumption, inheriting the original connection's assurance without a new attestation exchange.
 * Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
-The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state instead sets a validity period for an appraisal and requests attestation once that period elapses, using the mechanism in {{reattestation}}. A resumed connection inherits the original appraisal's validity period rather than getting a new one.
+The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets a validity period for an appraisal. In the Background Check Model, it uses the mechanism in {{reattestation}} to obtain fresh Evidence. In the Passport Model, it MUST NOT treat EKU as extending the validity of the Attestation Results. If its policy requires newer Results, a new TLS handshake is needed to present them. A resumed connection inherits the original appraisal's validity period rather than getting a new one.
 
 # Privacy Considerations {#priv-cons}
 
