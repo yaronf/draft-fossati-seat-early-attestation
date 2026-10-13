@@ -203,9 +203,6 @@ TIK-C-ID, TIK-S-ID:
 Attestation binder:
 : A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence to a specific TLS handshake and for providing freshness.
 
-Appraisal validity period:
-: A local policy interval during which a Relying Party treats a prior appraisal of a peer's attestation Evidence or Attestation Results as sufficient for authorization without a new attestation exchange on the wire.
-
 Two-sided uniqueness:
 : The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.
 
@@ -953,7 +950,7 @@ Evidence appraised at handshake time reflects the Target Environment's state at 
 * The connection remains open and continues to carry data after the Target Environment's state has changed and no reattestation has occurred.
 * Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
-The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets an appraisal validity period and requests attestation once that period elapses, using the mechanism in {{reattestation}}. Session resumption is not used to carry forward an appraisal to a new connection (see {{session-resumption}}).
+The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state applies local policy for how long an appraisal remains acceptable and requests attestation once that interval elapses, using the mechanism in {{reattestation}}. Session resumption is not used to carry forward an appraisal to a new connection (see {{session-resumption}}).
 
 # Privacy Considerations {#priv-cons}
 
@@ -1056,7 +1053,6 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 - Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Added {{why-eku}}.
 - Added {{session-resumption}}: session resumption (and early data) not supported since it conflicts with EKU.
-- Defined appraisal validity period in {{terminology}}.
 
 ## draft-fossati-seat-early-attestation-07
 
