@@ -649,15 +649,21 @@ s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
 
 `transcript_hash_N+1` covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.
 
-## Session Resumption and Early Data {#session-resumption}
+## Session Resumption {#session-resumption}
 
-Session resumption is supported. A resumed handshake does not exchange new attestation Evidence or Attestation Results. The Relying Party continues to rely on the appraisal it performed when attestation was last verified on a full handshake (or updated by reattestation on the connection that established the resumption PSK, when {{reattestation}} applies). The Relying Party MAY proceed without a new attestation exchange only while that appraisal remains within its appraisal validity period.
+This specification targets long-lived TLS connections that use post-handshake
+mechanisms, in particular Extended Key Update and reattestation
+({{reattestation}}). Session resumption (including early data) is not
+supported with this protocol: {{-eku}} requires endpoints that enable EKU to
+disable resumption using PSKs established via `NewSessionTicket`, and
+reattestation depends on EKU.
 
-When issuing a `NewSessionTicket`, the server MUST NOT offer a `ticket_lifetime` longer than the remaining attestation validity the server is willing to accept for resumed sessions under its local policy. When accepting a resumption handshake, the Relying Party MUST reject the connection if local policy treats the attestation as no longer valid (for example because the ticket age exceeds the configured appraisal validity period).
-
-An initial TLS connection that uses this protocol MUST authenticate with certificates and MUST exchange attestation as in {{figure-overview}}. Establishing an initial connection with a pre-shared key alone, without that certificate-based attestation exchange, is not supported. Session resumption using a PSK derived from a prior full handshake is described above and is not an initial connection.
-
-Early data (0-RTT) on a resumed connection MAY be accepted when the same appraisal validity period has not expired, because the Relying Party's authorization decision is unchanged from the connection that issued the resumption PSK. Accepting early data does not require a new attestation binder for the resumed handshake transcript.
+Endpoints that negotiate `remoteAttestation` as defined in this document
+MUST NOT offer or accept session resumption for the connection. Fresh
+attestation on a new connection requires a full handshake as in
+{{figure-overview}}. Establishing an initial connection with a pre-shared
+key alone, without that certificate-based attestation exchange, is not
+supported.
 
 # Negotiating This Protocol {#negotiating-protocol}
 
@@ -942,13 +948,12 @@ These properties may be explicitly promised ("attested") by the platform, or the
 
 ## Freshness Guarantees {#freshness-guarantees}
 
-Evidence appraised at handshake time reflects the Target Environment's state at that moment. Three cases can cause that appraisal to go stale without the Relying Party being aware:
+Evidence appraised at handshake time reflects the Target Environment's state at that moment. Cases that can cause that appraisal to go stale without the Relying Party being aware include:
 
 * The connection remains open and continues to carry data after the Target Environment's state has changed and no reattestation has occurred.
-* A subsequent connection uses session resumption without a new `Certificate` message carrying attestation (see {{session-resumption}}).
 * Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
-The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets an appraisal validity period and requests attestation once that period elapses, using the mechanism in {{reattestation}}.
+The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets an appraisal validity period and requests attestation once that period elapses, using the mechanism in {{reattestation}}. Session resumption is not used to carry forward an appraisal to a new connection (see {{session-resumption}}).
 
 # Privacy Considerations {#priv-cons}
 
@@ -1050,7 +1055,7 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 - Defined reattestation using Extended Key Update; removed other reattestation options. Appraisal failure is signalled with the `attestation_failed` alert.
 - Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Added {{why-eku}}.
-- Added {{session-resumption}}: ticket lifetime vs appraisal validity, no PSK-only initial handshake, early data.
+- Added {{session-resumption}}: session resumption (and early data) not supported since it conflicts with EKU.
 - Defined appraisal validity period in {{terminology}}.
 
 ## draft-fossati-seat-early-attestation-07
