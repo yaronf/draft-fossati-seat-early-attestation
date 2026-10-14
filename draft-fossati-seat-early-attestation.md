@@ -646,6 +646,22 @@ s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
 
 `transcript_hash_N+1` covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.
 
+## Session Resumption {#session-resumption}
+
+This specification targets long-lived TLS connections that use post-handshake
+mechanisms, in particular Extended Key Update and reattestation
+({{reattestation}}). Session resumption (including early data) is not
+supported with this protocol: {{-eku}} requires endpoints that enable EKU to
+disable resumption using PSKs established via `NewSessionTicket`, and
+reattestation depends on EKU.
+
+Endpoints that negotiate `remoteAttestation` as defined in this document
+MUST NOT offer or accept session resumption for the connection. Fresh
+attestation on a new connection requires a full handshake as in
+{{figure-overview}}. Establishing an initial connection with a pre-shared
+key alone, without that certificate-based attestation exchange, is not
+supported.
+
 # Negotiating This Protocol {#negotiating-protocol}
 
 This section defines the TLS extension used to negotiate the use of attestation in the TLS handshake.
@@ -929,13 +945,12 @@ These properties may be explicitly promised ("attested") by the platform, or the
 
 ## Freshness Guarantees {#freshness-guarantees}
 
-Evidence appraised at handshake time reflects the Target Environment's state at that moment. Three cases can cause that appraisal to go stale without the Relying Party being aware:
+Evidence appraised at handshake time reflects the Target Environment's state at that moment. Cases that can cause that appraisal to go stale without the Relying Party being aware include:
 
 * The connection remains open and continues to carry data after the Target Environment's state has changed and no reattestation has occurred.
-* A subsequent connection uses session resumption, inheriting the original connection's assurance without a new attestation exchange.
 * Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.
 
-The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state instead sets a validity period for an appraisal and requests attestation once that period elapses, using the mechanism in {{reattestation}}. A resumed connection inherits the original appraisal's validity period rather than getting a new one.
+The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state applies local policy for how long an appraisal remains acceptable and requests attestation once that interval elapses, using the mechanism in {{reattestation}}. Session resumption is not used to carry forward an appraisal to a new connection (see {{session-resumption}}).
 
 # Privacy Considerations {#priv-cons}
 
@@ -1032,14 +1047,12 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
-## draft-fossati-seat-early-attestation-09
-
-- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
-
 ## draft-fossati-seat-early-attestation-08
 
 - Defined reattestation using Extended Key Update; removed other reattestation options. Appraisal failure is signalled with the `attestation_failed` alert.
+- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Added {{why-eku}}.
+- Added {{session-resumption}}: session resumption (and early data) not supported since it conflicts with EKU.
 
 ## draft-fossati-seat-early-attestation-07
 
