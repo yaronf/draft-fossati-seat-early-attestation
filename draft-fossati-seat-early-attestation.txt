@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 15 April 2027                                      Y. Deshpande
+Expires: 17 April 2027                                      Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         12 October 2026
+                                                         14 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 April 2027.
+   This Internet-Draft will expire on 17 April 2027.
 
 Copyright Notice
 
@@ -103,6 +103,7 @@ Table of Contents
      5.2.  Binding the TIK to the TEE
      5.3.  The TLS Stack's Interface to the TEE
      5.4.  Reattestation
+     5.5.  Session Resumption
    6.  Negotiating This Protocol
      6.1.  Negotiation Integrity
    7.  TLS Client and Server Handshake Behavior
@@ -130,16 +131,15 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-09
-     A.2.  draft-fossati-seat-early-attestation-08
-     A.3.  draft-fossati-seat-early-attestation-07
-     A.4.  draft-fossati-seat-early-attestation-06
-     A.5.  draft-fossati-seat-early-attestation-05
-     A.6.  draft-fossati-seat-early-attestation-04
-     A.7.  draft-fossati-seat-early-attestation-03
-     A.8.  draft-fossati-seat-early-attestation-02
-     A.9.  draft-fossati-seat-early-attestation-01
-     A.10. draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-08
+     A.2.  draft-fossati-seat-early-attestation-07
+     A.3.  draft-fossati-seat-early-attestation-06
+     A.4.  draft-fossati-seat-early-attestation-05
+     A.5.  draft-fossati-seat-early-attestation-04
+     A.6.  draft-fossati-seat-early-attestation-03
+     A.7.  draft-fossati-seat-early-attestation-02
+     A.8.  draft-fossati-seat-early-attestation-01
+     A.9.  draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale: Why the Transcript and Not the
            Exporter
    Appendix C.  Design Rationale: Why Extended Key Update for
@@ -796,6 +796,23 @@ Initiator                                        Responder
    exchanges, and the key shares of the current exchange.  Each
    reattestation therefore uses a fresh binder.
 
+5.5.  Session Resumption
+
+   This specification targets long-lived TLS connections that use post-
+   handshake mechanisms, in particular Extended Key Update and
+   reattestation (Section 5.4).  Session resumption (including early
+   data) is not supported with this protocol:
+   [I-D.ietf-tls-extended-key-update] requires endpoints that enable EKU
+   to disable resumption using PSKs established via NewSessionTicket,
+   and reattestation depends on EKU.
+
+   Endpoints that negotiate remoteAttestation as defined in this
+   document MUST NOT offer or accept session resumption for the
+   connection.  Fresh attestation on a new connection requires a full
+   handshake as in Figure 4.  Establishing an initial connection with a
+   pre-shared key alone, without that certificate-based attestation
+   exchange, is not supported.
+
 6.  Negotiating This Protocol
 
    This section defines the TLS extension used to negotiate the use of
@@ -1197,16 +1214,12 @@ Initiator                                        Responder
 8.6.  Freshness Guarantees
 
    Evidence appraised at handshake time reflects the Target
-   Environment's state at that moment.  Three cases can cause that
-   appraisal to go stale without the Relying Party being aware:
+   Environment's state at that moment.  Cases that can cause that
+   appraisal to go stale without the Relying Party being aware include:
 
    *  The connection remains open and continues to carry data after the
       Target Environment's state has changed and no reattestation has
       occurred.
-
-   *  A subsequent connection uses session resumption, inheriting the
-      original connection's assurance without a new attestation
-      exchange.
 
    *  Some Claims describe configuration state that can change at
       runtime without a reboot.  If the Attesting Environment does not
@@ -1215,11 +1228,11 @@ Initiator                                        Responder
 
    The Relying Party cannot observe the Target Environment directly and
    so has no way to detect that its state has changed.  A Relying Party
-   that needs assurance about current state instead sets a validity
-   period for an appraisal and requests attestation once that period
-   elapses, using the mechanism in Section 5.4.  A resumed connection
-   inherits the original appraisal's validity period rather than getting
-   a new one.
+   that needs assurance about current state applies local policy for how
+   long an appraisal remains acceptable and requests attestation once
+   that interval elapses, using the mechanism in Section 5.4.  Session
+   resumption is not used to carry forward an appraisal to a new
+   connection (see Section 5.5).
 
 9.  Privacy Considerations
 
@@ -1516,20 +1529,21 @@ Initiator                                        Responder
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-09
-
-   *  Defined attestation_update wire format and message flow;
-      reattestation does not block application data.
-
-A.2.  draft-fossati-seat-early-attestation-08
+A.1.  draft-fossati-seat-early-attestation-08
 
    *  Defined reattestation using Extended Key Update; removed other
       reattestation options.  Appraisal failure is signalled with the
       attestation_failed alert.
 
+   *  Defined attestation_update wire format and message flow;
+      reattestation does not block application data.
+
    *  Added Appendix C.
 
-A.3.  draft-fossati-seat-early-attestation-07
+   *  Added Section 5.5: session resumption (and early data) not
+      supported since it conflicts with EKU.
+
+A.2.  draft-fossati-seat-early-attestation-07
 
    *  Added relay resistance and key substitution resistance into
       separate sections.
@@ -1549,7 +1563,7 @@ A.3.  draft-fossati-seat-early-attestation-07
 
    *  Reframed Section 8.4.
 
-A.4.  draft-fossati-seat-early-attestation-06
+A.3.  draft-fossati-seat-early-attestation-06
 
    *  Add a Security Considerations subsection on relay resistance,
       showing that transcript binding (ClientHello...ServerHello) and
@@ -1571,12 +1585,12 @@ A.4.  draft-fossati-seat-early-attestation-06
       Expand ([RFC5869]) and that its use does not modify the TLS
       protocol or the key schedule.
 
-A.5.  draft-fossati-seat-early-attestation-05
+A.4.  draft-fossati-seat-early-attestation-05
 
    *  Change extension model to a single remoteAttestation extension
       that covers all handshake messages which need extending.
 
-A.6.  draft-fossati-seat-early-attestation-04
+A.5.  draft-fossati-seat-early-attestation-04
 
    *  Register the attestation_failed alert for Evidence verification
       failure after the attestation extension is processed; clarify
@@ -1592,7 +1606,7 @@ A.6.  draft-fossati-seat-early-attestation-04
 
    *  Replaced Derive-Secret with HKDF-Expand-Label
 
-A.7.  draft-fossati-seat-early-attestation-03
+A.6.  draft-fossati-seat-early-attestation-03
 
    *  Replace the Attestation message by an Attestation (certificate)
       extension, to bring this protocol within the requirements of the
@@ -1610,17 +1624,17 @@ A.7.  draft-fossati-seat-early-attestation-03
 
    *  Remove various outdated sections.
 
-A.8.  draft-fossati-seat-early-attestation-02
+A.7.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.9.  draft-fossati-seat-early-attestation-01
+A.8.  draft-fossati-seat-early-attestation-01
 
    (Submitted by mistake.)
 
-A.10.  draft-fossati-seat-early-attestation-00
+A.9.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
