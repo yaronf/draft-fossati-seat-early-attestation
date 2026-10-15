@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-13T05:29:04.024972+00:00",
+  "timestamp": "2026-10-15T03:11:53.835631+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -212,16 +212,24 @@
       "id": "I_kwDOQdsaoc7bq0Nz",
       "title": "Discuss PSK, HRR, and 0RTT",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Discuss PSK and HRR, maybe 0RTT.",
       "createdAt": "2025-12-02T11:40:52Z",
-      "updatedAt": "2025-12-02T11:40:52Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-10-14T07:53:08Z",
+      "closedAt": "2026-10-14T07:53:08Z",
+      "comments": [
+        {
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/84",
+          "createdAt": "2026-10-14T07:53:08Z",
+          "updatedAt": "2026-10-14T07:53:08Z"
+        }
+      ]
     },
     {
       "number": 8,
@@ -630,7 +638,7 @@
       ],
       "body": "The draft currently lists these advantages of intra-handshake:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L165-L169\n\nMaybe it's a question of definitions, but I don't think this holds up in practice. There are several steps for producing and verifying evidence that don't sound like they can be solved with \"At most, some configuration\":\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L374-L375\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L330-L334\n\nI guess these need to be implemented as callbacks to _some_ application code, since the TLS stack can't really know how to get or verify evidence by itself?\n\nI would appreciate:\n\n1. A section with API considerations (similar to https://www.rfc-editor.org/rfc/rfc9261#name-api-considerations).\n2. A review of the above advantages based on those suggested APIs.",
       "createdAt": "2026-01-26T08:47:19Z",
-      "updatedAt": "2026-10-05T21:13:38Z",
+      "updatedAt": "2026-10-13T06:43:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -653,6 +661,13 @@
           "body": "Hi @burgerdev ! Yes, I (roughly) agree that what's normally understood as config is not all the app would need to provide. Our experience was to observe this gap as well, between what the networking stack can do with standard interfaces, and what it has to do in a configurable way. Here are some examples of more complex code that needs to be somehow called from the aTLS implementation:\n\n* get evidence from platform\n* get evidence appraised by configured verifier\n* appraise attestation result\n\nHowever, depending on how the industry moves, these could become standardised themselves in the future. For example, we used Veraison tooling for all of these, to hide the complexity between some generic calls. We used [ratsd](https://github.com/veraison/ratsd) for evidence, and the \"well-known\" discovery APIs of the Veraison verifier services for verifier interaction. Our appraisal was fairly limited indeed.\n\nFrom my perspective, it seems unlikely to get wide adoption if everything needs to be platform-specific, so it's likely things will converge. I have hopes for [RARe](https://datatracker.ietf.org/doc/draft-fossati-rats-rare/).",
           "createdAt": "2026-10-05T21:13:38Z",
           "updatedAt": "2026-10-05T21:13:38Z"
+        },
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "My point is: the TLS stack will either need to make external calls itself, or delegate that to the application. The draft should imho explain, at least roughly, what TLS libraries would need to do. If the implementation depends on an industry standardization effort, it should be called out.\n\nI have a hard time imagining openssl calling out to a REST API. Maybe it could execute a local binary (`systemd-report`?). ",
+          "createdAt": "2026-10-13T06:43:25Z",
+          "updatedAt": "2026-10-13T06:43:25Z"
         }
       ]
     },
@@ -670,7 +685,7 @@
       "labels": [],
       "body": "The draft currently requires the TIK to be TEE-protected:\n\nhttps://github.com/yaronf/draft-fossati-seat-early-attestation/blob/4b45fe9cf52f1c58989daf9df0e3cea200ae0111/draft-fossati-seat-early-attestation.md?plain=1#L182-L185\n\nI understand the goal of the draft is to provide an attested TLS _session_. We already know from the post-handshake work that a trustworthy attested TLS session can be established with a long-term key that's not protected by a TEE. Why do we need it for intra-handshake?\n\nThe reason why this is important is that some flavours of TEEs are short-lived: confidential containers come to mind. It's probably infeasible to let all containers first do an ACME step (or similar) to get a certificate for their ephemeral key.",
       "createdAt": "2026-01-26T08:55:22Z",
-      "updatedAt": "2026-10-05T21:23:31Z",
+      "updatedAt": "2026-10-13T06:37:14Z",
       "closedAt": null,
       "comments": [
         {
@@ -693,6 +708,13 @@
           "body": "To me this seems like a RP policy issue, no? As long as the attester can verifiably provide info about how its identity key is produced and stored, the RP can make an informed decision. I agree with you about the context around this.\n\nI think we've made changes to how TIK is defined, but the way the draft is currently written prevents this sort of use-case. I don't think we're wed to this limitation, but for now it seems prudent to keep the security requirements tighter, and relax them in the future if need be. @tireddy2 might have stronger opinions on identity key protection.",
           "createdAt": "2026-10-05T21:23:31Z",
           "updatedAt": "2026-10-05T21:23:31Z"
+        },
+        {
+          "author": "burgerdev",
+          "authorAssociation": "NONE",
+          "body": "> To me this seems like a RP policy issue, no? As long as the attester can verifiably provide info about how its identity key is produced and stored, the RP can make an informed decision. I agree with you about the context around this.\n\nIdeally it would be a policy issue, yes, but it currently isn't.\n\n> I think we've made changes to how TIK is defined, but the way the draft is currently written prevents this sort of use-case. I don't think we're wed to this limitation, but for now it seems prudent to keep the security requirements tighter, and relax them in the future if need be. [@tireddy2](https://github.com/tireddy2) might have stronger opinions on identity key protection.\n\nYou mean, as a follow up ID? I think it would be good to at least describe the security benefits of protecting the private key, if you decide to stick to this requirement. ",
+          "createdAt": "2026-10-13T06:37:14Z",
+          "updatedAt": "2026-10-13T06:37:14Z"
         }
       ]
     },
@@ -1203,7 +1225,7 @@
       "id": "I_kwDOQdsaoc8AAAABSlZqxg",
       "title": "A resumed handshake has no Certificate message to carry the extension; the only MUST about resumption is in the document history",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/75",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nikolaichuk7",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1212,8 +1234,8 @@
       "labels": [],
       "body": "Section 4.1 places the `remoteAttestation` extension in the first CertificateEntry of the Certificate message. A resumed TLS 1.3 handshake contains no Certificate message.\n\nMeasured with `openssl s_server -msg` (OpenSSL 3.6.4), two consecutive connections to one server:\n\n```\nconnection 1 (full):     ServerHello, EncryptedExtensions, Certificate, CertificateVerify, Finished, NewSessionTicket\nconnection 2 (resumed):  ServerHello, EncryptedExtensions, Finished, [EndOfEarlyData], NewSessionTicket\nCertificate messages:    1 in the full handshake, 0 in the resumed one\n```\n\nWith `-early_data` on the resumed connection the client reports `Early data was accepted`: the application request was delivered in the client's first flight, before the server had sent any handshake message in that connection. Reproduction, local only: [`examples/resumption.sh`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/examples/resumption.sh), output in [`docs/resumption-run.txt`](https://github.com/nikolaichuk7/hatls/blob/v0.3.0/docs/resumption-run.txt).\n\nWhere the document currently stands on this:\n\n- \u00a78.6 (body) says a resumed connection \"inherit[s] the original connection's assurance\" and \"inherits the original appraisal's validity period\" \u2014 descriptive, and it presumes the exchange can exist there.\n- The only normative statement \u2014 \"resumption MUST be rejected if reattestation is required per local policy\" \u2014 is in Appendix A, the document history, as a note on what an earlier revision added. An implementer reading the body will not find it.\n- Early data / 0-RTT is not mentioned.\n\n**Smallest fix.** Either move that MUST into the body (Section 7 or 8.6) and add the same for early data, or give the extension a carrier that exists in a resumed handshake \u2014 EncryptedExtensions is sent in both \u2014 with the binder defined over the resumed handshake's own transcript. (expat handles this by forbidding NewSessionTicket and 0-RTT on attested connections, \u00a77.2 there; the same rule would fit here.)\n",
       "createdAt": "2026-09-22T16:09:51Z",
-      "updatedAt": "2026-10-07T07:49:34Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-14T07:53:36Z",
+      "closedAt": "2026-10-14T07:53:36Z",
       "comments": [
         {
           "author": "yaronf",
@@ -9038,7 +9060,7 @@
       "labels": [],
       "body": "Fix #80",
       "createdAt": "2026-10-08T12:22:32Z",
-      "updatedAt": "2026-10-12T12:48:51Z",
+      "updatedAt": "2026-10-14T05:13:46Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
@@ -9173,6 +9195,277 @@
               "body": "thanks Nathanael.  I'll leave this out for the moment.  When you have the queries we can update.",
               "createdAt": "2026-10-09T10:00:55Z",
               "updatedAt": "2026-10-09T10:00:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSD80Yw",
+          "commit": {
+            "abbreviatedOid": "6253eb4"
+          },
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-13T16:54:04Z",
+          "updatedAt": "2026-10-13T16:54:04Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "> thanks Nathanael. I'll leave this out for the moment. When you have the queries we can update.\r\n\r\nOkay! I left more detailed comments cross-posted to SEAT and RATS here: https://mailarchive.ietf.org/arch/msg/seat/H3n8SJX_c-fVQKE9smhA9ZlBmF0/",
+              "createdAt": "2026-10-13T16:54:04Z",
+              "updatedAt": "2026-10-13T16:54:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSEORJg",
+          "commit": {
+            "abbreviatedOid": "bce56da"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-13T17:19:02Z",
+          "updatedAt": "2026-10-13T17:19:02Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSJ7LmA",
+          "commit": {
+            "abbreviatedOid": "bce56da"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Rest of the update looks good. ",
+          "createdAt": "2026-10-14T05:09:46Z",
+          "updatedAt": "2026-10-14T05:13:46Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "I propose to simplify the text as follows:\n\nThe same holds for reattestation ({{reattestation}}): the client need not  authenticate to read the server's new attestation credential.  An active attacker holding the current traffic keys can also read it by substituting the EKU key shares.  The relying party detects this through the binder mismatch, but only after the credential has been exposed.",
+              "createdAt": "2026-10-14T05:09:46Z",
+              "updatedAt": "2026-10-14T05:13:46Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 84,
+      "id": "PR_kwDOQdsaoc8AAAABIMpacQ",
+      "title": "Disallow session resumption (#75)",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/84",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n- Replace ticket-lifetime / resume-allowed text with normative disallowance of session resumption (and early data): this protocol targets long-lived connections using EKU and reattestation, which conflict with NST/PSK resume.\n- Keep appraisal validity period for freshness on the live connection; update {{freshness-guarantees}} accordingly.\n- Document history -08 notes the session-resumption policy.\n\nRelated #75.\n\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-10-13T14:53:26Z",
+      "updatedAt": "2026-10-14T07:33:57Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-75",
+      "headRefOid": "ce3d38d80398182cbb2e0b382f285674d46e3cbc",
+      "closedAt": "2026-10-14T07:33:57Z",
+      "mergedAt": "2026-10-14T07:33:57Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "6c36dff14708cbfffda19a260a4186925ed53f23"
+      },
+      "comments": [
+        {
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "body": "> - Replace ticket-lifetime / resume-allowed text with normative disallowance of session resumption (and early data): this protocol targets long-lived connections using EKU and reattestation, which conflict with NST/PSK resume.\n> \n> Related #75.\n\nGiven traditional TLS resumption appears to be a misfit with aTLS across the board, perhaps there should be more emphasis on the use of cached attestation results / passport model as an alternative to compensate for the performance  penalty? \n\nI.e., in place of NST, emphasize existing RFC9334 architecture that facilitates passport model during intra-handshake while transitioning to background-check when using EKU for re-attestation?",
+          "createdAt": "2026-10-13T15:25:13Z",
+          "updatedAt": "2026-10-13T15:28:55Z"
+        },
+        {
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "body": "Just for the record, we elected to disallow session resumption for simplicity - for the time being. I think eventually we can thread the needle:\r\n- Simple: say that you're allowed to do SR if you don't do EKU. If you require reattestation, tough luck.\r\n- More complicated: build on the following extract from TLS which I assume nobody has ever seriously implemented.\r\n\r\n> Note that in principle it is possible to continue issuing new tickets which indefinitely extend the lifetime of the keying material originally derived from an initial non-PSK handshake (which was most likely tied to the peer's certificate). It is RECOMMENDED that implementations place limits on the total lifetime of such keying material; these limits should take into account the lifetime of the peer's certificate, the likelihood of intervening revocation, and the time since the peer's online CertificateVerify signature.\r\n\r\nIOW, let's not make architectural decision based on the assumption that SR is dead.",
+          "createdAt": "2026-10-13T16:29:15Z",
+          "updatedAt": "2026-10-13T16:29:15Z"
+        },
+        {
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "body": "> IOW, let's not make architectural decision based on the assumption that SR is dead.\r\n\r\nSounds good to me, I agree. Thanks for sharing the added context. ",
+          "createdAt": "2026-10-13T17:01:18Z",
+          "updatedAt": "2026-10-13T17:01:18Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSCiiWg",
+          "commit": {
+            "abbreviatedOid": "ce3d38d"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM, thanks!",
+          "createdAt": "2026-10-13T14:59:11Z",
+          "updatedAt": "2026-10-13T14:59:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSJ9NXA",
+          "commit": {
+            "abbreviatedOid": "ce3d38d"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-14T05:15:08Z",
+          "updatedAt": "2026-10-14T05:15:08Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 85,
+      "id": "PR_kwDOQdsaoc8AAAABIN4KrQ",
+      "title": "Keep Passport bound to TIK only",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/85",
+      "state": "CLOSED",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also, no reattestation for ARs.",
+      "createdAt": "2026-10-13T16:36:34Z",
+      "updatedAt": "2026-10-14T09:02:33Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "passport-binding",
+      "headRefOid": "763a2afce318dd8cf720fc8b76b806d568123866",
+      "closedAt": "2026-10-14T09:02:32Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this, moving the other way re. AR binding for now.",
+          "createdAt": "2026-10-14T09:02:32Z",
+          "updatedAt": "2026-10-14T09:02:32Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSD1MXw",
+          "commit": {
+            "abbreviatedOid": "763a2af"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-13T16:42:51Z",
+          "updatedAt": "2026-10-13T16:53:57Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "> _\"They MUST NOT be bound to the TLS connection in which they are presented.\"_\n\nThis seems like a sensible thing to do rather than an interoperability requirement, doesn't it? (That is to say, the `MUST NOT` may not be strictly warranted.)\n",
+              "createdAt": "2026-10-13T16:42:51Z",
+              "updatedAt": "2026-10-13T16:53:57Z"
+            },
+            {
+              "originalPosition": 217,
+              "body": "What does _\"independently of EKU\"_ mean?\n\n```suggestion\nAttestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence to reassess the trustworthiness of the peer in the Background Check Model. In the Passport Model, the Relying Party applies its freshness policy to the Attestation Results relative to the point in time when they are presented. An EKU exchange does not renew their validity or trigger their replacement.\n```",
+              "createdAt": "2026-10-13T16:50:34Z",
+              "updatedAt": "2026-10-13T16:53:57Z"
+            },
+            {
+              "originalPosition": 239,
+              "body": "Is this impossible given other protocol constrains that we inherit or is it a new requirement that we are imposing here?",
+              "createdAt": "2026-10-13T16:52:31Z",
+              "updatedAt": "2026-10-13T16:53:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABSKCb_g",
+          "commit": {
+            "abbreviatedOid": "763a2af"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-14T05:28:38Z",
+          "updatedAt": "2026-10-14T05:43:47Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "The extension does not bind the key to the platform state; it conveys attestation bound to the authentication TLS key. The abstract also drops the connection binding for Evidence. \n\nSuggest: \"This document describes a TLS extension that negotiates remote attestation and conveys Evidence or Attestation Results bound to the TLS authentication key and, for Evidence, to the TLS connection.\" \n\nSame wording issue in the Introduction.",
+              "createdAt": "2026-10-14T05:28:38Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "Same comment is given Abstract. ",
+              "createdAt": "2026-10-14T05:29:09Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\nThe protocol's security relies on the verifiable binding between the TLS authentication Key and the platform state through attestation Evidence or Attestation Results conveyed in the CMW (Conceptual Message Wrapper) {{-cmw}} payload.\n```",
+              "createdAt": "2026-10-14T05:30:27Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 67,
+              "body": "Suggest \"need not be bound\" instead of MUST NOT. A per-connection AR carrying the binder (e.g., co-located Verifier) is a valid deployment and should not be forbidden.",
+              "createdAt": "2026-10-14T05:32:30Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "```suggestion\nFor Evidence, the binder additionally provides freshness through derivation from both peers' randomness and key shares.\n```",
+              "createdAt": "2026-10-14T05:33:19Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 109,
+              "body": "Add TIK mismatch: \"binder mismatch for Evidence, TIK mismatch, failed appraisal, or malformed CMW\".",
+              "createdAt": "2026-10-14T05:35:41Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 134,
+              "body": "Same as line 357: suggest \"need not require\" instead of MUST NOT.",
+              "createdAt": "2026-10-14T05:36:16Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 322,
+              "body": "why forbid AR use with EKU ?",
+              "createdAt": "2026-10-14T05:40:39Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 238,
+              "body": "Why forbid it? ARs bound to the TIK can be appraised after EKU as in the handshake. Forbidding it forces long-lived Passport connections to reconnect when the ARs expire.",
+              "createdAt": "2026-10-14T05:41:22Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
+            },
+            {
+              "originalPosition": 164,
+              "body": "Suggest stating explicitly that in the Passport Model the Evidence sent to the Verifier carries the TIK (or its hash), so the Verifier can include it in the Attestation Results.",
+              "createdAt": "2026-10-14T05:43:34Z",
+              "updatedAt": "2026-10-14T05:43:47Z"
             }
           ]
         }
