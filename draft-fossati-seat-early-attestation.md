@@ -202,7 +202,7 @@ TIK-C-ID, TIK-S-ID:
 (cryptographic hash) of the public key, but other implementations are possible.
 
 Attestation binder:
-: A cryptographic nonce value provided by the TLS stack to the TEE. It is used for binding attestation Evidence and, in the Passport Model, the resulting Attestation Results to a specific TLS handshake and for providing freshness.
+: A cryptographic nonce value provided by the TLS stack to the TEE. It is used for providing freshness as well as binding attestation Evidence (in Background Check Model)  or the resulting Attestation Results (in Passport Model) to a specific TLS handshake.
 
 Two-sided uniqueness:
 : The property that each peer independently contributes fresh nonces and key-exchange material to the handshake, so that neither peer alone can determine the transcript hash. The attestation binder derived from that transcript is therefore guaranteed to be unique to the specific connection, even if one of the peers is adversarial.
