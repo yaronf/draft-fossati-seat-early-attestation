@@ -231,9 +231,9 @@ Table of Contents
 
    Attestation binder:
       A cryptographic nonce value provided by the TLS stack to the TEE.
-      It is used for binding attestation Evidence and, in the Passport
-      Model, the resulting Attestation Results to a specific TLS
-      handshake and for providing freshness.
+      It is used for providing freshness as well as binding attestation
+      Evidence (in Background Check Model) or the resulting Attestation
+      Results (in Passport Model) to a specific TLS handshake.
 
    Two-sided uniqueness:
       The property that each peer independently contributes fresh nonces
