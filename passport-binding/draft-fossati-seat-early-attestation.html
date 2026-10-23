@@ -1637,7 +1637,7 @@ modes of operation are allowed when used with TLS, namely:<a href="#section-5-1"
           <p id="section-5-2.3.1">TLS client and server mutually attest towards each other.<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-5-3">As noted, each peer's attestation is carried in the <code>remoteAttestation</code> extension within
+<p id="section-5-3">As noted, each peer's Evidence or Attestation Result is carried in the <code>remoteAttestation</code> extension within
 that peer's Certificate message. This section describes how Evidence and
 Attestation Results are bound to the TLS handshake and the TIK, and how each is
 verified by the recipient.<a href="#section-5-3" class="pilcrow">¶</a></p>
@@ -1696,9 +1696,9 @@ cipher suite hash function for the handshake (<span><a href="https://rfc-editor.
 <a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
           </h4>
 <p id="section-5.1.2-1">Upon receipt of a <code>remoteAttestation</code> extension carrying Evidence or Attestation Results, the peer <span class="bcp14">MUST</span> compute the attestation binder using the handshake transcript and the public key in the peer's TLS end-entity certificate, as defined in <a href="#binder-def" class="auto internal xref">Section 5.1.1</a>.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-2">If the peer's attestation is rejected (missing or mismatched binder, failed appraisal, or malformed CMW),
-the receiver <span class="bcp14">MUST</span> send an <code>attestation_failed</code> fatal alert and abort the handshake
-(see <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>).<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-2">If the peer's Evidence or Attestation Result is rejected (missing or mismatched
+binder, failed appraisal, or malformed CMW), the receiver <span class="bcp14">MUST</span> send an <code>attestation_failed</code>
+fatal alert and abort the handshake (see <a href="#tls-alerts" class="auto internal xref">Section 10.2</a>).<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-5.1.2-3">For Evidence, depending on the architecture (see also <a href="#stack-tee-interface" class="auto internal xref">Section 5.3</a>), either the peer verifies
 the binder or else it delegates this responsibility to an external Verifier.<a href="#section-5.1.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">

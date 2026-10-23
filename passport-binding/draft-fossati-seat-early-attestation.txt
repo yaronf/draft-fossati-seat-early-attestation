@@ -464,10 +464,11 @@ Table of Contents
 
    *  TLS client and server mutually attest towards each other.
 
-   As noted, each peer's attestation is carried in the remoteAttestation
-   extension within that peer's Certificate message.  This section
-   describes how Evidence and Attestation Results are bound to the TLS
-   handshake and the TIK, and how each is verified by the recipient.
+   As noted, each peer's Evidence or Attestation Result is carried in
+   the remoteAttestation extension within that peer's Certificate
+   message.  This section describes how Evidence and Attestation Results
+   are bound to the TLS handshake and the TIK, and how each is verified
+   by the recipient.
 
 5.1.  Cryptographic Operations
 
@@ -531,10 +532,10 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    using the handshake transcript and the public key in the peer's TLS
    end-entity certificate, as defined in Section 5.1.1.
 
-   If the peer's attestation is rejected (missing or mismatched binder,
-   failed appraisal, or malformed CMW), the receiver MUST send an
-   attestation_failed fatal alert and abort the handshake (see
-   Section 10.2).
+   If the peer's Evidence or Attestation Result is rejected (missing or
+   mismatched binder, failed appraisal, or malformed CMW), the receiver
+   MUST send an attestation_failed fatal alert and abort the handshake
+   (see Section 10.2).
 
    For Evidence, depending on the architecture (see also Section 5.3),
    either the peer verifies the binder or else it delegates this
