@@ -1665,9 +1665,11 @@ as well as binding to the attester's TLS public key.<a href="#section-5.1-3" cla
           </h4>
 <p id="section-5.1.1-1">The attestation binder is computed using primitives
 defined in Sections <a href="https://rfc-editor.org/rfc/rfc9846#section-4.1" class="relref">4.1</a> and <a href="https://rfc-editor.org/rfc/rfc9846#section-7.1" class="relref">7.1</a> of <span>[<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-2">Both peers derive a single attestation base from the same transcript
-checkpoint through ServerHello.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-3">The transcript <span class="bcp14">MUST</span> be computed as <code>Transcript-Hash</code> through ServerHello,
+<p id="section-5.1.1-2">During the initial handshake, both peers derive a single attestation base from
+the same transcript checkpoint through ServerHello. For reattestation, both
+peers use the updated EKU transcript as specified in <a href="#reattestation" class="auto internal xref">Section 5.4</a>.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-3">For the initial handshake, the transcript <span class="bcp14">MUST</span> be computed as <code>Transcript-Hash</code>
+through ServerHello,
 as defined in <span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>.  When the handshake includes
 a HelloRetryRequest, the first ClientHello is not hashed as sent; the
 transcript uses the synthetic <code>message_hash</code> message specified in that
@@ -1903,24 +1905,25 @@ all be measured and reported as part of the platform's remote attestation.<a hre
         <h3 id="name-reattestation">
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-reattestation" class="section-name selfRef">Reattestation</a>
         </h3>
-<p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence to reassess the trustworthiness of the peer in the Background Check Model. In the Passport Model, the Relying Party applies its freshness policy to the Attestation Results independently of EKU. An EKU exchange does not renew their validity or trigger their replacement.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-1">Attestation Evidence or Attestation Results may become stale over time. For long-lived TLS connections, a relying party may need fresh Evidence or Attestation Results to reassess the trustworthiness of the peer. In both models, each completed EKU exchange triggers reattestation bound to the updated transcript.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.4-2">Similarly to the initial handshake, Early Attestation implements
-Evidence-based reattestation at the TLS layer, using Extended Key Update (EKU)
+reattestation at the TLS layer, using Extended Key Update (EKU)
 <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>. This document defines a new <code>ExtendedKeyUpdate</code> subtype,
 <code>attestation_update</code>, which carries a <code>cmw_payload</code> as defined in
-<a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>. Evidence-based reattestation is available
-only when EKU is also negotiated. This document does not define post-handshake
-renewal of Attestation Results in the Passport Model.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+<a href="#remote-attestation-extension-section" class="auto internal xref">Section 4.1</a>. Reattestation is available
+only when EKU is also negotiated and supports both the Background Check Model
+and the Passport Model.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4-3">Either peer <span class="bcp14">MAY</span> initiate EKU per its own policy. Each completed EKU
-exchange triggers reattestation only for a peer that negotiated an
-<code>evidence</code> scheme in the handshake. Such a peer <span class="bcp14">MUST</span> send
-<code>attestation_update</code> containing fresh Evidence of the type chosen in
-the handshake. A peer that negotiated a <code>result</code> scheme, or did not
-attest during the handshake, <span class="bcp14">MUST NOT</span> send <code>attestation_update</code>.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
+exchange triggers reattestation: a peer that attested in the handshake <span class="bcp14">MUST</span>
+send <code>attestation_update</code>, using the scheme chosen in the handshake. A peer
+that negotiated an <code>evidence</code> scheme <span class="bcp14">MUST</span> send fresh Evidence; a peer that
+negotiated a <code>result</code> scheme <span class="bcp14">MUST</span> obtain and send fresh Verifier-signed
+Attestation Results. In both cases, the credential <span class="bcp14">MUST</span> include the new binder
+derived below. A peer that did not attest during the handshake <span class="bcp14">MUST NOT</span> send
+<code>attestation_update</code>.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
 <p id="section-5.4-4">Each peer waits for <code>attestation_update</code> only from a peer that
-negotiated an <code>evidence</code> scheme in the handshake. If both peers
-negotiated <code>evidence</code> schemes, the two <code>attestation_update</code> messages
-are independent; no order between them is required.<a href="#section-5.4-4" class="pilcrow">¶</a></p>
+attested in the handshake. If both peers attested, the two
+<code>attestation_update</code> messages are independent; no order between them is required.<a href="#section-5.4-4" class="pilcrow">¶</a></p>
 <p id="section-5.4-5">This document extends <code>ExtendedKeyUpdateType</code> and <code>ExtendedKeyUpdate</code>
 (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>) as follows:<a href="#section-5.4-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4-6">
@@ -1953,25 +1956,27 @@ Initiator                                        Responder
 [EKU(attestation_update)]N+1*   --------&gt;
                                 &lt;--------  [EKU(attestation_update)]N+1*
 
-* Sent only by a peer that negotiated an Evidence scheme in the handshake.
+* Sent only by a peer that attested in the handshake,
+  using the scheme negotiated for that peer.
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-reattestation-after-eku-dtl" class="selfRef">Reattestation after EKU (DTLS ACKs omitted)</a>
           </figcaption></figure>
 </div>
-<p id="section-5.4-8">An Evidence attester sends <code>attestation_update</code> after the EKU exchange
+<p id="section-5.4-8">The attester sends <code>attestation_update</code> after the EKU exchange
 completes (Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-5" class="relref">5</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-6" class="relref">6</a> of <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>), under the N+1 application
 traffic secrets, not the old keys (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>).
 After the EKU exchange completes, a relying party expects
-<code>attestation_update</code> only from an Evidence attester. Such a relying party sets a
+<code>attestation_update</code> from each peer that attested in the handshake, whether
+using an <code>evidence</code> or a <code>result</code> scheme. Such a relying party sets a
 timeout, per local policy, for receiving
 <code>attestation_update</code>. On expiry, it aborts with a fatal
 <code>attestation_required</code> alert. If appraisal fails, it aborts
 with a fatal <code>attestation_failed</code> alert, as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>. No
 message is sent on success.<a href="#section-5.4-8" class="pilcrow">¶</a></p>
 <p id="section-5.4-9">A peer that receives <code>attestation_update</code> from a peer that did not
-negotiate an <code>evidence</code> scheme in the handshake, or before the EKU
+attest in the handshake, or before the EKU
 exchange completes, <span class="bcp14">MUST</span> abort with an <code>unexpected_message</code> alert.<a href="#section-5.4-9" class="pilcrow">¶</a></p>
 <p id="section-5.4-10">Reattestation does not block application data. Until the relying
 party completes appraisal of <code>attestation_update</code> or aborts with an
@@ -1982,7 +1987,7 @@ EKU exchange or post-handshake client authentication
 (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.7.2" class="relref">Section 4.7.2</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>). Reattestation completes at the
 attester when it sends <code>attestation_update</code> (TLS) or receives the
 ACK for it (DTLS), and at the relying party when appraisal
-completes. If both peers are Evidence attesters, reattestation completes
+completes. If both peers are attesters, reattestation completes
 after both independent exchanges have completed. A relying party
 that receives <code>key_update_request</code> or <code>CertificateRequest</code> before
 its appraisal completes defers its response until appraisal
@@ -1990,7 +1995,8 @@ completes (Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tl
 An attester that receives <code>key_update_request</code> or
 <code>CertificateRequest</code> before it has sent <code>attestation_update</code> <span class="bcp14">MUST</span>
 abort with an <code>unexpected_message</code> alert.<a href="#section-5.4-11" class="pilcrow">¶</a></p>
-<p id="section-5.4-12">For Evidence, the binder is derived as in <a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
+<p id="section-5.4-12">For both Evidence and Attestation Results, the binder <span class="bcp14">MUST</span> be derived as in
+<a href="#crypto-ops" class="auto internal xref">Section 5.1</a>, with
 <code>Transcript-Hash(ClientHello...ServerHello)</code> replaced by
 <code>transcript_hash_N+1</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-extended-key-update-13#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span>):<a href="#section-5.4-12" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4-13">
@@ -2004,7 +2010,20 @@ s_attest_binder_N+1 = HKDF-Expand-Label(attest_base_N+1, "attestation",
                       Hash(TLS_Server_Public_Key), Hash.length)
 </pre><a href="#section-5.4-13" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-14"><code>transcript_hash_N+1</code> covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each Evidence-based reattestation therefore uses a fresh binder. Attestation Results must also be refreshed to include the new binder following the EKU exchange.<a href="#section-5.4-14" class="pilcrow">¶</a></p>
+<p id="section-5.4-14"><code>transcript_hash_N+1</code> covers the initial handshake, all prior EKU exchanges, and the key shares of the current exchange. Each reattestation therefore uses a fresh binder.<a href="#section-5.4-14" class="pilcrow">¶</a></p>
+<p id="section-5.4-15">After the EKU exchange completes, the attester <span class="bcp14">MUST</span> generate fresh Evidence
+containing the new binder. In the Passport Model, it <span class="bcp14">MUST</span> submit this Evidence
+to the Verifier and obtain fresh Attestation Results that include the same
+binder and the attested TIK among the Verifier-signed claims. Results from the
+initial handshake or an earlier EKU generation <span class="bcp14">MUST NOT</span> be used for this
+reattestation.<a href="#section-5.4-15" class="pilcrow">¶</a></p>
+<p id="section-5.4-16">The Relying Party <span class="bcp14">MUST</span> apply the verification and appraisal checks in
+<a href="#crypto-ops" class="auto internal xref">Section 5.1</a> to the received Evidence or Attestation Results, using the binder
+derived from <code>transcript_hash_N+1</code> and the peer's TIK from the TLS end-entity
+certificate. A missing binder or a mismatch <span class="bcp14">MUST</span> cause rejection with a fatal
+<code>attestation_failed</code> alert. Successful appraisal of the fresh Evidence or Results
+replaces the previous appraisal outcome; completing EKU alone does not extend
+the validity of an earlier appraisal.<a href="#section-5.4-16" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2318,9 +2337,9 @@ trust anchor for the Attestation Key (<span>[<a href="#RFC9334" class="cite xref
         <h3 id="name-evidence-confidentiality-af">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-evidence-confidentiality-af" class="section-name selfRef">Evidence Confidentiality After Compromise</a>
         </h3>
-<p id="section-8.3-1">The relay-resistance analysis in <a href="#relay-resistance" class="auto internal xref">Section 8.1</a> shows that Evidence exposed by a handshake-secret compromise cannot be relayed on a different connection. It says nothing about Evidence sent later on that same connection.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.3-2">Suppose an attacker obtains a connection's handshake secret, as in <a href="#worked-example-relay" class="auto internal xref">Section 8.1.1</a>, and new Evidence is subsequently carried on that same connection (see <a href="#reattestation" class="auto internal xref">Section 5.4</a>). If that Evidence is protected under a compromised handshake secret, the attacker decrypts it too.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
-<p id="section-8.3-3">Preventing this requires Post-Compromise Security (PCS): new Evidence is sent only after the connection has moved to fresh traffic secrets, independent of the compromised one. <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span> provides this via Extended Key Update (EKU). Reattestation (<a href="#reattestation" class="auto internal xref">Section 5.4</a>) sends new Evidence only after EKU completes.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-1">The relay-resistance analysis in <a href="#relay-resistance" class="auto internal xref">Section 8.1</a> shows that Evidence or Attestation Results exposed by a handshake-secret compromise cannot be relayed on a different connection. It says nothing about Evidence or Results sent later on that same connection.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2">Suppose an attacker obtains a connection's handshake secret, as in <a href="#worked-example-relay" class="auto internal xref">Section 8.1.1</a>, and new Evidence or Attestation Results are subsequently carried on that same connection (see <a href="#reattestation" class="auto internal xref">Section 5.4</a>). If they are protected under a compromised handshake secret, the attacker decrypts them too.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.3-3">Preventing this requires Post-Compromise Security (PCS): new Evidence or Attestation Results are sent only after the connection has moved to fresh traffic secrets, independent of the compromised one. <span>[<a href="#I-D.ietf-tls-extended-key-update" class="cite xref">I-D.ietf-tls-extended-key-update</a>]</span> provides this via Extended Key Update (EKU). Reattestation (<a href="#reattestation" class="auto internal xref">Section 5.4</a>) sends new Evidence or Results only after EKU completes.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="reattestation-freshness">
@@ -2328,7 +2347,7 @@ trust anchor for the Attestation Key (<span>[<a href="#RFC9334" class="cite xref
         <h3 id="name-reattestation-freshness">
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-reattestation-freshness" class="section-name selfRef">Reattestation Freshness</a>
         </h3>
-<p id="section-8.4-1">Each Evidence-based reattestation is bound to <code>transcript_hash_N+1</code> of the EKU exchange that precedes it (see <a href="#reattestation" class="auto internal xref">Section 5.4</a>). Evidence generated for an earlier generation does not match the current binder and is rejected. In the Passport Model, EKU does not refresh the Attestation Results or change their validity period. The Relying Party continues to appraise their freshness under its local policy, regardless of whether EKU occurs.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<p id="section-8.4-1">Each reattestation is bound to <code>transcript_hash_N+1</code> of the EKU exchange that precedes it (see <a href="#reattestation" class="auto internal xref">Section 5.4</a>). Evidence or Attestation Results generated for the initial handshake or an earlier EKU generation do not match the current binder and <span class="bcp14">MUST</span> be rejected. In the Passport Model, the attester <span class="bcp14">MUST</span> obtain fresh Verifier-signed Results derived from fresh Evidence containing the new binder. The Relying Party <span class="bcp14">MUST</span> verify this binder and appraise the new Results, including their freshness, under its local policy. Completing EKU alone does not renew the validity of earlier Results.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-guarantees">
@@ -2369,7 +2388,7 @@ and the overall security level depends on their existence and quality of assuran
             <p id="section-8.6-2.3.1">Some Claims describe configuration state that can change at runtime without a reboot. If the Attesting Environment does not re-collect such a Claim before each attestation, it keeps asserting a stale value even after reattestation.<a href="#section-8.6-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.6-3">The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets a validity period for an appraisal. In the Background Check Model, it uses the mechanism in <a href="#reattestation" class="auto internal xref">Section 5.4</a> to obtain fresh Evidence. In the Passport Model, it <span class="bcp14">MUST NOT</span> treat EKU as extending the validity of the Attestation Results. If its policy requires newer Results, a new TLS handshake is needed to present them. A resumed connection inherits the original appraisal's validity period rather than getting a new one.<a href="#section-8.6-3" class="pilcrow">¶</a></p>
+<p id="section-8.6-3">The Relying Party cannot observe the Target Environment directly and so has no way to detect that its state has changed. A Relying Party that needs assurance about current state sets a validity period for an appraisal and uses the mechanism in <a href="#reattestation" class="auto internal xref">Section 5.4</a> to obtain fresh Evidence or Attestation Results. In the Passport Model, the new Results <span class="bcp14">MUST</span> be bound to the updated EKU transcript and appraised before they replace the previous appraisal outcome. If EKU was not negotiated, a new TLS handshake is needed to present fresh Evidence or Results. A resumed connection inherits the original appraisal's validity period rather than getting a new one.<a href="#section-8.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2404,7 +2423,8 @@ Some ways to address this include:<a href="#section-9-2" class="pilcrow">¶</a><
       </ul>
 <p id="section-9-4">The latter two also have the property of hiding the peer's identity from the RP.<a href="#section-9-4" class="pilcrow">¶</a></p>
 <p id="section-9-5">In the Passport Model defined here, the attester contacts the Verifier during
-each TLS handshake to obtain connection-bound Attestation Results. The Verifier
+each TLS handshake and each reattestation to obtain connection-bound
+Attestation Results. The Verifier
 therefore learns the timing of these attestation requests, although it need not
 learn the Relying Party's identity. This differs from OCSP "stapling", where a
 previously obtained response can be presented without contacting the responder

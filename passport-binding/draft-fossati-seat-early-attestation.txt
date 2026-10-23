@@ -494,14 +494,16 @@ Table of Contents
    The attestation binder is computed using primitives defined in
    Sections 4.1 and 7.1 of [RFC9846].
 
-   Both peers derive a single attestation base from the same transcript
-   checkpoint through ServerHello.
+   During the initial handshake, both peers derive a single attestation
+   base from the same transcript checkpoint through ServerHello.  For
+   reattestation, both peers use the updated EKU transcript as specified
+   in Section 5.4.
 
-   The transcript MUST be computed as Transcript-Hash through
-   ServerHello, as defined in Section 4.1 of [RFC9846].  When the
-   handshake includes a HelloRetryRequest, the first ClientHello is not
-   hashed as sent; the transcript uses the synthetic message_hash
-   message specified in that section instead.
+   For the initial handshake, the transcript MUST be computed as
+   Transcript-Hash through ServerHello, as defined in Section 4.1 of
+   [RFC9846].  When the handshake includes a HelloRetryRequest, the
+   first ClientHello is not hashed as sent; the transcript uses the
+   synthetic message_hash message specified in that section instead.
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
                     Transcript-Hash(ClientHello...ServerHello), Hash.length)
@@ -743,32 +745,31 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 
    Attestation Evidence or Attestation Results may become stale over
    time.  For long-lived TLS connections, a relying party may need fresh
-   Evidence to reassess the trustworthiness of the peer in the
-   Background Check Model.  In the Passport Model, the Relying Party
-   applies its freshness policy to the Attestation Results independently
-   of EKU.  An EKU exchange does not renew their validity or trigger
-   their replacement.
+   Evidence or Attestation Results to reassess the trustworthiness of
+   the peer.  In both models, each completed EKU exchange triggers
+   reattestation bound to the updated transcript.
 
    Similarly to the initial handshake, Early Attestation implements
-   Evidence-based reattestation at the TLS layer, using Extended Key
-   Update (EKU) [I-D.ietf-tls-extended-key-update].  This document
-   defines a new ExtendedKeyUpdate subtype, attestation_update, which
-   carries a cmw_payload as defined in Section 4.1.  Evidence-based
-   reattestation is available only when EKU is also negotiated.  This
-   document does not define post-handshake renewal of Attestation
-   Results in the Passport Model.
+   reattestation at the TLS layer, using Extended Key Update (EKU)
+   [I-D.ietf-tls-extended-key-update].  This document defines a new
+   ExtendedKeyUpdate subtype, attestation_update, which carries a
+   cmw_payload as defined in Section 4.1.  Reattestation is available
+   only when EKU is also negotiated and supports both the Background
+   Check Model and the Passport Model.
 
    Either peer MAY initiate EKU per its own policy.  Each completed EKU
-   exchange triggers reattestation only for a peer that negotiated an
-   evidence scheme in the handshake.  Such a peer MUST send
-   attestation_update containing fresh Evidence of the type chosen in
-   the handshake.  A peer that negotiated a result scheme, or did not
-   attest during the handshake, MUST NOT send attestation_update.
+   exchange triggers reattestation: a peer that attested in the
+   handshake MUST send attestation_update, using the scheme chosen in
+   the handshake.  A peer that negotiated an evidence scheme MUST send
+   fresh Evidence; a peer that negotiated a result scheme MUST obtain
+   and send fresh Verifier-signed Attestation Results.  In both cases,
+   the credential MUST include the new binder derived below.  A peer
+   that did not attest during the handshake MUST NOT send
+   attestation_update.
 
-   Each peer waits for attestation_update only from a peer that
-   negotiated an evidence scheme in the handshake.  If both peers
-   negotiated evidence schemes, the two attestation_update messages are
-   independent; no order between them is required.
+   Each peer waits for attestation_update only from a peer that attested
+   in the handshake.  If both peers attested, the two attestation_update
+   messages are independent; no order between them is required.
 
    This document extends ExtendedKeyUpdateType and ExtendedKeyUpdate
    (Section 4 of [I-D.ietf-tls-extended-key-update]) as follows:
@@ -796,24 +797,26 @@ Initiator                                        Responder
 [EKU(attestation_update)]N+1*   -------->
                                 <--------  [EKU(attestation_update)]N+1*
 
-* Sent only by a peer that negotiated an Evidence scheme in the handshake.
+* Sent only by a peer that attested in the handshake,
+  using the scheme negotiated for that peer.
 
         Figure 3: Reattestation after EKU (DTLS ACKs omitted)
 
-   An Evidence attester sends attestation_update after the EKU exchange
+   The attester sends attestation_update after the EKU exchange
    completes (Sections 5 and 6 of [I-D.ietf-tls-extended-key-update]),
    under the N+1 application traffic secrets, not the old keys
    (Section 7 of [I-D.ietf-tls-extended-key-update]).  After the EKU
-   exchange completes, a relying party expects attestation_update only
-   from an Evidence attester.  Such a relying party sets a timeout, per
-   local policy, for receiving attestation_update.  On expiry, it aborts
-   with a fatal attestation_required alert.  If appraisal fails, it
-   aborts with a fatal attestation_failed alert, as in Section 5.1.  No
-   message is sent on success.
+   exchange completes, a relying party expects attestation_update from
+   each peer that attested in the handshake, whether using an evidence
+   or a result scheme.  Such a relying party sets a timeout, per local
+   policy, for receiving attestation_update.  On expiry, it aborts with
+   a fatal attestation_required alert.  If appraisal fails, it aborts
+   with a fatal attestation_failed alert, as in Section 5.1.  No message
+   is sent on success.
 
    A peer that receives attestation_update from a peer that did not
-   negotiate an evidence scheme in the handshake, or before the EKU
-   exchange completes, MUST abort with an unexpected_message alert.
+   attest in the handshake, or before the EKU exchange completes, MUST
+   abort with an unexpected_message alert.
 
    Reattestation does not block application data.  Until the relying
    party completes appraisal of attestation_update or aborts with an
@@ -825,18 +828,18 @@ Initiator                                        Responder
    of [RFC9846]).  Reattestation completes at the attester when it sends
    attestation_update (TLS) or receives the ACK for it (DTLS), and at
    the relying party when appraisal completes.  If both peers are
-   Evidence attesters, reattestation completes after both independent
-   exchanges have completed.  A relying party that receives
-   key_update_request or CertificateRequest before its appraisal
-   completes defers its response until appraisal completes (Sections 5
-   and 6 of [I-D.ietf-tls-extended-key-update], Section 4.7.2 of
-   [RFC9846]).  An attester that receives key_update_request or
-   CertificateRequest before it has sent attestation_update MUST abort
-   with an unexpected_message alert.
+   attesters, reattestation completes after both independent exchanges
+   have completed.  A relying party that receives key_update_request or
+   CertificateRequest before its appraisal completes defers its response
+   until appraisal completes (Sections 5 and 6 of
+   [I-D.ietf-tls-extended-key-update], Section 4.7.2 of [RFC9846]).  An
+   attester that receives key_update_request or CertificateRequest
+   before it has sent attestation_update MUST abort with an
+   unexpected_message alert.
 
-   For Evidence, the binder is derived as in Section 5.1, with
-   Transcript-Hash(ClientHello...ServerHello) replaced by
-   transcript_hash_N+1 (Section 7 of
+   For both Evidence and Attestation Results, the binder MUST be derived
+   as in Section 5.1, with Transcript-Hash(ClientHello...ServerHello)
+   replaced by transcript_hash_N+1 (Section 7 of
    [I-D.ietf-tls-extended-key-update]):
 
  attest_base_N+1 = HKDF-Expand-Label(0, "attestation base",
@@ -849,9 +852,23 @@ Initiator                                        Responder
 
    transcript_hash_N+1 covers the initial handshake, all prior EKU
    exchanges, and the key shares of the current exchange.  Each
-   Evidence-based reattestation therefore uses a fresh binder.
-   Attestation Results must also be refreshed to include the new binder
-   following the EKU exchange.
+   reattestation therefore uses a fresh binder.
+
+   After the EKU exchange completes, the attester MUST generate fresh
+   Evidence containing the new binder.  In the Passport Model, it MUST
+   submit this Evidence to the Verifier and obtain fresh Attestation
+   Results that include the same binder and the attested TIK among the
+   Verifier-signed claims.  Results from the initial handshake or an
+   earlier EKU generation MUST NOT be used for this reattestation.
+
+   The Relying Party MUST apply the verification and appraisal checks in
+   Section 5.1 to the received Evidence or Attestation Results, using
+   the binder derived from transcript_hash_N+1 and the peer's TIK from
+   the TLS end-entity certificate.  A missing binder or a mismatch MUST
+   cause rejection with a fatal attestation_failed alert.  Successful
+   appraisal of the fresh Evidence or Results replaces the previous
+   appraisal outcome; completing EKU alone does not extend the validity
+   of an earlier appraisal.
 
 6.  Negotiating This Protocol
 
@@ -1220,32 +1237,35 @@ Initiator                                        Responder
 
 8.3.  Evidence Confidentiality After Compromise
 
-   The relay-resistance analysis in Section 8.1 shows that Evidence
-   exposed by a handshake-secret compromise cannot be relayed on a
-   different connection.  It says nothing about Evidence sent later on
-   that same connection.
+   The relay-resistance analysis in Section 8.1 shows that Evidence or
+   Attestation Results exposed by a handshake-secret compromise cannot
+   be relayed on a different connection.  It says nothing about Evidence
+   or Results sent later on that same connection.
 
    Suppose an attacker obtains a connection's handshake secret, as in
-   Section 8.1.1, and new Evidence is subsequently carried on that same
-   connection (see Section 5.4).  If that Evidence is protected under a
-   compromised handshake secret, the attacker decrypts it too.
+   Section 8.1.1, and new Evidence or Attestation Results are
+   subsequently carried on that same connection (see Section 5.4).  If
+   they are protected under a compromised handshake secret, the attacker
+   decrypts them too.
 
    Preventing this requires Post-Compromise Security (PCS): new Evidence
-   is sent only after the connection has moved to fresh traffic secrets,
-   independent of the compromised one.
+   or Attestation Results are sent only after the connection has moved
+   to fresh traffic secrets, independent of the compromised one.
    [I-D.ietf-tls-extended-key-update] provides this via Extended Key
-   Update (EKU).  Reattestation (Section 5.4) sends new Evidence only
-   after EKU completes.
+   Update (EKU).  Reattestation (Section 5.4) sends new Evidence or
+   Results only after EKU completes.
 
 8.4.  Reattestation Freshness
 
-   Each Evidence-based reattestation is bound to transcript_hash_N+1 of
-   the EKU exchange that precedes it (see Section 5.4).  Evidence
-   generated for an earlier generation does not match the current binder
-   and is rejected.  In the Passport Model, EKU does not refresh the
-   Attestation Results or change their validity period.  The Relying
-   Party continues to appraise their freshness under its local policy,
-   regardless of whether EKU occurs.
+   Each reattestation is bound to transcript_hash_N+1 of the EKU
+   exchange that precedes it (see Section 5.4).  Evidence or Attestation
+   Results generated for the initial handshake or an earlier EKU
+   generation do not match the current binder and MUST be rejected.  In
+   the Passport Model, the attester MUST obtain fresh Verifier-signed
+   Results derived from fresh Evidence containing the new binder.  The
+   Relying Party MUST verify this binder and appraise the new Results,
+   including their freshness, under its local policy.  Completing EKU
+   alone does not renew the validity of earlier Results.
 
 8.5.  Security Guarantees
 
@@ -1290,12 +1310,13 @@ Initiator                                        Responder
    The Relying Party cannot observe the Target Environment directly and
    so has no way to detect that its state has changed.  A Relying Party
    that needs assurance about current state sets a validity period for
-   an appraisal.  In the Background Check Model, it uses the mechanism
-   in Section 5.4 to obtain fresh Evidence.  In the Passport Model, it
-   MUST NOT treat EKU as extending the validity of the Attestation
-   Results.  If its policy requires newer Results, a new TLS handshake
-   is needed to present them.  A resumed connection inherits the
-   original appraisal's validity period rather than getting a new one.
+   an appraisal and uses the mechanism in Section 5.4 to obtain fresh
+   Evidence or Attestation Results.  In the Passport Model, the new
+   Results MUST be bound to the updated EKU transcript and appraised
+   before they replace the previous appraisal outcome.  If EKU was not
+   negotiated, a new TLS handshake is needed to present fresh Evidence
+   or Results.  A resumed connection inherits the original appraisal's
+   validity period rather than getting a new one.
 
 9.  Privacy Considerations
 
@@ -1331,12 +1352,12 @@ Initiator                                        Responder
    from the RP.
 
    In the Passport Model defined here, the attester contacts the
-   Verifier during each TLS handshake to obtain connection-bound
-   Attestation Results.  The Verifier therefore learns the timing of
-   these attestation requests, although it need not learn the Relying
-   Party's identity.  This differs from OCSP "stapling", where a
-   previously obtained response can be presented without contacting the
-   responder during each handshake.
+   Verifier during each TLS handshake and each reattestation to obtain
+   connection-bound Attestation Results.  The Verifier therefore learns
+   the timing of these attestation requests, although it need not learn
+   the Relying Party's identity.  This differs from OCSP "stapling",
+   where a previously obtained response can be presented without
+   contacting the responder during each handshake.
 
 9.1.  Server Attestation to Unauthenticated Clients
 
