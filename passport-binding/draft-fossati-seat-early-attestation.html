@@ -1716,7 +1716,7 @@ in the Evidence. If appraisal fails, the receiver <span class="bcp14">MUST</span
 attestation as invalid.<a href="#section-5.1.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-5.1.2-5">For Attestation Results, the Relying Party <span class="bcp14">MUST</span> appraise the Verifier's signature
+<p id="section-5.1.2-5">For Attestation Results, the Relying Party <span class="bcp14">MUST</span> verify the Verifier's signature
 and the Results against its local policy, including the Results' freshness and
 the Verifier's identity. It <span class="bcp14">MUST</span> check that the TIK public key identified by the
 signed Results matches the public key in the peer's TLS end-entity certificate.

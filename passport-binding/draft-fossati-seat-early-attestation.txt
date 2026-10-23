@@ -553,16 +553,16 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
       to the one that was signed in the Evidence.  If appraisal fails,
       the receiver MUST treat the attestation as invalid.
 
-   For Attestation Results, the Relying Party MUST appraise the
-   Verifier's signature and the Results against its local policy,
-   including the Results' freshness and the Verifier's identity.  It
-   MUST check that the TIK public key identified by the signed Results
-   matches the public key in the peer's TLS end-entity certificate.  The
-   Relying Party MUST compare the computed binder with the binder
-   included in the Verifier-signed Attestation Results.  A missing
-   binder or a mismatch MUST cause the attestation to be considered
-   invalid.  TLS CertificateVerify proves possession of the matching TIK
-   in this handshake.
+   For Attestation Results, the Relying Party MUST verify the Verifier's
+   signature and the Results against its local policy, including the
+   Results' freshness and the Verifier's identity.  It MUST check that
+   the TIK public key identified by the signed Results matches the
+   public key in the peer's TLS end-entity certificate.  The Relying
+   Party MUST compare the computed binder with the binder included in
+   the Verifier-signed Attestation Results.  A missing binder or a
+   mismatch MUST cause the attestation to be considered invalid.  TLS
+   CertificateVerify proves possession of the matching TIK in this
+   handshake.
 
 
    // TODO: define a way to transport the binder to a remote Verifier.
