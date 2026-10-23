@@ -449,7 +449,7 @@ Verifier. The Verifier MUST appraise that the conveyed binder is identical to th
 in the Evidence. If appraisal fails, the receiver MUST treat the
 attestation as invalid.
 
-For Attestation Results, the Relying Party MUST appraise the Verifier's signature
+For Attestation Results, the Relying Party MUST verify the Verifier's signature
 and the Results against its local policy, including the Results' freshness and
 the Verifier's identity. It MUST check that the TIK public key identified by the
 signed Results matches the public key in the peer's TLS end-entity certificate.
