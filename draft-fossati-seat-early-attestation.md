@@ -992,12 +992,11 @@ or to the network.  Specifically:
   authenticates.  It can either complete the handshake as a client, or
   interpose itself in the key exchange, in which case the handshake fails, but
   only after the credential has been exposed.
-* The same holds for post-handshake attestation ({{reattestation}}): the client
-  need not authenticate to obtain the server's new attestation credential,
-  which may differ from the one exchanged in the initial handshake.  Moreover,
-  an active attacker holding the current traffic keys can substitute the key
-  shares of an Extended Key Update ({{pcs}}) and obtain the new credential.  The
-  binder mismatch is detected, but only after the credential has been exposed.
+* The same holds for reattestation ({{reattestation}}): the client need not
+  authenticate to read the server's new attestation credential.  An active
+  attacker holding the current traffic keys can also read it by substituting
+  the EKU key shares.  The relying party detects this through the binder
+  mismatch, but only after the credential has been exposed.
 
 Authenticating the peer does not by itself solve the problem: an authenticated
 peer can still disclose the Claims it receives.
