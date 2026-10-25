@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-15T03:11:53.835631+00:00",
+  "timestamp": "2026-10-25T03:12:18.488309+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -9466,6 +9466,295 @@
               "body": "Suggest stating explicitly that in the Passport Model the Evidence sent to the Verifier carries the TIK (or its hash), so the Verifier can include it in the Attestation Results.",
               "createdAt": "2026-10-14T05:43:34Z",
               "updatedAt": "2026-10-14T05:43:47Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 87,
+      "id": "PR_kwDOQdsaoc8AAAABKRFgQg",
+      "title": "Always bind AR to connection",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/87",
+      "state": "OPEN",
+      "author": "ionut-arm",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-10-23T14:04:12Z",
+      "updatedAt": "2026-10-24T13:08:09Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "6c36dff14708cbfffda19a260a4186925ed53f23",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "passport-binding",
+      "headRefOid": "046e0abc13cb27dd210301d7d6bcb90fc61f325b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT6qklw",
+          "commit": {
+            "abbreviatedOid": "5ca9ba7"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T16:43:13Z",
+          "updatedAt": "2026-10-23T16:43:13Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "```suggestion\n: A cryptographic nonce value provided by the TLS stack to the TEE. It is used for providing freshness as well as binding attestation Evidence (in Background Check Model)  or the resulting Attestation Results (in Passport Model) to a specific TLS handshake.\n```",
+              "createdAt": "2026-10-23T16:43:13Z",
+              "updatedAt": "2026-10-23T16:43:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT6s4yg",
+          "commit": {
+            "abbreviatedOid": "5ca9ba7"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T16:46:40Z",
+          "updatedAt": "2026-10-23T16:46:40Z",
+          "comments": [
+            {
+              "originalPosition": 185,
+              "body": "```suggestion\nFor Attestation Results, the Relying Party MUST verify the Verifier's signature\n```",
+              "createdAt": "2026-10-23T16:46:40Z",
+              "updatedAt": "2026-10-23T16:46:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT6tqeg",
+          "commit": {
+            "abbreviatedOid": "5ca9ba7"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Some early comments",
+          "createdAt": "2026-10-23T16:47:49Z",
+          "updatedAt": "2026-10-23T16:47:49Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7CRkQ",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:16:49Z",
+          "updatedAt": "2026-10-23T17:16:49Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "Just a question: Is this a hard policy that the Results must be bound to latest results during the handshake ??",
+              "createdAt": "2026-10-23T17:16:49Z",
+              "updatedAt": "2026-10-23T17:16:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7LOmg",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:30:01Z",
+          "updatedAt": "2026-10-23T17:30:01Z",
+          "comments": [
+            {
+              "originalPosition": 129,
+              "body": "```suggestion\nIn the Passport Model, a Verifier appraises the Evidence, extracts the binder from the appraised Evidence as a Verifier added claim and signs the Attestation Results, thus preserving the binder.\n```",
+              "createdAt": "2026-10-23T17:30:01Z",
+              "updatedAt": "2026-10-23T17:30:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7LfAw",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:30:23Z",
+          "updatedAt": "2026-10-23T17:30:23Z",
+          "comments": [
+            {
+              "originalPosition": 130,
+              "body": "Just a question, is line 391 necessary in this context..?",
+              "createdAt": "2026-10-23T17:30:23Z",
+              "updatedAt": "2026-10-23T17:30:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7MXvQ",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:31:45Z",
+          "updatedAt": "2026-10-23T17:31:46Z",
+          "comments": [
+            {
+              "originalPosition": 144,
+              "body": "Can you please specify what do you mean by `attestation base` here? If you have already used it/defined it earlier, please provide a suitable reference!",
+              "createdAt": "2026-10-23T17:31:45Z",
+              "updatedAt": "2026-10-23T17:31:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7OdkQ",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:34:41Z",
+          "updatedAt": "2026-10-23T17:34:41Z",
+          "comments": [
+            {
+              "originalPosition": 290,
+              "body": "Question: With the above policy of Attestation always required even in the PP Model, during Clinet/Serer Hello, is the AR becoming stale a valid use case for ReAttestation ",
+              "createdAt": "2026-10-23T17:34:41Z",
+              "updatedAt": "2026-10-23T17:34:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7QHDA",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:37:07Z",
+          "updatedAt": "2026-10-23T17:37:07Z",
+          "comments": [
+            {
+              "originalPosition": 458,
+              "body": "```suggestion\nIn the Passport Model, the attester contacts the Verifier during\n```",
+              "createdAt": "2026-10-23T17:37:07Z",
+              "updatedAt": "2026-10-23T17:37:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7Q_HQ",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Completed review, in general LGTM!\nI have more questions, rather than comments, but thanks for the PR!\n\n",
+          "createdAt": "2026-10-23T17:38:30Z",
+          "updatedAt": "2026-10-23T17:38:30Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABT7Tb1A",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-23T17:42:07Z",
+          "updatedAt": "2026-10-23T17:42:07Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "Hi Yogesh, I have some technical perspective to share for this one:\r\n\r\nFor the passport model, the Attestation Result is collected ahead of time between the Attester and Verifier, and importantly, that exchange represents its own independent connection from any that may happen in the future between an Attester and RP.  That's the gap I believe Ionut is trying to address (the Attester<->Verifier handshake). \r\n\r\nFor the actual connection between an Attester and RP, the Attester conveys that cached AR and the Attester is expected to provide proof of possession of the TIK indicated in that same cached AR, as previously specified. @ionut-arm feel free to \"uhm, actually\" anything I just said!",
+              "createdAt": "2026-10-23T17:42:07Z",
+              "updatedAt": "2026-10-23T17:44:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUBFUOA",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "I have only read 1/2 of the PR so far. Comments are generally editorial.",
+          "createdAt": "2026-10-24T12:44:30Z",
+          "updatedAt": "2026-10-24T13:08:09Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "I don't understand this change and why it's better than the older text.",
+              "createdAt": "2026-10-24T12:44:30Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 47,
+              "body": "\"In both models\" is unclear in this context.",
+              "createdAt": "2026-10-24T12:45:31Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 55,
+              "body": "These too sentences are confusing/contradictory: is the signature over the Evidence (with a binder included) or over the AR?\n\nMaybe have one bullet for BC model, and one of Passport.",
+              "createdAt": "2026-10-24T12:47:47Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 109,
+              "body": "```suggestion\nAs noted, each peer's Evidence or Attestation Results is carried in the `remoteAttestation` extension within\n```",
+              "createdAt": "2026-10-24T12:54:32Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 194,
+              "body": "Is this TODO still open/revevant?",
+              "createdAt": "2026-10-24T13:02:48Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 220,
+              "body": "```suggestion\nagainst the TLS certificate. Because of this check, results from another connection would be rejected even\n```",
+              "createdAt": "2026-10-24T13:05:34Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "The \"shim\" is only defined in the next paragraph.",
+              "createdAt": "2026-10-24T13:07:17Z",
+              "updatedAt": "2026-10-24T13:08:09Z"
             }
           ]
         }
