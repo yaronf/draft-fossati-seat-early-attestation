@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-25T03:12:18.488309+00:00",
+  "timestamp": "2026-10-27T03:42:44.269369+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -9060,18 +9060,26 @@
       "labels": [],
       "body": "Fix #80",
       "createdAt": "2026-10-08T12:22:32Z",
-      "updatedAt": "2026-10-14T05:13:46Z",
+      "updatedAt": "2026-10-25T17:26:43Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "priv++",
-      "headRefOid": "bce56daa5190c01a7c01856979ddb91a9be8e663",
+      "headRefOid": "9512de8d080d96c4f8164c6a3d92c650eb07b36c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@tireddy2 I think I have addressed all your comments.  Please check and merge the PR if you are happy with it.",
+          "createdAt": "2026-10-25T17:26:43Z",
+          "updatedAt": "2026-10-25T17:26:43Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOQdsaoc8AAAABRUHdWA",
@@ -9483,7 +9491,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-23T14:04:12Z",
-      "updatedAt": "2026-10-24T13:08:09Z",
+      "updatedAt": "2026-10-26T14:30:12Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6c36dff14708cbfffda19a260a4186925ed53f23",
@@ -9494,7 +9502,36 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ionut-arm thanks for the good work.  Here are my 10 \u2013 not one more, not one less! - high-level comments: \r\n\r\n1. there is a round trip between attester and verifier before attester can send the Certificate msg.  We should specify what behaviour is expected on timeout/destination unreachable.\r\n2. SC += an unauthenticated client can force a Verifier call whenever it wants\r\n3. PC += verifier learns handshake timing\r\n4. PC += a stable TIK is linkable\r\n5. RATS interface: we are working on the TIK claim in EAR, but the binder is still in progress -- I think this was an action for me?\r\n7. in some places we say the TEE signs evidence, while others still say the TEE signs \"Evidence or Attestation Results\"\r\n8. we should add that the RP MUST reject expired Results\r\n9. we should say what is the expected attester behaviour during reattestation when the verifier is slow\r\n10. the PR deserves a new entry in the changelog",
+          "createdAt": "2026-10-25T17:18:35Z",
+          "updatedAt": "2026-10-25T17:18:35Z"
+        },
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> 1-9 [...]\r\n\r\nhmm, apparently I can't count \ud83d\ude2d ",
+          "createdAt": "2026-10-25T17:20:26Z",
+          "updatedAt": "2026-10-25T17:20:26Z"
+        },
+        {
+          "author": "telephonicrobotics",
+          "authorAssociation": "NONE",
+          "body": "> > 1-9 [...]\n> \n> \n> \n> hmm, apparently I can't count \ud83d\ude2d \n\nClassic off by one bug, charming. ",
+          "createdAt": "2026-10-25T17:22:06Z",
+          "updatedAt": "2026-10-25T17:22:06Z"
+        },
+        {
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > 1-9 [...]\r\n> \r\n> hmm, apparently I can't count \ud83d\ude2d\r\n\r\nThomas works on indexes so 0-9 means 10 :)",
+          "createdAt": "2026-10-26T14:30:12Z",
+          "updatedAt": "2026-10-26T14:30:12Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOQdsaoc8AAAABT6qklw",
@@ -9755,6 +9792,52 @@
               "body": "The \"shim\" is only defined in the next paragraph.",
               "createdAt": "2026-10-24T13:07:17Z",
               "updatedAt": "2026-10-24T13:08:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUExUoQ",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-25T07:54:52Z",
+          "updatedAt": "2026-10-25T08:08:06Z",
+          "comments": [
+            {
+              "originalPosition": 269,
+              "body": "You removed the nonce, is this on purpose?",
+              "createdAt": "2026-10-25T07:54:53Z",
+              "updatedAt": "2026-10-25T08:08:06Z"
+            },
+            {
+              "originalPosition": 380,
+              "body": "Is this fixing a specific implementation, i.e. that the binder is included as an explicit claim vs. a nonce fed into the signature process?",
+              "createdAt": "2026-10-25T07:59:33Z",
+              "updatedAt": "2026-10-25T08:08:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUE1rPA",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "yaronf",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-25T08:17:29Z",
+          "updatedAt": "2026-10-25T08:17:30Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "This section needs a pass to add Attestation Results.",
+              "createdAt": "2026-10-25T08:17:30Z",
+              "updatedAt": "2026-10-25T08:17:30Z"
             }
           ]
         }
