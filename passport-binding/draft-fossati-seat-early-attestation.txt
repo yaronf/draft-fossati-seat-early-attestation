@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 26 April 2027                                      Y. Deshpande
+Expires: 1 May 2027                                         Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         23 October 2026
+                                                         28 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 April 2027.
+   This Internet-Draft will expire on 1 May 2027.
 
 Copyright Notice
 
@@ -169,8 +169,8 @@ Table of Contents
    (e.g., [TPM1.2], [TPM2.0], [I-D.ietf-rats-eat]) this extension has
    been explicitly designed to be agnostic to the attestation formats.
    This is achieved by reusing the generic encapsulation defined in
-   [I-D.ietf-rats-msg-wrap] for transporting Evidence and Attestation
-   Results payloads in the remoteAttestation extension.
+   [RFC9999] for transporting Evidence and Attestation Results payloads
+   in the remoteAttestation extension.
 
    This specification provides both one-way (server-only) and mutual
    (client and server) authentication using traditional TLS
@@ -261,11 +261,12 @@ Table of Contents
    relay or splicing from an adversary is possible.
 
    The protocol's security relies on the verifiable binding between the
-   TLS Identity Key and the platform state through attestation Evidence
-   or Attestation Results conveyed in the CMW (Conceptual Message
-   Wrapper) [I-D.ietf-rats-msg-wrap] payload.  Evidence in the
-   Background Check Model and Attestation Results in the Passport Model
-   are additionally bound to the specific TLS connection.
+   TLS Identity Key, the specific TLS connection, and the platform
+   state.  The binding applies to attestation Evidence or Attestation
+   Results conveyed in the CMW (Conceptual Message Wrapper) [RFC9999]
+   payload.  Evidence in the Background Check Model and Attestation
+   Results in the Passport Model are additionally bound to the specific
+   TLS connection.
 
 3.1.  Authentication vs. Attestation
 
@@ -312,15 +313,15 @@ Table of Contents
    As typical with new features in TLS, the client indicates support for
    the new extension in the ClientHello message.  The newly introduced
    extension allows attestation Evidence or Attestation Results to be
-   exchanged.  Freshness of the exchanged Evidence or Attestation
+   exchanged.  Freshness of both exchanged Evidence or Attestation
    Results is provided through an Attestation Binder mechanism (see
-   Section 5.1) in both models.
+   Section 5.1).
 
    When the extension is successfully negotiated, attestation Evidence
    or Attestation Results are conveyed in a remoteAttestation extension
    (see Section 4.1).  The CMW payload in the Attestation extension
    contains the attestation Evidence or Attestation Results encoded
-   according to [I-D.ietf-rats-msg-wrap].
+   according to [RFC9999].
 
    The attestation payload MUST contain assertions relating to the
    attester's TLS Identity Key (TIK-C for client attester, TIK-S for
@@ -329,8 +330,8 @@ Table of Contents
    include an attestation binder derived from the message transcript
    (see Section 5.1) and the attester's TLS identity public key, as
    specified in Section 4.1.  In the Passport Model, the Verifier MUST
-   include this binder in the signed Attestation Results derived from
-   that Evidence.
+   include the binder it extracts from the Evidence in its signed
+   Attestation Result.
 
    The relying party can obtain and appraise the remote Attestation
    Results either directly from the Attestation extension (in the
@@ -377,7 +378,7 @@ Table of Contents
    alert.
 
    This message carries a CMW (Conceptual Message Wrapper) payload as
-   defined in [I-D.ietf-rats-msg-wrap].
+   defined in [RFC9999].
 
    The remoteAttestation extension structure is defined in Figure 1.  As
    per Section 4.3 of [RFC9846], a single extension is used across the
@@ -431,8 +432,8 @@ Table of Contents
    Figure 1: TLS Extension Structure for Remote Attestation negotiation.
 
    The cmw_payload field contains a CMW structure as defined in
-   [I-D.ietf-rats-msg-wrap].  Both JSON and CBOR serializations are
-   allowed in CMW, with the emitter choosing which serialization to use.
+   [RFC9999].  Both JSON and CBOR serializations are allowed in CMW,
+   with the emitter choosing which serialization to use.
 
    The CMW payload MUST contain attestation Evidence (in Background
    Check Model) or Attestation Results (in Passport Model) that binds
@@ -482,8 +483,7 @@ Table of Contents
    The attestation Evidence is generated by a TEE and signed using an
    attestation key.  In the Passport Model, a Verifier appraises the
    Evidence and signs the Attestation Results, preserving the binder
-   from the appraised Evidence as a signed claim.  The signed Evidence
-   includes inputs originating from different trust domains.
+   from the appraised Evidence as a signed claim.
 
    The attestation binder is provided by the TLS stack and serves as a
    nonce that ensures freshness and binding to a specific TLS handshake,
@@ -494,16 +494,23 @@ Table of Contents
    The attestation binder is computed using primitives defined in
    Sections 4.1 and 7.1 of [RFC9846].
 
-   During the initial handshake, both peers derive a single attestation
-   base from the same transcript checkpoint through ServerHello.  For
-   reattestation, both peers use the updated EKU transcript as specified
-   in Section 5.4.
+   During the initial handshake, both peers derive a common
+   cryptographic value (the attestation base) from the same transcript
+   checkpoint through ServerHello.  For reattestation, both peers use
+   the updated EKU transcript as specified in Section 5.4.
 
    For the initial handshake, the transcript MUST be computed as
    Transcript-Hash through ServerHello, as defined in Section 4.1 of
    [RFC9846].  When the handshake includes a HelloRetryRequest, the
    first ClientHello is not hashed as sent; the transcript uses the
    synthetic message_hash message specified in that section instead.
+
+   The client and server each have a tailored binder derived from the
+   attestation base, which they can use to bind their Evidence or
+   Attestation Results.  Both peers are then also able to derive each-
+   other's binder in order to appraise the Attestation Results.  The
+   peer-specific binder mixes in the public part of that peer's
+   authentication key.
 
 attest_base = HKDF-Expand-Label(0, "attestation base",
                     Transcript-Hash(ClientHello...ServerHello), Hash.length)
@@ -673,12 +680,10 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
 5.3.  The TLS Stack's Interface to the TEE
 
    When the TEE signs Evidence for either model, it binds the Evidence
-   to the TLS Identity public key and the TLS connection.  For the
-   Passport Model, the shim obtains Attestation Results from the
-   Verifier, which appraises this Evidence and includes its binder and
-   attested TIK in the signed Results.  TEE implementations differ, and
-   some only allow a single user-provided challenge value to be added to
-   the Evidence with no associated checks.
+   to the TLS Identity public key and the TLS connection.  TEE
+   implementations differ, and some only allow a single user-provided
+   challenge value to be added to the Evidence with no associated
+   checks.
 
    Architecturally we propose to add a thin shim between the traditional
    TLS stack and the TEE as shown in Figure 2.  Implementations will
@@ -857,9 +862,9 @@ Initiator                                        Responder
    After the EKU exchange completes, the attester MUST generate fresh
    Evidence containing the new binder.  In the Passport Model, it MUST
    submit this Evidence to the Verifier and obtain fresh Attestation
-   Results that include the same binder and the attested TIK among the
-   Verifier-signed claims.  Results from the initial handshake or an
-   earlier EKU generation MUST NOT be used for this reattestation.
+   Results that include the same binder and the attested TIK.  Results
+   from the initial handshake or an earlier EKU generation MUST NOT be
+   used for this reattestation.
 
    The Relying Party MUST apply the verification and appraisal checks in
    Section 5.1 to the received Evidence or Attestation Results, using
@@ -1466,13 +1471,6 @@ Initiator                                        Responder
 
 12.1.  Normative References
 
-   [I-D.ietf-rats-msg-wrap]
-              Birkholz, H., Smith, N., Fossati, T., Tschofenig, H., and
-              D. Glaze, "RATS Conceptual Messages Wrapper (CMW)", Work
-              in Progress, Internet-Draft, draft-ietf-rats-msg-wrap-23,
-              11 December 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-msg-wrap-23>.
-
    [I-D.ietf-tls-extended-key-update]
               Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
               Rosomakho, "Extended Key Update for Transport Layer
@@ -1493,6 +1491,11 @@ Initiator                                        Responder
    [RFC9846]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 9846, DOI 10.17487/RFC9846, July 2026,
               <https://www.rfc-editor.org/rfc/rfc9846>.
+
+   [RFC9999]  Birkholz, H., Smith, N., Fossati, T., and H. Tschofenig,
+              "Remote ATtestation procedureS (RATS) Conceptual Message
+              Wrapper (CMW)", RFC 9999, DOI 10.17487/RFC9999, July 2026,
+              <https://www.rfc-editor.org/rfc/rfc9999>.
 
 12.2.  Informative References
 
@@ -1822,16 +1825,19 @@ Appendix D.  Computing the Handshake Transcript with Existing TLS APIs
 Appendix E.  Summary of Security Properties
 
    This appendix summarizes the security properties relevant to binding
-   attestation to the TLS handshake.
+   attestation to the TLS handshake and to the updated transcript during
+   reattestation.  These properties apply to both Evidence in the
+   Background Check Model and Attestation Results in the Passport Model.
 
    Transcript integrity and cryptographic binding: While a MiTM can
    intercept the TLS handshake and replay arbitrary messages (including
-   fake key shares, copied certificates, or spoofed Evidence), it cannot
-   complete the TLS connection.  The TLS peer's private key signs the
-   handshake transcript via CertificateVerify.  Because substituting key
-   shares alters that transcript, a MiTM lacking the peer's private key
-   cannot produce a valid signature over the tampered transcript or
-   derive the correct Finished MAC, so the peer rejects the connection.
+   fake key shares, copied certificates, or spoofed Evidence or
+   Attestation Results), it cannot complete the TLS connection.  The TLS
+   peer's private key signs the handshake transcript via
+   CertificateVerify.  Because substituting key shares alters that
+   transcript, a MiTM lacking the peer's private key cannot produce a
+   valid signature over the tampered transcript or derive the correct
+   Finished MAC, so the peer rejects the connection.
 
    Explicit key confirmation: Although the Certificate message is
    evaluated before the Finished MAC, TLS 1.3 enforces explicit key
@@ -1839,18 +1845,33 @@ Appendix E.  Summary of Security Properties
    transcript before the connection is established.  No application data
    is exchanged until key confirmation succeeds, so a failed
    confirmation aborts the connection regardless of the earlier
-   Certificate and Evidence processing.
+   Certificate and Evidence or Attestation Results processing.
 
    TLS connection uniqueness and replay resistance: As established in
-   Section 8.1, TLS 1.3 generates fresh ephemeral key shares for every
-   connection, and the signed attestation Evidence is bound, via the
-   handshake transcript, to the connection's ephemeral key shares.  The
-   Evidence also binds the attester's public key used in the end-entity
-   certificate for authentication (Section 5.2).  Evidence is therefore
-   bound to a single connection and to the identity key used in that
-   handshake: an attacker cannot replay Evidence from a past connection,
-   because the key share in the new handshake will not match the key
-   bound in the old Evidence.
+   Section 8.1, the attestation binder is derived from the
+   ClientHello...ServerHello transcript checkpoint, which includes both
+   peers' fresh randomness and ephemeral key shares, and from the
+   attester's TIK public key (Section 5.1).  The TEE includes this
+   binder in signed Evidence.  In the Passport Model, the Verifier
+   preserves the binder from the appraised Evidence in its signed
+   Attestation Results.  The Relying Party checks the binder and the
+   attested TIK against the current connection (Section 5.2).  Evidence
+   and Results from another connection are therefore rejected, even when
+   the same TIK is used.
+
+   Reattestation freshness: Each completed EKU exchange triggers fresh
+   Evidence or Attestation Results bound to transcript_hash_N+1
+   (Section 5.4).  The Relying Party checks this binder and appraises
+   the new Evidence or Results; credentials from the initial handshake
+   or an earlier EKU generation are rejected (Section 8.4).  Completing
+   EKU alone does not renew an earlier appraisal.
+
+   Confidentiality after compromise: Reattestation sends fresh Evidence
+   or Attestation Results only after EKU completes, under the new
+   application traffic secrets (Section 8.3).  Their confidentiality
+   after compromise depends on EKU establishing fresh traffic secrets
+   independent of the compromised ones; transcript binding provides
+   replay resistance, not confidentiality.
 
    Forward secrecy: Forward secrecy is inherited from TLS 1.3 and is not
    a property added by this mechanism.  Because TLS 1.3 mandates
