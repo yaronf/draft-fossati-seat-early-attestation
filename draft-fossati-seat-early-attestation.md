@@ -1090,10 +1090,12 @@ We would like to thank Paul Howard, Arto Niemi, and Hannes Tschofenig for their 
 
 # Document History {#document-history}
 
+## draft-fossati-seat-early-attestation-09
+
+- Added a Privacy Considerations subsection stating that there is no expectation of privacy for attestation credentials, and pointing to possible mitigations ({{-rats-privacy}}).
+
 ## draft-fossati-seat-early-attestation-08
 
-- Added a Privacy Considerations subsection stating that there is no expectation of privacy for attestation credentials, and pointing to possible mitigations ({{-rats-privacy}}) (#80).
-- Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Defined reattestation using Extended Key Update; removed other reattestation options. Appraisal failure is signalled with the `attestation_failed` alert.
 - Defined `attestation_update` wire format and message flow; reattestation does not block application data.
 - Added {{why-eku}}.
