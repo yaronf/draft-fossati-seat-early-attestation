@@ -132,15 +132,16 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Document History
-     A.1.  draft-fossati-seat-early-attestation-08
-     A.2.  draft-fossati-seat-early-attestation-07
-     A.3.  draft-fossati-seat-early-attestation-06
-     A.4.  draft-fossati-seat-early-attestation-05
-     A.5.  draft-fossati-seat-early-attestation-04
-     A.6.  draft-fossati-seat-early-attestation-03
-     A.7.  draft-fossati-seat-early-attestation-02
-     A.8.  draft-fossati-seat-early-attestation-01
-     A.9.  draft-fossati-seat-early-attestation-00
+     A.1.  draft-fossati-seat-early-attestation-09
+     A.2.  draft-fossati-seat-early-attestation-08
+     A.3.  draft-fossati-seat-early-attestation-07
+     A.4.  draft-fossati-seat-early-attestation-06
+     A.5.  draft-fossati-seat-early-attestation-05
+     A.6.  draft-fossati-seat-early-attestation-04
+     A.7.  draft-fossati-seat-early-attestation-03
+     A.8.  draft-fossati-seat-early-attestation-02
+     A.9.  draft-fossati-seat-early-attestation-01
+     A.10. draft-fossati-seat-early-attestation-00
    Appendix B.  Design Rationale: Why the Transcript and Not the
            Exporter
    Appendix C.  Design Rationale: Why Extended Key Update for
@@ -1581,15 +1582,13 @@ Initiator                                        Responder
 
 Appendix A.  Document History
 
-A.1.  draft-fossati-seat-early-attestation-08
+A.1.  draft-fossati-seat-early-attestation-09
 
    *  Added a Privacy Considerations subsection stating that there is no
       expectation of privacy for attestation credentials, and pointing
-      to possible mitigations ([I-D.ounsworth-rats-privacy-framework])
-      (#80).
+      to possible mitigations ([I-D.ounsworth-rats-privacy-framework]).
 
-   *  Defined attestation_update wire format and message flow;
-      reattestation does not block application data.
+A.2.  draft-fossati-seat-early-attestation-08
 
    *  Defined reattestation using Extended Key Update; removed other
       reattestation options.  Appraisal failure is signalled with the
@@ -1603,7 +1602,7 @@ A.1.  draft-fossati-seat-early-attestation-08
    *  Added Section 5.5: session resumption (and early data) not
       supported since it conflicts with EKU.
 
-A.2.  draft-fossati-seat-early-attestation-07
+A.3.  draft-fossati-seat-early-attestation-07
 
    *  Added relay resistance and key substitution resistance into
       separate sections.
@@ -1623,7 +1622,7 @@ A.2.  draft-fossati-seat-early-attestation-07
 
    *  Reframed Section 8.4.
 
-A.3.  draft-fossati-seat-early-attestation-06
+A.4.  draft-fossati-seat-early-attestation-06
 
    *  Add a Security Considerations subsection on relay resistance,
       showing that transcript binding (ClientHello...ServerHello) and
@@ -1645,12 +1644,12 @@ A.3.  draft-fossati-seat-early-attestation-06
       Expand ([RFC5869]) and that its use does not modify the TLS
       protocol or the key schedule.
 
-A.4.  draft-fossati-seat-early-attestation-05
+A.5.  draft-fossati-seat-early-attestation-05
 
    *  Change extension model to a single remoteAttestation extension
       that covers all handshake messages which need extending.
 
-A.5.  draft-fossati-seat-early-attestation-04
+A.6.  draft-fossati-seat-early-attestation-04
 
    *  Register the attestation_failed alert for Evidence verification
       failure after the attestation extension is processed; clarify
@@ -1666,7 +1665,7 @@ A.5.  draft-fossati-seat-early-attestation-04
 
    *  Replaced Derive-Secret with HKDF-Expand-Label
 
-A.6.  draft-fossati-seat-early-attestation-03
+A.7.  draft-fossati-seat-early-attestation-03
 
    *  Replace the Attestation message by an Attestation (certificate)
       extension, to bring this protocol within the requirements of the
@@ -1684,17 +1683,17 @@ A.6.  draft-fossati-seat-early-attestation-03
 
    *  Remove various outdated sections.
 
-A.7.  draft-fossati-seat-early-attestation-02
+A.8.  draft-fossati-seat-early-attestation-02
 
    *  Fix typo in key schedule.  Clarify (again) that this is only
       adding to the schedule, not modifying any existing key
       derivations.
 
-A.8.  draft-fossati-seat-early-attestation-01
+A.9.  draft-fossati-seat-early-attestation-01
 
    (Submitted by mistake.)
 
-A.9.  draft-fossati-seat-early-attestation-00
+A.10.  draft-fossati-seat-early-attestation-00
 
    Initial version of draft-fossati-seat-early-attestation.
 
