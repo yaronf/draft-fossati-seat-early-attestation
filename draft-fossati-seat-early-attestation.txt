@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 17 April 2027                                      Y. Deshpande
+Expires: 1 May 2027                                         Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         14 October 2026
+                                                         28 October 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 April 2027.
+   This Internet-Draft will expire on 1 May 2027.
 
 Copyright Notice
 
@@ -122,6 +122,7 @@ Table of Contents
      8.6.  Freshness Guarantees
    9.  Privacy Considerations
      9.1.  Server Attestation to Unauthenticated Clients
+     9.2.  No Expectation of Privacy for Attestation Credentials
    10. IANA Considerations
      10.1.  TLS Extensions
      10.2.  TLS Alerts
@@ -538,7 +539,9 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    // Possibly as a (new) conceptual message (CM) within a collection.
    // This would provide the Verifier whatever information it cannot
    // compute on its own, while not forcing the TLS stack to parse the
-   // Evidence.
+   // Evidence.  The same conveyance is needed when the Evidence is
+   // encrypted to the Verifier and the RP cannot read it (see
+   // {{attcreds-privacy}}).
 
 5.1.3.  Security Properties
 
@@ -1293,6 +1296,55 @@ Initiator                                        Responder
    See [I-D.ounsworth-rats-privacy-framework] for a broader treatment of
    privacy in the RATS context.
 
+9.2.  No Expectation of Privacy for Attestation Credentials
+
+   This document does not provide confidentiality or privacy for
+   attestation credentials (i.e., Evidence and Attestation Results) with
+   respect to the peer or to the network.  Specifically:
+
+   *  Attestation credentials are carried in the handshake and are
+      available to the peer, whether or not that peer has authenticated.
+
+   *  Attestation credentials are encrypted under the handshake traffic
+      keys, so a passive on-path attacker cannot read them, unless the
+      handshake secret is compromised (Section 8.3).  An active on-path
+      attacker, however, can obtain the server's credential, because a
+      server attests before the client authenticates.  It can either
+      complete the handshake as a client, or interpose itself in the key
+      exchange, in which case the handshake fails, but only after the
+      credential has been exposed.
+
+   *  The same holds for reattestation (Section 5.4): the client need
+      not authenticate to read the server's new attestation credential.
+      An active attacker holding the current traffic keys can also read
+      it by substituting the EKU key shares.  The relying party detects
+      this through the binder mismatch, but only after the credential
+      has been exposed.
+
+   Authenticating the peer does not by itself solve the problem: an
+   authenticated peer can still disclose the Claims it receives.
+   Deployments should not assume Claims remain confidential, and should
+   send only Claims that are acceptable to disclose to any party able to
+   complete (or observe) the handshake.
+
+   Attesters that need to convey privacy-sensitive Claims should limit
+   what the peer acting as RP learns.  For Evidence, the extreme case is
+   to hide all the Claims: the Evidence is encrypted to the Verifier,
+   independently of the TLS handshake keys, using a public key that the
+   Attester learns out of band (Section 4.2 of
+   [I-D.ounsworth-rats-privacy-framework]).  If the RP cannot read the
+   Evidence, it cannot check the binder or the TIK hash itself: it
+   conveys them to the Verifier, and checks that the signed Attestation
+   Results carry the matching values.  For Attestation Results, the
+   Verifier can reveal only the Claims that the RP's policy needs, using
+   minimization, selective disclosure, or zero-knowledge proofs
+   (Sections 4.3, 4.4 and 4.5 of
+   [I-D.ounsworth-rats-privacy-framework]).  In both cases the
+   protection can be applied in either direction.  Encrypting to a key
+   learned out of band requires work to define how such a key is
+   published and bound to the intended recipient, which is out of scope
+   for this document.
+
 10.  IANA Considerations
 
 10.1.  TLS Extensions
@@ -1530,6 +1582,14 @@ Initiator                                        Responder
 Appendix A.  Document History
 
 A.1.  draft-fossati-seat-early-attestation-08
+
+   *  Added a Privacy Considerations subsection stating that there is no
+      expectation of privacy for attestation credentials, and pointing
+      to possible mitigations ([I-D.ounsworth-rats-privacy-framework])
+      (#80).
+
+   *  Defined attestation_update wire format and message flow;
+      reattestation does not block application data.
 
    *  Defined reattestation using Extended Key Update; removed other
       reattestation options.  Appraisal failure is signalled with the
