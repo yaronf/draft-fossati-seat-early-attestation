@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-27T03:42:44.269369+00:00",
+  "timestamp": "2026-10-29T04:22:32.112802+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1267,7 +1267,7 @@
       "id": "I_kwDOQdsaoc8AAAABVjkCEQ",
       "title": "Evidence privacy",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/80",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaronf",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -1276,8 +1276,8 @@
       "labels": [],
       "body": "Clarify that there's no expectation of privacy: the Evidence is available to an unauth client, to a server, and to a MITM.\n\nCite potential solutions such as Sec. 4.2 of https://datatracker.ietf.org/doc/draft-ounsworth-rats-privacy-framework/ or older solutions.\n\nBTW this is also true for Post-HS, because the client never needs to authenticate.",
       "createdAt": "2026-10-07T08:02:22Z",
-      "updatedAt": "2026-10-07T08:03:34Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T08:44:30Z",
+      "closedAt": "2026-10-28T08:44:30Z",
       "comments": []
     },
     {
@@ -9053,24 +9053,26 @@
       "id": "PR_kwDOQdsaoc8AAAABHU91MQ",
       "title": "more privacy considerations on attestation credential's claims",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/82",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "thomas-fossati",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fix #80",
       "createdAt": "2026-10-08T12:22:32Z",
-      "updatedAt": "2026-10-25T17:26:43Z",
+      "updatedAt": "2026-10-28T08:44:29Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "ab6696c13d6445e9b9c2920497cb760f376b9b4d",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "priv++",
       "headRefOid": "9512de8d080d96c4f8164c6a3d92c650eb07b36c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-10-28T08:44:29Z",
+      "mergedAt": "2026-10-28T08:44:28Z",
+      "mergedBy": "tireddy2",
+      "mergeCommit": {
+        "oid": "139e024e81d405963a48fbe99446aa41a9ee7452"
+      },
       "comments": [
         {
           "author": "thomas-fossati",
@@ -9258,6 +9260,19 @@
               "updatedAt": "2026-10-14T05:13:46Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUoy8dw",
+          "commit": {
+            "abbreviatedOid": "9512de8"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T08:44:18Z",
+          "updatedAt": "2026-10-28T08:44:18Z",
+          "comments": []
         }
       ]
     },
@@ -9491,13 +9506,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-23T14:04:12Z",
-      "updatedAt": "2026-10-26T14:30:12Z",
+      "updatedAt": "2026-10-28T22:16:45Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "6c36dff14708cbfffda19a260a4186925ed53f23",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "passport-binding",
-      "headRefOid": "046e0abc13cb27dd210301d7d6bcb90fc61f325b",
+      "headRefOid": "6bbdca819aa79e2d37e070554af3f6a36b4ca2e0",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -9530,6 +9545,13 @@
           "body": "> > 1-9 [...]\r\n> \r\n> hmm, apparently I can't count \ud83d\ude2d\r\n\r\nThomas works on indexes so 0-9 means 10 :)",
           "createdAt": "2026-10-26T14:30:12Z",
           "updatedAt": "2026-10-26T14:30:12Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> @ionut-arm thanks for the good work. Here are my 10 \u2013 not one more, not one less! - high-level comments:\r\n> \r\n> 1. there is a round trip between attester and verifier before attester can send the Certificate msg.  We should specify what behaviour is expected on timeout/destination unreachable.\r\n> 2. SC += an unauthenticated client can force a Verifier call whenever it wants\r\n> 3. PC += verifier learns handshake timing\r\n> 4. PC += a stable TIK is linkable\r\n> 5. RATS interface: we are working on the TIK claim in EAR, but the binder is still in progress -- I think this was an action for me?\r\n> 6. in some places we say the TEE signs evidence, while others still say the TEE signs \"Evidence or Attestation Results\"\r\n> 7. we should add that the RP MUST reject expired Results\r\n> 8. we should say what is the expected attester behaviour during reattestation when the verifier is slow\r\n> 9. the PR deserves a new entry in the changelog\r\n\r\nThanks, Thomas! I'll review and update tomorrow \ud83d\ude4f\ud83c\udffb ",
+          "createdAt": "2026-10-28T22:16:45Z",
+          "updatedAt": "2026-10-28T22:16:45Z"
         }
       ],
       "reviews": [
@@ -9771,9 +9793,9 @@
             },
             {
               "originalPosition": 109,
-              "body": "```suggestion\nAs noted, each peer's Evidence or Attestation Results is carried in the `remoteAttestation` extension within\n```",
+              "body": "```suggestion\nAs noted, each peer's Evidence or Attestation Results are carried in the `remoteAttestation` extension within\n```",
               "createdAt": "2026-10-24T12:54:32Z",
-              "updatedAt": "2026-10-24T13:08:09Z"
+              "updatedAt": "2026-10-28T21:23:04Z"
             },
             {
               "originalPosition": 194,
@@ -9840,6 +9862,129 @@
               "updatedAt": "2026-10-25T08:17:30Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUyQkbw",
+          "commit": {
+            "abbreviatedOid": "046e0ab"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T21:20:09Z",
+          "updatedAt": "2026-10-28T22:15:05Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "Ok, hopefully I've made it clear -  Verifier extracts binder and conveys it in the AR it signs.",
+              "createdAt": "2026-10-28T21:20:09Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 67,
+              "body": "Hiya, sorry, late to this: I think there's room to wiggle on this issue, depending on what problems we care about addressing, if this gets adopted. But to answer the top question - yes, for now we're binding the ARs to the connection. Doing this simply because we'd rather stick with \"maximum security\" posture for now.",
+              "createdAt": "2026-10-28T21:22:31Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 130,
+              "body": "I think it was a nod towards the next paragraph, saying that the binder does not come from the Attesting Environment. But I agree, doesn't add much, I'll remove.",
+              "createdAt": "2026-10-28T21:26:28Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 194,
+              "body": "While I agree that it would be good to address this, I'd rather not do it in this PR, sorry!",
+              "createdAt": "2026-10-28T21:46:18Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "I'll drop the AR part, no point in talking about that side here I reckon.",
+              "createdAt": "2026-10-28T21:52:20Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 269,
+              "body": "Hmm, I can put it back, but it should be made clear that the nonce isn't in the CMW in parallel with the evidence or AR, so it should be something like `Evidence(Nonce) / AR(Nonce)`. Doesn't quite roll off the tongue.",
+              "createdAt": "2026-10-28T21:54:09Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 290,
+              "body": "No, I think the Result is always regenerated on reattestation. See below, L691",
+              "createdAt": "2026-10-28T21:55:31Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 380,
+              "body": "Fixed it to remove the redundant part at the end (including the claim bit).",
+              "createdAt": "2026-10-28T21:58:02Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            },
+            {
+              "originalPosition": 1,
+              "body": "Done",
+              "createdAt": "2026-10-28T22:14:57Z",
+              "updatedAt": "2026-10-28T22:15:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 88,
+      "id": "PR_kwDOQdsaoc8AAAABLOCnCw",
+      "title": "Fix document history after -08 publication",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/88",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n- Move the privacy Considerations history bullet (from #82) into a new `-09` entry, since `-08` is already on the datatracker.\n- Drop the duplicate `attestation_update` bullet and the GitHub issue number from the history line.\n- Leave the published `-08` history text unchanged.\n\n@thomas-fossati @yogeshbdeshpande @tireddy2 @ionut-arm please review.\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-10-28T09:04:37Z",
+      "updatedAt": "2026-10-28T10:23:09Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "139e024e81d405963a48fbe99446aa41a9ee7452",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-doc-history-09",
+      "headRefOid": "2f103ab9598c44dc20c23f411de565359301420c",
+      "closedAt": "2026-10-28T09:35:56Z",
+      "mergedAt": "2026-10-28T09:35:56Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "49a7ee34664ce91ae43672f823af2e445cc690ee"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUpSm-w",
+          "commit": {
+            "abbreviatedOid": "2f103ab"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "It looks pretty uncontroversial to me \ud83e\udd47 ",
+          "createdAt": "2026-10-28T09:28:12Z",
+          "updatedAt": "2026-10-28T09:28:12Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABUpXELw",
+          "commit": {
+            "abbreviatedOid": "2f103ab"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T09:34:37Z",
+          "updatedAt": "2026-10-28T09:34:37Z",
+          "comments": []
         }
       ]
     }
