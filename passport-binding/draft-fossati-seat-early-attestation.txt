@@ -5,13 +5,13 @@
 SEAT                                                          Y. Sheffer
 Internet-Draft                                                    Intuit
 Intended status: Standards Track                             I. Mihalcea
-Expires: 3 May 2027                                         Y. Deshpande
+Expires: 5 May 2027                                         Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         30 October 2026
+                                                         1 November 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 May 2027.
+   This Internet-Draft will expire on 5 May 2027.
 
 Copyright Notice
 
@@ -455,6 +455,13 @@ Table of Contents
    or TIK-S) and MUST include the attestation binder from the appraised,
    TEE-signed Evidence.
 
+
+   // NOTE: A new claim, `eat_transport_identity_key`, is being added to
+   // EAT Attestation Result (EAR, defined in draft-ietf-rats-ear) with
+   // the goal of supporting attested TLS as a use-case.  This claim
+   // would carry the required information to allow Relying Parties to
+   // identify an attested public key.
+
    The TIK binding ensures that the attested key is the one used in the
    TLS handshake.  In both models, the binder additionally provides
    freshness through derivation from both peers' randomness.  See
@@ -577,17 +584,17 @@ s_attest_binder = HKDF-Expand-Label(attest_base, "attestation",
    public key in the peer's TLS end-entity certificate.  The Relying
    Party MUST compare the computed binder with the binder included in
    the Verifier-signed Attestation Results.  A missing binder or a
-   mismatch MUST cause the attestation to be considered invalid.  TLS
-   CertificateVerify proves possession of the matching TIK in this
-   handshake.
+   mismatch MUST cause the attestation to be considered invalid.  If any
+   of these checks fails, the Relying Party MUST abort the connection
+   with a fatal attestation_failed alert TLS CertificateVerify proves
+   possession of the matching TIK in this handshake.
 
    The Relying Party MUST reject Attestation Results whose validity
    period has expired, even when the binder and TIK match the current
    connection.  This requirement applies both to Results presented by
    the attester in the Passport Model and to Results obtained from a
    Verifier in the Background Check Model, during both the initial
-   handshake and reattestation.  Expired Results MUST cause the Relying
-   Party to abort with a fatal attestation_failed alert.
+   handshake and reattestation.
 
 
    // TODO: define a way to transport the binder to a remote Verifier.
@@ -1709,9 +1716,9 @@ Initiator                                        Responder
    [I-D.ietf-spice-sd-cwt]
               Prorock, M., Steele, O., Birkholz, H., and R. Mahy,
               "Selective Disclosure CBOR Web Tokens (SD-CWT)", Work in
-              Progress, Internet-Draft, draft-ietf-spice-sd-cwt-08, 1
-              June 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-spice-sd-cwt-08>.
+              Progress, Internet-Draft, draft-ietf-spice-sd-cwt-09, 30
+              October 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-spice-sd-cwt-09>.
 
    [I-D.ietf-teep-architecture]
               Pei, M., Tschofenig, H., Thaler, D., and D. M. Wheeler,
