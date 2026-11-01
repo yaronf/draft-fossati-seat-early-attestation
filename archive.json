@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-29T04:22:32.112802+00:00",
+  "timestamp": "2026-11-01T04:24:26.130760+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -9506,13 +9506,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-23T14:04:12Z",
-      "updatedAt": "2026-10-28T22:16:45Z",
+      "updatedAt": "2026-10-30T18:07:29Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
-      "baseRefOid": "6c36dff14708cbfffda19a260a4186925ed53f23",
+      "baseRefOid": "49a7ee34664ce91ae43672f823af2e445cc690ee",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "passport-binding",
-      "headRefOid": "6bbdca819aa79e2d37e070554af3f6a36b4ca2e0",
+      "headRefOid": "769b2ebc4af091a5c98b99eefdcfee207eceabd1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -9552,6 +9552,13 @@
           "body": "> @ionut-arm thanks for the good work. Here are my 10 \u2013 not one more, not one less! - high-level comments:\r\n> \r\n> 1. there is a round trip between attester and verifier before attester can send the Certificate msg.  We should specify what behaviour is expected on timeout/destination unreachable.\r\n> 2. SC += an unauthenticated client can force a Verifier call whenever it wants\r\n> 3. PC += verifier learns handshake timing\r\n> 4. PC += a stable TIK is linkable\r\n> 5. RATS interface: we are working on the TIK claim in EAR, but the binder is still in progress -- I think this was an action for me?\r\n> 6. in some places we say the TEE signs evidence, while others still say the TEE signs \"Evidence or Attestation Results\"\r\n> 7. we should add that the RP MUST reject expired Results\r\n> 8. we should say what is the expected attester behaviour during reattestation when the verifier is slow\r\n> 9. the PR deserves a new entry in the changelog\r\n\r\nThanks, Thomas! I'll review and update tomorrow \ud83d\ude4f\ud83c\udffb ",
           "createdAt": "2026-10-28T22:16:45Z",
           "updatedAt": "2026-10-28T22:16:45Z"
+        },
+        {
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Turns out I made some mistakes in the mix of committed-locally vs committed-in-Github. Should be up to date and complete now.",
+          "createdAt": "2026-10-30T16:32:25Z",
+          "updatedAt": "2026-10-30T16:32:25Z"
         }
       ],
       "reviews": [
@@ -9928,6 +9935,32 @@
               "body": "Done",
               "createdAt": "2026-10-28T22:14:57Z",
               "updatedAt": "2026-10-28T22:15:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABVLwOaQ",
+          "commit": {
+            "abbreviatedOid": "769b2eb"
+          },
+          "author": "thomas-fossati",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "LGTM, just a couple of very tiny comments",
+          "createdAt": "2026-10-30T18:05:06Z",
+          "updatedAt": "2026-10-30T18:07:29Z",
+          "comments": [
+            {
+              "originalPosition": 224,
+              "body": "L463-465 already state this (albeit more generally), no?",
+              "createdAt": "2026-10-30T18:05:06Z",
+              "updatedAt": "2026-10-30T18:07:29Z"
+            },
+            {
+              "originalPosition": 105,
+              "body": "perhaps add a cref to say that the claim is being worked on in RATS EAR.",
+              "createdAt": "2026-10-30T18:07:10Z",
+              "updatedAt": "2026-10-30T18:07:29Z"
             }
           ]
         }
