@@ -361,6 +361,9 @@ The CMW payload MUST contain attestation Evidence (in Background Check Model) or
 In the Background Check Model, the TEE's signature over the Evidence within the CMW MUST include a binder ensuring that the Evidence is associated with this particular TLS connection, as well as the attester's TLS identity public key (TIK-C for client attester, TIK-S for server attester).
 In the Passport Model, the Verifier-signed Attestation Results MUST identify the attested TIK public key (TIK-C or TIK-S) and MUST include the attestation binder from the appraised, TEE-signed Evidence.
 
+<cref>NOTE: A new claim, `eat_transport_identity_key`, is being added to EAT Attestation Result (EAR, defined in draft-ietf-rats-ear) with the goal of supporting attested TLS as a use-case.
+This claim would carry the required information to allow Relying Parties to identify an attested public key.</cref>
+
 The TIK binding ensures that the attested key is the one used in the TLS handshake.
 In both models, the binder additionally provides freshness through derivation from both peers' randomness.
 See {{crypto-ops}} for details.
@@ -466,15 +469,15 @@ the Verifier's identity. It MUST check that the TIK public key identified by the
 signed Results matches the public key in the peer's TLS end-entity certificate.
 The Relying Party MUST compare the computed binder with the binder included in
 the Verifier-signed Attestation Results. A missing binder or a mismatch MUST
-cause the attestation to be considered invalid.
+cause the attestation to be considered invalid. If any of these checks fails,
+the Relying Party MUST abort the connection with a fatal `attestation_failed` alert
 TLS CertificateVerify proves possession of the matching TIK in this handshake.
 
 The Relying Party MUST reject Attestation Results whose validity period has
 expired, even when the binder and TIK match the current connection. This
 requirement applies both to Results presented by the attester in the Passport
 Model and to Results obtained from a Verifier in the Background Check Model,
-during both the initial handshake and reattestation. Expired Results MUST
-cause the Relying Party to abort with a fatal `attestation_failed` alert.
+during both the initial handshake and reattestation.
 
 <cref>TODO: define a way to transport the binder to a remote Verifier. Possibly
 as a (new) conceptual message (CM) within a collection. This would provide
