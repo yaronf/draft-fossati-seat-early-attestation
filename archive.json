@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-01T04:24:26.130760+00:00",
+  "timestamp": "2026-11-03T05:21:57.221076+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1293,6 +1293,22 @@
       "body": "Evidence generation time varies by host and load and cannot be observed by the relying party (PR #79 discussion). It affects both the initial handshake, where Evidence is generated after ServerHello and delays the attester's Certificate message, and reattestation, where the relying party times out waiting for attestation_update.\n\nProposal: the attester advertises a timeout hint in the remoteAttestation extension negotiation.\n\nOpen questions:\n- Where the hint is carried (ClientHello for a client attester, EncryptedExtensions for a server attester).\n- The hint is an unverified claim, fixed at handshake time; the relying party caps it by local policy.\n- Measured by the attester at startup vs. configured by the tenant.",
       "createdAt": "2026-10-12T09:46:10Z",
       "updatedAt": "2026-10-12T09:46:10Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 89,
+      "id": "I_kwDOQdsaoc8AAAABcAjWvg",
+      "title": "Out-of-band Verification and cached Attestation Results constrained in Passport Model text",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/89",
+      "state": "OPEN",
+      "author": "telephonicrobotics",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The latest text published for seat-early-09 forecloses a described pattern defined in RFC9334 under the Passport Model: e.g., \"_[...] The Attester may also present the same Attestation Result to other Relying Parties_\". ISTM that the curren text makes that pattern impossible:\n\n> A mismatch MUST cause the attestation to be considered invalid. The Relying Party MUST also verify the connection-specific binder as specified in {{crypto-ops}}; matching the TIK alone is insufficient. [Section 5.1.2-5](https://github.com/yaronf/draft-fossati-seat-early-attestation/blob/d3ddfef1cf41ac90c98ce1865bb1ea0bf7a3577f/draft-fossati-seat-early-attestation.md?plain=1#L536)\n\nTo elaborate from the description of the Passport Topology in the RFC:\n\n> _\"[...] The Attester does not consume the Attestation Result, but it might cache it. The Attester can then present the Attestation Result (and possibly additional Claims) to a Relying Party, which then compares this information against its own appraisal policy. The Attester may also present the same Attestation Result to other Relying Parties._\"  See [Section 5.1-4](https://www.rfc-editor.org/info/rfc9334/#section-5.1-4) of RFC9334.\n\nSo, to iterate, my concern is that the current text forces an Attester to always consume an Attestation Result without leaving room to support caching. Strawman fix:\n\n- For Attestation Results, the Relying Party MUST verify the Verifier's signature and the Results against its local policy, including the Results' freshness and the Verifier's identity. It MUST check that the TIK public key identified by the signed Results matches the public key in the peer's TLS end-entity certificate. _If a cached Attestation Result is presented, the embedded binding value cannot bind the active connection; in this scenario, connection binding is established via the TIK Proof of Possession, and the Relying Party MUST verify that the Attestation Result is within its validity period._\n\nIf helpful, I can explicitly validate the solution with symbolic analysis? See similar comments for seat-expat: https://github.com/tls-attestation/exported-attestation/pull/69#discussion_r4447777814\n",
+      "createdAt": "2026-11-03T01:47:57Z",
+      "updatedAt": "2026-11-03T01:49:08Z",
       "closedAt": null,
       "comments": []
     }
@@ -9499,24 +9515,26 @@
       "id": "PR_kwDOQdsaoc8AAAABKRFgQg",
       "title": "Always bind AR to connection",
       "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/87",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ionut-arm",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-10-23T14:04:12Z",
-      "updatedAt": "2026-10-30T18:07:29Z",
+      "updatedAt": "2026-11-01T22:12:55Z",
       "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
       "baseRefName": "main",
       "baseRefOid": "49a7ee34664ce91ae43672f823af2e445cc690ee",
       "headRepository": "yaronf/draft-fossati-seat-early-attestation",
       "headRefName": "passport-binding",
-      "headRefOid": "769b2ebc4af091a5c98b99eefdcfee207eceabd1",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "fe40fcfcbbe959d340f0179fe0fbff959ba9b50d",
+      "closedAt": "2026-11-01T22:12:51Z",
+      "mergedAt": "2026-11-01T22:12:51Z",
+      "mergedBy": "ionut-arm",
+      "mergeCommit": {
+        "oid": "d3ddfef1cf41ac90c98ce1865bb1ea0bf7a3577f"
+      },
       "comments": [
         {
           "author": "thomas-fossati",
@@ -9961,6 +9979,26 @@
               "body": "perhaps add a cref to say that the claim is being worked on in RATS EAR.",
               "createdAt": "2026-10-30T18:07:10Z",
               "updatedAt": "2026-10-30T18:07:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABVZCxPg",
+          "commit": {
+            "abbreviatedOid": "769b2eb"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-01T22:12:09Z",
+          "updatedAt": "2026-11-01T22:12:09Z",
+          "comments": [
+            {
+              "originalPosition": 224,
+              "body": "I moved the requirement to abort to the lines you mentioned.",
+              "createdAt": "2026-11-01T22:12:09Z",
+              "updatedAt": "2026-11-01T22:12:19Z"
             }
           ]
         }
