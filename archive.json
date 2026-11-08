@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-03T05:21:57.221076+00:00",
+  "timestamp": "2026-11-08T04:27:37.411693+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -1309,6 +1309,24 @@
       "body": "The latest text published for seat-early-09 forecloses a described pattern defined in RFC9334 under the Passport Model: e.g., \"_[...] The Attester may also present the same Attestation Result to other Relying Parties_\". ISTM that the curren text makes that pattern impossible:\n\n> A mismatch MUST cause the attestation to be considered invalid. The Relying Party MUST also verify the connection-specific binder as specified in {{crypto-ops}}; matching the TIK alone is insufficient. [Section 5.1.2-5](https://github.com/yaronf/draft-fossati-seat-early-attestation/blob/d3ddfef1cf41ac90c98ce1865bb1ea0bf7a3577f/draft-fossati-seat-early-attestation.md?plain=1#L536)\n\nTo elaborate from the description of the Passport Topology in the RFC:\n\n> _\"[...] The Attester does not consume the Attestation Result, but it might cache it. The Attester can then present the Attestation Result (and possibly additional Claims) to a Relying Party, which then compares this information against its own appraisal policy. The Attester may also present the same Attestation Result to other Relying Parties._\"  See [Section 5.1-4](https://www.rfc-editor.org/info/rfc9334/#section-5.1-4) of RFC9334.\n\nSo, to iterate, my concern is that the current text forces an Attester to always consume an Attestation Result without leaving room to support caching. Strawman fix:\n\n- For Attestation Results, the Relying Party MUST verify the Verifier's signature and the Results against its local policy, including the Results' freshness and the Verifier's identity. It MUST check that the TIK public key identified by the signed Results matches the public key in the peer's TLS end-entity certificate. _If a cached Attestation Result is presented, the embedded binding value cannot bind the active connection; in this scenario, connection binding is established via the TIK Proof of Possession, and the Relying Party MUST verify that the Attestation Result is within its validity period._\n\nIf helpful, I can explicitly validate the solution with symbolic analysis? See similar comments for seat-expat: https://github.com/tls-attestation/exported-attestation/pull/69#discussion_r4447777814\n",
       "createdAt": "2026-11-03T01:47:57Z",
       "updatedAt": "2026-11-03T01:49:08Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 90,
+      "id": "I_kwDOQdsaoc8AAAABcsxmZQ",
+      "title": "Add an Implementation Status section",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/issues/90",
+      "state": "OPEN",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "ionut-arm"
+      ],
+      "labels": [],
+      "body": "## Summary\n\nAdd an Implementation Status section, as defined in [RFC 7942](https://www.rfc-editor.org/rfc/rfc7942).\n\nThe section should follow RFC 7942, Section 2. Each implementation description should include:\n\n- the implementation's name and a link to its web page or repository\n- a brief description\n- the level of maturity\n- coverage: which parts of this specification are implemented and which are not\n- licensing\n- implementation experience, if any\n- contact information\n- the date the information was last updated\n\nThe existing implementation was written by Serhii Nikolaichuk (Arm). Please credit him in the section, and keep the acknowledgement in {{acknowledgements}}.",
+      "createdAt": "2026-11-05T10:02:06Z",
+      "updatedAt": "2026-11-05T10:02:06Z",
       "closedAt": null,
       "comments": []
     }
