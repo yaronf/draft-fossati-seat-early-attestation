@@ -35,7 +35,7 @@ author:
  -
        ins: Y. Sheffer
        name: Yaron Sheffer
-       organization: Intuit
+       organization: Independent
        email: yaronf.ietf@gmail.com
 
  -
