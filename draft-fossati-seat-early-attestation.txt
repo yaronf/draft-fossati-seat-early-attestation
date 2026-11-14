@@ -3,15 +3,15 @@
 
 
 SEAT                                                          Y. Sheffer
-Internet-Draft                                                    Intuit
+Internet-Draft                                               Independent
 Intended status: Standards Track                             I. Mihalcea
-Expires: 5 May 2027                                         Y. Deshpande
+Expires: 18 May 2027                                        Y. Deshpande
                                                              Arm Limited
                                                               T. Fossati
                                                                   Linaro
                                                                 T. Reddy
                                                                    Nokia
-                                                         1 November 2026
+                                                        14 November 2026
 
 
     Using Attestation in Transport Layer Security (TLS) and Datagram
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 May 2027.
+   This Internet-Draft will expire on 18 May 2027.
 
 Copyright Notice
 
@@ -1635,12 +1635,12 @@ Initiator                                        Responder
 12.1.  Normative References
 
    [I-D.ietf-tls-extended-key-update]
-              Tschofenig, H., Tüxen, M., Reddy.K, T., Fries, S., and Y.
+              Tschofenig, H., Reddy.K, T., Tüxen, M., Fries, S., and Y.
               Rosomakho, "Extended Key Update for Transport Layer
               Security (TLS) 1.3", Work in Progress, Internet-Draft,
-              draft-ietf-tls-extended-key-update-13, 4 July 2026,
+              draft-ietf-tls-extended-key-update-14, 2 November 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              extended-key-update-13>.
+              extended-key-update-14>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -2073,7 +2073,7 @@ Appendix E.  Summary of Security Properties
 Authors' Addresses
 
    Yaron Sheffer
-   Intuit
+   Independent
    Email: yaronf.ietf@gmail.com
 
 
