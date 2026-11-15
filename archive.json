@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-08T04:27:37.411693+00:00",
+  "timestamp": "2026-11-15T04:48:42.444297+00:00",
   "repo": "yaronf/draft-fossati-seat-early-attestation",
   "labels": [
     {
@@ -10073,6 +10073,48 @@
           "body": "",
           "createdAt": "2026-10-28T09:34:37Z",
           "updatedAt": "2026-10-28T09:34:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 91,
+      "id": "PR_kwDOQdsaoc8AAAABO0otNQ",
+      "title": "Update Yaron Sheffer affiliation to Independent",
+      "url": "https://github.com/yaronf/draft-fossati-seat-early-attestation/pull/91",
+      "state": "MERGED",
+      "author": "yaronf",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n- Change the author organization for Yaron Sheffer from Intuit to Independent.\n\nMade with [Cursor](https://cursor.com)",
+      "createdAt": "2026-11-13T03:55:31Z",
+      "updatedAt": "2026-11-14T03:57:36Z",
+      "baseRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "baseRefName": "main",
+      "baseRefOid": "d3ddfef1cf41ac90c98ce1865bb1ea0bf7a3577f",
+      "headRepository": "yaronf/draft-fossati-seat-early-attestation",
+      "headRefName": "ys-org-independent",
+      "headRefOid": "ed6183eb699d21338a01c6972cb0e5e6b799c5ff",
+      "closedAt": "2026-11-14T03:57:36Z",
+      "mergedAt": "2026-11-14T03:57:36Z",
+      "mergedBy": "yaronf",
+      "mergeCommit": {
+        "oid": "e971e93409a14b3d68edb4cf606c6439146404e3"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQdsaoc8AAAABXwQE_Q",
+          "commit": {
+            "abbreviatedOid": "ed6183e"
+          },
+          "author": "ionut-arm",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-13T09:53:20Z",
+          "updatedAt": "2026-11-13T09:53:20Z",
           "comments": []
         }
       ]
